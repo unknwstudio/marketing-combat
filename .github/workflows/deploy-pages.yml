@@ -25,6 +25,10 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      # Auto-provisions the Pages site if it isn't enabled yet (needs pages: write)
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
