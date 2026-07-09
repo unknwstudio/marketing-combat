@@ -6,8 +6,9 @@ import './ScaleCanvas.css'
 /**
  * Fits a fixed design-width canvas (default 1440px) to the viewport.
  *
- * - Desktop (viewport >= breakpoint): scales the 1440px canvas down uniformly,
- *   preserving the pixel-perfect absolute layout, and reserves the scaled height.
+ * - Desktop (viewport >= breakpoint): scales the 1440px canvas to the full
+ *   viewport width (up or down) uniformly, preserving the pixel-perfect absolute
+ *   layout, and reserves the scaled height so the page flows normally.
  * - Tablet / mobile (viewport < breakpoint): drops the scaling entirely and lets
  *   the sections reflow fluidly at full width (each section's own media queries
  *   handle the mobile layout). A CSS fallback mirrors this so the reflowed layout
@@ -33,7 +34,8 @@ export default function ScaleCanvas({ width = 1440, breakpoint = 1024, children 
         return
       }
       setFluid(false)
-      const s = Math.min(outer.clientWidth / width, 1)
+      // fill the full viewport width — scale up on wide screens, down on narrow
+      const s = outer.clientWidth / width
       setScale(s)
       setHeight(inner.offsetHeight * s)
     }
