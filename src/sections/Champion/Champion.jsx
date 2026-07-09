@@ -18,12 +18,12 @@ export default function Champion() {
     <section className="champion" aria-label="Champion prizes">
       <img
         className="champion__panel pixelated"
-        src="/assets/champion/panel.png"
+        src={`${import.meta.env.BASE_URL}assets/champion/panel.png`}
         alt=""
       />
       <img
         className="champion__banner pixelated"
-        src="/assets/champion/banner.png"
+        src={`${import.meta.env.BASE_URL}assets/champion/banner.png`}
         alt="Use AI or get finished"
       />
 

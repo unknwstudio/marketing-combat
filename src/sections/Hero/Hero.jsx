@@ -10,7 +10,7 @@ export default function Hero() {
     <section className="hero" aria-label="AI Marketing Kombat">
       <img
         className="hero__bg"
-        src="/assets/hero/hero-bg.png"
+        src={`${import.meta.env.BASE_URL}assets/hero/hero-bg.png`}
         alt="Two pixel-art ninja fighters facing off on a cliff before a giant sun"
       />
 
@@ -19,7 +19,7 @@ export default function Hero() {
       <div className="hero__grid hero__grid--right" aria-hidden="true" />
 
       {/* glowing wordmark + underline */}
-      <img className="hero__logo" src="/assets/hero/logo.png" alt="ai-kombat" />
+      <img className="hero__logo" src={`${import.meta.env.BASE_URL}assets/hero/logo.png`} alt="ai-kombat" />
 
       {/* top-left: registration badge + lede */}
       <div className="hero__intro">
