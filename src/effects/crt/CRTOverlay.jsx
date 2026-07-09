@@ -1,3 +1,5 @@
+'use client'
+
 import './crt.css'
 
 /**
@@ -14,6 +16,8 @@ import './crt.css'
  *   vignette     soft radial edge-darkening on/off. Default true.
  *   powerOn      collapse-to-a-line -> bloom + brightness flash on mount. Default true.
  *   intensity    overall strength (scanline/vignette/grille opacity). Default 0.25.
+ *   scoped       cover only the nearest positioned ancestor (a section) instead
+ *                of the whole viewport — for applying CRT per-section. Default false.
  *
  * Motion (flicker, rolling band, power-on) is disabled under
  * prefers-reduced-motion; static scanlines and vignette are kept.
@@ -24,8 +28,14 @@ export default function CRTOverlay({
   vignette = true,
   powerOn = true,
   intensity = 0.25,
+  scoped = false,
 }) {
-  const className = ['crt', flicker && 'crt--flicker', powerOn && 'crt--power-on']
+  const className = [
+    'crt',
+    scoped && 'crt--scoped',
+    flicker && 'crt--flicker',
+    powerOn && 'crt--power-on',
+  ]
     .filter(Boolean)
     .join(' ')
 

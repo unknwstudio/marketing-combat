@@ -19,6 +19,12 @@
   --crt-intensity: 0.25;
 }
 
+/* scoped: cover only the nearest positioned ancestor (a section), not the viewport */
+.crt--scoped {
+  position: absolute;
+  z-index: 60;
+}
+
 /* every layer fills the overlay */
 .crt > * {
   position: absolute;

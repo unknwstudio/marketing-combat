@@ -19,7 +19,7 @@ export default function Fighters() {
     <section className="fighters" aria-label="Choose your fighter">
       <img
         className="fighters__bg"
-        src={`${import.meta.env.BASE_URL}assets/fighters/bg.png`}
+        src={`/assets/fighters/bg.png`}
         alt=""
         aria-hidden="true"
       />
@@ -43,7 +43,7 @@ export default function Fighters() {
             >
               <img
                 className="fighters__portrait"
-                src={`${import.meta.env.BASE_URL}assets/fighters/${f.img}`}
+                src={`/assets/fighters/${f.img}`}
                 alt={`${f.label} fighter portrait`}
               />
               <div className="fighters__label">{f.label}</div>

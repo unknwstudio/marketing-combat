@@ -1,3 +1,5 @@
+'use client'
+
 import {
   createContext,
   useCallback,
@@ -5,6 +7,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -59,7 +62,16 @@ export default function HitSparks({ children }) {
   const dprRef = useRef(1)
   const paletteRef = useRef(['#ffffff', '#ffd23f', '#3fe0ff'])
 
+  // Portals must not render during SSR / first client render or hydration
+  // mismatches (server has no <canvas>, client would). Gate on a mount flag so
+  // both the server and the initial client render agree (nothing), then portal.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   // Size the canvas to the viewport (DPR-aware, integer) and keep it crisp.
+  // Runs once the canvas exists (i.e. after mount), so keyed on `mounted`.
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -81,7 +93,7 @@ export default function HitSparks({ children }) {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = 0
     }
-  }, [])
+  }, [mounted])
 
   // Single shared rAF loop; runs only while particles are alive.
   const loop = useCallback(() => {
@@ -158,7 +170,7 @@ export default function HitSparks({ children }) {
 
   return (
     <SparksContext.Provider value={value}>
-      {typeof document !== 'undefined' &&
+      {mounted &&
         createPortal(
           <canvas
             ref={canvasRef}
