@@ -24,7 +24,7 @@ export default function Hero() {
 
       {/* top-left: registration badge + lede */}
       <div className="hero__intro">
-        <div className="hero__badge">{'>>> regestration <<<'}</div>
+        <div className="hero__badge">{'>>> registration <<<'}</div>
         <p className="hero__lede">
           The first international hackathon for senior marketers of the AI era.
           <br aria-hidden="true" />

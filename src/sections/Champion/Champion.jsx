@@ -47,7 +47,7 @@ export default function Champion() {
       </div>
 
       <button type="button" className="champion__cta">
-        &gt;&gt;&gt; regestration &lt;&lt;&lt;
+        &gt;&gt;&gt; registration &lt;&lt;&lt;
       </button>
     </section>
   );
