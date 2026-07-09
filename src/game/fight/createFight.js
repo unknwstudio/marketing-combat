@@ -37,12 +37,14 @@ for (const k in ATTACK) ATTACK[k].total = ATTACK[k].startup + ATTACK[k].active +
 
 const HURT = { dx: 22, top: 130, bottom: 6 };
 
+// Per-archetype identity: hp, walk speed, damage mult, reach mult, attack-speed
+// mult. Makes "choose your fighter" actually matter.
 export const ROSTER = [
-  { key: 'fighter1', name: 'CMOs', color: 0x3fe0ff },
-  { key: 'fighter2', name: 'HEADS OF GROWTH', color: 0xff4d6d },
-  { key: 'fighter3', name: 'PERFORMANCE LEAD GEN', color: 0x8bffa0 },
-  { key: 'fighter4', name: 'AI CREATORS', color: 0xffcf3f },
-  { key: 'fighter5', name: 'FUTURE LEGENDS', color: 0xb08bff },
+  { key: 'fighter1', name: 'CMOs',                 color: 0x3fe0ff, style: 'ZONER',     hp: 95,  speed: 100, dmg: 0.95, reach: 1.15, atkSpeed: 1.00 },
+  { key: 'fighter2', name: 'HEADS OF GROWTH',      color: 0xff4d6d, style: 'RUSHDOWN',  hp: 98,  speed: 114, dmg: 1.00, reach: 0.98, atkSpeed: 1.10 },
+  { key: 'fighter3', name: 'PERFORMANCE LEAD GEN', color: 0x8bffa0, style: 'ALL-ROUND', hp: 110, speed: 96,  dmg: 1.05, reach: 1.02, atkSpeed: 1.00 },
+  { key: 'fighter4', name: 'AI CREATORS',          color: 0xffcf3f, style: 'HEAVY',     hp: 124, speed: 80,  dmg: 1.32, reach: 1.08, atkSpeed: 0.80 },
+  { key: 'fighter5', name: 'FUTURE LEGENDS',       color: 0xb08bff, style: 'ASSASSIN',  hp: 84,  speed: 126, dmg: 0.85, reach: 0.98, atkSpeed: 1.22 },
 ];
 export const STAGES = [
   { key: 'server', name: 'SERVER ROOM' },
@@ -85,7 +87,14 @@ function selectCreate() {
     const box = this.add.rectangle(x, 130, 78, 128, f.color, 0).setStrokeStyle(2, f.color, 0).setOrigin(0.5, 0.5);
     return { s, box, x };
   });
-  this.nameLabel = txt(this, GAME_W / 2, 214, '', 11, '#fff');
+  this.nameLabel = txt(this, GAME_W / 2, 208, '', 11, '#fff');
+  this.styleLabel = txt(this, GAME_W / 2, 219, '', 9, '#ffd23f');
+  this.statG = this.add.graphics().setDepth(6);
+  this.statLabels = [
+    txt(this, 150, 232, 'PWR', 7, '#9fb8c8', 1, 0.5),
+    txt(this, 224, 232, 'SPD', 7, '#9fb8c8', 1, 0.5),
+    txt(this, 296, 232, 'HP', 7, '#9fb8c8', 1, 0.5),
+  ];
 
   // stage strip (hidden until fighter chosen)
   this.stageImgs = STAGES.map((st, i) => {
@@ -127,25 +136,48 @@ function refresh(scene) {
   scene.nameLabel.setText(fighterPhase ? ROSTER[scene.fi].name : STAGES[scene.si].name)
     .setColor(fighterPhase ? '#fff' : '#ffd23f');
   scene.sub.setText(fighterPhase ? '<  >  select      ENTER  confirm' : '<  >  stage      ENTER  fight');
+  drawStats(scene);
+}
+function drawStats(scene) {
+  const g = scene.statG; g.clear();
+  const show = scene.phase === 'fighter';
+  scene.styleLabel.setVisible(show);
+  scene.statLabels.forEach((l) => l.setVisible(show));
+  if (!show) return;
+  const f = ROSTER[scene.fi];
+  scene.styleLabel.setText(f.style).setColor('#' + f.color.toString(16).padStart(6, '0'));
+  const clamp = (v) => Math.max(0.06, Math.min(1, v));
+  const vals = [
+    clamp((f.dmg - 0.82) / 0.52),                                   // PWR
+    clamp(((f.speed - 78) / 50 + (f.atkSpeed - 0.78) / 0.46) / 2),  // SPD
+    clamp((f.hp - 82) / 44),                                        // HP
+  ];
+  const barX = [154, 228, 300], bw = 40, bh = 6, y = 229;
+  vals.forEach((v, i) => {
+    g.fillStyle(0x000000, 0.5); g.fillRect(barX[i] - 1, y - 1, bw + 2, bh + 2);
+    g.fillStyle(0x2a2a34, 1); g.fillRect(barX[i], y, bw, bh);
+    g.fillStyle(f.color, 1); g.fillRect(barX[i], y, Math.round(bw * v), bh);
+  });
 }
 
 /* =========================================================================
    FIGHT
    ========================================================================= */
 function makeFighter(scene, key, x, faceRight, isPlayer) {
+  const st = ROSTER.find((r) => r.key === key);
   const spr = scene.add.sprite(x, FLOOR_Y, key, POSE.idle).setOrigin(0.5, 1).setDepth(10);
   return {
-    spr, isPlayer, key, startX: x, startFace: faceRight,
+    spr, isPlayer, key, stats: st, startX: x, startFace: faceRight,
     kin: { x, y: FLOOR_Y, vx: 0, vy: 0, grounded: true },
     dir: faceRight ? 1 : -1,
-    action: null, hp: HP_MAX,
+    action: null, hp: st.hp, hpMax: st.hp,
     hitstun: 0, blockstun: 0, blocking: false, koed: false, pose: POSE.idle,
   };
 }
 function resetFighter(f) {
   f.kin = { x: f.startX, y: FLOOR_Y, vx: 0, vy: 0, grounded: true };
   f.dir = f.startFace ? 1 : -1;
-  f.action = null; f.hp = HP_MAX;
+  f.action = null; f.hp = f.hpMax;
   f.hitstun = 0; f.blockstun = 0; f.blocking = false; f.koed = false; f.pose = POSE.idle;
 }
 
@@ -194,7 +226,7 @@ function startRound(scene) {
 function hurtbox(f) { const { x, y } = f.kin; return { x0: x - HURT.dx, x1: x + HURT.dx, y0: y - HURT.top, y1: y - HURT.bottom }; }
 function hitbox(f) {
   const a = ATTACK[f.action.type];
-  const front = f.kin.x + f.dir * HURT.dx, tip = front + f.dir * a.reach;
+  const front = f.kin.x + f.dir * HURT.dx, tip = front + f.dir * a.reach * f.stats.reach;
   return { x0: Math.min(front, tip), x1: Math.max(front, tip), y0: f.kin.y - a.hy[1], y1: f.kin.y - a.hy[0] };
 }
 const overlap = (a, b) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
@@ -227,14 +259,14 @@ function control(f, intent, dtMs) {
   if (f.koed) { f.pose = POSE.ko; f.kin.vx = 0; return; }
   if (f.hitstun > 0) { f.hitstun -= dtMs; f.kin.vx *= 0.82; f.pose = POSE.hit; return; }
   if (f.action) {
-    f.action.e += dtMs; f.kin.vx = 0; f.pose = ATTACK[f.action.type].pose;
+    f.action.e += dtMs * f.stats.atkSpeed; f.kin.vx = 0; f.pose = ATTACK[f.action.type].pose;
     if (f.action.e >= ATTACK[f.action.type].total) f.action = null;
     return;
   }
   if (f.blockstun > 0) { f.blockstun -= dtMs; f.kin.vx *= 0.82; f.pose = POSE.block; f.blocking = true; return; }
   if (f.kin.grounded && intent.atk) { f.action = { type: intent.atk, e: 0, hasHit: false }; f.kin.vx = 0; f.pose = ATTACK[intent.atk].pose; return; }
   if (intent.block && f.kin.grounded) { f.blocking = true; f.kin.vx = 0; f.pose = POSE.block; return; }
-  f.kin.vx = (intent.right ? WALK_SPEED : 0) - (intent.left ? WALK_SPEED : 0);
+  f.kin.vx = (intent.right ? f.stats.speed : 0) - (intent.left ? f.stats.speed : 0);
   if (intent.jump && f.kin.grounded) { f.kin.vy = JUMP_V; f.kin.grounded = false; }
   f.pose = !f.kin.grounded ? POSE.jump : (f.kin.vx !== 0 ? POSE.walk : POSE.idle);
 }
@@ -295,8 +327,9 @@ function juiceHit(scene, x, y, blocked, ko) {
 
 function applyHit(att, def, scene) {
   const a = ATTACK[att.action.type], blocked = def.blocking;
-  if (blocked) { def.hp = Math.max(0, def.hp - Math.max(1, Math.round(a.dmg * 0.2))); def.blockstun = BLOCKSTUN; def.kin.vx = att.dir * PUSHBACK; }
-  else { def.hp = Math.max(0, def.hp - a.dmg); def.hitstun = HITSTUN; def.action = null; def.kin.vx = att.dir * KNOCKBACK; }
+  const dmg = a.dmg * att.stats.dmg;
+  if (blocked) { def.hp = Math.max(0, def.hp - Math.max(1, Math.round(dmg * 0.2))); def.blockstun = BLOCKSTUN; def.kin.vx = att.dir * PUSHBACK; }
+  else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = HITSTUN; def.action = null; def.kin.vx = att.dir * KNOCKBACK; }
   const ko = def.hp <= 0 && !def.koed;
   juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko);
   if (ko) { def.koed = true; endRound(scene, att.isPlayer); }
@@ -362,8 +395,8 @@ function drawUI(scene) {
       g.fillStyle(i < wins ? 0x8bffa0 : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
     }
   };
-  bar(12, scene.p.hp / HP_MAX, true, scene.pWins);
-  bar(GAME_W - 12 - bw, scene.o.hp / HP_MAX, false, scene.oWins);
+  bar(12, scene.p.hp / scene.p.hpMax, true, scene.pWins);
+  bar(GAME_W - 12 - bw, scene.o.hp / scene.o.hpMax, false, scene.oWins);
 }
 
 function fightUpdate(time, delta) {
