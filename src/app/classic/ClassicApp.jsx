@@ -17,7 +17,7 @@ import './classic.css'
 export default function ClassicApp() {
   return (
     <div className="classic">
-      <ScaleCanvas width={1440}>
+      <ScaleCanvas width={1440} mode="zoom">
         <ClassicHero />
         <ClassicChampionFor />
       </ScaleCanvas>

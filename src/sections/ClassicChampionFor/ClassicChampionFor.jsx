@@ -10,85 +10,59 @@ import './ClassicChampionFor.css'
  * and 38:4361 ("who it's for" left, right gap); the composed end state is
  * Frame 54 (node 38:4415) — both columns side by side in one 556px block.
  *
- * Interaction (as specced by the design): when the block reaches the top of
- * the viewport the stage pins; the "Champion gets" cards stay put while the
- * "who it's for" column scrolls 1:1 with the page up into the left gap.
- * When it lands (the composed 38:4415 look) the pin releases.
+ * The pin is NATIVE position:sticky — no per-frame JS, so it can never
+ * jiggle (a rAF fake-sticky corrects position one frame after the browser
+ * paints the scroll, which visibly wobbles). Sticky works inside the
+ * ScaleCanvas because .scale-canvas clips with overflow:clip (NOT hidden —
+ * hidden would make it a scroll container and kill sticky).
  *
- * CSS position:sticky can't do this here — ScaleCanvas wraps the page in a
- * transformed, overflow:hidden canvas, which disables sticky/fixed. So the
- * pin is a rAF "fake sticky": the runway (this section) gets extra height
- * equal to the pin travel, and the stage is translated to hold its viewport
- * position. All math is in 1440-design-px; the current canvas scale is
- * derived from the section's rendered width.
+ * Geometry (1440-design px, section-local):
+ *   - champion column: natural y=60 (Figma 38:4330), sticky top:60; its
+ *     lane ends at y=1025 so the pin releases exactly when the column
+ *     reaches y=589 — beside "who it's for".
+ *   - who column: static at y=589 (its Figma stacked position); it scrolls
+ *     up 1:1 with the page into the left gap — no transforms needed.
+ *   - runway height = 529 (pin travel) + one viewport, set on resize only,
+ *     so the composition completes exactly at the end of the page scroll.
  */
 
-const STAGE_H = 556 // composed block height (Figma 38:4415)
-const TRAVEL = 556 // scroll distance while pinned = who-column travel (1:1)
+const TRAVEL = 529 // champion pin travel: 589 - 60
+const BLOCK_H = 556 // composed block height incl. 60px paddings (Figma 38:4415)
 
 export default function ClassicChampionFor() {
   const outerRef = useRef(null)
-  const stageRef = useRef(null)
-  const whoRef = useRef(null)
 
   useEffect(() => {
     const outer = outerRef.current
-    const stage = stageRef.current
-    const who = whoRef.current
-    if (!outer || !stage || !who) return
-
+    if (!outer) return
     const mqMobile = window.matchMedia('(max-width: 1023px)')
-    const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const isStatic = () => mqMobile.matches || mqReduce.matches
-    let raf = 0
 
-    // Runway = pin travel + one viewport (in design px), so the pin can play
-    // out fully before the document runs out of scroll.
+    // Runway = pin travel + one viewport (in design px): the pin finishes
+    // exactly when the document runs out of scroll, leaving the composed
+    // block on screen. Height only — nothing scroll-driven lives in JS.
     const setRunway = () => {
-      if (isStatic()) {
+      if (mqMobile.matches) {
         outer.style.height = ''
         return
       }
       const scale = outer.getBoundingClientRect().width / 1440
       const viewportH = window.innerHeight / scale
-      outer.style.height = `${TRAVEL + Math.max(viewportH, STAGE_H)}px`
-    }
-
-    const update = () => {
-      raf = 0
-      if (isStatic()) {
-        stage.style.transform = ''
-        who.style.transform = 'none'
-        return
-      }
-      const rect = outer.getBoundingClientRect()
-      const scale = rect.width / 1440
-      // how far the runway has scrolled past the viewport top, clamped to the pin range
-      const offset = Math.min(Math.max(-rect.top / scale, 0), TRAVEL)
-      stage.style.transform = `translate3d(0, ${offset}px, 0)`
-      // who-column slides up from below the stage into the left gap, 1:1 with scroll
-      const progress = offset / TRAVEL
-      who.style.transform = `translate3d(0, ${(1 - progress) * STAGE_H}px, 0)`
-    }
-
-    const requestUpdate = () => {
-      if (!raf) raf = requestAnimationFrame(update)
-    }
-    const onResize = () => {
-      setRunway()
-      requestUpdate()
+      outer.style.height = `${TRAVEL + Math.max(viewportH, BLOCK_H)}px`
     }
 
     setRunway()
-    update()
-    window.addEventListener('scroll', requestUpdate, { passive: true })
-    window.addEventListener('resize', onResize)
-    mqReduce.addEventListener('change', onResize)
+    // Re-measure when the canvas zoom lands after hydration: RO reports
+    // LAYOUT boxes, which zoom does not change — so observe the
+    // .scale-canvas wrapper (outside the zoom): its layout height is the
+    // zoomed content height and jumps the moment the scale applies.
+    const ro = new ResizeObserver(setRunway)
+    const scaler = outer.closest('.scale-canvas')
+    if (scaler) ro.observe(scaler)
+    ro.observe(outer)
+    window.addEventListener('resize', setRunway)
     return () => {
-      if (raf) cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', requestUpdate)
-      window.removeEventListener('resize', onResize)
-      mqReduce.removeEventListener('change', onResize)
+      ro.disconnect()
+      window.removeEventListener('resize', setRunway)
     }
   }, [])
 
@@ -98,8 +72,8 @@ export default function ClassicChampionFor() {
       ref={outerRef}
       aria-label="Champion gets and who it's for"
     >
-      <div className="cfw__stage" ref={stageRef}>
-        {/* right column — Champion gets (pins with the stage) */}
+      {/* right lane — Champion gets pins (native sticky) until it lands at y=589 */}
+      <div className="cfw__champ-lane">
         <div className="cfw__col cfw__champ">
           <h2 className="cfw__h2 cap-trim">Champion gets</h2>
           <div className="cfw__grid">
@@ -124,29 +98,30 @@ export default function ClassicChampionFor() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* left column — who it's for (scrolls up into the gap) */}
-        <div className="cfw__col cfw__who" ref={whoRef}>
-          <h2 className="cfw__h2 cap-trim">who it&rsquo;s for</h2>
-          <ul className="cfw__list">
-            <li className="cfw__item cap-trim">CMOs</li>
-            <li className="cfw__item cap-trim">Heads of growth</li>
-            <li className="cfw__item cap-trim">Performance lead gens</li>
-            <li className="cfw__item cap-trim">AI creator</li>
-            <li className="cfw__item cfw__item--legend">
-              <svg
-                className="cfw__arrow"
-                viewBox="0 0 52 27"
-                width="52"
-                height="27"
-                aria-hidden="true"
-              >
-                <path d="M0 0L51.75 13.42L0 26.85Z" fill="#0052DA" />
-              </svg>
-              <span className="cap-trim">Future legends</span>
-            </li>
-          </ul>
-        </div>
+      {/* left column — who it's for, static at its Figma slot; the page
+          scroll itself carries it up into the gap beside the pinned cards */}
+      <div className="cfw__col cfw__who">
+        <h2 className="cfw__h2 cap-trim">who it&rsquo;s for</h2>
+        <ul className="cfw__list">
+          <li className="cfw__item cap-trim">CMOs</li>
+          <li className="cfw__item cap-trim">Heads of growth</li>
+          <li className="cfw__item cap-trim">Performance lead gens</li>
+          <li className="cfw__item cap-trim">AI creator</li>
+          <li className="cfw__item cfw__item--legend">
+            <svg
+              className="cfw__arrow"
+              viewBox="0 0 52 27"
+              width="52"
+              height="27"
+              aria-hidden="true"
+            >
+              <path d="M0 0L51.75 13.42L0 26.85Z" fill="#0052DA" />
+            </svg>
+            <span className="cap-trim">Future legends</span>
+          </li>
+        </ul>
       </div>
     </section>
   )

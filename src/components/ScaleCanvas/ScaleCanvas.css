@@ -1,6 +1,12 @@
 .scale-canvas {
   width: 100%;
+  /* clip, not hidden: overflow:hidden makes this box a scroll container,
+     which retargets position:sticky inside the canvas to this (never-
+     scrolling) box and kills it. overflow:clip clips identically but is
+     NOT a scroll container, so sticky children track the real page
+     scroll natively. (hidden first = fallback for very old browsers) */
   overflow: hidden;
+  overflow: clip;
 }
 
 .scale-canvas__inner {
