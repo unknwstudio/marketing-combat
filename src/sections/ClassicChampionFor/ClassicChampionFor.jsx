@@ -102,8 +102,8 @@ export default function ClassicChampionFor() {
 
       {/* left column — who it's for, static at its Figma slot; the page
           scroll itself carries it up into the gap beside the pinned cards.
-          The ► arrow marks the ACTIVE item: it sits on "Future legends" at
-          rest (the Figma state) and follows whichever item is hovered. */}
+          The ► arrow marks the ACTIVE item: nothing is selected at rest,
+          the arrow appears next to whichever item is hovered. */}
       <div className="cfw__col cfw__who">
         <h2 className="cfw__h2 cap-trim">who it&rsquo;s for</h2>
         <ul className="cfw__list">

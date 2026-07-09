@@ -167,29 +167,8 @@
   transform: translateX(var(--arrow-indent));
 }
 
-/* "Future legends" is the resting active item */
-.cfw__item--legend .cfw__arrow {
-  opacity: 1;
-  transform: translate(0, -50%);
-}
-
-.cfw__item--legend .cfw__text {
-  transform: translateX(var(--arrow-indent));
-}
-
-/* ...but it hands the arrow over while another item is hovered */
-.cfw__list:has(.cfw__item:not(.cfw__item--legend):hover)
-  .cfw__item--legend:not(:hover)
-  .cfw__arrow {
-  opacity: 0;
-  transform: translate(-12px, -50%);
-}
-
-.cfw__list:has(.cfw__item:not(.cfw__item--legend):hover)
-  .cfw__item--legend:not(:hover)
-  .cfw__text {
-  transform: translateX(0);
-}
+/* "Future legends" keeps its blue accent but rests unselected like the
+   others — the arrow only ever appears on the hovered item */
 
 /* --- fluid mobile (< 1024px): stacked single column -------------------- */
 
