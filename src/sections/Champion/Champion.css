@@ -30,9 +30,9 @@
 .champion__banner {
   position: absolute;
   left: 0;
-  top: 337px;
+  top: 320px; /* keep the artwork centre where it sat (updated Figma export is 1440x594, was ...x559) */
   width: 1440px;
-  height: 559px;
+  height: 594px;
 }
 
 /* --- top box: ticker + stats (live text over the panel) ------------- */
@@ -40,8 +40,7 @@
 .champion__topbox {
   position: absolute;
   top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 31px; /* Figma Frame 12 (33:3979) x=31 — align to the panel, not the section centre */
   width: 1359px;
   display: flex;
   flex-direction: column;
