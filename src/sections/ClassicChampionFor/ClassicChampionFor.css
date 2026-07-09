@@ -135,10 +135,6 @@
   color: var(--c-blue);
 }
 
-.cfw__item--legend {
-  color: var(--c-blue);
-}
-
 .cfw__arrow {
   position: absolute;
   left: 17px; /* Figma icon slot is 69 wide, triangle right-aligned */
@@ -167,8 +163,8 @@
   transform: translateX(var(--arrow-indent));
 }
 
-/* "Future legends" keeps its blue accent but rests unselected like the
-   others — the arrow only ever appears on the hovered item */
+/* all items rest identical (black, flush left) — blue + arrow + indent
+   only ever appear on the hovered item */
 
 /* --- fluid mobile (< 1024px): stacked single column -------------------- */
 
