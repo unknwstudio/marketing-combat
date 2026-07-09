@@ -98,8 +98,10 @@
 }
 
 .champion__value {
-  font-size: 34px;
+  font-family: var(--k-font-accent);
+  font-size: 48px;
   line-height: 1;
+  letter-spacing: -0.5px;
 }
 
 .champion__caption {

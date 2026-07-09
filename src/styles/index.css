@@ -3,8 +3,17 @@
    Foundational rules (see docs/animation-research.md):
    - image-rendering: pixelated on all sprite/pixel assets
    - integer transforms, no sub-pixel blur
-   - one bitmap font: "Press Start 2P"
+   - pixel body font "Press Start 2P" + Figma accent font "Platform"
    ============================================================ */
+
+/* Accent / display font from the Figma design (self-hosted, licensed file). */
+@font-face {
+  font-family: 'Platform';
+  src: url('/fonts/Platform-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   /* --- palette (placeholder arcade palette; swap for Figma tokens) --- */
@@ -20,6 +29,8 @@
 
   /* --- type --- */
   --k-font: var(--font-ps), 'Press Start 2P', 'Courier New', monospace;
+  /* accent / display font (Figma "Platform"); falls back to the pixel font */
+  --k-font-accent: 'Platform', var(--font-ps), 'Press Start 2P', sans-serif;
 
   /* --- spacing scale (8px arcade grid) --- */
   --k-1: 8px;
