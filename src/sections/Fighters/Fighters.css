@@ -1,0 +1,127 @@
+/* ============================================================
+   CHOOSE YOUR FIGHTER — roster section
+   Figma "Frame 46" (35:4234), authored at native 1440x755.
+   All children placed at section-local coordinates.
+   ============================================================ */
+
+.fighters {
+  position: relative;
+  width: 1440px;
+  height: 755px;
+  background: var(--k-bg);
+  overflow: hidden;
+}
+
+/* dark arena / lightning glow — exported composite (35:4165) */
+.fighters__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* big centered glowing title (35:4237) */
+.fighters__title {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--k-font);
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: lowercase;
+  white-space: nowrap;
+  color: var(--k-yellow);
+  text-shadow:
+    0 0 4px #ff9d00,
+    0 0 14px #ff6a00,
+    0 0 28px rgba(255, 106, 0, 0.75),
+    4px 4px 0 var(--k-shadow);
+}
+
+/* content block: caption row + cards row (35:4206) */
+.fighters__content {
+  position: absolute;
+  top: 312px;
+  left: 22px;
+  width: 1380px;
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+}
+
+/* thin caption row (35:4226) */
+.fighters__caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-family: var(--k-font);
+  font-size: 11px;
+  line-height: 1.4;
+  text-transform: lowercase;
+  color: #3ad76f;
+  white-space: nowrap;
+}
+
+/* row of 5 fighter cards (35:4184) */
+.fighters__row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fighters__card {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+/* AI-art portrait, 266x321 native */
+.fighters__portrait {
+  display: block;
+  width: 100%;
+  height: 321px;
+  object-fit: cover;
+}
+
+/* caption strip under each portrait (33px), white hairline top/bottom */
+.fighters__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 33px;
+  padding: 8px 4px;
+  background: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  font-family: var(--k-font);
+  font-size: 9px;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+  color: #7f7f7f;
+}
+
+/* highlighted / "selected" fighter (Performance Lead Gen) */
+.fighters__card--selected .fighters__label {
+  color: #fff;
+}
+
+.fighters__card--selected .fighters__portrait {
+  box-shadow:
+    inset 0 0 0 2px var(--k-green),
+    0 0 16px rgba(63, 255, 135, 0.55);
+}

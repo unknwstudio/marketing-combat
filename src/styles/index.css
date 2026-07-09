@@ -1,0 +1,79 @@
+/* ============================================================
+   AI Marketing Kombat — global pixel-art base
+   Foundational rules (see docs/animation-research.md):
+   - image-rendering: pixelated on all sprite/pixel assets
+   - integer transforms, no sub-pixel blur
+   - one bitmap font: "Press Start 2P"
+   ============================================================ */
+
+:root {
+  /* --- palette (placeholder arcade palette; swap for Figma tokens) --- */
+  --k-bg: #0b0221;
+  --k-bg-2: #1a0938;
+  --k-ink: #f4f4f8;
+  --k-red: #ff2e4d;
+  --k-yellow: #ffd23f;
+  --k-cyan: #3fe0ff;
+  --k-magenta: #ff3fd2;
+  --k-green: #3fff87;
+  --k-shadow: #06010f;
+
+  /* --- type --- */
+  --k-font: 'Press Start 2P', 'Courier New', monospace;
+
+  /* --- spacing scale (8px arcade grid) --- */
+  --k-1: 8px;
+  --k-2: 16px;
+  --k-3: 24px;
+  --k-4: 32px;
+  --k-6: 48px;
+  --k-8: 64px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--k-font);
+  color: var(--k-ink);
+  background: var(--k-bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: none;
+  text-rendering: geometricPrecision;
+  overflow-x: hidden;
+}
+
+/* every pixel asset must render crisp */
+img,
+canvas,
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+a {
+  color: var(--k-cyan);
+  text-decoration: none;
+}
+
+/* accessibility: honor reduced motion globally; effect modules must check this too */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

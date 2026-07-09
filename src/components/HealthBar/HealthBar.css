@@ -1,0 +1,44 @@
+.k-health {
+  display: block;
+  width: 100%;
+}
+
+.k-health__label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--k-2);
+  font-size: 0.6rem;
+  line-height: 1;
+  margin-bottom: var(--k-1);
+  color: var(--k-ink);
+}
+
+.k-health__value {
+  color: var(--k-health-color, var(--k-green));
+}
+
+.k-health__track {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--k-shadow);
+  border: 3px solid var(--k-ink);
+}
+
+.k-health__seg {
+  flex: 1 1 0;
+  height: var(--k-2);
+  min-width: 2px;
+}
+
+.k-health__seg--filled {
+  background: var(--k-health-color, var(--k-green));
+}
+
+.k-health__seg--ghost {
+  background: var(--k-ink);
+}
+
+.k-health__seg--empty {
+  background: var(--k-bg-2);
+}

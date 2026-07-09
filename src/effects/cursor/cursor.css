@@ -1,0 +1,57 @@
+/* ============================================================
+   Pixel cursor — crosshair + dust trail
+   The crosshair follows the pointer via an imperative JS transform;
+   trail squares fade out with WAAPI. The layer is portaled to <body>.
+   ============================================================ */
+
+/* hide the OS cursor everywhere while the pixel cursor is active */
+html.k-cursor-on,
+html.k-cursor-on * {
+  cursor: none !important;
+}
+
+.k-cursor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* pixel crosshair: a yellow core with cyan tips, built from box-shadows.
+   The negative margin centers the 4px core on the pointer hotspot. */
+.k-cursor-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  background: var(--k-yellow);
+  box-shadow:
+    0 -8px 0 0 var(--k-cyan),
+    0 8px 0 0 var(--k-cyan),
+    -8px 0 0 0 var(--k-cyan),
+    8px 0 0 0 var(--k-cyan),
+    0 0 0 1px var(--k-shadow);
+  image-rendering: pixelated;
+  will-change: transform;
+}
+
+/* dust square spawned on move; positioned + faded from JS via WAAPI */
+.k-cursor-dust {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  background: var(--k-cyan);
+  image-rendering: pixelated;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* keep the static crosshair, drop the motion trail */
+  .k-cursor-dust {
+    display: none;
+  }
+}

@@ -1,0 +1,104 @@
+.k-glitch {
+  position: relative;
+  display: inline-block;
+  color: var(--k-ink);
+}
+
+.k-glitch::before,
+.k-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.k-glitch::before {
+  color: var(--k-cyan);
+  text-shadow: -1px 0 var(--k-cyan);
+  animation: k-glitch-cyan 2.4s steps(2) infinite;
+}
+
+.k-glitch::after {
+  color: var(--k-magenta);
+  text-shadow: 1px 0 var(--k-magenta);
+  animation: k-glitch-magenta 3.1s steps(2) infinite;
+}
+
+.k-glitch--intense::before {
+  animation-duration: 1.1s;
+}
+
+.k-glitch--intense::after {
+  animation-duration: 1.4s;
+}
+
+@keyframes k-glitch-cyan {
+  0% {
+    clip-path: inset(0 0 82% 0);
+    transform: translate(-2px, -1px);
+  }
+  20% {
+    clip-path: inset(38% 0 40% 0);
+    transform: translate(2px, 0);
+  }
+  40% {
+    clip-path: inset(68% 0 10% 0);
+    transform: translate(-1px, 1px);
+  }
+  60% {
+    clip-path: inset(18% 0 58% 0);
+    transform: translate(3px, -1px);
+  }
+  80% {
+    clip-path: inset(88% 0 2% 0);
+    transform: translate(-3px, 0);
+  }
+  100% {
+    clip-path: inset(0 0 82% 0);
+    transform: translate(-2px, -1px);
+  }
+}
+
+@keyframes k-glitch-magenta {
+  0% {
+    clip-path: inset(70% 0 12% 0);
+    transform: translate(2px, 1px);
+  }
+  20% {
+    clip-path: inset(12% 0 66% 0);
+    transform: translate(-2px, 0);
+  }
+  40% {
+    clip-path: inset(46% 0 32% 0);
+    transform: translate(1px, -1px);
+  }
+  60% {
+    clip-path: inset(84% 0 4% 0);
+    transform: translate(-3px, 1px);
+  }
+  80% {
+    clip-path: inset(28% 0 52% 0);
+    transform: translate(3px, 0);
+  }
+  100% {
+    clip-path: inset(70% 0 12% 0);
+    transform: translate(2px, 1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-glitch::before,
+  .k-glitch::after {
+    animation: none;
+    clip-path: none;
+  }
+  .k-glitch::before {
+    transform: translate(-2px, 0);
+  }
+  .k-glitch::after {
+    transform: translate(2px, 0);
+  }
+}

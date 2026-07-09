@@ -1,0 +1,11 @@
+.scale-canvas {
+  width: 100%;
+  overflow: hidden;
+}
+
+.scale-canvas__inner {
+  transform-origin: top left;
+  /* sections stack vertically at full design width */
+  display: flex;
+  flex-direction: column;
+}
