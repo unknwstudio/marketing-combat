@@ -25,10 +25,15 @@ export default function ClassicHero() {
         </button>
       </div>
 
-      <img
+      <video
         className="c-hero__photo"
-        src="/assets/classic/hero-photo.jpg"
-        alt="Winners holding trophies at the award ceremony"
+        src="/assets/classic/hero-video.mp4"
+        poster="/assets/classic/hero-photo.jpg"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-label="Winners holding trophies at the award ceremony"
       />
 
       <div className="c-hero__chips">

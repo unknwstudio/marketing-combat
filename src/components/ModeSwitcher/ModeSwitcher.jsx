@@ -1,15 +1,17 @@
-import Link from 'next/link'
 import './ModeSwitcher.css'
 
 /**
  * Fixed bottom-center switcher between the two site modes:
  * "/" — the pixel-art AI mode, "/classic" — the plain readable mode.
  * Each label wears its own mode's typography (pixel font vs Helvetica).
+ * Plain <a> full-page navigation on purpose: the two modes are separate
+ * static pages with their own global styling scopes, so a hard swap is
+ * more robust than client-side routing between them.
  */
 export default function ModeSwitcher({ active }) {
   return (
     <nav className="mode-switch" aria-label="Site mode">
-      <Link
+      <a
         href="/"
         className={
           'mode-switch__opt mode-switch__opt--ai' +
@@ -18,8 +20,8 @@ export default function ModeSwitcher({ active }) {
         aria-current={active === 'ai' ? 'page' : undefined}
       >
         AI mode
-      </Link>
-      <Link
+      </a>
+      <a
         href="/classic"
         className={
           'mode-switch__opt mode-switch__opt--classic' +
@@ -28,7 +30,7 @@ export default function ModeSwitcher({ active }) {
         aria-current={active === 'classic' ? 'page' : undefined}
       >
         Classic
-      </Link>
+      </a>
     </nav>
   )
 }

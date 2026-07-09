@@ -118,6 +118,14 @@
   font-size: 64px;
   line-height: 0.942;
   color: #000;
+  transition:
+    color 0.15s ease,
+    transform 0.25s ease;
+}
+
+.cfw__item:hover {
+  color: var(--c-blue);
+  transform: translateX(16px);
 }
 
 .cfw__item--legend {
