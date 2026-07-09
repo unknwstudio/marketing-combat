@@ -2,6 +2,9 @@
   "name": "marketing-combat",
   "private": true,
   "version": "0.0.0",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build && rm -rf dist && cp -r out dist",
