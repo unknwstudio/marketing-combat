@@ -57,12 +57,16 @@ const txt = (scene, x, y, s, size, color, ax = 0.5, ay = 0.5) =>
   scene.add.text(x, y, s, { fontFamily: 'monospace', fontSize: `${size}px`, color, stroke: '#000', strokeThickness: 3 })
     .setOrigin(ax, ay).setResolution(3);
 
+const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
+const snd = (scene, key, vol = 1) => { try { if (scene.cache.audio.exists(key)) scene.sound.play(key, { volume: vol }); } catch (e) { /* audio not unlocked yet */ } };
+
 /* =========================================================================
    BOOT — load every fighter atlas + every stage once, then go to Select.
    ========================================================================= */
 function bootPreload() {
   for (const f of ROSTER) this.load.spritesheet(f.key, `/game/sprites/${f.key}_atlas.png`, { frameWidth: CELL_W, frameHeight: CELL_H });
   for (const s of STAGES) this.load.image(`stage_${s.key}`, `/game/stages/${s.key}.png`);
+  for (const a of SOUNDS) this.load.audio(`snd_${a}`, `/game/audio/${a}.mp3`);
 }
 function bootCreate() { this.scene.start('select'); }
 
@@ -110,6 +114,7 @@ function selectCreate() {
   this.input.keyboard.on('keydown-A', () => move(-1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
   this.input.keyboard.on('keydown-D', () => move(1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
   const confirm = () => {
+    snd(this, 'snd_confirm', 0.5);
     if (this.phase === 'fighter') { this.phase = 'stage'; refresh(this); }
     else {
       const opp = ROSTER[(this.fi + 1 + Math.floor(Math.random() * (ROSTER.length - 1))) % ROSTER.length].key;
@@ -234,8 +239,9 @@ function startRound(scene) {
   resetFighter(scene.p); resetFighter(scene.o);
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0;
   scene.result.setVisible(false);
-  scene.phase = 'intro'; scene.introT = 1500;
+  scene.phase = 'intro'; scene.introT = 1500; scene.fightSaid = false;
   scene.banner.setText(`ROUND ${scene.round}`).setVisible(true);
+  snd(scene, `snd_round${Math.min(scene.round, 3)}`, 0.9);
 }
 
 /* boxes */
@@ -348,7 +354,9 @@ function applyHit(att, def, scene) {
   else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = HITSTUN; def.action = null; def.kin.vx = att.dir * KNOCKBACK; def.flash = 90; }
   const ko = def.hp <= 0 && !def.koed;
   juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko);
-  if (ko) { def.koed = true; endRound(scene, att.isPlayer); }
+  if (blocked) snd(scene, 'snd_block', 0.55);
+  else if (!ko) snd(scene, att.action.type === 'special' ? 'snd_special' : att.action.type === 'kick' ? 'snd_kick' : 'snd_hit', 0.6);
+  if (ko) { def.koed = true; snd(scene, 'snd_kothud', 0.7); snd(scene, 'snd_ko', 1); endRound(scene, att.isPlayer); }
 }
 
 function endRound(scene, playerWon) {
@@ -358,6 +366,7 @@ function endRound(scene, playerWon) {
   scene.time.delayedCall(480, () => {
     if (matchOver) {
       scene.phase = 'matchend';
+      snd(scene, scene.pWins > scene.oWins ? 'snd_win' : 'snd_lose', 1);
       scene.result.setText(`${scene.pWins > scene.oWins ? 'YOU WIN' : 'YOU LOSE'}\nR rematch    ESC roster`).setVisible(true);
     } else {
       scene.result.setText('K.O.').setVisible(true);
@@ -396,7 +405,10 @@ function tick(scene, dtMs) {
 
   if (scene.phase === 'intro') {
     scene.introT -= dtMs;
-    if (scene.introT <= 700) scene.banner.setText('FIGHT!').setColor('#ff5000');
+    if (scene.introT <= 700) {
+      scene.banner.setText('FIGHT!').setColor('#ff5000');
+      if (!scene.fightSaid) { scene.fightSaid = true; snd(scene, 'snd_fight', 0.9); }
+    }
     if (scene.introT <= 0) { scene.phase = 'fight'; scene.banner.setVisible(false); }
   }
   if (scene.phase === 'matchend' && scene.keys.R.isDown) { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
