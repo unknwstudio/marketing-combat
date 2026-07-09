@@ -76,7 +76,7 @@ function selectCreate() {
   this.si = 3;
 
   this.title = txt(this, GAME_W / 2, 24, 'CHOOSE YOUR FIGHTER', 15, '#ffd23f');
-  this.sub = txt(this, GAME_W / 2, GAME_H - 16, '◀ ▶  select     ENTER  confirm', 8, '#8fe8ff');
+  this.sub = txt(this, GAME_W / 2, GAME_H - 16, '<  >  select      ENTER  confirm', 8, '#8fe8ff');
 
   // fighter row
   this.picks = ROSTER.map((f, i) => {
@@ -126,7 +126,7 @@ function refresh(scene) {
   });
   scene.nameLabel.setText(fighterPhase ? ROSTER[scene.fi].name : STAGES[scene.si].name)
     .setColor(fighterPhase ? '#fff' : '#ffd23f');
-  scene.sub.setText(fighterPhase ? '◀ ▶  select     ENTER  confirm' : '◀ ▶  stage     ENTER  fight');
+  scene.sub.setText(fighterPhase ? '<  >  select      ENTER  confirm' : '<  >  stage      ENTER  fight');
 }
 
 /* =========================================================================
@@ -173,7 +173,7 @@ function fightCreate() {
   const oName = ROSTER.find((r) => r.key === this.oppKey).name;
   txt(this, 12, 30, pName, 8, '#cfeaff', 0, 0);
   txt(this, GAME_W - 12, 30, oName, 8, '#cfeaff', 1, 0);
-  txt(this, GAME_W / 2, 6, 'J punch  K kick  L special  ▼ block', 8, '#7fb8cf', 0.5, 0);
+  txt(this, GAME_W / 2, 6, 'J punch   K kick   L special   S block', 8, '#7fb8cf', 0.5, 0);
 
   this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
   this.result = txt(this, GAME_W / 2, 104, '', 20, '#ffd23f').setDepth(60).setVisible(false);
@@ -207,6 +207,18 @@ function integrate(f, dt) {
   if (k.x > X_MAX) k.x = X_MAX;
   if (k.y >= FLOOR_Y) { k.y = FLOOR_Y; k.vy = 0; k.grounded = true; }
   f.spr.x = Math.round(k.x); f.spr.y = Math.round(k.y);
+}
+
+// keep the fighters' bodies from walking through each other (they'd overlap and
+// look like one vanished). Push apart to a minimum separation.
+const BODY_SEP = 40;
+function separate(a, b) {
+  const dx = b.kin.x - a.kin.x, gap = Math.abs(dx);
+  if (gap >= BODY_SEP) return;
+  const push = (BODY_SEP - gap) / 2, sign = dx >= 0 ? 1 : -1;
+  a.kin.x = Math.max(X_MIN, Math.min(X_MAX, a.kin.x - sign * push));
+  b.kin.x = Math.max(X_MIN, Math.min(X_MAX, b.kin.x + sign * push));
+  a.spr.x = Math.round(a.kin.x); b.spr.x = Math.round(b.kin.x);
 }
 
 function control(f, intent, dtMs) {
@@ -296,7 +308,7 @@ function endRound(scene, playerWon) {
   scene.time.delayedCall(480, () => {
     if (matchOver) {
       scene.phase = 'matchend';
-      scene.result.setText(`${scene.pWins > scene.oWins ? 'YOU WIN' : 'YOU LOSE'}\n· R rematch · ESC roster ·`).setVisible(true);
+      scene.result.setText(`${scene.pWins > scene.oWins ? 'YOU WIN' : 'YOU LOSE'}\nR rematch    ESC roster`).setVisible(true);
     } else {
       scene.result.setText('K.O.').setVisible(true);
       scene.time.delayedCall(1100, () => { scene.round++; startRound(scene); });
@@ -313,6 +325,7 @@ function tick(scene, dtMs) {
   control(p, live ? playerIntent(scene) : {}, dtMs);
   control(o, live ? aiIntent(scene, o, p, dtMs) : {}, dtMs);
   integrate(p, dt); integrate(o, dt);
+  separate(p, o);
 
   if (live) {
     for (const [att, def] of [[p, o], [o, p]]) {
@@ -360,15 +373,28 @@ function fightUpdate(time, delta) {
 }
 
 export function createFightGame(Phaser, parent) {
-  return new Phaser.Game({
+  const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent, width: GAME_W, height: GAME_H,
     pixelArt: true, roundPixels: true, backgroundColor: '#05010c',
-    scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+    // NONE + a whole-number zoom => every source pixel maps to exactly N screen
+    // pixels (crisp grid, no shimmer). FIT's fractional scale is what made the
+    // sprites/text look "mushy". Letterboxes on non-multiple viewports; on 1080p
+    // it lands on an exact 4x fill.
+    scale: { mode: Phaser.Scale.NONE, autoCenter: Phaser.Scale.CENTER_BOTH, width: GAME_W, height: GAME_H },
     scene: [
       { key: 'boot', preload: bootPreload, create: bootCreate },
       { key: 'select', create: selectCreate },
       { key: 'fight', init: fightInit, create: fightCreate, update: fightUpdate },
     ],
   });
+  const fit = () => {
+    const w = (parent && parent.clientWidth) || window.innerWidth;
+    const h = (parent && parent.clientHeight) || window.innerHeight;
+    game.scale.setZoom(Math.max(1, Math.floor(Math.min(w / GAME_W, h / GAME_H))));
+  };
+  game.events.once('ready', fit);
+  window.addEventListener('resize', fit);
+  game.events.once('destroy', () => window.removeEventListener('resize', fit));
+  return game;
 }
