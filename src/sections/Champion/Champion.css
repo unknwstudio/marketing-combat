@@ -6,10 +6,11 @@
 
 .champion {
   position: relative;
+  z-index: 2; /* stack above fighters so the seam-straddling CTA shows over it */
   width: 1440px;
   height: 924px;
   background: #000; /* Figma: black behind the panel (no blue --k-bg strip) */
-  overflow: hidden; /* banner overhangs the panel; clip to the section */
+  overflow: visible; /* let the registration button straddle the bottom seam */
   font-family: var(--k-font);
 }
 
@@ -151,9 +152,10 @@
    the section's overflow:hidden. */
 .champion__cta {
   position: absolute;
-  bottom: 22px; /* lift off the section seam so it doesn't touch the fighters section */
+  bottom: -18px; /* straddle the champion/fighters seam (Figma: button sits on the boundary) */
   left: 50%;
   transform: translateX(-50%);
+  z-index: 5;
   padding: 8px 8px 10px;
   background: #000;
   border: 1px solid #fff;
