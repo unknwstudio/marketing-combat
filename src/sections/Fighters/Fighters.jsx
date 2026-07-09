@@ -47,6 +47,11 @@ export default function Fighters() {
                 alt={`${f.label} fighter portrait`}
               />
               <div className="fighters__label">{f.label}</div>
+              <a
+                className="fighters__cardlink"
+                href="/play"
+                aria-label={`Play — ${f.label}`}
+              />
             </li>
           ))}
         </ul>

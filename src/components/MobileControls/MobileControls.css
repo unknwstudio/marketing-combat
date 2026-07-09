@@ -1,0 +1,55 @@
+/* The overlay is hidden by default and only revealed when the primary pointer is
+   touch (@media pointer: coarse). Button LOOK/POSITION live outside the media
+   query so the layout is always well-formed (and previewable). */
+.mc-root {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none; /* only the buttons catch input */
+  font-family: monospace;
+}
+
+.mc-btn {
+  pointer-events: auto;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(8, 4, 20, 0.42);
+  border: 2px solid rgba(255, 255, 255, 0.34);
+  color: #cfeaff;
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+.mc-btn:active { background: rgba(255, 255, 255, 0.28); transform: scale(0.94); }
+
+/* left cluster — a little D-pad */
+.mc-up    { left: 66px;  bottom: 150px; }
+.mc-left  { left: 14px;  bottom: 84px; }
+.mc-right { left: 118px; bottom: 84px; }
+.mc-down  { left: 66px;  bottom: 18px; }
+
+/* right cluster — attacks + confirm */
+.mc-j  { right: 118px; bottom: 150px; }
+.mc-k  { right: 44px;  bottom: 168px; }
+.mc-l  { right: 118px; bottom: 78px; }
+.mc-ok {
+  right: 30px;
+  bottom: 78px;
+  background: rgba(255, 210, 63, 0.24);
+  border-color: rgba(255, 210, 63, 0.55);
+  color: #ffd23f;
+}
+
+@media (pointer: coarse) {
+  .mc-root { display: block; }
+}

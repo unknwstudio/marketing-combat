@@ -1,5 +1,6 @@
 import './play.css';
 import FightGame from '../../components/FightGame/FightGame';
+import MobileControls from '../../components/MobileControls/MobileControls';
 
 export const metadata = {
   title: 'Play — AI Marketing Kombat',
@@ -16,6 +17,7 @@ export default function PlayPage() {
   return (
     <main className="play-main">
       <FightGame />
+      <MobileControls />
     </main>
   );
 }
