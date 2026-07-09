@@ -166,7 +166,6 @@
   text-transform: lowercase;
   white-space: nowrap;
   cursor: pointer;
-  text-decoration: none;
 }
 
 .champion__cta:hover {

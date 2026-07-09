@@ -49,9 +49,9 @@ export default function Champion() {
         </div>
       </div>
 
-      <a href="/play" className="champion__cta">
+      <button type="button" className="champion__cta">
         &gt;&gt;&gt; registration &lt;&lt;&lt;
-      </a>
+      </button>
     </section>
   );
 }
