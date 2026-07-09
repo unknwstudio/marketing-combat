@@ -31,6 +31,16 @@ export default function ModeSwitcher({ active }) {
       >
         Classic
       </a>
+      <a
+        href="/mcp"
+        className={
+          'mode-switch__opt mode-switch__opt--mcp' +
+          (active === 'mcp' ? ' mode-switch__opt--active' : '')
+        }
+        aria-current={active === 'mcp' ? 'page' : undefined}
+      >
+        MCP
+      </a>
     </nav>
   )
 }
