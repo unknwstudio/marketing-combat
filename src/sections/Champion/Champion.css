@@ -49,6 +49,7 @@
   padding: 20px;
   background: #000;
   border: 1px solid #7f7f7f;
+  overflow: hidden; /* clip the full-bleed ticker to the black box */
   text-transform: lowercase;
   color: #000;
 }
@@ -58,8 +59,11 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  width: 100%;
-  padding: 6px 4px;
+  /* Figma: ticker frame (35:4135) bleeds past the black box edges (x=-70,
+     w=1499 in a 1359 box). Overflow 20px each side to reach the border, then
+     the topbox clips it. Mobile overrides width back to 100%. */
+  width: calc(100% + 40px);
+  padding: 4px 0;
   overflow: hidden;
   white-space: nowrap;
   background: #af8dad;
@@ -67,9 +71,11 @@
 
 .champion__tickerItem {
   flex: none;
-  font-size: 13px;
+  /* Figma 35:4131 etc: GT Pressura Mono Regular, 24px, -0.72px, black, lowercase */
+  font-family: var(--k-font-mono);
+  font-size: 24px;
   line-height: 1;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.72px;
 }
 
 .champion__dot {
@@ -86,46 +92,56 @@
 .champion__cell {
   flex: 1 1 0;
   min-width: 0;
-  min-height: 150px;
+  min-height: 143px; /* Figma cell (33:3980) height */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 8px; /* Figma 19px is between cap-trimmed boxes; untrimmed line boxes add slack */
   padding: 17px 30px;
   background: #789a8c;
   text-align: center;
 }
 
+/* Figma 33:3981 etc: Platform Medium, 64px, black, lowercase (no stroke) */
 .champion__value {
   font-family: var(--k-font-accent);
-  font-size: 48px;
+  font-weight: 500;
+  font-size: 64px;
   line-height: 1;
-  letter-spacing: -0.5px;
+  color: #000;
 }
 
+/* Figma 33:3982 etc: Input Mono Condensed Light 24px / -0.72px / black.
+   Input Mono Condensed is unavailable; GT Pressura Mono (--k-font-mono) is the
+   closest licensed family we ship. */
 .champion__caption {
-  font-size: 11px;
-  line-height: 1.5;
-  letter-spacing: -0.5px;
+  font-family: var(--k-font-mono);
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.72px;
   max-width: 235px;
 }
 
 /* --- registration button (bottom, centered) ------------------------- */
 
+/* Figma 34:4081: GT Pressura Mono Regular, 24px, white, -0.72px, lowercase
+   (no text stroke). Bottom-anchored so the taller 24px button stays flush with
+   the section's bottom edge (Figma frame ends at y=924) and is not clipped by
+   the section's overflow:hidden. */
 .champion__cta {
   position: absolute;
-  top: 889px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   padding: 8px 8px 10px;
   background: #000;
   border: 1px solid #fff;
   color: #fff;
-  font-family: var(--k-font);
-  font-size: 14px;
+  font-family: var(--k-font-mono);
+  font-size: 24px;
   line-height: 1;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.72px;
   text-transform: lowercase;
   white-space: nowrap;
   cursor: pointer;

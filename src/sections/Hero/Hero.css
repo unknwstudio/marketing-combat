@@ -11,9 +11,23 @@
   margin: 0 auto;
   overflow: hidden;
   background: var(--k-bg);
-  /* live UI text is far smaller than the raster art; keep the arcade font */
-  font-family: var(--k-font);
+  /* live UI text uses the real Figma mono face (GT Pressura Mono), 24px */
+  font-family: var(--k-font-mono);
   text-transform: lowercase;
+}
+
+/* Trim the live text to its cap-height box so GT Pressura Mono hugs its
+   frame exactly like the Figma design (Figma exports
+   text-box-edge: cap alphabetic + text-box-trim: trim-both). Browsers
+   without text-box support fall back to the line-height set below. */
+.hero__badge,
+.hero__lede,
+.hero__meter-pct,
+.hero__survive,
+.hero__pill {
+  line-height: 1;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
 }
 
 /* --- background scene --- */
@@ -42,11 +56,14 @@
   position: absolute;
   top: 23px;
   left: 19px;
-  width: 672px;
+  /* Figma frame is 672px; +8px so Chrome's text metrics reproduce Figma's
+     line-1 wrap ("...senior marketers" needs 674px in-browser). Badge hugs
+     its content, so this only governs the lede wrap. No overflow (ends 699px). */
+  width: 680px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
+  gap: 24px; /* Figma badge->lede spacing (33:3912 bottom to 33:3903 cap) */
   z-index: 3;
 }
 
@@ -55,16 +72,16 @@
   background: #000;
   border: 1px solid #fff;
   color: #fff;
-  font-size: 11px;
-  letter-spacing: -0.3px;
+  font-size: 24px; /* Figma 33:3913 */
+  letter-spacing: -0.72px;
   white-space: nowrap;
 }
 
 .hero__lede {
   color: #3ad76f;
-  font-size: 12px;
-  line-height: 1.7;
-  letter-spacing: -0.3px;
+  font-size: 24px; /* Figma 33:3903 */
+  line-height: 1.25; /* Figma normal leading -> 3-line block ~= 77px */
+  letter-spacing: -0.72px;
 }
 
 /* --- top-right: energy meter --- */
@@ -105,14 +122,14 @@
 
 .hero__meter-pct {
   color: #ff5000;
-  font-size: 12px;
-  letter-spacing: -0.3px;
+  font-size: 24px; /* Figma 33:3929 (Input Mono Condensed -> mono) */
+  letter-spacing: -0.72px;
 }
 
 .hero__survive {
   color: #ff5000;
-  font-size: 12px;
-  letter-spacing: -0.3px;
+  font-size: 24px; /* Figma 33:3911 */
+  letter-spacing: -0.72px;
   white-space: nowrap;
 }
 
@@ -134,8 +151,8 @@
   border-top: 1px solid #fff;
   border-bottom: 1px solid #fff;
   color: #3ad76f;
-  font-size: 10px;
-  letter-spacing: -0.3px;
+  font-size: 24px; /* Figma 33:3894 tags: 24px, -0.72px */
+  letter-spacing: -0.72px;
   white-space: nowrap;
 }
 
@@ -295,5 +312,14 @@
 
   .hero__pill {
     font-size: 9px;
+  }
+
+  /* -0.72px is tuned for 24px; relax it for the small phone sizes */
+  .hero__badge,
+  .hero__lede,
+  .hero__meter-pct,
+  .hero__survive,
+  .hero__pill {
+    letter-spacing: -0.3px;
   }
 }

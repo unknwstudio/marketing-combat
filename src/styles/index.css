@@ -15,6 +15,17 @@
   font-display: swap;
 }
 
+/* Body / label mono font from the Figma design (self-hosted, licensed file). */
+@font-face {
+  font-family: 'GT Pressura Mono';
+  src:
+    url('/fonts/GT-Pressura-Mono-Regular.woff2') format('woff2'),
+    url('/fonts/GT-Pressura-Mono-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* --- palette (placeholder arcade palette; swap for Figma tokens) --- */
   --k-bg: #0b0221;
@@ -31,6 +42,8 @@
   --k-font: var(--font-ps), 'Press Start 2P', 'Courier New', monospace;
   /* accent / display font (Figma "Platform"); falls back to the pixel font */
   --k-font-accent: 'Platform', var(--font-ps), 'Press Start 2P', sans-serif;
+  /* body / label mono font (Figma "GT Pressura Mono") */
+  --k-font-mono: 'GT Pressura Mono', 'Courier New', monospace;
 
   /* --- spacing scale (8px arcade grid) --- */
   --k-1: 8px;

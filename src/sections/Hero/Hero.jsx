@@ -27,6 +27,7 @@ export default function Hero() {
         <div className="hero__badge">{'>>> regestration <<<'}</div>
         <p className="hero__lede">
           The first international hackathon for senior marketers of the AI era.
+          <br aria-hidden="true" />
           Two days. Real cases. Use AI or get finished.
         </p>
       </div>
