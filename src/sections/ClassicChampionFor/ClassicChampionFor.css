@@ -118,30 +118,77 @@
   gap: 20px;
 }
 
+/* The ► arrow is the ACTIVE-item marker (Figma Frame 55): at rest it sits
+   on "Future legends"; on hover it slides onto the hovered item and the
+   text indents into the 85px arrow slot (69px Figma slot + 16 gap). */
+
 .cfw__item {
+  --arrow-indent: 85px;
+  position: relative;
   font-size: 64px;
   line-height: 0.942;
   color: #000;
-  transition:
-    color 0.15s ease,
-    transform 0.25s ease;
+  transition: color 0.15s ease;
 }
 
 .cfw__item:hover {
   color: var(--c-blue);
-  transform: translateX(16px);
 }
 
 .cfw__item--legend {
-  display: flex;
-  align-items: center;
-  gap: 16px;
   color: var(--c-blue);
 }
 
 .cfw__arrow {
-  flex: none;
-  margin-left: 17px; /* Figma icon slot is 69 wide, triangle right-aligned */
+  position: absolute;
+  left: 17px; /* Figma icon slot is 69 wide, triangle right-aligned */
+  top: 50%;
+  width: 52px;
+  height: 27px;
+  opacity: 0;
+  transform: translate(-12px, -50%);
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s ease;
+}
+
+.cfw__text {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+/* hovered item becomes the active one: arrow slides in, text indents */
+.cfw__item:hover .cfw__arrow {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.cfw__item:hover .cfw__text {
+  transform: translateX(var(--arrow-indent));
+}
+
+/* "Future legends" is the resting active item */
+.cfw__item--legend .cfw__arrow {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.cfw__item--legend .cfw__text {
+  transform: translateX(var(--arrow-indent));
+}
+
+/* ...but it hands the arrow over while another item is hovered */
+.cfw__list:has(.cfw__item:not(.cfw__item--legend):hover)
+  .cfw__item--legend:not(:hover)
+  .cfw__arrow {
+  opacity: 0;
+  transform: translate(-12px, -50%);
+}
+
+.cfw__list:has(.cfw__item:not(.cfw__item--legend):hover)
+  .cfw__item--legend:not(:hover)
+  .cfw__text {
+  transform: translateX(0);
 }
 
 /* --- fluid mobile (< 1024px): stacked single column -------------------- */
@@ -198,12 +245,13 @@
   }
 
   .cfw__item {
+    --arrow-indent: 44px;
     font-size: clamp(32px, 8.5vw, 64px);
   }
 
   .cfw__arrow {
-    width: clamp(28px, 7vw, 52px);
-    height: auto;
-    margin-left: 0;
+    left: 4px;
+    width: 28px;
+    height: 15px;
   }
 }

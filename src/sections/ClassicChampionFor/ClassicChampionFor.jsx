@@ -101,25 +101,25 @@ export default function ClassicChampionFor() {
       </div>
 
       {/* left column — who it's for, static at its Figma slot; the page
-          scroll itself carries it up into the gap beside the pinned cards */}
+          scroll itself carries it up into the gap beside the pinned cards.
+          The ► arrow marks the ACTIVE item: it sits on "Future legends" at
+          rest (the Figma state) and follows whichever item is hovered. */}
       <div className="cfw__col cfw__who">
         <h2 className="cfw__h2 cap-trim">who it&rsquo;s for</h2>
         <ul className="cfw__list">
-          <li className="cfw__item cap-trim">CMOs</li>
-          <li className="cfw__item cap-trim">Heads of growth</li>
-          <li className="cfw__item cap-trim">Performance lead gens</li>
-          <li className="cfw__item cap-trim">AI creator</li>
+          {['CMOs', 'Heads of growth', 'Performance lead gens', 'AI creator'].map((label) => (
+            <li className="cfw__item" key={label}>
+              <svg className="cfw__arrow" viewBox="0 0 52 27" aria-hidden="true">
+                <path d="M0 0L51.75 13.42L0 26.85Z" fill="#0052DA" />
+              </svg>
+              <span className="cfw__text cap-trim">{label}</span>
+            </li>
+          ))}
           <li className="cfw__item cfw__item--legend">
-            <svg
-              className="cfw__arrow"
-              viewBox="0 0 52 27"
-              width="52"
-              height="27"
-              aria-hidden="true"
-            >
+            <svg className="cfw__arrow" viewBox="0 0 52 27" aria-hidden="true">
               <path d="M0 0L51.75 13.42L0 26.85Z" fill="#0052DA" />
             </svg>
-            <span className="cap-trim">Future legends</span>
+            <span className="cfw__text cap-trim">Future legends</span>
           </li>
         </ul>
       </div>
