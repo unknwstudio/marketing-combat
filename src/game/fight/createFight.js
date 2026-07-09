@@ -171,14 +171,29 @@ function makeFighter(scene, key, x, faceRight, isPlayer) {
     kin: { x, y: FLOOR_Y, vx: 0, vy: 0, grounded: true },
     dir: faceRight ? 1 : -1,
     action: null, hp: st.hp, hpMax: st.hp,
-    hitstun: 0, blockstun: 0, blocking: false, koed: false, pose: POSE.idle,
+    hitstun: 0, blockstun: 0, blocking: false, koed: false, pose: POSE.idle, flash: 0,
   };
 }
 function resetFighter(f) {
   f.kin = { x: f.startX, y: FLOOR_Y, vx: 0, vy: 0, grounded: true };
   f.dir = f.startFace ? 1 : -1;
   f.action = null; f.hp = f.hpMax;
-  f.hitstun = 0; f.blockstun = 0; f.blocking = false; f.koed = false; f.pose = POSE.idle;
+  f.hitstun = 0; f.blockstun = 0; f.blocking = false; f.koed = false; f.pose = POSE.idle; f.flash = 0;
+}
+
+// Procedural life on the single-frame poses using INTEGER-pixel offsets only
+// (never scale/rotate pixel sprites -> that reintroduces the sub-pixel mush).
+function animOffset(f, clock) {
+  if (f.koed) return { dx: 0, dy: 0 };
+  if (f.hitstun > 0) return { dx: Math.round(Math.sin(clock * 0.05) * 2), dy: 0 };       // shake
+  if (f.action) {
+    const ph = phase(ATTACK[f.action.type], f.action.e);
+    return { dx: f.dir * (ph === 'active' ? 3 : ph === 'recovery' ? 1 : 0), dy: 0 };     // lunge
+  }
+  if (f.blocking || f.blockstun > 0) return { dx: -f.dir, dy: 0 };                        // brace
+  if (!f.kin.grounded) return { dx: 0, dy: 0 };
+  if (f.kin.vx !== 0) return { dx: 0, dy: -Math.round(Math.abs(Math.sin(clock * 0.014)) * 2) }; // walk bob
+  return { dx: 0, dy: -Math.round(Math.sin(clock * 0.003) * 0.5 + 0.5) };                 // idle breathe
 }
 
 function fightInit(data) {
@@ -196,6 +211,7 @@ function fightCreate() {
   this._down = { punch: false, kick: false, special: false };
   this._acc = 0;
   this.hitstop = 0;
+  this.animClock = 0;
   this.ai = { blockChance: 0.4, minDelay: 480, maxDelay: 1050, aggression: 0.85 };
   this.aiTimer = 700; this.aiBlock = 0;
   this.pWins = 0; this.oWins = 0; this.round = 1;
@@ -329,7 +345,7 @@ function applyHit(att, def, scene) {
   const a = ATTACK[att.action.type], blocked = def.blocking;
   const dmg = a.dmg * att.stats.dmg;
   if (blocked) { def.hp = Math.max(0, def.hp - Math.max(1, Math.round(dmg * 0.2))); def.blockstun = BLOCKSTUN; def.kin.vx = att.dir * PUSHBACK; }
-  else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = HITSTUN; def.action = null; def.kin.vx = att.dir * KNOCKBACK; }
+  else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = HITSTUN; def.action = null; def.kin.vx = att.dir * KNOCKBACK; def.flash = 90; }
   const ko = def.hp <= 0 && !def.koed;
   juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko);
   if (ko) { def.koed = true; endRound(scene, att.isPlayer); }
@@ -368,7 +384,15 @@ function tick(scene, dtMs) {
       }
     }
   }
-  for (const f of [p, o]) { f.spr.flipX = f.dir < 0; f.spr.setFrame(f.pose); }
+  scene.animClock += dtMs;
+  for (const f of [p, o]) {
+    f.spr.flipX = f.dir < 0;
+    f.spr.setFrame(f.pose);
+    const off = animOffset(f, scene.animClock);
+    f.spr.x = Math.round(f.kin.x) + off.dx;
+    f.spr.y = Math.round(f.kin.y) + off.dy;
+    if (f.flash > 0) { f.flash -= dtMs; f.spr.setTintFill(0xffffff); } else f.spr.clearTint();
+  }
 
   if (scene.phase === 'intro') {
     scene.introT -= dtMs;
