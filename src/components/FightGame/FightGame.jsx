@@ -1,0 +1,31 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+/**
+ * Client-only Phaser island. Phaser and the fight engine are dynamically
+ * imported INSIDE the effect so nothing touches `window` during the static
+ * export/SSG pass. The game is destroyed on unmount to avoid WebGL leaks.
+ */
+export default function FightGame() {
+  const hostRef = useRef(null);
+
+  useEffect(() => {
+    let game = null;
+    let cancelled = false;
+
+    (async () => {
+      const Phaser = (await import('phaser')).default;
+      const { createFightGame } = await import('../../game/fight/createFight');
+      if (cancelled || !hostRef.current) return;
+      game = createFightGame(Phaser, hostRef.current);
+    })();
+
+    return () => {
+      cancelled = true;
+      if (game) game.destroy(true);
+    };
+  }, []);
+
+  return <div ref={hostRef} className="fight-canvas" aria-label="AI Marketing Kombat battle" />;
+}
