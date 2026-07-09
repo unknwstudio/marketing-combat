@@ -75,6 +75,12 @@
   font-size: 24px; /* Figma 33:3913 */
   letter-spacing: -0.72px;
   white-space: nowrap;
+  cursor: pointer;
+}
+
+.hero__badge:hover {
+  background: #fff;
+  color: #000;
 }
 
 .hero__lede {
@@ -136,7 +142,7 @@
 /* --- bottom tag pills --- */
 .hero__tags {
   position: absolute;
-  top: 727px;
+  top: 765px; /* below the logo's underline barcode (was 727 -> ~30px overlap) */
   left: 347px;
   width: 746px;
   display: flex;
@@ -182,123 +188,104 @@
 }
 
 /* ============================================================
-   RESPONSIVE — tablet & phone. All rules live below; the fixed
-   1440x804 desktop stage above (>=1024px) is untouched.
-   The stage collapses into a single fluid centered column.
-   Reflow order (via flex `order`, DOM stays put):
-     1 badge  ->  2 energy meter  ->  3 bg scene
-     ->  4 logo  ->  5 lede  ->  6 tag pills
-   The scoped CRT overlay stays position:absolute inset and is
-   left out of flow, so it still covers the auto-height section.
+   RESPONSIVE — tablet & phone. The fixed 1440x804 desktop stage
+   above (>=1024px) is untouched. Below 1024px the hero keeps the
+   background SCENE as a full-cover backdrop (like desktop) and
+   overlays the UI on top: badge + lede (top-left), energy meter
+   (top-right), the wordmark low-centre, tag pills along the
+   bottom. A scrim darkens the top & bottom for text legibility.
+   The scoped CRT overlay stays absolute inset over everything.
    ============================================================ */
-
-/* ---------- TABLET (<= 1023px) ---------- */
 @media (max-width: 1023px) {
   .hero {
+    position: relative;
     width: 100%;
     height: auto;
-    overflow: visible;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--k-3);
-    padding: var(--k-3) var(--k-3) var(--k-4);
-    box-sizing: border-box;
+    min-height: 88vh;
+    margin: 0;
+    overflow: hidden;
   }
 
-  /* dissolve the intro wrapper so badge + lede become direct
-     flex items and can be ordered independently of each other */
+  /* the scene fills the whole hero, exactly like desktop */
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 42%;
+    z-index: 0;
+    image-rendering: pixelated;
+  }
+
+  /* readability scrim under the top UI and the bottom text */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(6, 1, 15, 0.6) 0%,
+      rgba(6, 1, 15, 0) 22%,
+      rgba(6, 1, 15, 0) 50%,
+      rgba(6, 1, 15, 0.88) 100%
+    );
+  }
+
+  .hero__grid {
+    display: none;
+  }
+
+  /* header: badge top-left + meter top-right, then the lede FULL-WIDTH below
+     both — so the lede never collides with the "will you survive?" line. */
   .hero__intro {
     display: contents;
   }
 
-  /* un-absolute every flowing child */
-  .hero__badge,
-  .hero__lede,
-  .hero__meter-wrap,
-  .hero__bg,
-  .hero__logo,
-  .hero__tags {
-    position: static;
-    top: auto;
-    left: auto;
-    right: auto;
-    bottom: auto;
-  }
-
   .hero__badge {
-    order: 1;
-    max-width: 100%;
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 3;
+    display: inline-block;
+    font-size: 12px;
+    padding: 6px 8px 8px;
   }
 
+  .hero__lede {
+    position: absolute;
+    top: 80px; /* below the badge + meter header row */
+    left: 14px;
+    right: 14px;
+    z-index: 3;
+    max-width: 100%;
+    font-size: 10px;
+    line-height: 1.5;
+    letter-spacing: -0.3px;
+    text-align: left;
+  }
+
+  /* energy meter, top-right */
   .hero__meter-wrap {
-    order: 2;
-    align-items: center;
-    gap: var(--k-1);
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    left: auto;
+    align-items: flex-end;
+    gap: 6px;
+    z-index: 4;
   }
 
-  .hero__bg {
-    order: 3;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    image-rendering: pixelated;
-  }
-
-  .hero__logo {
-    order: 4;
-    display: block;
-    width: auto;
-    max-width: 82%;
-    height: auto;
-    margin: 0 auto;
-    transform: none;
-    image-rendering: pixelated;
-  }
-
-  .hero__lede {
-    order: 5;
-    max-width: 640px;
-    text-align: center;
-    overflow-wrap: anywhere;
-  }
-
-  .hero__tags {
-    order: 6;
-    width: 100%;
-    max-width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--k-2);
-  }
-
-  /* decorative only -> drop on small screens */
-  .hero__grid {
-    display: none;
-  }
-}
-
-/* ---------- PHONE (<= 639px) ---------- */
-@media (max-width: 639px) {
-  .hero {
-    gap: var(--k-2);
-    padding: var(--k-2) var(--k-2) var(--k-3);
-  }
-
-  .hero__badge {
-    font-size: 9px;
-    padding: 6px 6px 8px;
-  }
-
-  .hero__lede {
-    font-size: 11px;
-    line-height: 1.6;
-  }
-
-  /* keep the meter intact but let it shrink to fit narrow phones */
   .hero__meter {
-    width: min(213px, 100%);
-    box-sizing: border-box;
+    width: 150px;
+    height: 34px;
+    padding: 3px 6px 3px 3px;
+  }
+
+  .hero__bar {
+    width: 6px;
   }
 
   .hero__meter-pct,
@@ -306,20 +293,73 @@
     font-size: 11px;
   }
 
+  /* wordmark, low and centred over the fighters */
   .hero__logo {
-    max-width: 88%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;
+    bottom: 92px;
+    width: min(82%, 460px);
+    height: auto;
+    z-index: 3;
+    image-rendering: pixelated;
+  }
+
+  /* tag pills along the very bottom, centred + wrapping */
+  .hero__tags {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 18px;
+    width: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    z-index: 3;
+  }
+
+  .hero__pill {
+    font-size: 10px;
+    letter-spacing: -0.3px;
+  }
+}
+
+/* ---------- PHONE (<= 639px) ---------- */
+@media (max-width: 639px) {
+  .hero {
+    min-height: 82vh;
+  }
+
+  .hero__badge {
+    font-size: 10px;
+  }
+
+  .hero__lede {
+    top: 74px;
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .hero__meter {
+    width: 128px;
+    height: 30px;
+  }
+
+  .hero__meter-pct,
+  .hero__survive {
+    font-size: 10px;
+  }
+
+  .hero__logo {
+    bottom: 84px;
+    width: 86%;
   }
 
   .hero__pill {
     font-size: 9px;
-  }
-
-  /* -0.72px is tuned for 24px; relax it for the small phone sizes */
-  .hero__badge,
-  .hero__lede,
-  .hero__meter-pct,
-  .hero__survive,
-  .hero__pill {
-    letter-spacing: -0.3px;
   }
 }

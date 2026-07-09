@@ -10,8 +10,9 @@ const STATS = [
   { value: 'The title', caption: '#1 AI marketer of 2026' },
 ];
 
-// Static repeated marquee row (no JS scroll yet); enough copies to overflow.
-const TICKER = Array.from({ length: 12 });
+// Marquee row: the track scrolls -50% and loops, so the copies must fill at
+// least twice the visible bar for a seamless loop.
+const TICKER = Array.from({ length: 20 });
 
 export default function Champion() {
   return (
@@ -29,11 +30,13 @@ export default function Champion() {
 
       <div className="champion__topbox">
         <div className="champion__ticker" aria-hidden="true">
-          {TICKER.map((_, i) => (
-            <span key={i} className="champion__tickerItem">
-              CHAMPION GETS <span className="champion__dot">&bull;</span>
-            </span>
-          ))}
+          <div className="champion__track">
+            {TICKER.map((_, i) => (
+              <span key={i} className="champion__tickerItem">
+                CHAMPION GETS <span className="champion__dot">&bull;</span>
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="champion__stats">

@@ -6,10 +6,11 @@
 
 .champion {
   position: relative;
+  z-index: 2; /* stack above fighters so the seam-straddling CTA shows over it */
   width: 1440px;
   height: 924px;
-  background: var(--k-bg);
-  overflow: hidden; /* banner overhangs the panel; clip to the section */
+  background: #000; /* Figma: black behind the panel (no blue --k-bg strip) */
+  overflow: visible; /* let the registration button straddle the bottom seam */
   font-family: var(--k-font);
 }
 
@@ -29,9 +30,9 @@
 .champion__banner {
   position: absolute;
   left: 0;
-  top: 337px;
+  top: 320px; /* keep the artwork centre where it sat (updated Figma export is 1440x594, was ...x559) */
   width: 1440px;
-  height: 559px;
+  height: 594px;
 }
 
 /* --- top box: ticker + stats (live text over the panel) ------------- */
@@ -39,8 +40,7 @@
 .champion__topbox {
   position: absolute;
   top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 31px; /* Figma Frame 12 (33:3979) x=31 — align to the panel, not the section centre */
   width: 1359px;
   display: flex;
   flex-direction: column;
@@ -55,22 +55,42 @@
 }
 
 /* Marquee ticker row */
+/* Clip window: the mauve bar. The inner track scrolls inside it. */
 .champion__ticker {
-  display: flex;
-  align-items: center;
-  gap: 20px;
   /* Figma: ticker frame (35:4135) bleeds past the black box edges (x=-70,
      w=1499 in a 1359 box). Overflow 20px each side to reach the border, then
      the topbox clips it. Mobile overrides width back to 100%. */
   width: calc(100% + 40px);
   padding: 4px 0;
   overflow: hidden;
-  white-space: nowrap;
   background: #af8dad;
+}
+
+/* Animated marquee track: every item has a uniform pitch (24px margin-right),
+   so translateX(-50%) lands on an exact item boundary -> seamless loop. */
+.champion__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  white-space: nowrap;
+  animation: champion-marquee 32s linear infinite;
+  will-change: transform;
+}
+
+@keyframes champion-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .champion__track {
+    animation: none;
+  }
 }
 
 .champion__tickerItem {
   flex: none;
+  margin-right: 24px; /* uniform pitch for the seamless loop */
   /* Figma 35:4131 etc: GT Pressura Mono Regular, 24px, -0.72px, black, lowercase */
   font-family: var(--k-font-mono);
   font-size: 24px;
@@ -79,7 +99,7 @@
 }
 
 .champion__dot {
-  margin-left: 20px;
+  margin-left: 24px;
 }
 
 /* Stats row: four equal cells */
@@ -131,9 +151,10 @@
    the section's overflow:hidden. */
 .champion__cta {
   position: absolute;
-  bottom: 0;
+  bottom: 0; /* Figma 34:4080 (y=889 h=35 in a 924 frame): bottom edge flush on the champion/fighters seam */
   left: 50%;
   transform: translateX(-50%);
+  z-index: 5;
   padding: 8px 8px 10px;
   background: #000;
   border: 1px solid #fff;
