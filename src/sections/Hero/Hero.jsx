@@ -1,4 +1,5 @@
 import './Hero.css'
+import CRTOverlay from '@/effects/crt/CRTOverlay'
 
 /**
  * HERO section — pixel-faithful port of Figma "Frame 29" (node 33:4045).
@@ -10,7 +11,7 @@ export default function Hero() {
     <section className="hero" aria-label="AI Marketing Kombat">
       <img
         className="hero__bg"
-        src={`${import.meta.env.BASE_URL}assets/hero/hero-bg.png`}
+        src={`/assets/hero/hero-bg.png`}
         alt="Two pixel-art ninja fighters facing off on a cliff before a giant sun"
       />
 
@@ -19,7 +20,7 @@ export default function Hero() {
       <div className="hero__grid hero__grid--right" aria-hidden="true" />
 
       {/* glowing wordmark + underline */}
-      <img className="hero__logo" src={`${import.meta.env.BASE_URL}assets/hero/logo.png`} alt="ai-kombat" />
+      <img className="hero__logo" src={`/assets/hero/logo.png`} alt="ai-kombat" />
 
       {/* top-left: registration badge + lede */}
       <div className="hero__intro">
@@ -51,6 +52,9 @@ export default function Hero() {
         <span className="hero__pill">300+ FIGHTERS</span>
         <span className="hero__pill">FINAL · BARCELONA</span>
       </div>
+
+      {/* CRT screen effect scoped to this section only (not global) */}
+      <CRTOverlay scoped intensity={0.16} flicker powerOn={false} />
     </section>
   )
 }

@@ -163,3 +163,137 @@
 .hero__grid--right {
   left: 1120px;
 }
+
+/* ============================================================
+   RESPONSIVE — tablet & phone. All rules live below; the fixed
+   1440x804 desktop stage above (>=1024px) is untouched.
+   The stage collapses into a single fluid centered column.
+   Reflow order (via flex `order`, DOM stays put):
+     1 badge  ->  2 energy meter  ->  3 bg scene
+     ->  4 logo  ->  5 lede  ->  6 tag pills
+   The scoped CRT overlay stays position:absolute inset and is
+   left out of flow, so it still covers the auto-height section.
+   ============================================================ */
+
+/* ---------- TABLET (<= 1023px) ---------- */
+@media (max-width: 1023px) {
+  .hero {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--k-3);
+    padding: var(--k-3) var(--k-3) var(--k-4);
+    box-sizing: border-box;
+  }
+
+  /* dissolve the intro wrapper so badge + lede become direct
+     flex items and can be ordered independently of each other */
+  .hero__intro {
+    display: contents;
+  }
+
+  /* un-absolute every flowing child */
+  .hero__badge,
+  .hero__lede,
+  .hero__meter-wrap,
+  .hero__bg,
+  .hero__logo,
+  .hero__tags {
+    position: static;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+  }
+
+  .hero__badge {
+    order: 1;
+    max-width: 100%;
+  }
+
+  .hero__meter-wrap {
+    order: 2;
+    align-items: center;
+    gap: var(--k-1);
+  }
+
+  .hero__bg {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+  }
+
+  .hero__logo {
+    order: 4;
+    display: block;
+    width: auto;
+    max-width: 82%;
+    height: auto;
+    margin: 0 auto;
+    transform: none;
+    image-rendering: pixelated;
+  }
+
+  .hero__lede {
+    order: 5;
+    max-width: 640px;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .hero__tags {
+    order: 6;
+    width: 100%;
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--k-2);
+  }
+
+  /* decorative only -> drop on small screens */
+  .hero__grid {
+    display: none;
+  }
+}
+
+/* ---------- PHONE (<= 639px) ---------- */
+@media (max-width: 639px) {
+  .hero {
+    gap: var(--k-2);
+    padding: var(--k-2) var(--k-2) var(--k-3);
+  }
+
+  .hero__badge {
+    font-size: 9px;
+    padding: 6px 6px 8px;
+  }
+
+  .hero__lede {
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  /* keep the meter intact but let it shrink to fit narrow phones */
+  .hero__meter {
+    width: min(213px, 100%);
+    box-sizing: border-box;
+  }
+
+  .hero__meter-pct,
+  .hero__survive {
+    font-size: 11px;
+  }
+
+  .hero__logo {
+    max-width: 88%;
+  }
+
+  .hero__pill {
+    font-size: 9px;
+  }
+}

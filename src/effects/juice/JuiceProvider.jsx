@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { JuiceContext } from './useJuice'
 import './juice.css'

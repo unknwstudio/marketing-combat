@@ -9,3 +9,22 @@
   display: flex;
   flex-direction: column;
 }
+
+/* Fluid (tablet/mobile) mode: no scaling, full width; sections reflow via their
+   own media queries. The JS toggles the modifier class; the media-query below is
+   a CSS fallback so the reflowed layout is correct on first paint (no desktop
+   flash before hydration). Keep the breakpoint in sync with ScaleCanvas's prop. */
+.scale-canvas__inner--fluid {
+  width: 100% !important;
+  transform: none !important;
+}
+
+@media (max-width: 1023px) {
+  .scale-canvas {
+    overflow: visible;
+  }
+  .scale-canvas__inner {
+    width: 100% !important;
+    transform: none !important;
+  }
+}

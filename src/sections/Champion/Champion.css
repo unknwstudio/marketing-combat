@@ -138,3 +138,78 @@
   outline: 2px solid var(--k-yellow);
   outline-offset: 2px;
 }
+
+/* ============================================================
+   MOBILE / TABLET reflow (<= 1023px). Desktop (>= 1024px) is
+   untouched. The fixed 1440x924 canvas collapses to a single
+   fluid column; absolute children un-anchor and flow in order
+   ticker -> banner -> stats -> CTA.
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  .champion {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 16px;
+    background: var(--k-bg);
+  }
+
+  /* Fixed decorative seal collage: drop it, keep the dark bg. */
+  .champion__panel {
+    display: none;
+  }
+
+  /* Unwrap the top box so its ticker + stats become flow items of
+     .champion, letting the banner slot between them via order. */
+  .champion__topbox {
+    display: contents;
+  }
+
+  .champion__ticker {
+    order: 1;
+    width: 100%;
+    overflow: hidden; /* clip the overflowing marquee, no page scroll */
+  }
+
+  .champion__banner {
+    order: 2;
+    position: static;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+  }
+
+  /* 2x2 grid on tablet. */
+  .champion__stats {
+    order: 3;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .champion__cell {
+    min-height: 0;
+    height: auto;
+  }
+
+  .champion__cta {
+    order: 4;
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
+}
+
+/* Phone: single-column stats. */
+@media (max-width: 639px) {
+  .champion__stats {
+    grid-template-columns: 1fr;
+  }
+}

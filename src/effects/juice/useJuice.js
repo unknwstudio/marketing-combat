@@ -1,3 +1,5 @@
+'use client'
+
 import { createContext, useContext } from 'react'
 
 // Shared context for the imperative "game feel" actions. It lives in this leaf

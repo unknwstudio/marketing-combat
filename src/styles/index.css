@@ -19,7 +19,7 @@
   --k-shadow: #06010f;
 
   /* --- type --- */
-  --k-font: 'Press Start 2P', 'Courier New', monospace;
+  --k-font: var(--font-ps), 'Press Start 2P', 'Courier New', monospace;
 
   /* --- spacing scale (8px arcade grid) --- */
   --k-1: 8px;
