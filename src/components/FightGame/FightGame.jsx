@@ -16,7 +16,15 @@ export default function FightGame() {
 
     (async () => {
       const Phaser = (await import('phaser')).default;
-      const { createFightGame } = await import('../../game/fight/createFight');
+      const { createFightGame, setGameFont } = await import('../../game/fight/createFight');
+      // next/font emits a hashed family name in --font-ps; resolve it, make sure
+      // it's loaded (canvas text can't reflow after a late font load), and hand
+      // it to the game so all HUD text renders in Press Start 2P.
+      const varFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-ps').trim();
+      const family = varFamily ? `${varFamily}, monospace` : "'Press Start 2P', monospace";
+      const primary = (varFamily || "'Press Start 2P'").split(',')[0].trim();
+      try { await document.fonts.load(`16px ${primary}`); await document.fonts.ready; } catch (e) { /* fallback: monospace */ }
+      setGameFont(family);
       if (cancelled || !hostRef.current) return;
       game = createFightGame(Phaser, hostRef.current);
     })();

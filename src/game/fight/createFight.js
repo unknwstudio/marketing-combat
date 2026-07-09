@@ -7,7 +7,7 @@ export const GAME_W = 480;
 export const GAME_H = 270;
 export const FLOOR_Y = 240;
 
-const CELL_W = 146;
+const CELL_W = 150;
 const CELL_H = 153;
 export const POSE = {
   idle: 0, walk: 1, jump: 2, punch: 3, kick: 4,
@@ -53,8 +53,12 @@ export const STAGES = [
   { key: 'dungeon', name: 'THE DUNGEON' },
 ];
 
+// The pixel font family is resolved on the client (next/font emits a hashed
+// family name, not the literal "Press Start 2P") and injected before boot.
+let FONT_FAMILY = "'Press Start 2P', monospace";
+export function setGameFont(f) { if (f) FONT_FAMILY = f; }
 const txt = (scene, x, y, s, size, color, ax = 0.5, ay = 0.5) =>
-  scene.add.text(x, y, s, { fontFamily: 'monospace', fontSize: `${size}px`, color, stroke: '#000', strokeThickness: 3 })
+  scene.add.text(x, y, s, { fontFamily: FONT_FAMILY, fontSize: `${size}px`, color, stroke: '#000', strokeThickness: 3 })
     .setOrigin(ax, ay).setResolution(3);
 
 const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
