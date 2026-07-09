@@ -171,9 +171,9 @@ function fightCreate() {
   this.ui = this.add.graphics().setDepth(40);
   const pName = ROSTER.find((r) => r.key === this.playerKey).name;
   const oName = ROSTER.find((r) => r.key === this.oppKey).name;
-  txt(this, 12, 30, pName, 8, '#cfeaff', 0, 0);
-  txt(this, GAME_W - 12, 30, oName, 8, '#cfeaff', 1, 0);
-  txt(this, GAME_W / 2, 6, 'J punch   K kick   L special   S block', 8, '#7fb8cf', 0.5, 0);
+  txt(this, 12, 28, pName, 8, '#cfeaff', 0, 0);
+  txt(this, GAME_W - 12, 28, oName, 8, '#cfeaff', 1, 0);
+  txt(this, GAME_W / 2, GAME_H - 4, 'J punch   K kick   L special   S block', 8, '#5f93aa', 0.5, 1);
 
   this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
   this.result = txt(this, GAME_W / 2, 104, '', 20, '#ffd23f').setDepth(60).setVisible(false);
@@ -211,8 +211,9 @@ function integrate(f, dt) {
 
 // keep the fighters' bodies from walking through each other (they'd overlap and
 // look like one vanished). Push apart to a minimum separation.
-const BODY_SEP = 40;
+const BODY_SEP = 56;
 function separate(a, b) {
+  if (a.koed || b.koed) return; // leave the KO tableau as it fell (no standing on the corpse)
   const dx = b.kin.x - a.kin.x, gap = Math.abs(dx);
   if (gap >= BODY_SEP) return;
   const push = (BODY_SEP - gap) / 2, sign = dx >= 0 ? 1 : -1;
@@ -347,7 +348,7 @@ function tick(scene, dtMs) {
 
 function drawUI(scene) {
   const g = scene.ui; g.clear();
-  const bw = 196, bh = 12, y = 15;
+  const bw = 196, bh = 11, y = 12;
   const bar = (x, frac, leftAnchor, wins) => {
     g.fillStyle(0x000000, 0.55); g.fillRect(x - 2, y - 2, bw + 4, bh + 4);
     g.fillStyle(0x360a0a, 1); g.fillRect(x, y, bw, bh);
@@ -355,9 +356,10 @@ function drawUI(scene) {
     g.fillStyle(frac > 0.3 ? 0xffd23f : 0xff3b30, 1);
     g.fillRect(leftAnchor ? x : x + bw - fw, y, fw, bh);
     g.lineStyle(1, 0xffffff, 0.85); g.strokeRect(x, y, bw, bh);
+    // round pips at the INNER end of each bar (toward centre) so they never touch the names
     for (let i = 0; i < ROUNDS_TO_WIN; i++) {
-      const px = leftAnchor ? x + 4 + i * 10 : x + bw - 8 - i * 10;
-      g.fillStyle(i < wins ? 0x8bffa0 : 0x222222, 1); g.fillRect(px, y + bh + 4, 6, 6);
+      const px = leftAnchor ? x + bw - 6 - i * 9 : x + 1 + i * 9;
+      g.fillStyle(i < wins ? 0x8bffa0 : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
     }
   };
   bar(12, scene.p.hp / HP_MAX, true, scene.pWins);
