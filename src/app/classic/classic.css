@@ -1,0 +1,36 @@
+/* ============================================================
+   CLASSIC mode — base scope
+   The classic page swaps the arcade pixel styling for the plain
+   Helvetica system of the Figma design (Frame 53). Everything is
+   scoped under .classic so the AI-mode globals stay untouched.
+   ============================================================ */
+
+.classic {
+  /* Figma "Helvetica: Regular" — system stack, no webfont needed */
+  --c-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --c-yellow: #fff600;
+  --c-orange: #ffb000;
+  --c-blue: #0052da;
+  --c-green: #00da95;
+  --c-ink: #070707;
+
+  min-height: 100%;
+  background: #fff;
+  color: #000;
+  font-family: var(--c-font);
+  line-height: 1.2;
+  /* the global base sets font-smoothing: none for the pixel font — undo it */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* photos on this page are real rasters, not pixel art */
+.classic img {
+  image-rendering: auto;
+}
+
+/* Trim heading line-boxes to cap-height/alphabetic like Figma's text boxes,
+   so absolute coordinates line up. Ignored by browsers without support. */
+.classic .cap-trim {
+  text-box: trim-both cap alphabetic;
+}

@@ -1,6 +1,7 @@
 'use client'
 
 import ScaleCanvas from '@/components/ScaleCanvas/ScaleCanvas'
+import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
 import JuiceProvider from '@/effects/juice/JuiceProvider'
 import HitSparks from '@/effects/particles/HitSparks'
 import PixelCursor from '@/effects/cursor/PixelCursor'
@@ -30,6 +31,7 @@ export default function Page() {
           </PixelCursor>
         </HitSparks>
       </JuiceProvider>
+      <ModeSwitcher active="ai" />
     </div>
   )
 }

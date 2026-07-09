@@ -1,0 +1,213 @@
+/* ============================================================
+   CHAMPION GETS / WHO IT'S FOR — composed block per Figma
+   Frame 54 (node 38:4415): 1440x556, two 670px columns at
+   x=20 and x=750, each y=60, h=436. The outer .cfw is the
+   scroll runway (height set by JS); .cfw__stage is the pinned
+   556px viewport that the JS fake-sticky translates.
+   ============================================================ */
+
+.cfw {
+  position: relative;
+  width: 1440px;
+  /* fallback runway before JS measures the viewport (556 + ~900) */
+  height: 1456px;
+  background: #fff;
+}
+
+.cfw__stage {
+  position: relative;
+  width: 1440px;
+  height: 556px;
+  overflow: hidden; /* clips the who-column sliding in from below */
+  background: #fff;
+  will-change: transform;
+}
+
+.cfw__col {
+  position: absolute;
+  top: 60px;
+  width: 670px;
+  height: 436px;
+}
+
+.cfw__champ {
+  left: 750px;
+}
+
+.cfw__who {
+  left: 20px;
+  /* starts hidden below the stage; JS drives it up into the gap */
+  transform: translateY(556px);
+  will-change: transform;
+}
+
+.cfw__h2 {
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 0.942;
+  text-transform: uppercase;
+  color: #000;
+}
+
+/* --- champion grid: 2 columns, two card rows + full-width strip ------- */
+
+.cfw__grid {
+  position: absolute;
+  top: 126px; /* heading cap-box 46 + 80 gap */
+  left: 0;
+  width: 100%;
+  height: 310px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr auto;
+  gap: 4px;
+}
+
+.cfw__card {
+  background: var(--c-blue);
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.cfw__card-t {
+  font-size: 40px;
+  line-height: 0.942;
+  text-transform: uppercase;
+}
+
+.cfw__card-s {
+  font-size: 16px;
+  line-height: 1.2;
+  max-width: 235px;
+}
+
+.cfw__strip {
+  grid-column: 1 / -1;
+  background: var(--c-green);
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* --- who it's for list ------------------------------------------------ */
+
+.cfw__list {
+  position: absolute;
+  top: 126px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cfw__item {
+  font-size: 64px;
+  line-height: 0.942;
+  color: #000;
+}
+
+.cfw__item--legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--c-blue);
+}
+
+.cfw__arrow {
+  flex: none;
+  margin-left: 17px; /* Figma icon slot is 69 wide, triangle right-aligned */
+}
+
+/* --- reduced motion: show the composed block statically ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cfw {
+    height: auto;
+  }
+  .cfw__who {
+    transform: none;
+  }
+}
+
+/* --- fluid mobile (< 1024px): stacked single column -------------------- */
+
+@media (max-width: 1023px) {
+  .cfw {
+    width: 100%;
+    height: auto;
+  }
+
+  .cfw__stage {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    transform: none !important;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    padding: 48px 16px;
+  }
+
+  .cfw__col {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .cfw__who {
+    transform: none !important;
+  }
+
+  .cfw__h2 {
+    font-size: clamp(40px, 10.5vw, 64px);
+  }
+
+  .cfw__grid {
+    position: static;
+    height: auto;
+    margin-top: 40px;
+    grid-template-rows: auto auto auto;
+  }
+
+  .cfw__card {
+    min-height: 120px;
+    gap: 28px;
+  }
+
+  .cfw__card-t {
+    font-size: clamp(28px, 7vw, 40px);
+  }
+
+  .cfw__strip {
+    white-space: normal;
+  }
+
+  .cfw__list {
+    position: static;
+    margin-top: 40px;
+  }
+
+  .cfw__item {
+    font-size: clamp(32px, 8.5vw, 64px);
+  }
+
+  .cfw__arrow {
+    width: clamp(28px, 7vw, 52px);
+    height: auto;
+    margin-left: 0;
+  }
+}
