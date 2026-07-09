@@ -1,0 +1,33 @@
+/* ============================================================
+   Juice layer — the shake / hitstop target
+   The wrapper's transform is written imperatively from JS
+   (requestAnimationFrame decay loop). CSS here only sets up the
+   element and the freeze-frame class.
+   ============================================================ */
+
+.juice-root {
+  min-height: 100%;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* hitstop freeze-frame: pause every running CSS animation under the app.
+   Overlays (particles, cursor) are portaled to <body>, so they are NOT
+   descendants of .juice-root and keep animating through the freeze. */
+.juice-frozen,
+.juice-frozen * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* shake + hitstop are already JS no-ops here; make sure nothing lingers */
+  .juice-root {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .juice-frozen,
+  .juice-frozen * {
+    animation-play-state: running !important;
+  }
+}

@@ -1,0 +1,52 @@
+.k-btn {
+  display: inline-block;
+  font-family: var(--k-font);
+  font-size: 0.75rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--k-shadow);
+  background: var(--k-red);
+  border: 2px solid var(--k-shadow);
+  padding: var(--k-2) var(--k-3);
+  cursor: pointer;
+  box-shadow: 0 4px 0 0 var(--k-shadow);
+  transform: translateY(0);
+  transition: transform 0.03s steps(1), box-shadow 0.03s steps(1);
+}
+
+.k-btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 0 var(--k-shadow);
+}
+
+.k-btn:focus-visible {
+  outline: 3px solid var(--k-yellow);
+  outline-offset: 3px;
+}
+
+.k-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- variants --- */
+.k-btn--primary {
+  background: var(--k-red);
+  color: var(--k-shadow);
+}
+
+.k-btn--secondary {
+  background: var(--k-yellow);
+  color: var(--k-shadow);
+}
+
+.k-btn--ghost {
+  background: transparent;
+  color: var(--k-cyan);
+  border-color: var(--k-cyan);
+  box-shadow: 0 4px 0 0 var(--k-cyan);
+}
+
+.k-btn--ghost:active:not(:disabled) {
+  box-shadow: 0 0 0 0 var(--k-cyan);
+}

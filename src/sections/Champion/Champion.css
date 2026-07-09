@@ -1,0 +1,140 @@
+/* ============================================================
+   CHAMPION / BANNER section
+   Figma "Frame 33" (node 35:4163) — 1440x924, dark background.
+   Children are placed at absolute section-local coordinates.
+   ============================================================ */
+
+.champion {
+  position: relative;
+  width: 1440px;
+  height: 924px;
+  background: var(--k-bg);
+  overflow: hidden; /* banner overhangs the panel; clip to the section */
+  font-family: var(--k-font);
+}
+
+/* --- raster assets -------------------------------------------------- */
+
+/* Dark metallic seal panel with the circular dragon-seal microtext. */
+.champion__panel {
+  position: absolute;
+  left: 31px;
+  top: 12px;
+  width: 1359px;
+  height: 889px;
+}
+
+/* Flaming "USE AI OR GET FINISHED" banner. The export is already cropped
+   to the frame width, so it sits at the section edges, centered on the panel. */
+.champion__banner {
+  position: absolute;
+  left: 0;
+  top: 337px;
+  width: 1440px;
+  height: 559px;
+}
+
+/* --- top box: ticker + stats (live text over the panel) ------------- */
+
+.champion__topbox {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1359px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: #000;
+  border: 1px solid #7f7f7f;
+  text-transform: lowercase;
+  color: #000;
+}
+
+/* Marquee ticker row */
+.champion__ticker {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 6px 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  background: #af8dad;
+}
+
+.champion__tickerItem {
+  flex: none;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.champion__dot {
+  margin-left: 20px;
+}
+
+/* Stats row: four equal cells */
+.champion__stats {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.champion__cell {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 17px 30px;
+  background: #789a8c;
+  text-align: center;
+}
+
+.champion__value {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.champion__caption {
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: -0.5px;
+  max-width: 235px;
+}
+
+/* --- registration button (bottom, centered) ------------------------- */
+
+.champion__cta {
+  position: absolute;
+  top: 889px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 8px 10px;
+  background: #000;
+  border: 1px solid #fff;
+  color: #fff;
+  font-family: var(--k-font);
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  text-transform: lowercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.champion__cta:hover {
+  background: #fff;
+  color: #000;
+}
+
+.champion__cta:focus-visible {
+  outline: 2px solid var(--k-yellow);
+  outline-offset: 2px;
+}

@@ -1,0 +1,146 @@
+/* ============================================================
+   CRT / arcade-cabinet screen overlay
+   Reference technique: lbebber CodePen CRT, aleclownes "CRT display"
+   - scanline repeating-linear-gradient
+   - subtle flicker keyframe + slow rolling band
+   - radial vignette + faint RGB aperture grille
+   - scaleY collapse -> bloom power-on
+   Colors reuse the global --k-* tokens from styles/index.css.
+   ============================================================ */
+
+.crt {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  overflow: hidden;
+  /* defaults; overridden inline by the component props */
+  --crt-scanline-gap: 3px;
+  --crt-intensity: 0.25;
+}
+
+/* every layer fills the overlay */
+.crt > * {
+  position: absolute;
+  inset: 0;
+}
+
+/* --- scanlines: 1px dark line every gap px --- */
+.crt__scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--k-shadow) 0,
+    var(--k-shadow) 1px,
+    transparent 1px,
+    transparent var(--crt-scanline-gap)
+  );
+  opacity: calc(var(--crt-intensity) * 1.5);
+}
+
+/* --- subtle constant flicker on the scanline layer --- */
+.crt--flicker .crt__scanlines {
+  animation: crt-flicker 0.16s steps(3, end) infinite;
+}
+
+@keyframes crt-flicker {
+  0% {
+    opacity: calc(var(--crt-intensity) * 1.5);
+  }
+  50% {
+    opacity: calc(var(--crt-intensity) * 1.28);
+  }
+  100% {
+    opacity: calc(var(--crt-intensity) * 1.56);
+  }
+}
+
+/* --- faint RGB aperture grille (phosphor triad; primaries, no token) --- */
+.crt__grille {
+  background: repeating-linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0.5) 0,
+    rgba(0, 255, 0, 0.5) 1px,
+    rgba(0, 0, 255, 0.5) 2px,
+    rgba(0, 0, 0, 0) 3px
+  );
+  opacity: calc(var(--crt-intensity) * 0.4);
+}
+
+/* --- slow rolling scan band --- */
+.crt__roll {
+  bottom: auto;
+  height: 28%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--k-ink) 5%, transparent) 50%,
+    transparent 100%
+  );
+  will-change: transform;
+  animation: crt-roll 8s linear infinite;
+}
+
+@keyframes crt-roll {
+  0% {
+    transform: translateY(-120%);
+  }
+  100% {
+    transform: translateY(430%);
+  }
+}
+
+/* --- soft vignette: radial edge darkening --- */
+.crt__vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    var(--k-shadow) 130%
+  );
+  opacity: calc(0.4 + var(--crt-intensity));
+}
+
+/* --- power-on: collapse to a bright line -> bloom open + flash --- */
+.crt__power {
+  background: var(--k-ink);
+  opacity: 0;
+  transform-origin: center center;
+}
+
+.crt--power-on .crt__power {
+  animation: crt-power-on 0.5s ease-out 1;
+}
+
+@keyframes crt-power-on {
+  0% {
+    transform: scaleY(0.004);
+    opacity: 1;
+  }
+  45% {
+    transform: scaleY(0.02);
+    opacity: 1;
+  }
+  60% {
+    transform: scaleY(0.02);
+    opacity: 1;
+    filter: brightness(1.5);
+  }
+  80% {
+    transform: scaleY(1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* --- accessibility: drop all motion, keep static scanlines + vignette --- */
+@media (prefers-reduced-motion: reduce) {
+  .crt--flicker .crt__scanlines {
+    animation: none;
+  }
+  .crt__roll,
+  .crt__power {
+    display: none;
+  }
+}
