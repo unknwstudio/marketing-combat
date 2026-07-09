@@ -151,7 +151,7 @@
    the section's overflow:hidden. */
 .champion__cta {
   position: absolute;
-  bottom: -18px; /* straddle the champion/fighters seam (Figma: button sits on the boundary) */
+  bottom: 0; /* Figma 34:4080 (y=889 h=35 in a 924 frame): bottom edge flush on the champion/fighters seam */
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
