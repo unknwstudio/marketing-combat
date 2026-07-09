@@ -7,7 +7,7 @@ export const GAME_W = 480;
 export const GAME_H = 270;
 export const FLOOR_Y = 240;
 
-const CELL_W = 238;
+const CELL_W = 150;
 const CELL_H = 155;
 export const POSE = {
   idle: 0, walk: 1, jump: 2, punch: 3, kick: 4,
