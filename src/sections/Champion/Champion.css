@@ -8,7 +8,7 @@
   position: relative;
   width: 1440px;
   height: 924px;
-  background: var(--k-bg);
+  background: #000; /* Figma: black behind the panel (no blue --k-bg strip) */
   overflow: hidden; /* banner overhangs the panel; clip to the section */
   font-family: var(--k-font);
 }
@@ -55,22 +55,42 @@
 }
 
 /* Marquee ticker row */
+/* Clip window: the mauve bar. The inner track scrolls inside it. */
 .champion__ticker {
-  display: flex;
-  align-items: center;
-  gap: 20px;
   /* Figma: ticker frame (35:4135) bleeds past the black box edges (x=-70,
      w=1499 in a 1359 box). Overflow 20px each side to reach the border, then
      the topbox clips it. Mobile overrides width back to 100%. */
   width: calc(100% + 40px);
   padding: 4px 0;
   overflow: hidden;
-  white-space: nowrap;
   background: #af8dad;
+}
+
+/* Animated marquee track: every item has a uniform pitch (24px margin-right),
+   so translateX(-50%) lands on an exact item boundary -> seamless loop. */
+.champion__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  white-space: nowrap;
+  animation: champion-marquee 32s linear infinite;
+  will-change: transform;
+}
+
+@keyframes champion-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .champion__track {
+    animation: none;
+  }
 }
 
 .champion__tickerItem {
   flex: none;
+  margin-right: 24px; /* uniform pitch for the seamless loop */
   /* Figma 35:4131 etc: GT Pressura Mono Regular, 24px, -0.72px, black, lowercase */
   font-family: var(--k-font-mono);
   font-size: 24px;
@@ -79,7 +99,7 @@
 }
 
 .champion__dot {
-  margin-left: 20px;
+  margin-left: 24px;
 }
 
 /* Stats row: four equal cells */

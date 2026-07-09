@@ -75,6 +75,12 @@
   font-size: 24px; /* Figma 33:3913 */
   letter-spacing: -0.72px;
   white-space: nowrap;
+  cursor: pointer;
+}
+
+.hero__badge:hover {
+  background: #fff;
+  color: #000;
 }
 
 .hero__lede {
@@ -136,7 +142,7 @@
 /* --- bottom tag pills --- */
 .hero__tags {
   position: absolute;
-  top: 727px;
+  top: 765px; /* below the logo's underline barcode (was 727 -> ~30px overlap) */
   left: 347px;
   width: 746px;
   display: flex;
