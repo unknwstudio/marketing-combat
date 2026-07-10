@@ -15,23 +15,26 @@ export const POSE = {
 };
 
 const STEP = 1000 / 60;
-const WALK_SPEED = 95;
 const GRAVITY = 950;
 const JUMP_V = -330;
 const X_MIN = 34;
 const X_MAX = GAME_W - 34;
 
-const HP_MAX = 100;
-const HITSTUN = 340;
 const BLOCKSTUN = 150;
-const KNOCKBACK = 95;
+const KNOCKBACK = 120;
 const PUSHBACK = 42;
+const BUFFER_MS = 133; // input-buffer window (~8 frames) so a press just before you
+                       // become actionable still fires — kills the "ate my input" feel
 const ROUNDS_TO_WIN = 2; // best-of-3
 
+// Per-move hitstun is deliberately SHORTER than each move's own re-hit interval, so a
+// single mashed move can't true-loop the opponent (the old flat 340ms > the 250ms punch
+// re-hit interval was a touch-of-death infinite). The defender always regains a tick to
+// block/jump; combos come from cancels (later), not from stun outlasting recovery.
 const ATTACK = {
-  punch:   { pose: POSE.punch,   startup: 55,  active: 75,  recovery: 150, dmg: 7,  reach: 60,  hy: [95, 150] },
-  kick:    { pose: POSE.kick,    startup: 85,  active: 95,  recovery: 205, dmg: 11, reach: 80,  hy: [95, 162] },
-  special: { pose: POSE.special, startup: 130, active: 170, recovery: 260, dmg: 17, reach: 104, hy: [100, 168] },
+  punch:   { pose: POSE.punch,   startup: 55,  active: 75,  recovery: 150, dmg: 7,  reach: 60,  hy: [95, 150], hitstun: 200 },
+  kick:    { pose: POSE.kick,    startup: 85,  active: 95,  recovery: 205, dmg: 11, reach: 80,  hy: [95, 162], hitstun: 280 },
+  special: { pose: POSE.special, startup: 130, active: 170, recovery: 260, dmg: 17, reach: 104, hy: [100, 168], hitstun: 360 },
 };
 for (const k in ATTACK) ATTACK[k].total = ATTACK[k].startup + ATTACK[k].active + ATTACK[k].recovery;
 
@@ -180,14 +183,14 @@ function makeFighter(scene, key, x, faceRight, isPlayer) {
     kin: { x, y: FLOOR_Y, vx: 0, vy: 0, grounded: true },
     dir: faceRight ? 1 : -1,
     action: null, hp: st.hp, hpMax: st.hp,
-    hitstun: 0, blockstun: 0, blocking: false, koed: false, pose: POSE.idle, flash: 0,
+    hitstun: 0, blockstun: 0, wakeBlock: 0, blocking: false, koed: false, pose: POSE.idle, flash: 0,
   };
 }
 function resetFighter(f) {
   f.kin = { x: f.startX, y: FLOOR_Y, vx: 0, vy: 0, grounded: true };
   f.dir = f.startFace ? 1 : -1;
   f.action = null; f.hp = f.hpMax;
-  f.hitstun = 0; f.blockstun = 0; f.blocking = false; f.koed = false; f.pose = POSE.idle; f.flash = 0;
+  f.hitstun = 0; f.blockstun = 0; f.wakeBlock = 0; f.blocking = false; f.koed = false; f.pose = POSE.idle; f.flash = 0;
 }
 
 // Procedural life on the single-frame poses using INTEGER-pixel offsets only
@@ -216,12 +219,14 @@ function fightCreate() {
   this.p = makeFighter(this, this.playerKey, 150, true, true);
   this.o = makeFighter(this, this.oppKey, 330, false, false);
 
-  this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,A,D,W,SPACE,J,K,L,S,DOWN,R,ESC');
+  this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,A,D,W,SPACE,J,K,L,S,DOWN,R,ESC,ENTER');
   this._down = { punch: false, kick: false, special: false };
+  this.atkBuf = null;
+  this.isTouch = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : false;
   this._acc = 0;
   this.hitstop = 0;
   this.animClock = 0;
-  this.ai = { blockChance: 0.4, minDelay: 480, maxDelay: 1050, aggression: 0.85 };
+  this.ai = { blockChance: 0.36, minDelay: 500, maxDelay: 1080, aggression: 0.78 };
   this.aiTimer = 700; this.aiBlock = 0;
   this.pWins = 0; this.oWins = 0; this.round = 1;
 
@@ -230,7 +235,9 @@ function fightCreate() {
   const oName = ROSTER.find((r) => r.key === this.oppKey).name;
   txt(this, 12, 28, pName, 8, '#cfeaff', 0, 0);
   txt(this, GAME_W - 12, 28, oName, 8, '#cfeaff', 1, 0);
-  txt(this, GAME_W / 2, GAME_H - 4, 'J punch   K kick   L special   S block', 8, '#5f93aa', 0.5, 1);
+  txt(this, GAME_W / 2, GAME_H - 4,
+    this.isTouch ? 'J K L  attack     DOWN  block     UP  jump' : 'J punch   K kick   L special   S block',
+    8, '#5f93aa', 0.5, 1);
 
   this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
   this.result = txt(this, GAME_W / 2, 104, '', 20, '#ffd23f').setDepth(60).setVisible(false);
@@ -241,6 +248,9 @@ function fightCreate() {
 
 function startRound(scene) {
   resetFighter(scene.p); resetFighter(scene.o);
+  // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
+  // the per-round rubber band adapts away from.
+  if (scene.round === 1) scene.ai = { blockChance: 0.36, minDelay: 500, maxDelay: 1080, aggression: 0.78 };
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0;
   scene.result.setVisible(false);
   scene.phase = 'intro'; scene.introT = 1500; scene.fightSaid = false;
@@ -272,6 +282,7 @@ function integrate(f, dt) {
 const BODY_SEP = 56;
 function separate(a, b) {
   if (a.koed || b.koed) return; // leave the KO tableau as it fell (no standing on the corpse)
+  if (!a.kin.grounded || !b.kin.grounded) return; // airborne fighters pass over each other -> jump is a real corner escape / cross-up
   const dx = b.kin.x - a.kin.x, gap = Math.abs(dx);
   if (gap >= BODY_SEP) return;
   const push = (BODY_SEP - gap) / 2, sign = dx >= 0 ? 1 : -1;
@@ -283,7 +294,7 @@ function separate(a, b) {
 function control(f, intent, dtMs) {
   f.blocking = false;
   if (f.koed) { f.pose = POSE.ko; f.kin.vx = 0; return; }
-  if (f.hitstun > 0) { f.hitstun -= dtMs; f.kin.vx *= 0.82; f.pose = POSE.hit; return; }
+  if (f.hitstun > 0) { f.hitstun -= dtMs; if (f.hitstun <= 0) f.wakeBlock = 200; f.kin.vx *= 0.82; f.pose = POSE.hit; return; }
   if (f.action) {
     f.action.e += dtMs * f.stats.atkSpeed; f.kin.vx = 0; f.pose = ATTACK[f.action.type].pose;
     if (f.action.e >= ATTACK[f.action.type].total) f.action = null;
@@ -297,14 +308,24 @@ function control(f, intent, dtMs) {
   f.pose = !f.kin.grounded ? POSE.jump : (f.kin.vx !== 0 ? POSE.walk : POSE.idle);
 }
 
-function playerIntent(scene) {
+// Edge-detect the attack keys into a short-lived buffer EVERY frame (including during
+// hitstop, when the tick loop is paused) so a press made a few frames early — or right
+// after landing a hit — still fires on the first actionable tick instead of being eaten.
+function sampleAttackBuffer(scene, dtMs) {
   const k = scene.keys;
+  if (!k) return;
   const edge = (n, key) => { const jp = key.isDown && !scene._down[n]; scene._down[n] = key.isDown; return jp; };
   const jP = edge('punch', k.J), jK = edge('kick', k.K), jL = edge('special', k.L);
+  const fresh = jP ? 'punch' : jK ? 'kick' : jL ? 'special' : null;
+  if (fresh) scene.atkBuf = { type: fresh, t: BUFFER_MS };
+  else if (scene.atkBuf) { scene.atkBuf.t -= dtMs; if (scene.atkBuf.t <= 0) scene.atkBuf = null; }
+}
+function playerIntent(scene) {
+  const k = scene.keys;
   return {
     left: k.LEFT.isDown || k.A.isDown, right: k.RIGHT.isDown || k.D.isDown,
     jump: k.UP.isDown || k.W.isDown || k.SPACE.isDown, block: k.S.isDown || k.DOWN.isDown,
-    atk: jP ? 'punch' : jK ? 'kick' : jL ? 'special' : null,
+    atk: scene.atkBuf ? scene.atkBuf.type : null,
   };
 }
 function aiIntent(scene, o, p, dtMs) {
@@ -312,23 +333,39 @@ function aiIntent(scene, o, p, dtMs) {
   if (o.koed || o.hitstun > 0 || o.action) return intent;
   const ai = scene.ai, dist = Math.abs(p.kin.x - o.kin.x);
   const toward = p.kin.x < o.kin.x ? 'left' : 'right', away = toward === 'left' ? 'right' : 'left';
-  if (scene.aiBlock > 0) { scene.aiBlock -= dtMs; intent.block = true; return intent; }
-  if (p.action && !p.action.aiSaw && dist < 100) {
-    p.action.aiSaw = true;
-    if (Math.random() < ai.blockChance) { scene.aiBlock = 260; intent.block = true; return intent; }
+
+  // wake-up guard: briefly defend right after eating a hit so point-blank / corner
+  // loops aren't a free, skill-less win against the CPU.
+  if (o.wakeBlock > 0) {
+    o.wakeBlock -= dtMs;
+    if (p.action && dist < 130 && Math.random() < 0.42) { intent.block = true; return intent; }
   }
+  // reactive block vs a committed player attack (rolled once per attack)
+  if (scene.aiBlock > 0) { scene.aiBlock -= dtMs; intent.block = true; return intent; }
+  if (p.action && !p.action.aiSaw && dist < 130) {
+    p.action.aiSaw = true;
+    if (Math.random() < ai.blockChance) { scene.aiBlock = 240; intent.block = true; return intent; }
+  }
+
+  // Engage from the AI's OWN reach so it is no longer blind past 104px while every
+  // special reaches ~150px — walk-back special zoning used to be a risk-free 100% win.
+  const punchR = 44 + ATTACK.punch.reach * o.stats.reach;      // ~103-113px
+  const specR = 44 + ATTACK.special.reach * o.stats.reach;     // ~146-164px
   scene.aiTimer -= dtMs;
-  if (dist > 104) { intent[toward] = true; return intent; }
-  if (dist < 42) {
-    if (scene.aiTimer <= 0) { scene.aiTimer = ai.minDelay + Math.random() * (ai.maxDelay - ai.minDelay); intent.atk = Math.random() < 0.6 ? 'punch' : 'kick'; return intent; }
-    if (Math.random() < 0.03) intent[away] = true;
+  const ready = scene.aiTimer <= 0;
+  const arm = () => { scene.aiTimer = ai.minDelay + Math.random() * (ai.maxDelay - ai.minDelay); };
+
+  if (dist <= punchR) {                                          // close: punch/kick pressure
+    if (ready && Math.random() < ai.aggression) { arm(); intent.atk = Math.random() < 0.6 ? 'punch' : 'kick'; return intent; }
+    if (dist < 40 && Math.random() < 0.04) intent[away] = true;  // occasional spacing reset
     return intent;
   }
-  if (scene.aiTimer <= 0 && Math.random() < ai.aggression) {
-    scene.aiTimer = ai.minDelay + Math.random() * (ai.maxDelay - ai.minDelay);
-    const r = Math.random(); intent.atk = r < 0.44 ? 'kick' : r < 0.78 ? 'punch' : 'special'; return intent;
+  if (dist <= specR) {                                           // mid: poke special or close in
+    if (ready && Math.random() < 0.55) { arm(); intent.atk = 'special'; return intent; }
+    intent[toward] = true;
+    return intent;
   }
-  if (dist > 82) intent[toward] = true;
+  intent[toward] = true;                                         // far: approach
   return intent;
 }
 
@@ -355,7 +392,7 @@ function applyHit(att, def, scene) {
   const a = ATTACK[att.action.type], blocked = def.blocking;
   const dmg = a.dmg * att.stats.dmg;
   if (blocked) { def.hp = Math.max(0, def.hp - Math.max(1, Math.round(dmg * 0.2))); def.blockstun = BLOCKSTUN; def.kin.vx = att.dir * PUSHBACK; }
-  else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = HITSTUN; def.action = null; def.kin.vx = att.dir * KNOCKBACK; def.flash = 90; }
+  else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = a.hitstun; def.action = null; def.kin.vx = att.dir * KNOCKBACK; def.flash = 90; }
   const ko = def.hp <= 0 && !def.koed;
   juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko);
   if (blocked) snd(scene, 'snd_block', 0.55);
@@ -367,11 +404,17 @@ function endRound(scene, playerWon) {
   scene.phase = 'roundend';
   if (playerWon) scene.pWins++; else scene.oWins++;
   const matchOver = scene.pWins >= ROUNDS_TO_WIN || scene.oWins >= ROUNDS_TO_WIN;
+  // Invisible per-round rubber band (round boundaries only, so it never feels like
+  // mid-fight cheating): a struggling first-timer who drops a round gets a gentler CPU
+  // next round; a player who's steamrolling meets a tougher one. Bounded + reset each match.
+  const ai = scene.ai;
+  if (playerWon) { ai.blockChance = Math.min(0.6, ai.blockChance + 0.08); ai.aggression = Math.min(1.0, ai.aggression + 0.08); ai.minDelay = Math.max(340, ai.minDelay - 60); }
+  else { ai.blockChance = Math.max(0.12, ai.blockChance - 0.12); ai.aggression = Math.max(0.5, ai.aggression - 0.12); ai.minDelay = Math.min(820, ai.minDelay + 110); }
   scene.time.delayedCall(480, () => {
     if (matchOver) {
       scene.phase = 'matchend';
       snd(scene, scene.pWins > scene.oWins ? 'snd_win' : 'snd_lose', 1);
-      scene.result.setText(`${scene.pWins > scene.oWins ? 'YOU WIN' : 'YOU LOSE'}\nR rematch    ESC roster`).setVisible(true);
+      scene.result.setText(`${scene.pWins > scene.oWins ? 'YOU WIN' : 'YOU LOSE'}\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
     } else {
       scene.result.setText('K.O.').setVisible(true);
       scene.time.delayedCall(1100, () => { scene.round++; startRound(scene); });
@@ -386,6 +429,7 @@ function tick(scene, dtMs) {
 
   const live = scene.phase === 'fight';
   control(p, live ? playerIntent(scene) : {}, dtMs);
+  if (p.action && p.action.e === 0) scene.atkBuf = null; // buffered attack was just consumed
   control(o, live ? aiIntent(scene, o, p, dtMs) : {}, dtMs);
   integrate(p, dt); integrate(o, dt);
   separate(p, o);
@@ -396,6 +440,10 @@ function tick(scene, dtMs) {
         if (overlap(hitbox(att), hurtbox(def))) { att.action.hasHit = true; applyHit(att, def, scene); }
       }
     }
+  }
+  // the standing fighter strikes the victory pose once a round/match is decided
+  if (scene.phase === 'roundend' || scene.phase === 'matchend') {
+    for (const f of [p, o]) if (!f.koed) f.pose = POSE.victory;
   }
   scene.animClock += dtMs;
   for (const f of [p, o]) {
@@ -415,7 +463,9 @@ function tick(scene, dtMs) {
     }
     if (scene.introT <= 0) { scene.phase = 'fight'; scene.banner.setVisible(false); }
   }
-  if (scene.phase === 'matchend' && scene.keys.R.isDown) { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
+  // R or ENTER (the mobile OK button dispatches Enter) rematches — without ENTER, touch
+  // players were softlocked on the result screen with no reachable exit.
+  if (scene.phase === 'matchend' && (scene.keys.R.isDown || scene.keys.ENTER.isDown)) { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
   if (scene.phase === 'matchend' && scene.keys.ESC.isDown) scene.scene.start('select');
 }
 
@@ -440,8 +490,10 @@ function drawUI(scene) {
 }
 
 function fightUpdate(time, delta) {
+  sampleAttackBuffer(this, delta); // keep the input buffer alive every frame, even in hitstop
   if (this.hitstop > 0) { this.hitstop -= delta; drawUI(this); return; }
   this._acc += Math.min(delta, 100);
+  if (this._acc > STEP * 5) this._acc = STEP * 5; // drop unpayable backlog so we never fast-forward after a stall
   let n = 0;
   while (this._acc >= STEP && n < 5) { tick(this, STEP); this._acc -= STEP; n++; }
   drawUI(this);
@@ -456,7 +508,10 @@ export function createFightGame(Phaser, parent) {
     // pixels (crisp grid, no shimmer). FIT's fractional scale is what made the
     // sprites/text look "mushy". Letterboxes on non-multiple viewports; on 1080p
     // it lands on an exact 4x fill.
-    scale: { mode: Phaser.Scale.NONE, autoCenter: Phaser.Scale.CENTER_BOTH, width: GAME_W, height: GAME_H },
+    // NO_CENTER: the .fight-canvas flex container centers the canvas. Phaser's own
+    // autoCenter would ALSO set margins, and the two stacked -> the canvas drifted
+    // off-screen (left HP bar clipped) on portrait phones.
+    scale: { mode: Phaser.Scale.NONE, autoCenter: Phaser.Scale.NO_CENTER, width: GAME_W, height: GAME_H },
     scene: [
       { key: 'boot', preload: bootPreload, create: bootCreate },
       { key: 'select', create: selectCreate },
@@ -466,7 +521,11 @@ export function createFightGame(Phaser, parent) {
   const fit = () => {
     const w = (parent && parent.clientWidth) || window.innerWidth;
     const h = (parent && parent.clientHeight) || window.innerHeight;
-    game.scale.setZoom(Math.max(1, Math.floor(Math.min(w / GAME_W, h / GAME_H))));
+    const z = Math.min(w / GAME_W, h / GAME_H);
+    // whole-number zoom when the viewport can afford it (crisp integer pixel grid);
+    // a fractional zoom below 1 so narrow / portrait phones still fit the whole 480px
+    // stage instead of clipping the HUD off the sides.
+    game.scale.setZoom(z >= 1 ? Math.floor(z) : Math.max(0.5, z));
   };
   game.events.once('ready', fit);
   window.addEventListener('resize', fit);
