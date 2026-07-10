@@ -27,6 +27,7 @@ const PUSHBACK = 42;
 const BUFFER_MS = 133; // input-buffer window (~8 frames) so a press just before you
                        // become actionable still fires — kills the "ate my input" feel
 const ROUNDS_TO_WIN = 2; // best-of-3
+const ROUND_TIME = 60; // seconds/round; on time-over the higher-HP fighter wins (anti-stall, MK-style)
 
 // Per-move hitstun is deliberately SHORTER than each move's own re-hit interval, so a
 // single mashed move can't true-loop the opponent (the old flat 340ms > the 250ms punch
@@ -358,6 +359,7 @@ function fightCreate() {
   this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
   this.result = txt(this, GAME_W / 2, 104, '', 20, '#ffd23f').setDepth(60).setVisible(false);
   this.comboText = txt(this, GAME_W / 2, 62, '', 12, '#ffd23f').setDepth(58).setVisible(false);
+  this.timerText = txt(this, GAME_W / 2, 19, '', 13, '#ffd23f').setDepth(41).setVisible(false); // round clock, centered between the HP bars
 
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') window.__fight = this; // dev debug handle
 
@@ -403,6 +405,8 @@ function startRound(scene) {
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
   scene.playerDmgMult = 1; scene.shadowbanActive = 0; scene.shadowbanT = scene.boss ? 9000 : 0;
   scene.hideLoserBar = null;
+  scene.roundClock = ROUND_TIME * 1000;
+  scene.suddenDeath = scene.mode === 'sudden'; // reset the tie-break flag to the mode default each round
   scene.combo = { owner: null, n: 0, t: 0 };
   if (scene.comboText) scene.comboText.setVisible(false);
   if (scene.darken) { scene.darken.destroy(); scene.darken = null; }
@@ -806,6 +810,30 @@ function matchendAdvance(scene) {
   else { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
 }
 
+// Time-over (round clock hit 0): the higher-HP fighter wins the round like a KO; a dead heat drops
+// into sudden death (first clean hit decides). Routes through the SAME finisher/endRound/finishMatch
+// paths a real KO uses, so match flow, the finisher and 2P all stay correct.
+function resolveTimeOver(scene) {
+  const p = scene.p, o = scene.o;
+  if (p.hp === o.hp) {
+    scene.suddenDeath = true;
+    scene.banner.setText('SUDDEN DEATH').setColor('#ff5000').setVisible(true);
+    scene.time.delayedCall(1400, () => { if (scene.phase === 'fight') scene.banner.setVisible(false); });
+    return;
+  }
+  const pWon = p.hp > o.hp, loser = pWon ? o : p;
+  loser.koed = true; loser.dazed = false; loser.action = null; loser.pose = POSE.ko;
+  scene._frozenDef = loser; scene.slowmoT = 500;
+  juiceHit(scene, loser.kin.x, loser.kin.y - 92, false, true, 'punch', loser.stats.color);
+  snd(scene, 'snd_kothud', 0.7);
+  scene.banner.setText('TIME OVER').setColor('#ffd23f').setVisible(true);
+  scene.time.delayedCall(600, () => scene.banner.setVisible(false));
+  scene.finLoser = loser; // finishMatch reads this
+  const willWinMatch = ((pWon ? scene.pWins : scene.oWins) + 1) >= scene.roundsToWin;
+  if (willWinMatch && pWon && !scene.versus) finishMatch(scene, true); // solo player match-win -> PROMOTED (no finisher on a clock-out)
+  else endRound(scene, pWon);
+}
+
 function tick(scene, dtMs) {
   if (scene.phase === 'fatality') return; // the fatality card's tweens own every visual
   const dt = dtMs / 1000, p = scene.p, o = scene.o;
@@ -850,6 +878,16 @@ function tick(scene, dtMs) {
     const tr = funnelTier(scene.combo.n);
     scene.comboText.setText(`${tr.label}  x${scene.combo.n}`).setColor(tr.color).setVisible(true);
   } else if (scene.comboText.visible) scene.comboText.setVisible(false);
+  // round clock: ticks only in a live fight (naturally frozen during hitstop/pause since tick doesn't
+  // run then), skipped in sudden death; on expiry the higher-HP fighter takes the round.
+  if (scene.phase === 'fight' && !scene.suddenDeath) {
+    scene.roundClock -= dtMs;
+    if (scene.roundClock <= 0) { scene.roundClock = 0; resolveTimeOver(scene); }
+  }
+  if (scene.phase === 'fight' && !scene.suddenDeath) {
+    const secs = Math.max(0, Math.ceil(scene.roundClock / 1000));
+    scene.timerText.setText(String(secs)).setColor(secs <= 10 ? '#ff3b30' : '#ffd23f').setVisible(true);
+  } else if (scene.timerText.visible) scene.timerText.setVisible(false);
   // the standing fighter strikes the victory pose once a round/match is decided
   if (scene.phase === 'roundend' || scene.phase === 'matchend') {
     for (const f of [p, o]) if (!f.koed) f.pose = POSE.victory;
