@@ -303,7 +303,7 @@ function fightCreate() {
   txt(this, GAME_W / 2, GAME_H - 4,
     this.versus ? 'P1  WASD + FGH          P2  ARROWS + JKL'
       : this.isTouch ? 'J K L  attack     DOWN  block     UP  jump'
-      : 'J punch   K kick   L special   S block',
+      : 'WASD move   J punch   K kick   L special   S block',
     8, '#5f93aa', 0.5, 1);
 
   this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
