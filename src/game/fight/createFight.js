@@ -64,7 +64,7 @@ const txt = (scene, x, y, s, size, color, ax = 0.5, ay = 0.5) =>
   scene.add.text(x, y, s, { fontFamily: FONT_FAMILY, fontSize: `${size}px`, color, stroke: '#000', strokeThickness: 3 })
     .setOrigin(ax, ay).setResolution(3);
 
-const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'flawless', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
+const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'flawless', 'closethedeal', 'budgetcut', 'unsubscribed', 'gdprd', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
 const snd = (scene, key, vol = 1) => { try { if (scene.cache.audio.exists(key)) scene.sound.play(key, { volume: vol }); } catch (e) { /* audio not unlocked yet */ } };
 
 /* =========================================================================
@@ -183,20 +183,22 @@ function makeFighter(scene, key, x, faceRight, isPlayer) {
     kin: { x, y: FLOOR_Y, vx: 0, vy: 0, grounded: true },
     dir: faceRight ? 1 : -1,
     action: null, hp: st.hp, hpMax: st.hp, ghostHp: st.hp, ghostDelay: 0, tookDamage: false,
-    hitstun: 0, blockstun: 0, wakeBlock: 0, blocking: false, koed: false, pose: POSE.idle, flash: 0,
+    hitstun: 0, blockstun: 0, wakeBlock: 0, blocking: false, koed: false, dazed: false, pose: POSE.idle, flash: 0,
   };
 }
 function resetFighter(f) {
   f.kin = { x: f.startX, y: FLOOR_Y, vx: 0, vy: 0, grounded: true };
   f.dir = f.startFace ? 1 : -1;
   f.action = null; f.hp = f.hpMax; f.ghostHp = f.hpMax; f.ghostDelay = 0; f.tookDamage = false;
-  f.hitstun = 0; f.blockstun = 0; f.wakeBlock = 0; f.blocking = false; f.koed = false; f.pose = POSE.idle; f.flash = 0;
+  f.hitstun = 0; f.blockstun = 0; f.wakeBlock = 0; f.blocking = false; f.koed = false; f.dazed = false; f.pose = POSE.idle; f.flash = 0;
 }
 
 // Procedural life on the single-frame poses using INTEGER-pixel offsets only
 // (never scale/rotate pixel sprites -> that reintroduces the sub-pixel mush).
 function animOffset(f, clock) {
   if (f.koed) return { dx: 0, dy: 0 };
+  if (f.dazed) return { dx: Math.round(Math.sin(clock * 0.006) * 2), dy: 0 };            // finish-him sway
+
   if (f.hitstun > 0) return { dx: Math.round(Math.sin(clock * 0.05) * 2), dy: 0 };       // shake
   if (f.action) {
     const ph = phase(ATTACK[f.action.type], f.action.e);
@@ -254,6 +256,9 @@ function startRound(scene) {
   // the per-round rubber band adapts away from.
   if (scene.round === 1) scene.aiProfile = aiProfileFor(scene.oppKey); // fresh match -> baseline archetype behaviour
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
+  scene.hideLoserBar = null;
+  if (scene.darken) { scene.darken.destroy(); scene.darken = null; }
+  if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
   const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2); // undo any KO punch-in
   scene.result.setVisible(false);
   scene.phase = 'intro'; scene.introT = 1500; scene.fightSaid = false;
@@ -297,6 +302,7 @@ function separate(a, b) {
 function control(f, intent, dtMs) {
   f.blocking = false;
   if (f.koed) { f.pose = POSE.ko; f.kin.vx *= 0.90; return; } // decay (not zero) so the KO launch arc plays out
+  if (f.dazed) { f.pose = POSE.hit; f.kin.vx = 0; return; }    // finish-him: standing but defenceless
   if (f.hitstun > 0) { f.hitstun -= dtMs; if (f.hitstun <= 0) f.wakeBlock = 200; f.kin.vx *= 0.82; f.pose = POSE.hit; return; }
   if (f.action) {
     // telegraphed wind-up (readable big move): hold the pose without advancing the
@@ -443,6 +449,15 @@ function applyHit(att, def, scene) {
   if (blocked) snd(scene, 'snd_block', 0.55);
   else if (!ko) snd(scene, att.action.type === 'special' ? 'snd_special' : att.action.type === 'kick' ? 'snd_kick' : 'snd_hit', 0.6);
   if (ko) {
+    // Match-deciding PLAYER blow -> don't kill; leave the loser dazed and open the
+    // "CLOSE THE DEAL!" finisher window (MK's FINISH HIM). Only the player gets it.
+    const willWinMatch = ((att.isPlayer ? scene.pWins : scene.oWins) + 1) >= ROUNDS_TO_WIN;
+    if (willWinMatch && att.isPlayer && scene.phase === 'fight') {
+      def.hp = 1;                        // survive on a sliver
+      snd(scene, 'snd_kothud', 0.7);
+      startFinisher(scene, att, def);
+      return;
+    }
     def.koed = true;
     // launch the loser instead of freezing them dead — gravity draws the arc, control()'s
     // koed branch now decays vx (no longer zeroes it) so the body flies back and flops.
@@ -455,6 +470,83 @@ function applyHit(att, def, scene) {
     snd(scene, 'snd_kothud', 0.7); // the announcer call is scheduled in endRound (it knows round-vs-match + flawless)
     endRound(scene, att.isPlayer);
   }
+}
+
+/* =========================================================================
+   FINISHER — "CLOSE THE DEAL!" window + marketing FATALITY cards.
+   ========================================================================= */
+function startFinisher(scene, winner, loser) {
+  scene.phase = 'finisher';
+  scene.finWinner = winner; scene.finLoser = loser; scene.finisherT = 4200;
+  winner.action = null; loser.action = null; loser.hitstun = 0; loser.dazed = true;
+  scene.atkBuf = null; // ignore the finishing press; require a fresh one to finish
+  scene.darken = scene.add.rectangle(0, 0, GAME_W, GAME_H, 0x000000, 0.55).setOrigin(0, 0).setDepth(35);
+  scene.banner.setText('CLOSE THE DEAL!').setColor('#ff5000').setVisible(true);
+  scene.finPrompt = txt(scene, GAME_W / 2, 134, scene.isTouch ? 'tap  J  K  L' : 'press  J  K  L', 8, '#ffd23f').setDepth(60);
+  scene.time.delayedCall(140, () => snd(scene, 'snd_closethedeal', 1));
+}
+function finisherTimeout(scene) {
+  const loser = scene.finLoser, winner = scene.finWinner;
+  loser.dazed = false; loser.koed = true;
+  loser.kin.vx = winner.dir * 200; loser.kin.vy = -180; loser.kin.grounded = false;
+  finishMatch(scene, winner.isPlayer);
+}
+function triggerFatality(scene) {
+  scene.phase = 'fatality';
+  const loser = scene.finLoser;
+  if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
+  scene.hitstop = 220;
+  scene.cameras.main.flash(160, 255, 40, 20); scene.cameras.main.shake(220, 0.011);
+  const cards = [fatalityBudgetCut, fatalityUnsubscribed, fatalityGdprd];
+  cards[Math.floor(Math.random() * cards.length)](scene, loser, () => finishMatch(scene, scene.finWinner.isPlayer));
+}
+// each card owns its visuals via tweens (tick early-returns during 'fatality') and calls done() when finished
+function fatalityBudgetCut(scene, loser, done) {
+  scene.banner.setText('BUDGET... CUT.').setColor('#ff3020');
+  scene.time.delayedCall(200, () => snd(scene, 'snd_budgetcut', 1));
+  const bw = 196, bx = loser.isPlayer ? 12 : GAME_W - 12 - bw;
+  scene.hideLoserBar = loser.isPlayer ? 'p' : 'o';            // stop drawUI drawing the real bar
+  const barRect = scene.add.rectangle(bx, 12, bw, 11, 0xffd23f).setOrigin(0, 0).setDepth(50);
+  loser.spr.setFrame(POSE.hit);
+  scene.tweens.add({
+    targets: barRect, y: FLOOR_Y - 10, duration: 720, ease: 'Bounce.easeOut',
+    onComplete: () => { spawnSpark(scene, bx + bw / 2, FLOOR_Y - 8, 0xffd23f, true); barRect.destroy(); },
+  });
+  scene.time.delayedCall(1700, done);
+}
+function fatalityUnsubscribed(scene, loser, done) {
+  scene.banner.setText('UNSUBSCRIBED!').setColor('#ff3020');
+  scene.time.delayedCall(200, () => snd(scene, 'snd_unsubscribed', 1));
+  const box = txt(scene, Math.round(loser.kin.x), Math.round(loser.kin.y - 152), '[x] unsubscribe from all', 6, '#cfeaff').setDepth(60);
+  scene.tweens.add({ targets: box, y: box.y - 16, alpha: 0, duration: 1400, delay: 300, onComplete: () => box.destroy() });
+  scene.tweens.add({ targets: loser.spr, alpha: 0, duration: 1100, delay: 250 });
+  scene.time.delayedCall(1700, done);
+}
+function fatalityGdprd(scene, loser, done) {
+  scene.banner.setText("G.D.P.R.'D!").setColor('#ff3020');
+  scene.time.delayedCall(200, () => snd(scene, 'snd_gdprd', 1));
+  const cx = Math.round(loser.kin.x), labels = ['We value your privacy', 'Manage cookies', 'Necessary only', 'Analytics? sure', 'ACCEPT ALL'];
+  for (let i = 0; i < 5; i++) {
+    scene.time.delayedCall(150 * i, () => {
+      scene.add.rectangle(cx + (i % 2 ? 5 : -5), Math.round(loser.kin.y - 34 - i * 20), 96, 20, 0xdedede).setDepth(56);
+      txt(scene, cx + (i % 2 ? 5 : -5), Math.round(loser.kin.y - 34 - i * 20), labels[i], 5, '#333').setDepth(57);
+      snd(scene, 'snd_confirm', 0.3);
+    });
+  }
+  scene.time.delayedCall(1750, done);
+}
+function finishMatch(scene, playerWon) {
+  if (playerWon) scene.pWins++; else scene.oWins++;
+  scene.finLoser.koed = true; scene.finLoser.dazed = false;
+  scene.phase = 'matchend';
+  if (scene.darken) { scene.darken.destroy(); scene.darken = null; }
+  if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
+  const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2);
+  scene.time.delayedCall(700, () => {
+    scene.banner.setVisible(false);
+    snd(scene, playerWon ? 'snd_win' : 'snd_lose', 1);
+    scene.result.setText(`${playerWon ? 'PROMOTED!' : 'PIVOT TO CONSULTING'}\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
+  });
 }
 
 function endRound(scene, playerWon) {
@@ -495,6 +587,7 @@ function endRound(scene, playerWon) {
 }
 
 function tick(scene, dtMs) {
+  if (scene.phase === 'fatality') return; // the fatality card's tweens own every visual
   const dt = dtMs / 1000, p = scene.p, o = scene.o;
   p.dir = o.kin.x >= p.kin.x ? 1 : -1;
   o.dir = p.kin.x >= o.kin.x ? 1 : -1;
@@ -505,6 +598,13 @@ function tick(scene, dtMs) {
   control(o, live ? aiIntent(scene, o, p, dtMs) : {}, dtMs);
   integrate(p, dt); integrate(o, dt);
   separate(p, o);
+
+  // "CLOSE THE DEAL!" window: a fresh J/K/L press finishes; timeout -> plain win
+  if (scene.phase === 'finisher') {
+    scene.finisherT -= dtMs;
+    if (scene.atkBuf) { scene.atkBuf = null; triggerFatality(scene); return; }
+    if (scene.finisherT <= 0) { finisherTimeout(scene); return; }
+  }
 
   if (live) {
     for (const [att, def] of [[p, o], [o, p]]) {
@@ -568,8 +668,8 @@ function drawUI(scene) {
       g.fillStyle(i < wins ? 0x8bffa0 : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
     }
   };
-  bar(scene.p, 12, true, scene.pWins);
-  bar(scene.o, GAME_W - 12 - bw, false, scene.oWins);
+  if (scene.hideLoserBar !== 'p') bar(scene.p, 12, true, scene.pWins);            // hidden while a BUDGET CUT bar is falling
+  if (scene.hideLoserBar !== 'o') bar(scene.o, GAME_W - 12 - bw, false, scene.oWins);
 }
 
 function fightUpdate(time, delta) {
