@@ -11,6 +11,15 @@ import './GameChrome.css';
 //   game  -> chrome :  mk:scene  (which scene is live: boot | select | fight)
 const emit = (name, detail) => window.dispatchEvent(new CustomEvent(name, detail ? { detail } : undefined));
 
+// Result-screen button sets, keyed by the game's matchAction. The primary button
+// fires mk:confirm (the game does the right thing: rematch / next rung / roster).
+const RESULT_ACTIONS = {
+  rematch: { primary: 'REMATCH', changeFighter: true },
+  advance: { primary: 'NEXT CHALLENGER', changeFighter: true },
+  victory: { primary: 'BACK TO ROSTER', changeFighter: false },
+  gameover: { primary: 'BACK TO ROSTER', changeFighter: false },
+};
+
 export default function GameChrome() {
   const [scene, setScene] = useState('boot');     // boot | select | fight
   const [started, setStarted] = useState(false);  // dismissed the title / press-start?
@@ -18,12 +27,16 @@ export default function GameChrome() {
   const [howto, setHowto] = useState(false);
   const [confirmExit, setConfirmExit] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [result, setResult] = useState(null);   // matchend action: rematch | advance | victory | gameover
 
-  // game -> chrome: track the live scene so the pause button only shows in a fight
+  // game -> chrome: track the live scene (pause shows only in a fight) and the result
+  // screen (shows the matched action bar). A new scene always clears any stale result.
   useEffect(() => {
-    const onScene = (e) => setScene((e.detail && e.detail.key) || 'boot');
+    const onScene = (e) => { setScene((e.detail && e.detail.key) || 'boot'); setResult(null); };
+    const onResult = (e) => setResult(e.detail && e.detail.show ? e.detail.action : null);
     window.addEventListener('mk:scene', onScene);
-    return () => window.removeEventListener('mk:scene', onScene);
+    window.addEventListener('mk:result', onResult);
+    return () => { window.removeEventListener('mk:scene', onScene); window.removeEventListener('mk:result', onResult); };
   }, []);
 
   // restore the saved mute preference and push it to the game once it exists
@@ -44,13 +57,16 @@ export default function GameChrome() {
   const overlayOpen = !started || paused || howto || confirmExit;
   useEffect(() => { emit('mk:overlay', { open: overlayOpen }); }, [overlayOpen, scene]);
 
+  // the result bar's buttons replace the D-pad's role at matchend, so hide the pad
+  useEffect(() => { document.body.classList.toggle('mk-in-result', !!result); return () => document.body.classList.remove('mk-in-result'); }, [result]);
+
   const doStart = () => setStarted(true);
   const openPause = () => { setPaused(true); emit('mk:pause'); };
   const resume = () => { setPaused(false); emit('mk:resume'); };
   const restart = () => { setPaused(false); emit('mk:restart'); };
   const toMenu = () => { setPaused(false); emit('mk:menu'); };
   const exitToSite = () => { window.location.href = '/'; };
-  const requestExit = () => { if (scene === 'fight') setConfirmExit(true); else exitToSite(); };
+  const requestExit = () => { if (result || scene !== 'fight') exitToSite(); else setConfirmExit(true); };  // match over or in a menu -> no confirm needed
   const toggleMute = () => setMuted((m) => {
     const nm = !m; emit('mk:mute', { muted: nm });
     try { localStorage.setItem('mk_muted', nm ? '1' : '0'); } catch (e) { /* no storage */ }
@@ -83,7 +99,7 @@ export default function GameChrome() {
           <button className="gc-corner gc-exit" onClick={requestExit} aria-label="Exit to site" title="Exit to site">✕</button>
           <div className="gc-topright">
             <button className="gc-corner" onClick={() => setHowto(true)} aria-label="How to play" title="How to play">?</button>
-            {scene === 'fight' && !paused && (
+            {scene === 'fight' && !paused && !result && (
               <button className="gc-corner" onClick={openPause} aria-label="Pause" title="Pause">❚❚</button>
             )}
           </div>
@@ -141,6 +157,19 @@ export default function GameChrome() {
           <p className="gc-lead">You'll go back to the site. Match progress is lost.</p>
           <button className="gc-item gc-danger" onClick={exitToSite}>LEAVE</button>
           <button className="gc-item" onClick={() => setConfirmExit(false)}>STAY IN THE FIGHT</button>
+        </div>
+      )}
+
+      {/* RESULT ACTION BAR — real buttons under the Phaser result text (touch + desktop) */}
+      {result && (
+        <div className="gc-resultbar">
+          <button className="gc-item gc-result-primary" onClick={() => { setResult(null); emit('mk:confirm'); }}>
+            {(RESULT_ACTIONS[result] || RESULT_ACTIONS.rematch).primary}
+          </button>
+          {(RESULT_ACTIONS[result] || RESULT_ACTIONS.rematch).changeFighter && (
+            <button className="gc-item" onClick={() => { setResult(null); emit('mk:menu'); }}>CHANGE FIGHTER</button>
+          )}
+          <button className="gc-item gc-danger" onClick={exitToSite}>EXIT</button>
         </div>
       )}
     </div>

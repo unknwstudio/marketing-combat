@@ -64,3 +64,7 @@
 @media (pointer: coarse) {
   .mc-root { display: block; }
 }
+
+/* at matchend the GameChrome result bar (Rematch / Change Fighter / Exit) takes over,
+   so the movement/attack pad is useless — hide it to keep the screen clean. */
+body.mk-in-result .mc-root { display: none !important; }

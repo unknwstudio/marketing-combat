@@ -111,6 +111,9 @@ const snd = (scene, key, vol = 1) => { try { if (scene.cache.audio.exists(key)) 
 // Tell the React chrome layer (GameChrome) which scene is live, so it shows the
 // right escape hatches: ✕ exit is always available; the ⏸ pause menu only in a fight.
 const emitScene = (key) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:scene', { detail: { key } })); } catch (e) { /* no DOM */ } } };
+// Result screen -> GameChrome: it renders the matched action bar (Rematch / Next /
+// Roster + Change Fighter + Exit). Pass null to clear it when the match screen leaves.
+const emitResult = (action) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:result', { detail: action ? { show: true, action } : { show: false } })); } catch (e) { /* no DOM */ } } };
 
 /* =========================================================================
    BOOT — load every fighter atlas + every stage once, then go to Select.
@@ -339,13 +342,14 @@ function fightCreate() {
   // and desktop share one set. Pause is a bare early-return in fightUpdate; the delta
   // clamps there already stop any resume fast-forward.
   const chrome = {
-    pause: () => { this.paused = true; },
-    resume: () => { this.paused = false; this._acc = 0; },
-    restart: () => { this.paused = false; this._acc = 0; this.pWins = this.oWins = 0; this.round = 1; startRound(this); },
-    menu: () => { this.paused = false; this.scene.start('select'); },
+    'mk:pause': () => { this.paused = true; },
+    'mk:resume': () => { this.paused = false; this._acc = 0; },
+    'mk:restart': () => { this.paused = false; this._acc = 0; this.pWins = this.oWins = 0; this.round = 1; startRound(this); },
+    'mk:menu': () => { this.paused = false; emitResult(null); this.scene.start('select'); },
+    'mk:confirm': () => matchendAdvance(this),   // result-screen primary button (Rematch / Next / Roster)
   };
-  for (const [ev, fn] of Object.entries({ 'mk:pause': chrome.pause, 'mk:resume': chrome.resume, 'mk:restart': chrome.restart, 'mk:menu': chrome.menu })) window.addEventListener(ev, fn);
-  this.events.once('shutdown', () => { for (const [ev, fn] of Object.entries({ 'mk:pause': chrome.pause, 'mk:resume': chrome.resume, 'mk:restart': chrome.restart, 'mk:menu': chrome.menu })) window.removeEventListener(ev, fn); });
+  for (const ev in chrome) window.addEventListener(ev, chrome[ev]);
+  this.events.once('shutdown', () => { for (const ev in chrome) window.removeEventListener(ev, chrome[ev]); });
   emitScene('fight');
 
   startRound(this);
@@ -365,6 +369,7 @@ function startRound(scene) {
   if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
   const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2); // undo any KO punch-in
   scene.result.setVisible(false);
+  emitResult(null);
   scene.phase = 'intro'; scene.introT = 1500; scene.fightSaid = false;
   scene.banner.setText(`ROUND ${scene.round}`).setVisible(true);
   snd(scene, `snd_round${Math.min(scene.round, 3)}`, 0.9);
@@ -683,11 +688,11 @@ function finishMatch(scene, playerWon) {
   scene.time.delayedCall(700, () => {
     scene.banner.setVisible(false);
     snd(scene, playerWon ? 'snd_win' : 'snd_lose', 1);
-    const cont = scene.isTouch ? 'OK' : 'ENTER';
-    const text = scene.matchAction === 'victory' ? `YOU BEAT THE ALGORITHM\n${cont}  roster`
-      : scene.matchAction === 'advance' ? `RUNG ${scene.rung + 1}/5 CLEARED\n${cont}  next challenger`
-      : `PROMOTED!\n${scene.isTouch ? 'OK  rematch' : 'R / ENTER  rematch'}`;
+    const text = scene.matchAction === 'victory' ? 'YOU BEAT THE ALGORITHM'
+      : scene.matchAction === 'advance' ? `RUNG ${scene.rung + 1}/5 CLEARED`
+      : 'PROMOTED!';                          // the GameChrome buttons are the CTA now
     scene.result.setText(text).setVisible(true);
+    emitResult(scene.matchAction);
   });
 }
 
@@ -724,16 +729,27 @@ function endRound(scene, playerWon) {
       scene.phase = 'matchend';
       const gaunt = scene.mode === 'gauntlet';
       scene.matchAction = gaunt ? 'gameover' : 'rematch';
-      const cont2 = scene.isTouch ? 'OK  rematch' : 'R / ENTER  rematch';
-      const text = scene.versus ? `${playerWon ? 'P1' : 'P2'}  WINS\n${cont2}`   // 2P: P1/P2 win (finisher is off)
-        : gaunt ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}\n${scene.isTouch ? 'OK' : 'ENTER'}  roster`
-        : `PIVOT TO CONSULTING\n${cont2}`;
+      const text = scene.versus ? `${playerWon ? 'P1' : 'P2'}  WINS`   // 2P: P1/P2 win (finisher is off)
+        : gaunt ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}`
+        : 'PIVOT TO CONSULTING';               // the GameChrome buttons are the CTA now
       scene.result.setText(text).setVisible(true);
+      emitResult(scene.matchAction);
     } else {
       scene.result.setText(flawless ? 'FLAWLESS!' : 'K.P.I.').setVisible(true);
       scene.time.delayedCall(900, () => { scene.round++; startRound(scene); });
     }
   });
+}
+
+// The matchend "continue" action, shared by the R/ENTER keys and the GameChrome
+// result buttons: gauntlet advances a rung, a decisive win/loss returns to roster,
+// everything else rematches the same fight.
+function matchendAdvance(scene) {
+  if (scene.phase !== 'matchend') return;
+  emitResult(null);
+  if (scene.matchAction === 'advance') scene.scene.start('fight', { playerKey: scene.playerKey, stageKey: scene.stageKey, mode: 'gauntlet', rung: scene.rung + 1, gauntletOpps: scene.gauntletOpps });
+  else if (scene.matchAction === 'victory' || scene.matchAction === 'gameover') scene.scene.start('select');
+  else { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
 }
 
 function tick(scene, dtMs) {
@@ -809,11 +825,7 @@ function tick(scene, dtMs) {
   }
   // R or ENTER (the mobile OK button dispatches Enter) advances: gauntlet -> next rung,
   // else rematch. Without ENTER, touch players were softlocked at the result screen.
-  if (scene.phase === 'matchend' && (scene.keys.R.isDown || scene.keys.ENTER.isDown)) {
-    if (scene.matchAction === 'advance') scene.scene.start('fight', { playerKey: scene.playerKey, stageKey: scene.stageKey, mode: 'gauntlet', rung: scene.rung + 1, gauntletOpps: scene.gauntletOpps });
-    else if (scene.matchAction === 'victory' || scene.matchAction === 'gameover') scene.scene.start('select');
-    else { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
-  }
+  if (scene.phase === 'matchend' && (scene.keys.R.isDown || scene.keys.ENTER.isDown)) matchendAdvance(scene);
 }
 
 function drawUI(scene) {
