@@ -2,6 +2,7 @@
 
 import ScaleCanvas from '@/components/ScaleCanvas/ScaleCanvas'
 import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
+import PlayLink from '@/components/PlayLink/PlayLink'
 import JuiceProvider from '@/effects/juice/JuiceProvider'
 import HitSparks from '@/effects/particles/HitSparks'
 import PixelCursor from '@/effects/cursor/PixelCursor'
@@ -31,6 +32,7 @@ export default function Page() {
           </PixelCursor>
         </HitSparks>
       </JuiceProvider>
+      <PlayLink />
       <ModeSwitcher active="ai" />
     </div>
   )

@@ -1,6 +1,7 @@
 import './play.css';
 import FightGame from '../../components/FightGame/FightGame';
 import MobileControls from '../../components/MobileControls/MobileControls';
+import GameChrome from '../../components/GameChrome/GameChrome';
 
 export const metadata = {
   title: 'Play — AI Marketing Kombat',
@@ -18,6 +19,7 @@ export default function PlayPage() {
     <main className="play-main">
       <FightGame />
       <MobileControls />
+      <GameChrome />
       <div className="rotate-hint" aria-hidden="true">
         <div className="rot-phone" />
         <div className="rot-big">ROTATE YOUR<br />PHONE</div>

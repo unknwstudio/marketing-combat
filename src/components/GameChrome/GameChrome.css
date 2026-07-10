@@ -1,0 +1,165 @@
+/* The chrome layer sits above the canvas (0), the mobile pad (20) and the rotate
+   prompt (50) so its escape hatches are always reachable. The root is transparent
+   to pointer events; only the buttons and full-screen overlays catch input. */
+.gc-root {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  font-family: var(--font-ps, ui-monospace, "Courier New", monospace);
+  color: #eaf4ff;
+  --gc-gold: #ffd23f;
+  --gc-red: #ff4d6d;
+  --gc-green: #8bffa0;
+  --gc-blue: #8fe8ff;
+}
+.gc-root button { font-family: inherit; }
+
+/* ---- corner buttons (exit / help / pause) ---- */
+.gc-corner {
+  pointer-events: auto;
+  position: fixed;
+  top: 10px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(8, 4, 20, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  color: #eaf4ff;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.62;
+  cursor: pointer;
+  transition: opacity 0.12s, background 0.12s, transform 0.08s;
+}
+.gc-corner:hover { opacity: 1; background: rgba(20, 10, 40, 0.85); }
+.gc-corner:active { transform: scale(0.92); }
+.gc-corner:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; opacity: 1; }
+.gc-exit { left: 10px; font-size: 15px; }
+.gc-exit:hover { border-color: var(--gc-red); color: #ffd7de; }
+.gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: 8px; pointer-events: none; }
+.gc-topright .gc-corner { position: static; }
+
+/* ---- shared full-screen overlay ---- */
+.gc-overlay {
+  pointer-events: auto;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px;
+  text-align: center;
+  background: rgba(5, 1, 12, 0.9);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+/* ---- title / press start ---- */
+.gc-title { cursor: pointer; gap: 20px; }
+.gc-kicker { font-size: 8px; letter-spacing: 3px; color: var(--gc-blue); opacity: 0.85; }
+.gc-logo {
+  margin: 0;
+  font-size: clamp(22px, 6.4vw, 46px);
+  line-height: 1.32;
+  letter-spacing: 2px;
+  color: var(--gc-gold);
+  text-shadow: 0 0 20px rgba(255, 210, 63, 0.45), 4px 4px 0 rgba(0, 0, 0, 0.55);
+}
+.gc-logo span { color: var(--gc-red); text-shadow: 0 0 20px rgba(255, 77, 109, 0.5), 4px 4px 0 rgba(0, 0, 0, 0.55); }
+.gc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  justify-content: center;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #9fb6c8;
+}
+.gc-legend span { white-space: nowrap; }
+.gc-start {
+  font-size: clamp(11px, 2.4vw, 15px);
+  letter-spacing: 2px;
+  color: #fff;
+  animation: gc-blink 1.05s steps(1, end) infinite;
+}
+.gc-howtolink {
+  pointer-events: auto;
+  background: none;
+  border: none;
+  color: var(--gc-blue);
+  font-size: 9px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+.gc-howtolink:hover { color: #fff; text-decoration: underline; }
+.gc-hint { font-size: 8px; letter-spacing: 1px; color: #5f7686; }
+
+/* ---- menus (pause / how-to / confirm) ---- */
+.gc-menu { gap: 12px; }
+.gc-menu-title {
+  font-size: clamp(15px, 3.4vw, 22px);
+  letter-spacing: 2px;
+  color: var(--gc-gold);
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+  margin-bottom: 6px;
+}
+.gc-item {
+  pointer-events: auto;
+  min-width: 250px;
+  max-width: 82vw;
+  padding: 13px 16px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 2px solid rgba(255, 255, 255, 0.26);
+  color: #eaf4ff;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.06s;
+}
+.gc-item:hover { background: rgba(255, 210, 63, 0.14); border-color: var(--gc-gold); color: #fff; }
+.gc-item:active { transform: scale(0.98); }
+.gc-item:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; }
+.gc-danger { border-color: rgba(255, 77, 109, 0.55); color: #ffc4cf; }
+.gc-danger:hover { background: rgba(255, 77, 109, 0.16); border-color: var(--gc-red); color: #fff; }
+.gc-toggle { border-color: rgba(143, 232, 255, 0.4); color: var(--gc-blue); }
+.gc-toggle:hover { background: rgba(143, 232, 255, 0.12); border-color: var(--gc-blue); }
+
+/* ---- how-to card ---- */
+.gc-howto { gap: 14px; }
+.gc-lead { margin: 0; font-family: ui-monospace, "Courier New", monospace; font-size: 12px; color: #cfe6f2; }
+.gc-keys {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 26px;
+  margin: 4px 0;
+}
+.gc-keys > div { display: flex; justify-content: space-between; gap: 18px; min-width: 190px; font-size: 9px; }
+.gc-keys b { color: var(--gc-green); font-weight: normal; letter-spacing: 1px; }
+.gc-keys span { color: #dbe7f0; }
+.gc-note {
+  margin: 0;
+  max-width: 380px;
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: #8fa6b6;
+}
+
+@keyframes gc-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.12; } }
+@media (prefers-reduced-motion: reduce) { .gc-start { animation: none; } }
+
+/* short landscape phones: tighten so menus never overflow */
+@media (max-height: 430px) {
+  .gc-overlay { gap: 9px; padding: 14px; }
+  .gc-title { gap: 12px; }
+  .gc-item { padding: 9px 14px; }
+  .gc-keys { gap: 5px 22px; }
+  .gc-menu-title { margin-bottom: 2px; }
+}

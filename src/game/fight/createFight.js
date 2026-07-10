@@ -108,6 +108,9 @@ const txt = (scene, x, y, s, size, color, ax = 0.5, ay = 0.5) =>
 
 const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'flawless', 'closethedeal', 'budgetcut', 'unsubscribed', 'gdprd', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
 const snd = (scene, key, vol = 1) => { try { if (scene.cache.audio.exists(key)) scene.sound.play(key, { volume: vol }); } catch (e) { /* audio not unlocked yet */ } };
+// Tell the React chrome layer (GameChrome) which scene is live, so it shows the
+// right escape hatches: ✕ exit is always available; the ⏸ pause menu only in a fight.
+const emitScene = (key) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:scene', { detail: { key } })); } catch (e) { /* no DOM */ } } };
 
 /* =========================================================================
    BOOT — load every fighter atlas + every stage once, then go to Select.
@@ -190,6 +193,7 @@ function selectCreate() {
   this.input.keyboard.on('keydown-SPACE', confirm);
 
   refresh(this);
+  emitScene('select');
 }
 function refresh(scene) {
   const p1 = scene.phase === 'fighter', p2 = scene.phase === 'fighter2', fighterPhase = p1 || p2;
@@ -302,6 +306,7 @@ function fightCreate() {
     : [{ f: this.p, ks: KEYSET_SOLO, buf: null, down: {} }];
   this.isTouch = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : false;
   this._acc = 0;
+  this.paused = false;
   this.hitstop = 0;
   this.slowmoT = 0;
   this._frozenDef = null;
@@ -329,6 +334,20 @@ function fightCreate() {
   this.comboText = txt(this, GAME_W / 2, 62, '', 12, '#ffd23f').setDepth(58).setVisible(false);
 
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') window.__fight = this; // dev debug handle
+
+  // GameChrome (React overlay) drives the escape hatches via window events so touch
+  // and desktop share one set. Pause is a bare early-return in fightUpdate; the delta
+  // clamps there already stop any resume fast-forward.
+  const chrome = {
+    pause: () => { this.paused = true; },
+    resume: () => { this.paused = false; this._acc = 0; },
+    restart: () => { this.paused = false; this._acc = 0; this.pWins = this.oWins = 0; this.round = 1; startRound(this); },
+    menu: () => { this.paused = false; this.scene.start('select'); },
+  };
+  for (const [ev, fn] of Object.entries({ 'mk:pause': chrome.pause, 'mk:resume': chrome.resume, 'mk:restart': chrome.restart, 'mk:menu': chrome.menu })) window.addEventListener(ev, fn);
+  this.events.once('shutdown', () => { for (const [ev, fn] of Object.entries({ 'mk:pause': chrome.pause, 'mk:resume': chrome.resume, 'mk:restart': chrome.restart, 'mk:menu': chrome.menu })) window.removeEventListener(ev, fn); });
+  emitScene('fight');
+
   startRound(this);
 }
 
@@ -667,7 +686,7 @@ function finishMatch(scene, playerWon) {
     const cont = scene.isTouch ? 'OK' : 'ENTER';
     const text = scene.matchAction === 'victory' ? `YOU BEAT THE ALGORITHM\n${cont}  roster`
       : scene.matchAction === 'advance' ? `RUNG ${scene.rung + 1}/5 CLEARED\n${cont}  next challenger`
-      : `PROMOTED!\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`;
+      : `PROMOTED!\n${scene.isTouch ? 'OK  rematch' : 'R / ENTER  rematch'}`;
     scene.result.setText(text).setVisible(true);
   });
 }
@@ -705,7 +724,7 @@ function endRound(scene, playerWon) {
       scene.phase = 'matchend';
       const gaunt = scene.mode === 'gauntlet';
       scene.matchAction = gaunt ? 'gameover' : 'rematch';
-      const cont2 = scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster';
+      const cont2 = scene.isTouch ? 'OK  rematch' : 'R / ENTER  rematch';
       const text = scene.versus ? `${playerWon ? 'P1' : 'P2'}  WINS\n${cont2}`   // 2P: P1/P2 win (finisher is off)
         : gaunt ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}\n${scene.isTouch ? 'OK' : 'ENTER'}  roster`
         : `PIVOT TO CONSULTING\n${cont2}`;
@@ -795,7 +814,6 @@ function tick(scene, dtMs) {
     else if (scene.matchAction === 'victory' || scene.matchAction === 'gameover') scene.scene.start('select');
     else { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
   }
-  if (scene.phase === 'matchend' && scene.keys.ESC.isDown) scene.scene.start('select');
 }
 
 function drawUI(scene) {
@@ -828,6 +846,7 @@ function drawUI(scene) {
 }
 
 function fightUpdate(time, delta) {
+  if (this.paused) return; // frozen by the pause overlay — the last rendered frame persists
   sampleAttackBuffer(this, delta); // keep the input buffer alive every frame, even in hitstop
   if (this.hitstop > 0) {
     this.hitstop -= delta;
@@ -879,5 +898,6 @@ export function createFightGame(Phaser, parent) {
   game.events.once('ready', fit);
   window.addEventListener('resize', fit);
   game.events.once('destroy', () => window.removeEventListener('resize', fit));
+  if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') window.__game = game; // dev debug handle
   return game;
 }

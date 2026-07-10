@@ -13,6 +13,20 @@ export default function FightGame() {
   useEffect(() => {
     let game = null;
     let cancelled = false;
+    let overlayOpen = false;
+
+    // Bridge from the React chrome layer (GameChrome). Mute maps to the global sound
+    // manager; while an overlay (title / pause / how-to) is open we disable the active
+    // scene's keyboard so those keys never leak through to the live game underneath.
+    const applyKb = () => {
+      try { if (game) game.scene.getScenes(true).forEach((s) => { if (s.input && s.input.keyboard) s.input.keyboard.enabled = !overlayOpen; }); } catch (e) { /* scenes not ready */ }
+    };
+    const onOverlay = (e) => { overlayOpen = !!(e.detail && e.detail.open); applyKb(); };
+    const onScene = () => applyKb();                                   // re-assert on every scene change
+    const onMute = (e) => { try { if (game && game.sound) game.sound.mute = !!(e.detail && e.detail.muted); } catch (err) { /* no sound yet */ } };
+    window.addEventListener('mk:overlay', onOverlay);
+    window.addEventListener('mk:scene', onScene);
+    window.addEventListener('mk:mute', onMute);
 
     (async () => {
       const Phaser = (await import('phaser')).default;
@@ -27,10 +41,19 @@ export default function FightGame() {
       setGameFont(family);
       if (cancelled || !hostRef.current) return;
       game = createFightGame(Phaser, hostRef.current);
+      // apply the saved mute preference once the sound manager exists, and honour any
+      // overlay that opened before the game finished loading
+      game.events.once('ready', () => {
+        try { game.sound.mute = localStorage.getItem('mk_muted') === '1'; } catch (e) { /* no storage */ }
+        applyKb();
+      });
     })();
 
     return () => {
       cancelled = true;
+      window.removeEventListener('mk:overlay', onOverlay);
+      window.removeEventListener('mk:scene', onScene);
+      window.removeEventListener('mk:mute', onMute);
       if (game) game.destroy(true);
     };
   }, []);
