@@ -56,6 +56,23 @@ export const STAGES = [
   { key: 'dungeon', name: 'THE DUNGEON' },
 ];
 
+// Per-archetype move names — the marketing-satire joke floats off the defender on
+// every clean hit. Keyed by atlas key (the boss reuses fighter3's).
+const MOVE_NAMES = {
+  fighter1: { punch: 'BRAND SLAP', kick: 'REBRAND ROUNDHOUSE', special: 'BRAND AWARENESS' },
+  fighter2: { punch: 'GROWTH HACK JAB', kick: 'A/B TESTED KICK', special: 'VIRAL LOOP' },
+  fighter3: { punch: 'COLD EMAIL JAB', kick: 'CPC LOW KICK', special: 'RETARGETING UPPERCUT' },
+  fighter4: { punch: 'PROMPT INJECTION', kick: 'RENDER FARM STOMP', special: 'HALLUCINATION BLADE' },
+  fighter5: { punch: 'DISRUPTOR JAB', kick: 'THOUGHT LEADERSHIP', special: 'LOOKALIKE AUDIENCE' },
+};
+// The combo counter names the B2B funnel as an escalating violence scale.
+function funnelTier(n) {
+  if (n >= 8) return { label: 'CLOSED-WON!!', color: '#ffd23f' };
+  if (n >= 5) return { label: 'SQL!', color: '#8bffa0' };
+  if (n >= 3) return { label: 'MQL!', color: '#8fe8ff' };
+  return { label: 'LEAD', color: '#c8d0dc' };
+}
+
 // GAUNTLET (arcade ladder): the 4 non-player archetypes easy->hard, then the boss.
 const DIFFICULTY_ORDER = ['ASSASSIN', 'RUSHDOWN', 'ALL-ROUND', 'ZONER', 'HEAVY'];
 function gauntletSequence(playerKey) {
@@ -293,6 +310,7 @@ function fightCreate() {
   this.aiTimer = 700; this.aiBlock = 0;
   this.pWins = 0; this.oWins = 0; this.round = 1;
   this.playerDmgMult = 1; this.shadowbanT = this.boss ? 9000 : 0; this.shadowbanActive = 0;
+  this.combo = { owner: null, n: 0, t: 0 };
 
   this.ui = this.add.graphics().setDepth(40);
   const pName = ROSTER.find((r) => r.key === this.playerKey).name;
@@ -308,6 +326,7 @@ function fightCreate() {
 
   this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
   this.result = txt(this, GAME_W / 2, 104, '', 20, '#ffd23f').setDepth(60).setVisible(false);
+  this.comboText = txt(this, GAME_W / 2, 62, '', 12, '#ffd23f').setDepth(58).setVisible(false);
 
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') window.__fight = this; // dev debug handle
   startRound(this);
@@ -321,6 +340,8 @@ function startRound(scene) {
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
   scene.playerDmgMult = 1; scene.shadowbanActive = 0; scene.shadowbanT = scene.boss ? 9000 : 0;
   scene.hideLoserBar = null;
+  scene.combo = { owner: null, n: 0, t: 0 };
+  if (scene.comboText) scene.comboText.setVisible(false);
   if (scene.darken) { scene.darken.destroy(); scene.darken = null; }
   if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
   const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2); // undo any KO punch-in
@@ -531,6 +552,19 @@ function applyHit(att, def, scene) {
   juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko, att.action.type, att.stats.color);
   if (blocked) snd(scene, 'snd_block', 0.55);
   else if (!ko) snd(scene, att.action.type === 'special' ? 'snd_special' : att.action.type === 'kick' ? 'snd_kick' : 'snd_hit', 0.6);
+  if (!blocked) {
+    // the marketing-satire move name floats up off the defender on every clean hit
+    const nm = MOVE_NAMES[att.key] && MOVE_NAMES[att.key][att.action.type];
+    if (nm) {
+      const t = txt(scene, Math.round(def.kin.x), Math.round(def.kin.y - 150), nm, 6, '#ffe08a', 0.5, 1).setDepth(46);
+      scene.tweens.add({ targets: t, y: t.y - 12, alpha: 0, duration: 620, delay: 130, onComplete: () => t.destroy() });
+    }
+    // FUNNEL combo: a hit streak owned by whoever last connected
+    const owner = att.isPlayer ? 'p' : 'o';
+    if (scene.combo.owner === owner && scene.combo.t > 0) scene.combo.n++;
+    else { scene.combo.owner = owner; scene.combo.n = 1; }
+    scene.combo.t = 1300;
+  }
   if (ko) {
     // Match-deciding PLAYER blow -> don't kill; leave the loser dazed and open the
     // "CLOSE THE DEAL!" finisher window (MK's FINISH HIM). Only the player gets it.
@@ -714,6 +748,12 @@ function tick(scene, dtMs) {
       }
     }
   }
+  // FUNNEL counter: the streak decays when no fresh hit lands; label climbs the B2B funnel
+  if (live && scene.combo.n > 0) { scene.combo.t -= dtMs; if (scene.combo.t <= 0) { scene.combo.n = 0; scene.combo.owner = null; } }
+  if (live && scene.combo.n >= 2) {
+    const tr = funnelTier(scene.combo.n);
+    scene.comboText.setText(`${tr.label}  x${scene.combo.n}`).setColor(tr.color).setVisible(true);
+  } else if (scene.comboText.visible) scene.comboText.setVisible(false);
   // the standing fighter strikes the victory pose once a round/match is decided
   if (scene.phase === 'roundend' || scene.phase === 'matchend') {
     for (const f of [p, o]) if (!f.koed) f.pose = POSE.victory;
