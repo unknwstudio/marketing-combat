@@ -8,6 +8,11 @@ import PixelCursor from '@/effects/cursor/PixelCursor'
 
 import './demo.css'
 
+// existing landing sections (same as `/`) — reused so /demo is the full page
+import Hero from '@/sections/Hero/Hero'
+import Champion from '@/sections/Champion/Champion'
+import Fighters from '@/sections/Fighters/Fighters'
+
 import Marquee from '@/sections/Marquee/Marquee'
 import Stats from '@/sections/Stats/Stats'
 import WhyJoin from '@/sections/WhyJoin/WhyJoin'
@@ -23,10 +28,11 @@ import Footer from '@/sections/Footer/Footer'
 
 /**
  * AI Marketing Kombat — /demo.
- * Continuation of the pixel-art landing: carries the original site's
- * sections after the roster (stats → footer) in the same fixed-1440px
- * ScaleCanvas shell and visual language as `/`. All copy is verbatim
- * from the original site; imagery is generated pixel art.
+ * The FULL pixel-art landing: the existing developed sections (Hero →
+ * Champion → Fighters, identical to `/`) followed by the continuation
+ * (marquee → footer) that carries the rest of the original site's
+ * content. Same fixed-1440px ScaleCanvas shell and visual language.
+ * All copy is verbatim from the original site.
  */
 export default function Page() {
   return (
@@ -35,6 +41,10 @@ export default function Page() {
         <HitSparks>
           <PixelCursor enabled>
             <ScaleCanvas width={1440}>
+              <Hero />
+              <Champion />
+              <Fighters />
+
               <Marquee />
               <Stats />
               <WhyJoin />
