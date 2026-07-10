@@ -34,7 +34,9 @@ export default function Stages() {
   return (
     <section className="dsec stages" aria-label="Hackathon stages">
       <div className="dsec__head">
-        <span className="dsec__round">Round 05 — three stages to compete</span>
+        <span className="dsec__round" data-announce="ROUND 05" data-sound="round3">
+          Round 05 — three stages to compete
+        </span>
         <h2 className="dsec__title">hackathon stages</h2>
         <p className="dsec__sub">
           After qualification, participants are ranked according to their level of expertise.

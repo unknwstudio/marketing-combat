@@ -7,7 +7,9 @@ import './FinalCta.css'
 export default function FinalCta() {
   return (
     <section className="dsec dsec--alt finalcta" aria-label="Join the battle">
-      <span className="finalcta__finish">★ FINISH HIM ★</span>
+      <span className="finalcta__finish" data-announce="FINISH HIM" data-sound="ko">
+        ★ FINISH HIM ★
+      </span>
       <h2 className="finalcta__title">join the battle</h2>
       <p className="finalcta__body">
         Compare your skills, put yourself on the map, and find out who is the best marketer on

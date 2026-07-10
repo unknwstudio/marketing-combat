@@ -29,7 +29,12 @@ function Track() {
 
 export default function Marquee() {
   return (
-    <section className="marquee" aria-label="AI Marketing Kombat ticker">
+    <section
+      className="marquee"
+      aria-label="AI Marketing Kombat ticker"
+      data-announce="FIGHT!"
+      data-sound="fight"
+    >
       <div className="marquee__viewport">
         <Track />
         <Track />

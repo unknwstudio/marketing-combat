@@ -1,0 +1,77 @@
+/* Center-screen arcade call-out ("ROUND 03", "FIGHT!", "FINISH HIM"). */
+.announce {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.announce__text {
+  position: relative;
+  font-family: var(--k-font-accent);
+  font-size: clamp(40px, 11vw, 160px);
+  line-height: 1;
+  color: #ffd000;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  -webkit-text-stroke: 0.03em #ff5000;
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 0.08em #ff5000,
+    0 0 0.2em rgba(255, 80, 0, 0.7);
+  animation: announce-slam 0.34s cubic-bezier(0.2, 1.4, 0.3, 1) both,
+    announce-out 0.3s ease-in 1s both;
+}
+
+/* chromatic split clones */
+.announce__text::before,
+.announce__text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+.announce__text::before {
+  color: #3fe0ff;
+  transform: translate(-3px, 2px);
+}
+.announce__text::after {
+  color: #ff2e4d;
+  transform: translate(3px, -2px);
+}
+
+@keyframes announce-slam {
+  0% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes announce-out {
+  to {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announce__text {
+    animation: announce-fade 1.3s ease both;
+  }
+  @keyframes announce-fade {
+    0%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}

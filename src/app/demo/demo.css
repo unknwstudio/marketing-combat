@@ -121,6 +121,75 @@
 }
 
 /* ============================================================
+   Character-select hover for portrait cards (judges + organizers):
+   border glow + slight zoom + a cyan scanline that sweeps down.
+   ============================================================ */
+.judges__card,
+.organizers__card {
+  overflow: hidden;
+}
+
+.judges__portrait,
+.organizers__portrait {
+  transition: transform 0.18s ease-out, filter 0.18s ease-out;
+}
+
+.judges__card::after,
+.organizers__card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 22%;
+  pointer-events: none;
+  background: linear-gradient(transparent, rgba(63, 224, 255, 0.28), transparent);
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+@media (hover: hover) {
+  .judges__card:hover,
+  .organizers__card:hover {
+    border-color: #3fe0ff;
+    box-shadow: 0 0 26px rgba(63, 224, 255, 0.3);
+  }
+
+  .judges__card:hover .judges__portrait,
+  .organizers__card:hover .organizers__portrait {
+    transform: scale(1.04);
+    filter: saturate(1.2) contrast(1.05) brightness(1.06);
+  }
+
+  .judges__card:hover::after,
+  .organizers__card:hover::after {
+    opacity: 1;
+    animation: card-sweep 0.7s ease-in-out;
+  }
+}
+
+@keyframes card-sweep {
+  from {
+    transform: translateY(-120%);
+  }
+  to {
+    transform: translateY(560%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .judges__card:hover::after,
+  .organizers__card:hover::after {
+    animation: none;
+    opacity: 0;
+  }
+  .judges__card:hover .judges__portrait,
+  .organizers__card:hover .organizers__portrait {
+    transform: none;
+  }
+}
+
+/* ============================================================
    RESPONSIVE — below 1024px every .dsec flows fluidly
    (ScaleCanvas drops uniform scaling under its breakpoint).
    ============================================================ */
