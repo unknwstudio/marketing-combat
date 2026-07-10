@@ -228,7 +228,7 @@ function fightCreate() {
   this.slowmoT = 0;
   this._frozenDef = null;
   this.animClock = 0;
-  this.ai = { blockChance: 0.26, minDelay: 540, maxDelay: 1120, aggression: 0.62 };
+  this.aiProfile = aiProfileFor(this.oppKey); // per-archetype personality (clone; rubber band mutates it)
   this.aiTimer = 700; this.aiBlock = 0;
   this.pWins = 0; this.oWins = 0; this.round = 1;
 
@@ -252,7 +252,7 @@ function startRound(scene) {
   resetFighter(scene.p); resetFighter(scene.o);
   // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
   // the per-round rubber band adapts away from.
-  if (scene.round === 1) scene.ai = { blockChance: 0.26, minDelay: 540, maxDelay: 1120, aggression: 0.62 };
+  if (scene.round === 1) scene.aiProfile = aiProfileFor(scene.oppKey); // fresh match -> baseline archetype behaviour
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
   const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2); // undo any KO punch-in
   scene.result.setVisible(false);
@@ -299,12 +299,15 @@ function control(f, intent, dtMs) {
   if (f.koed) { f.pose = POSE.ko; f.kin.vx *= 0.90; return; } // decay (not zero) so the KO launch arc plays out
   if (f.hitstun > 0) { f.hitstun -= dtMs; if (f.hitstun <= 0) f.wakeBlock = 200; f.kin.vx *= 0.82; f.pose = POSE.hit; return; }
   if (f.action) {
+    // telegraphed wind-up (readable big move): hold the pose without advancing the
+    // attack so a watchful player can react/block/punish before it goes active.
+    if (f.action.windup > 0) { f.action.windup -= dtMs; f.kin.vx = 0; f.pose = ATTACK[f.action.type].pose; return; }
     f.action.e += dtMs * f.stats.atkSpeed; f.kin.vx = 0; f.pose = ATTACK[f.action.type].pose;
     if (f.action.e >= ATTACK[f.action.type].total) f.action = null;
     return;
   }
   if (f.blockstun > 0) { f.blockstun -= dtMs; f.kin.vx *= 0.82; f.pose = POSE.block; f.blocking = true; return; }
-  if (f.kin.grounded && intent.atk) { f.action = { type: intent.atk, e: 0, hasHit: false }; f.kin.vx = 0; f.pose = ATTACK[intent.atk].pose; return; }
+  if (f.kin.grounded && intent.atk) { f.action = { type: intent.atk, e: 0, hasHit: false, windup: intent.telegraph || 0 }; f.kin.vx = 0; f.pose = ATTACK[intent.atk].pose; return; }
   if (intent.block && f.kin.grounded) { f.blocking = true; f.kin.vx = 0; f.pose = POSE.block; return; }
   f.kin.vx = (intent.right ? f.stats.speed : 0) - (intent.left ? f.stats.speed : 0);
   if (intent.jump && f.kin.grounded) { f.kin.vy = JUMP_V; f.kin.grounded = false; }
@@ -331,40 +334,69 @@ function playerIntent(scene) {
     atk: scene.atkBuf ? scene.atkBuf.type : null,
   };
 }
+// Punch-Out-school AI: each archetype is a distinct, readable personality with its
+// own exploit, instead of one RNG-timer brain in five costumes. rubber band mutates a
+// per-fight CLONE of these (see endRound), reset to baseline each match in startRound.
+//   wantDist>0 = a spacer that retreats to that gap; tell>0 = special has a visible
+//   charge-up (gold blink + pause) you can react to / punish.
+const AI_PROFILES = {
+  //           block  wake  minDly maxDly aggr  wantDist retreat specialBias tell
+  ZONER:       { blockChance: 0.28, wake: 0.20, minDelay: 440, maxDelay: 980,  aggression: 0.55, wantDist: 132, retreat: 0.6,  specialBias: 0.7,  tell: 0 },   // keeps range, pokes special; corner it to win
+  RUSHDOWN:    { blockChance: 0.12, wake: 0.15, minDelay: 320, maxDelay: 700,  aggression: 0.95, wantDist: 0,   retreat: 0.0,  specialBias: 0.12, tell: 0 },   // never retreats, barely blocks; block + punish its over-commit
+  'ALL-ROUND': { blockChance: 0.26, wake: 0.22, minDelay: 520, maxDelay: 1080, aggression: 0.66, wantDist: 0,   retreat: 0.05, specialBias: 0.40, tell: 0 },   // the fair fight
+  HEAVY:       { blockChance: 0.44, wake: 0.28, minDelay: 620, maxDelay: 1240, aggression: 0.60, wantDist: 0,   retreat: 0.0,  specialBias: 0.50, tell: 260 }, // tanky wall + telegraphed big special; bait it, punish recovery
+  ASSASSIN:    { blockChance: 0.18, wake: 0.16, minDelay: 300, maxDelay: 640,  aggression: 0.90, wantDist: 70,  retreat: 0.4,  specialBias: 0.28, tell: 0 },   // fast hit-and-run, 84hp; one counter melts it
+};
+function aiProfileFor(key) {
+  const st = ROSTER.find((r) => r.key === key);
+  return { ...(AI_PROFILES[st && st.style] || AI_PROFILES['ALL-ROUND']) };
+}
 function aiIntent(scene, o, p, dtMs) {
   const intent = { left: false, right: false, jump: false, block: false, atk: null };
   if (o.koed || o.hitstun > 0 || o.action) return intent;
-  const ai = scene.ai, dist = Math.abs(p.kin.x - o.kin.x);
+  const P = scene.aiProfile, dist = Math.abs(p.kin.x - o.kin.x);
   const toward = p.kin.x < o.kin.x ? 'left' : 'right', away = toward === 'left' ? 'right' : 'left';
 
   // wake-up guard: briefly defend right after eating a hit so point-blank / corner
   // loops aren't a free, skill-less win against the CPU.
   if (o.wakeBlock > 0) {
     o.wakeBlock -= dtMs;
-    if (p.action && dist < 130 && Math.random() < 0.22) { intent.block = true; return intent; }
+    if (p.action && dist < 130 && Math.random() < P.wake) { intent.block = true; return intent; }
   }
   // reactive block vs a committed player attack (rolled once per attack)
   if (scene.aiBlock > 0) { scene.aiBlock -= dtMs; intent.block = true; return intent; }
   if (p.action && !p.action.aiSaw && dist < 130) {
     p.action.aiSaw = true;
-    if (Math.random() < ai.blockChance) { scene.aiBlock = 240; intent.block = true; return intent; }
+    if (Math.random() < P.blockChance) { scene.aiBlock = 240; intent.block = true; return intent; }
   }
 
-  // Engage from the AI's OWN reach so it is no longer blind past 104px while every
-  // special reaches ~150px — walk-back special zoning used to be a risk-free 100% win.
   const punchR = 44 + ATTACK.punch.reach * o.stats.reach;      // ~103-113px
   const specR = 44 + ATTACK.special.reach * o.stats.reach;     // ~146-164px
   scene.aiTimer -= dtMs;
   const ready = scene.aiTimer <= 0;
-  const arm = () => { scene.aiTimer = ai.minDelay + Math.random() * (ai.maxDelay - ai.minDelay); };
+  const setAtk = (t) => {
+    scene.aiTimer = P.minDelay + Math.random() * (P.maxDelay - P.minDelay);
+    intent.atk = t; if (t === 'special' && P.tell) intent.telegraph = P.tell;
+  };
+
+  // spacer: if the player is inside my comfort gap and I'm not cornered, back off
+  // (poking special while I retreat) to re-establish the distance
+  if (P.wantDist > punchR && dist < P.wantDist && Math.random() < P.retreat) {
+    const atWall = away === 'left' ? o.kin.x <= X_MIN + 6 : o.kin.x >= X_MAX - 6;
+    if (!atWall) {
+      intent[away] = true;
+      if (ready && dist <= specR && Math.random() < P.specialBias) setAtk('special');
+      return intent;
+    }
+  }
 
   if (dist <= punchR) {                                          // close: punch/kick pressure
-    if (ready && Math.random() < ai.aggression) { arm(); intent.atk = Math.random() < 0.6 ? 'punch' : 'kick'; return intent; }
-    if (dist < 40 && Math.random() < 0.04) intent[away] = true;  // occasional spacing reset
+    if (ready && Math.random() < P.aggression) { setAtk(Math.random() < 0.6 ? 'punch' : 'kick'); return intent; }
+    if (dist < 40 && Math.random() < P.retreat * 0.4) intent[away] = true;
     return intent;
   }
   if (dist <= specR) {                                           // mid: poke special or close in
-    if (ready && Math.random() < 0.55) { arm(); intent.atk = 'special'; return intent; }
+    if (ready && Math.random() < P.specialBias) { setAtk('special'); return intent; }
     intent[toward] = true;
     return intent;
   }
@@ -432,9 +464,9 @@ function endRound(scene, playerWon) {
   // Invisible per-round rubber band (round boundaries only, so it never feels like
   // mid-fight cheating): a struggling first-timer who drops a round gets a gentler CPU
   // next round; a player who's steamrolling meets a tougher one. Bounded + reset each match.
-  const ai = scene.ai;
-  if (playerWon) { ai.blockChance = Math.min(0.6, ai.blockChance + 0.08); ai.aggression = Math.min(1.0, ai.aggression + 0.08); ai.minDelay = Math.max(340, ai.minDelay - 60); }
-  else { ai.blockChance = Math.max(0.12, ai.blockChance - 0.12); ai.aggression = Math.max(0.5, ai.aggression - 0.12); ai.minDelay = Math.min(820, ai.minDelay + 110); }
+  const ai = scene.aiProfile;
+  if (playerWon) { ai.blockChance = Math.min(0.62, ai.blockChance + 0.08); ai.aggression = Math.min(1.0, ai.aggression + 0.08); ai.minDelay = Math.max(300, ai.minDelay - 60); }
+  else { ai.blockChance = Math.max(0.10, ai.blockChance - 0.12); ai.aggression = Math.max(0.45, ai.aggression - 0.12); ai.minDelay = Math.min(900, ai.minDelay + 110); }
 
   // ONE announcer call per KO, 430ms after the thud (real-time timer, survives the
   // freeze/slow-mo). Marketing-skinned MK canon: round KO -> "K.P.I.!" (or "FLAWLESS
@@ -492,7 +524,9 @@ function tick(scene, dtMs) {
     const off = animOffset(f, scene.animClock);
     f.spr.x = Math.round(f.kin.x) + off.dx;
     f.spr.y = Math.round(f.kin.y) + off.dy;
-    if (f.flash > 0) { f.flash -= dtMs; f.spr.setTintFill(0xffffff); } else f.spr.clearTint();
+    if (f.flash > 0) { f.flash -= dtMs; f.spr.setTintFill(0xffffff); }
+    else if (f.action && f.action.windup > 0) { if (Math.floor(scene.animClock / 80) % 2) f.spr.setTintFill(0xff3020); else f.spr.clearTint(); } // "big move charging" red-silhouette blink
+    else f.spr.clearTint();
   }
 
   if (scene.phase === 'intro') {
