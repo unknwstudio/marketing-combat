@@ -64,7 +64,7 @@ const txt = (scene, x, y, s, size, color, ax = 0.5, ay = 0.5) =>
   scene.add.text(x, y, s, { fontFamily: FONT_FAMILY, fontSize: `${size}px`, color, stroke: '#000', strokeThickness: 3 })
     .setOrigin(ax, ay).setResolution(3);
 
-const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
+const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'flawless', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
 const snd = (scene, key, vol = 1) => { try { if (scene.cache.audio.exists(key)) scene.sound.play(key, { volume: vol }); } catch (e) { /* audio not unlocked yet */ } };
 
 /* =========================================================================
@@ -228,7 +228,7 @@ function fightCreate() {
   this.slowmoT = 0;
   this._frozenDef = null;
   this.animClock = 0;
-  this.ai = { blockChance: 0.36, minDelay: 500, maxDelay: 1080, aggression: 0.78 };
+  this.ai = { blockChance: 0.26, minDelay: 540, maxDelay: 1120, aggression: 0.62 };
   this.aiTimer = 700; this.aiBlock = 0;
   this.pWins = 0; this.oWins = 0; this.round = 1;
 
@@ -252,7 +252,7 @@ function startRound(scene) {
   resetFighter(scene.p); resetFighter(scene.o);
   // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
   // the per-round rubber band adapts away from.
-  if (scene.round === 1) scene.ai = { blockChance: 0.36, minDelay: 500, maxDelay: 1080, aggression: 0.78 };
+  if (scene.round === 1) scene.ai = { blockChance: 0.26, minDelay: 540, maxDelay: 1120, aggression: 0.62 };
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
   const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2); // undo any KO punch-in
   scene.result.setVisible(false);
@@ -341,7 +341,7 @@ function aiIntent(scene, o, p, dtMs) {
   // loops aren't a free, skill-less win against the CPU.
   if (o.wakeBlock > 0) {
     o.wakeBlock -= dtMs;
-    if (p.action && dist < 130 && Math.random() < 0.42) { intent.block = true; return intent; }
+    if (p.action && dist < 130 && Math.random() < 0.22) { intent.block = true; return intent; }
   }
   // reactive block vs a committed player attack (rolled once per attack)
   if (scene.aiBlock > 0) { scene.aiBlock -= dtMs; intent.block = true; return intent; }
@@ -420,8 +420,7 @@ function applyHit(att, def, scene) {
     const cam = scene.cameras.main;
     cam.zoomTo(1.3, 340, 'Sine.easeOut');
     cam.pan(Math.round((att.kin.x + def.kin.x) / 2), Math.round(def.kin.y - 40), 340, 'Sine.easeOut');
-    snd(scene, 'snd_kothud', 0.7);
-    scene.time.delayedCall(430, () => snd(scene, 'snd_ko', 1)); // announcer lands AFTER the thud (real-time timer, unaffected by freeze/slow-mo)
+    snd(scene, 'snd_kothud', 0.7); // the announcer call is scheduled in endRound (it knows round-vs-match + flawless)
     endRound(scene, att.isPlayer);
   }
 }
@@ -436,6 +435,16 @@ function endRound(scene, playerWon) {
   const ai = scene.ai;
   if (playerWon) { ai.blockChance = Math.min(0.6, ai.blockChance + 0.08); ai.aggression = Math.min(1.0, ai.aggression + 0.08); ai.minDelay = Math.max(340, ai.minDelay - 60); }
   else { ai.blockChance = Math.max(0.12, ai.blockChance - 0.12); ai.aggression = Math.max(0.5, ai.aggression - 0.12); ai.minDelay = Math.min(820, ai.minDelay + 110); }
+
+  // ONE announcer call per KO, 430ms after the thud (real-time timer, survives the
+  // freeze/slow-mo). Marketing-skinned MK canon: round KO -> "K.P.I.!" (or "FLAWLESS
+  // ATTRIBUTION!" for a no-damage round), match end -> "PROMOTED!" / "PIVOT TO CONSULTING".
+  const winner = playerWon ? scene.p : scene.o;
+  const flawless = !winner.tookDamage;
+  scene.time.delayedCall(430, () => {
+    if (matchOver) snd(scene, playerWon ? 'snd_win' : 'snd_lose', 1);
+    else snd(scene, flawless ? 'snd_flawless' : 'snd_ko', 1);
+  });
   // let the KO cinematic (freeze + punch-in) play, THEN ease the camera back to normal
   // BEFORE revealing the result — the whole scene incl. the HUD is camera-space, so a
   // still-zoomed camera would blow up and clip the result/HP text.
@@ -445,10 +454,9 @@ function endRound(scene, playerWon) {
     cam.zoomTo(1, 260, 'Sine.easeOut'); cam.pan(GAME_W / 2, GAME_H / 2, 260, 'Sine.easeOut');
     if (matchOver) {
       scene.phase = 'matchend';
-      snd(scene, scene.pWins > scene.oWins ? 'snd_win' : 'snd_lose', 1);
-      scene.result.setText(`${scene.pWins > scene.oWins ? 'YOU WIN' : 'YOU LOSE'}\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
+      scene.result.setText(`${playerWon ? 'PROMOTED!' : 'PIVOT TO CONSULTING'}\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
     } else {
-      scene.result.setText('K.O.').setVisible(true);
+      scene.result.setText(flawless ? 'FLAWLESS!' : 'K.P.I.').setVisible(true);
       scene.time.delayedCall(900, () => { scene.round++; startRound(scene); });
     }
   });
