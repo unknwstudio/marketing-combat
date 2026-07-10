@@ -56,6 +56,17 @@ export const STAGES = [
   { key: 'dungeon', name: 'THE DUNGEON' },
 ];
 
+// GAUNTLET (arcade ladder): the 4 non-player archetypes easy->hard, then the boss.
+const DIFFICULTY_ORDER = ['ASSASSIN', 'RUSHDOWN', 'ALL-ROUND', 'ZONER', 'HEAVY'];
+function gauntletSequence(playerKey) {
+  return ROSTER.filter((r) => r.key !== playerKey)
+    .sort((a, b) => DIFFICULTY_ORDER.indexOf(a.style) - DIFFICULTY_ORDER.indexOf(b.style))
+    .map((r) => r.key);
+}
+// THE ALGORITHM — the deliberately-unfair final boss (a green-flickering palette-swap
+// with buffed stats + a periodic "shadowban" that halves the player's damage).
+const BOSS = { atlas: 'fighter3', name: 'THE ALGORITHM', color: 0x00ff88, hp: 155, speed: 110, dmg: 1.2, reach: 1.1, atkSpeed: 1.05 };
+
 // The pixel font family is resolved on the client (next/font emits a hashed
 // family name, not the literal "Press Start 2P") and injected before boot.
 let FONT_FAMILY = "'Press Start 2P', monospace";
@@ -87,8 +98,10 @@ function selectCreate() {
   this.phase = 'fighter';
   this.fi = 2; // default: the highlighted landing fighter
   this.si = 3;
+  this.mode = 'vs';
 
-  this.title = txt(this, GAME_W / 2, 24, 'CHOOSE YOUR FIGHTER', 15, '#ffd23f');
+  this.title = txt(this, GAME_W / 2, 22, 'CHOOSE YOUR FIGHTER', 15, '#ffd23f');
+  this.modeLabel = txt(this, GAME_W / 2, 8, '', 7, '#8fe8ff');
   this.sub = txt(this, GAME_W / 2, GAME_H - 16, '<  >  select      ENTER  confirm', 8, '#8fe8ff');
 
   // fighter row
@@ -120,10 +133,17 @@ function selectCreate() {
   this.input.keyboard.on('keydown-RIGHT', () => move(1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
   this.input.keyboard.on('keydown-A', () => move(-1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
   this.input.keyboard.on('keydown-D', () => move(1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
+  const toggleMode = () => { if (this.phase === 'fighter') { this.mode = this.mode === 'vs' ? 'gauntlet' : 'vs'; snd(this, 'snd_confirm', 0.4); refresh(this); } };
+  this.input.keyboard.on('keydown-UP', toggleMode);
+  this.input.keyboard.on('keydown-DOWN', toggleMode);
+  this.input.keyboard.on('keydown-W', toggleMode);
+  this.input.keyboard.on('keydown-S', toggleMode);
   const confirm = () => {
     snd(this, 'snd_confirm', 0.5);
     if (this.phase === 'fighter') { this.phase = 'stage'; refresh(this); }
-    else {
+    else if (this.mode === 'gauntlet') {
+      this.scene.start('fight', { playerKey: ROSTER[this.fi].key, stageKey: STAGES[this.si].key, mode: 'gauntlet', rung: 0, gauntletOpps: gauntletSequence(ROSTER[this.fi].key) });
+    } else {
       const opp = ROSTER[(this.fi + 1 + Math.floor(Math.random() * (ROSTER.length - 1))) % ROSTER.length].key;
       this.scene.start('fight', { playerKey: ROSTER[this.fi].key, oppKey: opp, stageKey: STAGES[this.si].key });
     }
@@ -136,6 +156,8 @@ function selectCreate() {
 function refresh(scene) {
   const fighterPhase = scene.phase === 'fighter';
   scene.title.setText(fighterPhase ? 'CHOOSE YOUR FIGHTER' : 'CHOOSE STAGE');
+  scene.modeLabel.setText(fighterPhase ? (scene.mode === 'gauntlet' ? 'MODE:  vs   [GAUNTLET]   ▲▼' : 'MODE:  [VS]   gauntlet   ▲▼') : '')
+    .setColor(scene.mode === 'gauntlet' ? '#8bffa0' : '#8fe8ff');
   scene.picks.forEach((p, i) => {
     const on = fighterPhase && i === scene.fi;
     p.s.setVisible(fighterPhase).setAlpha(on ? 1 : 0.45).setScale(on ? 0.92 : 0.8);
@@ -211,15 +233,24 @@ function animOffset(f, clock) {
 }
 
 function fightInit(data) {
-  this.playerKey = (data && data.playerKey) || 'fighter3';
-  this.oppKey = (data && data.oppKey) || 'fighter5';
-  this.stageKey = (data && data.stageKey) || 'dungeon';
+  data = data || {};
+  this.playerKey = data.playerKey || 'fighter3';
+  this.stageKey = data.stageKey || 'dungeon';
+  this.mode = data.mode || 'vs';
+  this.rung = data.rung || 0;
+  this.gauntletOpps = data.gauntletOpps || [];
+  this.boss = this.mode === 'gauntlet' && this.rung >= this.gauntletOpps.length;
+  this.oppKey = data.oppKey || (this.mode === 'gauntlet' ? (this.boss ? BOSS.atlas : this.gauntletOpps[this.rung]) : 'fighter5');
 }
 function fightCreate() {
   this.add.image(0, 0, `stage_${this.stageKey}`).setOrigin(0, 0).setDisplaySize(GAME_W, GAME_H).setDepth(0);
 
   this.p = makeFighter(this, this.playerKey, 150, true, true);
   this.o = makeFighter(this, this.oppKey, 330, false, false);
+  if (this.boss) { // THE ALGORITHM: buffed stats over the base atlas
+    this.o.stats = { key: BOSS.atlas, name: BOSS.name, color: BOSS.color, style: 'HEAVY', hp: BOSS.hp, speed: BOSS.speed, dmg: BOSS.dmg, reach: BOSS.reach, atkSpeed: BOSS.atkSpeed };
+    this.o.hp = this.o.hpMax = BOSS.hp;
+  }
 
   this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,A,D,W,SPACE,J,K,L,S,DOWN,R,ESC,ENTER');
   this._down = { punch: false, kick: false, special: false };
@@ -230,15 +261,17 @@ function fightCreate() {
   this.slowmoT = 0;
   this._frozenDef = null;
   this.animClock = 0;
-  this.aiProfile = aiProfileFor(this.oppKey); // per-archetype personality (clone; rubber band mutates it)
+  this.aiProfile = baseAiProfile(this); // per-archetype (or boss) brain; rubber band mutates the clone
   this.aiTimer = 700; this.aiBlock = 0;
   this.pWins = 0; this.oWins = 0; this.round = 1;
+  this.playerDmgMult = 1; this.shadowbanT = this.boss ? 9000 : 0; this.shadowbanActive = 0;
 
   this.ui = this.add.graphics().setDepth(40);
   const pName = ROSTER.find((r) => r.key === this.playerKey).name;
-  const oName = ROSTER.find((r) => r.key === this.oppKey).name;
+  const oName = this.boss ? BOSS.name : ROSTER.find((r) => r.key === this.oppKey).name;
   txt(this, 12, 28, pName, 8, '#cfeaff', 0, 0);
-  txt(this, GAME_W - 12, 28, oName, 8, '#cfeaff', 1, 0);
+  txt(this, GAME_W - 12, 28, oName, 8, this.boss ? '#8bffa0' : '#cfeaff', 1, 0);
+  if (this.mode === 'gauntlet') txt(this, GAME_W / 2, 40, this.boss ? 'FINAL BOSS' : `GAUNTLET  ${this.rung + 1} / 5`, 7, '#8bffa0', 0.5, 0);
   txt(this, GAME_W / 2, GAME_H - 4,
     this.isTouch ? 'J K L  attack     DOWN  block     UP  jump' : 'J punch   K kick   L special   S block',
     8, '#5f93aa', 0.5, 1);
@@ -254,8 +287,9 @@ function startRound(scene) {
   resetFighter(scene.p); resetFighter(scene.o);
   // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
   // the per-round rubber band adapts away from.
-  if (scene.round === 1) scene.aiProfile = aiProfileFor(scene.oppKey); // fresh match -> baseline archetype behaviour
+  if (scene.round === 1) scene.aiProfile = baseAiProfile(scene); // fresh match -> baseline archetype/boss behaviour
   scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
+  scene.playerDmgMult = 1; scene.shadowbanActive = 0; scene.shadowbanT = scene.boss ? 9000 : 0;
   scene.hideLoserBar = null;
   if (scene.darken) { scene.darken.destroy(); scene.darken = null; }
   if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
@@ -357,6 +391,18 @@ function aiProfileFor(key) {
   const st = ROSTER.find((r) => r.key === key);
   return { ...(AI_PROFILES[st && st.style] || AI_PROFILES['ALL-ROUND']) };
 }
+// The base CPU profile for a fight: boss brain for THE ALGORITHM, else the archetype
+// profile bumped a little per gauntlet rung so the ladder escalates.
+function baseAiProfile(scene) {
+  if (scene.boss) return { blockChance: 0.5, wake: 0.32, minDelay: 360, maxDelay: 760, aggression: 0.95, wantDist: 0, retreat: 0.0, specialBias: 0.5, tell: 240 };
+  const p = aiProfileFor(scene.oppKey);
+  if (scene.mode === 'gauntlet') {
+    p.aggression = Math.min(1, p.aggression + scene.rung * 0.05);
+    p.blockChance = Math.min(0.6, p.blockChance + scene.rung * 0.03);
+    p.minDelay = Math.max(280, p.minDelay - scene.rung * 25);
+  }
+  return p;
+}
 function aiIntent(scene, o, p, dtMs) {
   const intent = { left: false, right: false, jump: false, block: false, atk: null };
   if (o.koed || o.hitstun > 0 || o.action) return intent;
@@ -438,7 +484,8 @@ function juiceHit(scene, x, y, blocked, ko, type, color) {
 
 function applyHit(att, def, scene) {
   const a = ATTACK[att.action.type], blocked = def.blocking;
-  const dmg = a.dmg * att.stats.dmg;
+  const dmg = a.dmg * att.stats.dmg * (att.isPlayer ? scene.playerDmgMult : 1); // shadowban halves player dmg
+
   if (blocked) { def.hp = Math.max(0, def.hp - Math.max(1, Math.round(dmg * 0.2))); def.blockstun = BLOCKSTUN; def.kin.vx = att.dir * PUSHBACK; }
   else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = a.hitstun; def.action = null; def.kin.vx = att.dir * KNOCKBACK; def.flash = 90; }
   def.ghostDelay = 350;                 // ghost HP segment lingers, then melts to the new value
@@ -542,10 +589,16 @@ function finishMatch(scene, playerWon) {
   if (scene.darken) { scene.darken.destroy(); scene.darken = null; }
   if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
   const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2);
+  const gaunt = scene.mode === 'gauntlet' && playerWon;
+  scene.matchAction = gaunt ? (scene.boss ? 'victory' : 'advance') : 'rematch';
   scene.time.delayedCall(700, () => {
     scene.banner.setVisible(false);
     snd(scene, playerWon ? 'snd_win' : 'snd_lose', 1);
-    scene.result.setText(`${playerWon ? 'PROMOTED!' : 'PIVOT TO CONSULTING'}\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
+    const cont = scene.isTouch ? 'OK' : 'ENTER';
+    const text = scene.matchAction === 'victory' ? `YOU BEAT THE ALGORITHM\n${cont}  roster`
+      : scene.matchAction === 'advance' ? `RUNG ${scene.rung + 1}/5 CLEARED\n${cont}  next challenger`
+      : `PROMOTED!\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`;
+    scene.result.setText(text).setVisible(true);
   });
 }
 
@@ -577,8 +630,15 @@ function endRound(scene, playerWon) {
     const cam = scene.cameras.main;
     cam.zoomTo(1, 260, 'Sine.easeOut'); cam.pan(GAME_W / 2, GAME_H / 2, 260, 'Sine.easeOut');
     if (matchOver) {
+      // endRound only reaches matchOver when the AI won the match (the player's own
+      // match-deciding blow is intercepted into the finisher), so this is a player loss.
       scene.phase = 'matchend';
-      scene.result.setText(`${playerWon ? 'PROMOTED!' : 'PIVOT TO CONSULTING'}\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
+      const gaunt = scene.mode === 'gauntlet';
+      scene.matchAction = gaunt ? 'gameover' : 'rematch';
+      const cont = scene.isTouch ? 'OK' : 'ENTER';
+      scene.result.setText(gaunt
+        ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}\n${cont}  roster`
+        : `PIVOT TO CONSULTING\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
     } else {
       scene.result.setText(flawless ? 'FLAWLESS!' : 'K.P.I.').setVisible(true);
       scene.time.delayedCall(900, () => { scene.round++; startRound(scene); });
@@ -626,7 +686,17 @@ function tick(scene, dtMs) {
     f.spr.y = Math.round(f.kin.y) + off.dy;
     if (f.flash > 0) { f.flash -= dtMs; f.spr.setTintFill(0xffffff); }
     else if (f.action && f.action.windup > 0) { if (Math.floor(scene.animClock / 80) % 2) f.spr.setTintFill(0xff3020); else f.spr.clearTint(); } // "big move charging" red-silhouette blink
+    else if (scene.boss && f === scene.o) { f.spr.setTint((Math.floor(scene.animClock / 110) % 2) ? 0x88ffcc : 0x33cc77); } // THE ALGORITHM's digital-green flicker
     else f.spr.clearTint();
+  }
+
+  if (live && scene.boss) { // THE ALGORITHM periodically shadowbans the player (halves their damage)
+    if (scene.shadowbanActive > 0) { scene.shadowbanActive -= dtMs; if (scene.shadowbanActive <= 0) scene.playerDmgMult = 1; }
+    else { scene.shadowbanT -= dtMs; if (scene.shadowbanT <= 0) {
+      scene.shadowbanActive = 4000; scene.playerDmgMult = 0.5; scene.shadowbanT = 11000;
+      scene.banner.setText('SHADOWBANNED').setColor('#00ff88').setVisible(true);
+      scene.time.delayedCall(1500, () => { if (scene.phase === 'fight') scene.banner.setVisible(false); });
+    } }
   }
 
   if (scene.phase === 'intro') {
@@ -637,9 +707,13 @@ function tick(scene, dtMs) {
     }
     if (scene.introT <= 0) { scene.phase = 'fight'; scene.banner.setVisible(false); }
   }
-  // R or ENTER (the mobile OK button dispatches Enter) rematches — without ENTER, touch
-  // players were softlocked on the result screen with no reachable exit.
-  if (scene.phase === 'matchend' && (scene.keys.R.isDown || scene.keys.ENTER.isDown)) { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
+  // R or ENTER (the mobile OK button dispatches Enter) advances: gauntlet -> next rung,
+  // else rematch. Without ENTER, touch players were softlocked at the result screen.
+  if (scene.phase === 'matchend' && (scene.keys.R.isDown || scene.keys.ENTER.isDown)) {
+    if (scene.matchAction === 'advance') scene.scene.start('fight', { playerKey: scene.playerKey, stageKey: scene.stageKey, mode: 'gauntlet', rung: scene.rung + 1, gauntletOpps: scene.gauntletOpps });
+    else if (scene.matchAction === 'victory' || scene.matchAction === 'gameover') scene.scene.start('select');
+    else { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
+  }
   if (scene.phase === 'matchend' && scene.keys.ESC.isDown) scene.scene.start('select');
 }
 
