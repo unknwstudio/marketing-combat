@@ -182,14 +182,14 @@ function makeFighter(scene, key, x, faceRight, isPlayer) {
     spr, isPlayer, key, stats: st, startX: x, startFace: faceRight,
     kin: { x, y: FLOOR_Y, vx: 0, vy: 0, grounded: true },
     dir: faceRight ? 1 : -1,
-    action: null, hp: st.hp, hpMax: st.hp,
+    action: null, hp: st.hp, hpMax: st.hp, ghostHp: st.hp, ghostDelay: 0, tookDamage: false,
     hitstun: 0, blockstun: 0, wakeBlock: 0, blocking: false, koed: false, pose: POSE.idle, flash: 0,
   };
 }
 function resetFighter(f) {
   f.kin = { x: f.startX, y: FLOOR_Y, vx: 0, vy: 0, grounded: true };
   f.dir = f.startFace ? 1 : -1;
-  f.action = null; f.hp = f.hpMax;
+  f.action = null; f.hp = f.hpMax; f.ghostHp = f.hpMax; f.ghostDelay = 0; f.tookDamage = false;
   f.hitstun = 0; f.blockstun = 0; f.wakeBlock = 0; f.blocking = false; f.koed = false; f.pose = POSE.idle; f.flash = 0;
 }
 
@@ -225,6 +225,8 @@ function fightCreate() {
   this.isTouch = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : false;
   this._acc = 0;
   this.hitstop = 0;
+  this.slowmoT = 0;
+  this._frozenDef = null;
   this.animClock = 0;
   this.ai = { blockChance: 0.36, minDelay: 500, maxDelay: 1080, aggression: 0.78 };
   this.aiTimer = 700; this.aiBlock = 0;
@@ -251,7 +253,8 @@ function startRound(scene) {
   // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
   // the per-round rubber band adapts away from.
   if (scene.round === 1) scene.ai = { blockChance: 0.36, minDelay: 500, maxDelay: 1080, aggression: 0.78 };
-  scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0;
+  scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
+  const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2); // undo any KO punch-in
   scene.result.setVisible(false);
   scene.phase = 'intro'; scene.introT = 1500; scene.fightSaid = false;
   scene.banner.setText(`ROUND ${scene.round}`).setVisible(true);
@@ -293,7 +296,7 @@ function separate(a, b) {
 
 function control(f, intent, dtMs) {
   f.blocking = false;
-  if (f.koed) { f.pose = POSE.ko; f.kin.vx = 0; return; }
+  if (f.koed) { f.pose = POSE.ko; f.kin.vx *= 0.90; return; } // decay (not zero) so the KO launch arc plays out
   if (f.hitstun > 0) { f.hitstun -= dtMs; if (f.hitstun <= 0) f.wakeBlock = 200; f.kin.vx *= 0.82; f.pose = POSE.hit; return; }
   if (f.action) {
     f.action.e += dtMs * f.stats.atkSpeed; f.kin.vx = 0; f.pose = ATTACK[f.action.type].pose;
@@ -369,23 +372,30 @@ function aiIntent(scene, o, p, dtMs) {
   return intent;
 }
 
-/* juice */
+/* juice — 2x2/3x3 rect shards (never anti-aliased circles: those break the pixel grid
+   at 480x270) fanning out from the contact point, plus a chunky white starburst core. */
 function spawnSpark(scene, x, y, color, big) {
-  const n = big ? 10 : 6;
+  const n = big ? 16 : 7, sz = big ? 3 : 2, rx = Math.round(x), ry = Math.round(y);
   for (let i = 0; i < n; i++) {
-    const g = scene.add.circle(x, y, 1 + Math.random() * 2.5, color).setDepth(30);
-    const ang = (Math.PI * 2 * i) / n + Math.random(), d = (big ? 18 : 11) + Math.random() * 16;
-    scene.tweens.add({ targets: g, x: x + Math.cos(ang) * d, y: y + Math.sin(ang) * d, alpha: 0, duration: 150 + Math.random() * 140, onComplete: () => g.destroy() });
+    const g = scene.add.rectangle(rx, ry, sz, sz, color).setDepth(30);
+    const ang = (Math.PI * 2 * i) / n + Math.random(), d = (big ? 20 : 12) + Math.random() * 16;
+    scene.tweens.add({ targets: g, x: Math.round(rx + Math.cos(ang) * d), y: Math.round(ry + Math.sin(ang) * d), alpha: 0, duration: 150 + Math.random() * 150, onComplete: () => g.destroy() });
   }
-  const flash = scene.add.circle(x, y, big ? 16 : 9, 0xffffff, 0.9).setDepth(29);
-  scene.tweens.add({ targets: flash, scale: big ? 2.8 : 2, alpha: 0, duration: big ? 200 : 130, onComplete: () => flash.destroy() });
+  const s = big ? 12 : 8;
+  const core = scene.add.rectangle(rx, ry, s, s, 0xffffff, 0.95).setDepth(29);
+  scene.time.delayedCall(big ? 70 : 45, () => core.active && core.setSize(Math.round(s * 0.55), Math.round(s * 0.55)));
+  scene.tweens.add({ targets: core, alpha: 0, duration: big ? 180 : 120, onComplete: () => core.destroy() });
 }
-function juiceHit(scene, x, y, blocked, ko) {
+// Impact weight scales with the move: a jab taps (~5 frames), a special detonates (~11).
+function juiceHit(scene, x, y, blocked, ko, type, color) {
   const cam = scene.cameras.main;
-  if (ko) { scene.hitstop = 250; cam.shake(360, 0.013); cam.flash(120, 255, 255, 255); }
-  else if (blocked) { scene.hitstop = 55; cam.shake(90, 0.0035); }
-  else { scene.hitstop = 95; cam.shake(150, 0.0075); }
-  spawnSpark(scene, x, y, blocked ? 0x9fd8ff : ko ? 0xffe08a : 0xffffff, ko);
+  if (ko) { scene.hitstop = 500; cam.shake(320, 0.012); cam.flash(140, 255, 255, 255); }
+  else if (blocked) { scene.hitstop = 50; cam.shake(80, 0.003); }
+  else if (type === 'special') { scene.hitstop = 180; cam.shake(200, 0.010); }
+  else if (type === 'kick') { scene.hitstop = 120; cam.shake(150, 0.007); }
+  else { scene.hitstop = 85; cam.shake(110, 0.005); }
+  const c = blocked ? 0x9fd8ff : ko ? 0xffe08a : type === 'special' ? (color || 0xffffff) : 0xffffff;
+  spawnSpark(scene, x, y, c, ko || type === 'special');
 }
 
 function applyHit(att, def, scene) {
@@ -393,11 +403,27 @@ function applyHit(att, def, scene) {
   const dmg = a.dmg * att.stats.dmg;
   if (blocked) { def.hp = Math.max(0, def.hp - Math.max(1, Math.round(dmg * 0.2))); def.blockstun = BLOCKSTUN; def.kin.vx = att.dir * PUSHBACK; }
   else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = a.hitstun; def.action = null; def.kin.vx = att.dir * KNOCKBACK; def.flash = 90; }
+  def.ghostDelay = 350;                 // ghost HP segment lingers, then melts to the new value
+  def.tookDamage = true;                // flawless-round tracking
   const ko = def.hp <= 0 && !def.koed;
-  juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko);
+  scene._frozenDef = def;               // this body buzzes ±1px during the freeze
+  juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko, att.action.type, att.stats.color);
   if (blocked) snd(scene, 'snd_block', 0.55);
   else if (!ko) snd(scene, att.action.type === 'special' ? 'snd_special' : att.action.type === 'kick' ? 'snd_kick' : 'snd_hit', 0.6);
-  if (ko) { def.koed = true; snd(scene, 'snd_kothud', 0.7); snd(scene, 'snd_ko', 1); endRound(scene, att.isPlayer); }
+  if (ko) {
+    def.koed = true;
+    // launch the loser instead of freezing them dead — gravity draws the arc, control()'s
+    // koed branch now decays vx (no longer zeroes it) so the body flies back and flops.
+    def.kin.vx = att.dir * 250; def.kin.vy = -210; def.kin.grounded = false;
+    // KO cinematic: hard 500ms freeze -> slow-mo -> camera punch-in on the fallen body.
+    scene.slowmoT = 850;
+    const cam = scene.cameras.main;
+    cam.zoomTo(1.3, 340, 'Sine.easeOut');
+    cam.pan(Math.round((att.kin.x + def.kin.x) / 2), Math.round(def.kin.y - 40), 340, 'Sine.easeOut');
+    snd(scene, 'snd_kothud', 0.7);
+    scene.time.delayedCall(430, () => snd(scene, 'snd_ko', 1)); // announcer lands AFTER the thud (real-time timer, unaffected by freeze/slow-mo)
+    endRound(scene, att.isPlayer);
+  }
 }
 
 function endRound(scene, playerWon) {
@@ -410,14 +436,20 @@ function endRound(scene, playerWon) {
   const ai = scene.ai;
   if (playerWon) { ai.blockChance = Math.min(0.6, ai.blockChance + 0.08); ai.aggression = Math.min(1.0, ai.aggression + 0.08); ai.minDelay = Math.max(340, ai.minDelay - 60); }
   else { ai.blockChance = Math.max(0.12, ai.blockChance - 0.12); ai.aggression = Math.max(0.5, ai.aggression - 0.12); ai.minDelay = Math.min(820, ai.minDelay + 110); }
-  scene.time.delayedCall(480, () => {
+  // let the KO cinematic (freeze + punch-in) play, THEN ease the camera back to normal
+  // BEFORE revealing the result — the whole scene incl. the HUD is camera-space, so a
+  // still-zoomed camera would blow up and clip the result/HP text.
+  scene.time.delayedCall(650, () => {
+    scene.slowmoT = 0;
+    const cam = scene.cameras.main;
+    cam.zoomTo(1, 260, 'Sine.easeOut'); cam.pan(GAME_W / 2, GAME_H / 2, 260, 'Sine.easeOut');
     if (matchOver) {
       scene.phase = 'matchend';
       snd(scene, scene.pWins > scene.oWins ? 'snd_win' : 'snd_lose', 1);
       scene.result.setText(`${scene.pWins > scene.oWins ? 'YOU WIN' : 'YOU LOSE'}\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
     } else {
       scene.result.setText('K.O.').setVisible(true);
-      scene.time.delayedCall(1100, () => { scene.round++; startRound(scene); });
+      scene.time.delayedCall(900, () => { scene.round++; startRound(scene); });
     }
   });
 }
@@ -471,12 +503,21 @@ function tick(scene, dtMs) {
 
 function drawUI(scene) {
   const g = scene.ui; g.clear();
+  const dtr = scene.game.loop.delta;
   const bw = 196, bh = 11, y = 12;
-  const bar = (x, frac, leftAnchor, wins) => {
+  const bar = (f, x, leftAnchor, wins) => {
+    // ghost trail: hold the old value for a beat after a hit, then melt it down to the real HP
+    if (f.ghostHp < f.hp) f.ghostHp = f.hp;                       // healed on reset -> snap up
+    else if (f.ghostDelay > 0) f.ghostDelay -= dtr;
+    else if (f.ghostHp > f.hp) f.ghostHp = Math.max(f.hp, f.ghostHp - f.hpMax * 0.0011 * dtr);
+    const frac = f.hp / f.hpMax, gfrac = f.ghostHp / f.hpMax;
     g.fillStyle(0x000000, 0.55); g.fillRect(x - 2, y - 2, bw + 4, bh + 4);
     g.fillStyle(0x360a0a, 1); g.fillRect(x, y, bw, bh);
-    const fw = Math.max(0, Math.round(bw * frac));
-    g.fillStyle(frac > 0.3 ? 0xffd23f : 0xff3b30, 1);
+    const fw = Math.max(0, Math.round(bw * frac)), gw = Math.max(0, Math.round(bw * gfrac));
+    g.fillStyle(0xff8a5c, 0.85);                                  // the melting chunk = damage just taken
+    if (leftAnchor) g.fillRect(x + fw, y, gw - fw, bh);
+    else g.fillRect(x + bw - gw, y, gw - fw, bh);
+    g.fillStyle(frac > 0.3 ? 0xffd23f : 0xff3b30, 1);            // live fill on top
     g.fillRect(leftAnchor ? x : x + bw - fw, y, fw, bh);
     g.lineStyle(1, 0xffffff, 0.85); g.strokeRect(x, y, bw, bh);
     // round pips at the INNER end of each bar (toward centre) so they never touch the names
@@ -485,14 +526,24 @@ function drawUI(scene) {
       g.fillStyle(i < wins ? 0x8bffa0 : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
     }
   };
-  bar(12, scene.p.hp / scene.p.hpMax, true, scene.pWins);
-  bar(GAME_W - 12 - bw, scene.o.hp / scene.o.hpMax, false, scene.oWins);
+  bar(scene.p, 12, true, scene.pWins);
+  bar(scene.o, GAME_W - 12 - bw, false, scene.oWins);
 }
 
 function fightUpdate(time, delta) {
   sampleAttackBuffer(this, delta); // keep the input buffer alive every frame, even in hitstop
-  if (this.hitstop > 0) { this.hitstop -= delta; drawUI(this); return; }
-  this._acc += Math.min(delta, 100);
+  if (this.hitstop > 0) {
+    this.hitstop -= delta;
+    if (this._frozenDef && !this._frozenDef.koed) { // ±1px buzz on the struck body during the freeze (Sakurai hit-shake)
+      const v = (Math.floor(this.hitstop / STEP) % 2) ? 1 : -1;
+      this._frozenDef.spr.x = Math.round(this._frozenDef.kin.x) + v;
+    }
+    drawUI(this);
+    return;
+  }
+  let scale = 1;
+  if (this.slowmoT > 0) { this.slowmoT -= delta; scale = 0.3; } // KO slow-motion (real-time timer)
+  this._acc += Math.min(delta, 100) * scale;
   if (this._acc > STEP * 5) this._acc = STEP * 5; // drop unpayable backlog so we never fast-forward after a stall
   let n = 0;
   while (this._acc >= STEP && n < 5) { tick(this, STEP); this._acc -= STEP; n++; }
