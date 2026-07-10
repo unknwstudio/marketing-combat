@@ -67,6 +67,20 @@ function gauntletSequence(playerKey) {
 // with buffed stats + a periodic "shadowban" that halves the player's damage).
 const BOSS = { atlas: 'fighter3', name: 'THE ALGORITHM', color: 0x00ff88, hp: 155, speed: 110, dmg: 1.2, reach: 1.1, atkSpeed: 1.05 };
 
+// Selectable modes. p2/sudden are local 2-player (booth superpower); sudden = one clean
+// hit ends the round. Cycle on the select screen with ▲▼.
+const MODES = [
+  { key: 'vs', label: 'VS CPU' },
+  { key: 'p2', label: '2 PLAYER' },
+  { key: 'sudden', label: 'SUDDEN DEATH' },
+  { key: 'gauntlet', label: 'GAUNTLET' },
+];
+// Two disjoint keyboard clusters so two people can share one keyboard. Solo play keeps
+// the roomy combined mapping; in 2P, P1 takes the left cluster and P2 the arrows/JKL.
+const KEYSET_SOLO = { left: ['LEFT', 'A'], right: ['RIGHT', 'D'], jump: ['UP', 'W', 'SPACE'], block: ['S', 'DOWN'], punch: 'J', kick: 'K', special: 'L' };
+const KEYSET_P1 = { left: ['A'], right: ['D'], jump: ['W'], block: ['S'], punch: 'F', kick: 'G', special: 'H' };
+const KEYSET_P2 = { left: ['LEFT'], right: ['RIGHT'], jump: ['UP'], block: ['DOWN'], punch: 'J', kick: 'K', special: 'L' };
+
 // The pixel font family is resolved on the client (next/font emits a hashed
 // family name, not the literal "Press Start 2P") and injected before boot.
 let FONT_FAMILY = "'Press Start 2P', monospace";
@@ -97,8 +111,9 @@ function selectCreate() {
 
   this.phase = 'fighter';
   this.fi = 2; // default: the highlighted landing fighter
+  this.fi2 = 3; // P2's pick (2P modes)
   this.si = 3;
-  this.mode = 'vs';
+  this.mi = 0; // mode index into MODES
 
   this.title = txt(this, GAME_W / 2, 22, 'CHOOSE YOUR FIGHTER', 15, '#ffd23f');
   this.modeLabel = txt(this, GAME_W / 2, 8, '', 7, '#8fe8ff');
@@ -128,21 +143,27 @@ function selectCreate() {
     return { img, box, x };
   });
 
-  const move = (d, max, prop) => { this[prop] = (this[prop] + d + max) % max; refresh(this); };
-  this.input.keyboard.on('keydown-LEFT', () => move(-1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
-  this.input.keyboard.on('keydown-RIGHT', () => move(1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
-  this.input.keyboard.on('keydown-A', () => move(-1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
-  this.input.keyboard.on('keydown-D', () => move(1, this.phase === 'fighter' ? 5 : 4, this.phase === 'fighter' ? 'fi' : 'si'));
-  const toggleMode = () => { if (this.phase === 'fighter') { this.mode = this.mode === 'vs' ? 'gauntlet' : 'vs'; snd(this, 'snd_confirm', 0.4); refresh(this); } };
-  this.input.keyboard.on('keydown-UP', toggleMode);
-  this.input.keyboard.on('keydown-DOWN', toggleMode);
-  this.input.keyboard.on('keydown-W', toggleMode);
-  this.input.keyboard.on('keydown-S', toggleMode);
+  const navProp = () => (this.phase === 'fighter' ? 'fi' : this.phase === 'fighter2' ? 'fi2' : 'si');
+  const navMax = () => (this.phase === 'stage' ? 4 : 5);
+  const move = (d) => { const p = navProp(); this[p] = (this[p] + d + navMax()) % navMax(); refresh(this); };
+  this.input.keyboard.on('keydown-LEFT', () => move(-1));
+  this.input.keyboard.on('keydown-RIGHT', () => move(1));
+  this.input.keyboard.on('keydown-A', () => { if (this.phase !== 'fighter2') move(-1); }); // A/D are P1's move keys in 2P select
+  this.input.keyboard.on('keydown-D', () => { if (this.phase !== 'fighter2') move(1); });
+  const toggleMode = (d) => { if (this.phase === 'fighter') { this.mi = (this.mi + d + MODES.length) % MODES.length; snd(this, 'snd_confirm', 0.4); refresh(this); } };
+  this.input.keyboard.on('keydown-UP', () => toggleMode(-1));
+  this.input.keyboard.on('keydown-DOWN', () => toggleMode(1));
+  this.input.keyboard.on('keydown-W', () => toggleMode(-1));
+  this.input.keyboard.on('keydown-S', () => toggleMode(1));
   const confirm = () => {
     snd(this, 'snd_confirm', 0.5);
-    if (this.phase === 'fighter') { this.phase = 'stage'; refresh(this); }
-    else if (this.mode === 'gauntlet') {
+    const mode = MODES[this.mi].key, twoP = mode === 'p2' || mode === 'sudden';
+    if (this.phase === 'fighter') { this.phase = twoP ? 'fighter2' : 'stage'; refresh(this); }
+    else if (this.phase === 'fighter2') { this.phase = 'stage'; refresh(this); }
+    else if (mode === 'gauntlet') {
       this.scene.start('fight', { playerKey: ROSTER[this.fi].key, stageKey: STAGES[this.si].key, mode: 'gauntlet', rung: 0, gauntletOpps: gauntletSequence(ROSTER[this.fi].key) });
+    } else if (twoP) {
+      this.scene.start('fight', { playerKey: ROSTER[this.fi].key, oppKey: ROSTER[this.fi2].key, stageKey: STAGES[this.si].key, mode });
     } else {
       const opp = ROSTER[(this.fi + 1 + Math.floor(Math.random() * (ROSTER.length - 1))) % ROSTER.length].key;
       this.scene.start('fight', { playerKey: ROSTER[this.fi].key, oppKey: opp, stageKey: STAGES[this.si].key });
@@ -154,31 +175,33 @@ function selectCreate() {
   refresh(this);
 }
 function refresh(scene) {
-  const fighterPhase = scene.phase === 'fighter';
-  scene.title.setText(fighterPhase ? 'CHOOSE YOUR FIGHTER' : 'CHOOSE STAGE');
-  scene.modeLabel.setText(fighterPhase ? (scene.mode === 'gauntlet' ? 'MODE:  vs   [GAUNTLET]   ▲▼' : 'MODE:  [VS]   gauntlet   ▲▼') : '')
-    .setColor(scene.mode === 'gauntlet' ? '#8bffa0' : '#8fe8ff');
+  const p1 = scene.phase === 'fighter', p2 = scene.phase === 'fighter2', fighterPhase = p1 || p2;
+  const idx = p2 ? scene.fi2 : scene.fi;
+  const modeKey = MODES[scene.mi].key;
+  scene.title.setText(p1 ? 'CHOOSE YOUR FIGHTER' : p2 ? 'PLAYER 2  CHOOSE' : 'CHOOSE STAGE');
+  scene.modeLabel.setText(p1 ? `MODE:  ${MODES[scene.mi].label}   ▲▼` : '')
+    .setColor(modeKey === 'gauntlet' ? '#8bffa0' : modeKey === 'vs' ? '#8fe8ff' : '#ffd23f');
   scene.picks.forEach((p, i) => {
-    const on = fighterPhase && i === scene.fi;
+    const on = fighterPhase && i === idx;
     p.s.setVisible(fighterPhase).setAlpha(on ? 1 : 0.45).setScale(on ? 0.92 : 0.8);
-    p.box.setVisible(fighterPhase).setStrokeStyle(2, ROSTER[i].color, on ? 1 : 0);
+    p.box.setVisible(fighterPhase).setStrokeStyle(2, p2 ? 0xff4d6d : ROSTER[i].color, on ? 1 : 0);
   });
   scene.stageImgs.forEach((s, i) => {
     s.img.setVisible(!fighterPhase).setAlpha(i === scene.si ? 1 : 0.5);
     s.box.setVisible(!fighterPhase).setStrokeStyle(2, 0xffd23f, i === scene.si ? 1 : 0);
   });
-  scene.nameLabel.setText(fighterPhase ? ROSTER[scene.fi].name : STAGES[scene.si].name)
-    .setColor(fighterPhase ? '#fff' : '#ffd23f');
+  scene.nameLabel.setText(fighterPhase ? ROSTER[idx].name : STAGES[scene.si].name)
+    .setColor(p2 ? '#ff8fa3' : fighterPhase ? '#fff' : '#ffd23f');
   scene.sub.setText(fighterPhase ? '<  >  select      ENTER  confirm' : '<  >  stage      ENTER  fight');
-  drawStats(scene);
+  drawStats(scene, idx);
 }
-function drawStats(scene) {
+function drawStats(scene, idx) {
   const g = scene.statG; g.clear();
-  const show = scene.phase === 'fighter';
+  const show = scene.phase === 'fighter' || scene.phase === 'fighter2';
   scene.styleLabel.setVisible(show);
   scene.statLabels.forEach((l) => l.setVisible(show));
   if (!show) return;
-  const f = ROSTER[scene.fi];
+  const f = ROSTER[idx];
   scene.styleLabel.setText(f.style).setColor('#' + f.color.toString(16).padStart(6, '0'));
   const clamp = (v) => Math.max(0.06, Math.min(1, v));
   const vals = [
@@ -241,6 +264,9 @@ function fightInit(data) {
   this.gauntletOpps = data.gauntletOpps || [];
   this.boss = this.mode === 'gauntlet' && this.rung >= this.gauntletOpps.length;
   this.oppKey = data.oppKey || (this.mode === 'gauntlet' ? (this.boss ? BOSS.atlas : this.gauntletOpps[this.rung]) : 'fighter5');
+  this.versus = this.mode === 'p2' || this.mode === 'sudden'; // local 2-player (P2 controls the opponent)
+  this.suddenDeath = this.mode === 'sudden';                  // one clean hit ends the round
+  this.roundsToWin = this.suddenDeath ? 3 : ROUNDS_TO_WIN;
 }
 function fightCreate() {
   this.add.image(0, 0, `stage_${this.stageKey}`).setOrigin(0, 0).setDisplaySize(GAME_W, GAME_H).setDepth(0);
@@ -252,9 +278,11 @@ function fightCreate() {
     this.o.hp = this.o.hpMax = BOSS.hp;
   }
 
-  this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,A,D,W,SPACE,J,K,L,S,DOWN,R,ESC,ENTER');
-  this._down = { punch: false, kick: false, special: false };
-  this.atkBuf = null;
+  this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,A,D,W,SPACE,J,K,L,S,DOWN,R,ESC,ENTER,F,G,H');
+  // one input per human: solo = the roomy combined mapping; 2P = P1 left cluster, P2 arrows/JKL
+  this.humanInputs = this.versus
+    ? [{ f: this.p, ks: KEYSET_P1, buf: null, down: {} }, { f: this.o, ks: KEYSET_P2, buf: null, down: {} }]
+    : [{ f: this.p, ks: KEYSET_SOLO, buf: null, down: {} }];
   this.isTouch = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : false;
   this._acc = 0;
   this.hitstop = 0;
@@ -273,7 +301,9 @@ function fightCreate() {
   txt(this, GAME_W - 12, 28, oName, 8, this.boss ? '#8bffa0' : '#cfeaff', 1, 0);
   if (this.mode === 'gauntlet') txt(this, GAME_W / 2, 40, this.boss ? 'FINAL BOSS' : `GAUNTLET  ${this.rung + 1} / 5`, 7, '#8bffa0', 0.5, 0);
   txt(this, GAME_W / 2, GAME_H - 4,
-    this.isTouch ? 'J K L  attack     DOWN  block     UP  jump' : 'J punch   K kick   L special   S block',
+    this.versus ? 'P1  WASD + FGH          P2  ARROWS + JKL'
+      : this.isTouch ? 'J K L  attack     DOWN  block     UP  jump'
+      : 'J punch   K kick   L special   S block',
     8, '#5f93aa', 0.5, 1);
 
   this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
@@ -354,24 +384,29 @@ function control(f, intent, dtMs) {
   f.pose = !f.kin.grounded ? POSE.jump : (f.kin.vx !== 0 ? POSE.walk : POSE.idle);
 }
 
-// Edge-detect the attack keys into a short-lived buffer EVERY frame (including during
-// hitstop, when the tick loop is paused) so a press made a few frames early — or right
-// after landing a hit — still fires on the first actionable tick instead of being eaten.
-function sampleAttackBuffer(scene, dtMs) {
-  const k = scene.keys;
-  if (!k) return;
-  const edge = (n, key) => { const jp = key.isDown && !scene._down[n]; scene._down[n] = key.isDown; return jp; };
-  const jP = edge('punch', k.J), jK = edge('kick', k.K), jL = edge('special', k.L);
-  const fresh = jP ? 'punch' : jK ? 'kick' : jL ? 'special' : null;
-  if (fresh) scene.atkBuf = { type: fresh, t: BUFFER_MS };
-  else if (scene.atkBuf) { scene.atkBuf.t -= dtMs; if (scene.atkBuf.t <= 0) scene.atkBuf = null; }
+function keyDown(scene, spec) {
+  if (Array.isArray(spec)) { for (const kn of spec) { const k = scene.keys[kn]; if (k && k.isDown) return true; } return false; }
+  const k = scene.keys[spec]; return !!(k && k.isDown);
 }
-function playerIntent(scene) {
-  const k = scene.keys;
+// Edge-detect EACH human's attack keys into that input's own buffer every frame (incl.
+// during hitstop, when the tick loop is paused) so a press made a few frames early — or
+// right after a hit — still fires on the first actionable tick instead of being eaten.
+function sampleAttackBuffer(scene, dtMs) {
+  if (!scene.keys || !scene.humanInputs) return;
+  for (const inp of scene.humanInputs) {
+    const edge = (n, keyName) => { const k = scene.keys[keyName]; const d = !!(k && k.isDown); const jp = d && !inp.down[n]; inp.down[n] = d; return jp; };
+    const jP = edge('p', inp.ks.punch), jK = edge('k', inp.ks.kick), jL = edge('s', inp.ks.special);
+    const fresh = jP ? 'punch' : jK ? 'kick' : jL ? 'special' : null;
+    if (fresh) inp.buf = { type: fresh, t: BUFFER_MS };
+    else if (inp.buf) { inp.buf.t -= dtMs; if (inp.buf.t <= 0) inp.buf = null; }
+  }
+}
+function intentFrom(scene, inp) {
+  const ks = inp.ks;
   return {
-    left: k.LEFT.isDown || k.A.isDown, right: k.RIGHT.isDown || k.D.isDown,
-    jump: k.UP.isDown || k.W.isDown || k.SPACE.isDown, block: k.S.isDown || k.DOWN.isDown,
-    atk: scene.atkBuf ? scene.atkBuf.type : null,
+    left: keyDown(scene, ks.left), right: keyDown(scene, ks.right),
+    jump: keyDown(scene, ks.jump), block: keyDown(scene, ks.block),
+    atk: inp.buf ? inp.buf.type : null,
   };
 }
 // Punch-Out-school AI: each archetype is a distinct, readable personality with its
@@ -490,6 +525,7 @@ function applyHit(att, def, scene) {
   else { def.hp = Math.max(0, def.hp - Math.round(dmg)); def.hitstun = a.hitstun; def.action = null; def.kin.vx = att.dir * KNOCKBACK; def.flash = 90; }
   def.ghostDelay = 350;                 // ghost HP segment lingers, then melts to the new value
   def.tookDamage = true;                // flawless-round tracking
+  if (scene.suddenDeath && !blocked) def.hp = 0; // one clean hit ends the round
   const ko = def.hp <= 0 && !def.koed;
   scene._frozenDef = def;               // this body buzzes ±1px during the freeze
   juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko, att.action.type, att.stats.color);
@@ -498,8 +534,8 @@ function applyHit(att, def, scene) {
   if (ko) {
     // Match-deciding PLAYER blow -> don't kill; leave the loser dazed and open the
     // "CLOSE THE DEAL!" finisher window (MK's FINISH HIM). Only the player gets it.
-    const willWinMatch = ((att.isPlayer ? scene.pWins : scene.oWins) + 1) >= ROUNDS_TO_WIN;
-    if (willWinMatch && att.isPlayer && scene.phase === 'fight') {
+    const willWinMatch = ((att.isPlayer ? scene.pWins : scene.oWins) + 1) >= scene.roundsToWin;
+    if (willWinMatch && att.isPlayer && scene.phase === 'fight' && !scene.versus) { // no finisher in 2P
       def.hp = 1;                        // survive on a sliver
       snd(scene, 'snd_kothud', 0.7);
       startFinisher(scene, att, def);
@@ -526,7 +562,7 @@ function startFinisher(scene, winner, loser) {
   scene.phase = 'finisher';
   scene.finWinner = winner; scene.finLoser = loser; scene.finisherT = 4200;
   winner.action = null; loser.action = null; loser.hitstun = 0; loser.dazed = true;
-  scene.atkBuf = null; // ignore the finishing press; require a fresh one to finish
+  scene.humanInputs[0].buf = null; // ignore the finishing press; require a fresh one to finish
   scene.darken = scene.add.rectangle(0, 0, GAME_W, GAME_H, 0x000000, 0.55).setOrigin(0, 0).setDepth(35);
   scene.banner.setText('CLOSE THE DEAL!').setColor('#ff5000').setVisible(true);
   scene.finPrompt = txt(scene, GAME_W / 2, 134, scene.isTouch ? 'tap  J  K  L' : 'press  J  K  L', 8, '#ffd23f').setDepth(60);
@@ -605,7 +641,7 @@ function finishMatch(scene, playerWon) {
 function endRound(scene, playerWon) {
   scene.phase = 'roundend';
   if (playerWon) scene.pWins++; else scene.oWins++;
-  const matchOver = scene.pWins >= ROUNDS_TO_WIN || scene.oWins >= ROUNDS_TO_WIN;
+  const matchOver = scene.pWins >= scene.roundsToWin || scene.oWins >= scene.roundsToWin;
   // Invisible per-round rubber band (round boundaries only, so it never feels like
   // mid-fight cheating): a struggling first-timer who drops a round gets a gentler CPU
   // next round; a player who's steamrolling meets a tougher one. Bounded + reset each match.
@@ -635,10 +671,11 @@ function endRound(scene, playerWon) {
       scene.phase = 'matchend';
       const gaunt = scene.mode === 'gauntlet';
       scene.matchAction = gaunt ? 'gameover' : 'rematch';
-      const cont = scene.isTouch ? 'OK' : 'ENTER';
-      scene.result.setText(gaunt
-        ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}\n${cont}  roster`
-        : `PIVOT TO CONSULTING\n${scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster'}`).setVisible(true);
+      const cont2 = scene.isTouch ? 'OK  rematch' : 'R rematch    ESC roster';
+      const text = scene.versus ? `${playerWon ? 'P1' : 'P2'}  WINS\n${cont2}`   // 2P: P1/P2 win (finisher is off)
+        : gaunt ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}\n${scene.isTouch ? 'OK' : 'ENTER'}  roster`
+        : `PIVOT TO CONSULTING\n${cont2}`;
+      scene.result.setText(text).setVisible(true);
     } else {
       scene.result.setText(flawless ? 'FLAWLESS!' : 'K.P.I.').setVisible(true);
       scene.time.delayedCall(900, () => { scene.round++; startRound(scene); });
@@ -653,16 +690,20 @@ function tick(scene, dtMs) {
   o.dir = p.kin.x >= o.kin.x ? 1 : -1;
 
   const live = scene.phase === 'fight';
-  control(p, live ? playerIntent(scene) : {}, dtMs);
-  if (p.action && p.action.e === 0) scene.atkBuf = null; // buffered attack was just consumed
-  control(o, live ? aiIntent(scene, o, p, dtMs) : {}, dtMs);
+  for (const f of [p, o]) {
+    const inp = scene.humanInputs.find((i) => i.f === f);        // human input, or the AI drives it
+    const intent = live ? (inp ? intentFrom(scene, inp) : aiIntent(scene, o, p, dtMs)) : {};
+    control(f, intent, dtMs);
+    if (inp && f.action && f.action.e === 0) inp.buf = null;     // buffered attack was just consumed
+  }
   integrate(p, dt); integrate(o, dt);
   separate(p, o);
 
-  // "CLOSE THE DEAL!" window: a fresh J/K/L press finishes; timeout -> plain win
+  // "CLOSE THE DEAL!" window: a fresh attack press from the player finishes; timeout -> plain win
   if (scene.phase === 'finisher') {
     scene.finisherT -= dtMs;
-    if (scene.atkBuf) { scene.atkBuf = null; triggerFatality(scene); return; }
+    const pbuf = scene.humanInputs[0];
+    if (pbuf.buf) { pbuf.buf = null; triggerFatality(scene); return; }
     if (scene.finisherT <= 0) { finisherTimeout(scene); return; }
   }
 
@@ -737,7 +778,7 @@ function drawUI(scene) {
     g.fillRect(leftAnchor ? x : x + bw - fw, y, fw, bh);
     g.lineStyle(1, 0xffffff, 0.85); g.strokeRect(x, y, bw, bh);
     // round pips at the INNER end of each bar (toward centre) so they never touch the names
-    for (let i = 0; i < ROUNDS_TO_WIN; i++) {
+    for (let i = 0; i < scene.roundsToWin; i++) {
       const px = leftAnchor ? x + bw - 6 - i * 9 : x + 1 + i * 9;
       g.fillStyle(i < wins ? 0x8bffa0 : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
     }
