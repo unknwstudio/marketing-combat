@@ -830,10 +830,11 @@ export function createFightGame(Phaser, parent) {
     const w = (parent && parent.clientWidth) || window.innerWidth;
     const h = (parent && parent.clientHeight) || window.innerHeight;
     const z = Math.min(w / GAME_W, h / GAME_H);
-    // whole-number zoom when the viewport can afford it (crisp integer pixel grid);
-    // a fractional zoom below 1 so narrow / portrait phones still fit the whole 480px
-    // stage instead of clipping the HUD off the sides.
-    game.scale.setZoom(z >= 1 ? Math.floor(z) : Math.max(0.5, z));
+    const coarse = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    // Desktop: whole-number zoom => a crisp integer pixel grid. Touch: fill the space
+    // with a fractional zoom instead — on a phone a big arena (image-rendering:pixelated
+    // keeps it blocky, just an uneven grid) beats a tiny 1x stage lost in black bars.
+    game.scale.setZoom(coarse ? Math.max(0.5, z) : (z >= 1 ? Math.floor(z) : Math.max(0.5, z)));
   };
   game.events.once('ready', fit);
   window.addEventListener('resize', fit);

@@ -18,6 +18,11 @@ export default function PlayPage() {
     <main className="play-main">
       <FightGame />
       <MobileControls />
+      <div className="rotate-hint" aria-hidden="true">
+        <div className="rot-phone" />
+        <div className="rot-big">ROTATE YOUR<br />PHONE</div>
+        <div className="rot-sm">the arena needs landscape</div>
+      </div>
     </main>
   );
 }

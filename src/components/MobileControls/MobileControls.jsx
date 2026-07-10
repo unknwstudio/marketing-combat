@@ -28,21 +28,29 @@ export default function MobileControls() {
     return () => { window.removeEventListener('blur', releaseAll); window.removeEventListener('pointercancel', releaseAll); };
   }, []);
 
-  const press = (name) => (e) => { e.preventDefault(); if (!held.current.has(name)) { held.current.add(name); fire('keydown', KEYS[name]); } };
+  const press = (name) => (e) => {
+    e.preventDefault();
+    // release the implicit pointer capture so a thumb can SLIDE from one button to the
+    // next (otherwise the first-touched button keeps firing until the finger lifts).
+    if (e.currentTarget.releasePointerCapture) { try { e.currentTarget.releasePointerCapture(e.pointerId); } catch (_) { /* not captured */ } }
+    if (!held.current.has(name)) { held.current.add(name); fire('keydown', KEYS[name]); }
+  };
   const lift = (name) => (e) => { e.preventDefault(); if (held.current.has(name)) { held.current.delete(name); fire('keyup', KEYS[name]); } };
   const bind = (name) => ({
     onPointerDown: press(name),
     onPointerUp: lift(name),
     onPointerLeave: lift(name),
+    onPointerEnter: (e) => { if (e.buttons || e.pointerType === 'touch') press(name)(e); }, // slide onto a neighbour
     onContextMenu: (e) => e.preventDefault(),
+    tabIndex: -1, // inside an aria-hidden overlay: keep out of the tab order
   });
 
   return (
     <div className="mc-root" aria-hidden="true">
       <div className="mc-pad">
         <button className="mc-btn mc-up" {...bind('up')}>▲</button>
-        <button className="mc-btn mc-left" {...bind('left')}>‹</button>
-        <button className="mc-btn mc-right" {...bind('right')}>›</button>
+        <button className="mc-btn mc-left" {...bind('left')}>◀</button>
+        <button className="mc-btn mc-right" {...bind('right')}>▶</button>
         <button className="mc-btn mc-down" {...bind('down')}>▼</button>
       </div>
       <div className="mc-actions">

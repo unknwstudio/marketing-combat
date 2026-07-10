@@ -21,3 +21,36 @@
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
+
+/* A 16:9 fighting stage is unusable squeezed into a tall portrait phone, so on a
+   touch device held upright we cover it with a "rotate to landscape" prompt. */
+.rotate-hint { display: none; }
+@media (pointer: coarse) and (orientation: portrait) {
+  .rotate-hint {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    background: #05010c;
+    color: #ffd23f;
+    text-align: center;
+    padding: 32px;
+    font-family: var(--font-ps, ui-monospace, monospace);
+  }
+  .rotate-hint .rot-phone {
+    width: 34px;
+    height: 60px;
+    border: 3px solid #ffd23f;
+    border-radius: 7px;
+    animation: rot-turn 2.2s ease-in-out infinite;
+  }
+  .rotate-hint .rot-big { font-size: 13px; line-height: 1.9; }
+  .rotate-hint .rot-sm { font-size: 8px; color: #8fe8ff; line-height: 1.9; }
+  .mc-root { display: none !important; } /* the prompt covers the game; hide the pad */
+}
+@keyframes rot-turn { 0%, 100% { transform: rotate(0deg); } 55%, 90% { transform: rotate(90deg); } }
+@media (prefers-reduced-motion: reduce) { .rotate-hint .rot-phone { animation: none; transform: rotate(90deg); } }
