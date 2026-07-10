@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useJuice } from '@/effects/juice/useJuice'
+import { playSfx } from '@/effects/audio/arcadeAudio'
 import './Announcer.css'
 
 /**
@@ -15,19 +16,6 @@ import './Announcer.css'
 export default function Announcer() {
   const { shake } = useJuice()
   const [msg, setMsg] = useState(null)
-  const interacted = useRef(false)
-
-  useEffect(() => {
-    const mark = () => {
-      interacted.current = true
-    }
-    window.addEventListener('pointerdown', mark, { once: true })
-    window.addEventListener('keydown', mark, { once: true })
-    return () => {
-      window.removeEventListener('pointerdown', mark)
-      window.removeEventListener('keydown', mark)
-    }
-  }, [])
 
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return
@@ -44,13 +32,7 @@ export default function Announcer() {
           setMsg(key)
           shake(7)
           const sound = el.getAttribute('data-sound')
-          if (sound && interacted.current) {
-            try {
-              const a = new Audio(`/game/audio/${sound}.mp3`)
-              a.volume = 0.45
-              a.play().catch(() => {})
-            } catch {}
-          }
+          if (sound) playSfx(sound, 0.45)
           window.clearTimeout(hideTimer)
           hideTimer = window.setTimeout(() => setMsg(null), 1300)
           io.unobserve(el)

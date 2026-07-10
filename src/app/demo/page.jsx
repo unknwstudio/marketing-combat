@@ -32,6 +32,8 @@ import Footer from '@/sections/Footer/Footer'
 import ScrollHealth from '@/components/ScrollHealth/ScrollHealth'
 import Announcer from '@/components/Announcer/Announcer'
 import KonamiFatality from '@/components/KonamiFatality/KonamiFatality'
+import SoundToggle from '@/components/SoundToggle/SoundToggle'
+import MagneticCTA from '@/components/MagneticCTA/MagneticCTA'
 
 /**
  * AI Marketing Kombat — /demo.
@@ -78,6 +80,8 @@ export default function Page() {
       <CRTOverlay intensity={0.1} flicker powerOn={false} />
       <ScrollHealth />
       <KonamiFatality />
+      <SoundToggle />
+      <MagneticCTA />
       <ModeSwitcher active="ai" />
     </div>
   )
