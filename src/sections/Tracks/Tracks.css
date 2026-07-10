@@ -1,0 +1,113 @@
+/* Two wide track cards side by side. */
+.tracks__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tracks__card {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 36px;
+  border-color: #3a2a10;
+}
+
+.tracks__top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid #2a2140;
+}
+
+.tracks__name {
+  margin: 0;
+  font-family: var(--k-font-accent);
+  font-size: 44px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: lowercase;
+  color: #ffd000;
+}
+
+.tracks__special {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--k-font-mono);
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+.tracks__specialLabel {
+  color: #ff5000;
+  text-transform: uppercase;
+}
+
+.tracks__specialValue {
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.tracks__bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+}
+
+.tracks__bullet {
+  font-family: var(--k-font-mono);
+  font-size: 22px;
+  line-height: 1.35;
+  letter-spacing: -0.5px;
+  color: #7fd39a;
+}
+
+.tracks__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tracks__fight {
+  align-self: flex-end;
+  font-family: var(--k-font);
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--k-red);
+  text-transform: uppercase;
+}
+
+@media (max-width: 1023px) {
+  .tracks__grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .tracks__card {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .tracks__name {
+    font-size: 26px;
+  }
+
+  .tracks__special,
+  .tracks__bullet {
+    font-size: 13px;
+  }
+
+  .tracks__fight {
+    font-size: 14px;
+  }
+}

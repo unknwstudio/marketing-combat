@@ -1,0 +1,178 @@
+/* ============================================================
+   /demo — shared section chrome
+   Reuses the landing's visual language (see Hero.css / Fighters.css /
+   Champion.css): fixed 1440px stages, GT Pressura Mono UI text in
+   arcade green (#3ad76f), Platform display titles in yellow (#ffd000)
+   with an orange (#ff5000) outline + glow, black hairline pills.
+   Every section below 1024px reflows to a fluid single column.
+   ============================================================ */
+
+/* --- section shell ------------------------------------------------- */
+.dsec {
+  position: relative;
+  width: 1440px;
+  background: var(--k-bg);
+  color: var(--k-ink);
+  font-family: var(--k-font-mono);
+  padding: 96px 80px;
+  overflow: hidden;
+}
+
+.dsec--alt {
+  background: #08010f;
+}
+
+/* --- centered header block: round label + title + sub -------------- */
+.dsec__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.dsec__round {
+  font-family: var(--k-font-mono);
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.72px;
+  color: #3ad76f;
+  text-transform: uppercase;
+}
+
+.dsec__title {
+  margin: 0;
+  font-family: var(--k-font-accent);
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: lowercase;
+  color: #ffd000;
+  -webkit-text-stroke: 0.0625em #ff5000;
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 0.03em #ff5000,
+    0 0 0.08em #ff5000,
+    0 0 0.16em rgba(255, 80, 0, 0.65);
+}
+
+.dsec__sub {
+  max-width: 900px;
+  font-size: 22px;
+  line-height: 1.4;
+  letter-spacing: -0.5px;
+  color: #7fd39a;
+}
+
+/* --- pill (hero tag idiom): black, white hairline top/bottom -------- */
+.dpill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  color: #3ad76f;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* --- panel / card: dark box with a colored 2px frame --------------- */
+.dcard {
+  position: relative;
+  background: #050109;
+  border: 2px solid #2a2140;
+  padding: 28px;
+}
+
+/* --- CTA button (champion/hero idiom) ------------------------------ */
+.dcta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: #000;
+  border: 1px solid #fff;
+  color: #fff;
+  font-family: var(--k-font-mono);
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.dcta:hover {
+  background: #ffd000;
+  color: #000;
+  border-color: #ffd000;
+}
+
+/* small numeric index used across cards ("01".."06") */
+.dindex {
+  font-family: var(--k-font-accent);
+  font-size: 40px;
+  line-height: 1;
+  color: #ff5000;
+}
+
+/* ============================================================
+   RESPONSIVE — below 1024px every .dsec flows fluidly
+   (ScaleCanvas drops uniform scaling under its breakpoint).
+   ============================================================ */
+@media (max-width: 1023px) {
+  .dsec {
+    width: 100%;
+    padding: 56px 20px;
+  }
+
+  .dsec__head {
+    margin-bottom: 32px;
+    gap: 12px;
+  }
+
+  .dsec__round {
+    font-size: 12px;
+  }
+
+  .dsec__title {
+    font-size: clamp(22px, 7vw, 44px);
+    line-height: 1.2;
+  }
+
+  .dsec__sub {
+    font-size: 13px;
+  }
+
+  .dpill {
+    font-size: 11px;
+    letter-spacing: -0.3px;
+  }
+
+  .dcard {
+    padding: 18px;
+  }
+
+  .dcta {
+    font-size: 13px;
+    padding: 11px 14px;
+  }
+
+  .dindex {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 639px) {
+  .dsec {
+    padding: 44px 14px;
+  }
+
+  .dsec__sub {
+    font-size: 12px;
+  }
+}

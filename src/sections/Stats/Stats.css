@@ -1,0 +1,99 @@
+/* Four big arcade counters, divided by thin vertical rules. */
+.stats {
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+
+.stats__row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stats__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 24px;
+  text-align: center;
+}
+
+.stats__cell + .stats__cell {
+  border-left: 2px solid #2a2140;
+}
+
+.stats__value {
+  font-family: var(--k-font-accent);
+  font-size: 88px;
+  font-weight: 500;
+  line-height: 1;
+  color: #ffd000;
+  -webkit-text-stroke: 0.04em #ff5000;
+  paint-order: stroke fill;
+  text-shadow: 0 0 0.1em rgba(255, 80, 0, 0.55);
+}
+
+.stats__unit {
+  color: #ff5000;
+  -webkit-text-stroke: 0;
+}
+
+.stats__caption {
+  font-family: var(--k-font-mono);
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+  color: #3ad76f;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1023px) {
+  .stats {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .stats__row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+  }
+
+  .stats__cell {
+    padding: 18px 10px;
+  }
+
+  /* with 2 columns, the left border on the 3rd cell (start of row 2) is wrong;
+     redraw the dividers as a grid: only cells in the right column get a left rule */
+  .stats__cell + .stats__cell {
+    border-left: none;
+  }
+
+  .stats__cell:nth-child(even) {
+    border-left: 2px solid #2a2140;
+  }
+
+  .stats__cell:nth-child(n + 3) {
+    border-top: 2px solid #2a2140;
+  }
+
+  .stats__value {
+    font-size: 44px;
+  }
+
+  .stats__caption {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 639px) {
+  .stats__value {
+    font-size: 36px;
+  }
+
+  .stats__caption {
+    font-size: 10px;
+  }
+}

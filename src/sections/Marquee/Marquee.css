@@ -1,0 +1,67 @@
+/* FIGHT! ticker strip — red arcade bar, seamless -50% scroll loop. */
+.marquee {
+  position: relative;
+  width: 1440px;
+  background: var(--k-red);
+  border-top: 3px solid #000;
+  border-bottom: 3px solid #000;
+  overflow: hidden;
+}
+
+.marquee__viewport {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.marquee__track {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  font-family: var(--k-font);
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #000;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.marquee__star {
+  color: #ffd000;
+  -webkit-text-stroke: 1px #000;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__viewport {
+    animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .marquee {
+    width: 100%;
+  }
+
+  .marquee__item {
+    font-size: 12px;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+}

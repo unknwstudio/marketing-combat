@@ -1,0 +1,76 @@
+/* GAME OVER footer bar. */
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+  padding-top: 72px;
+  padding-bottom: 72px;
+  background: #000;
+  border-top: 3px solid var(--k-red);
+}
+
+.footer__over {
+  font-family: var(--k-font);
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: var(--k-red);
+  text-transform: uppercase;
+}
+
+.footer__title {
+  font-family: var(--k-font-mono);
+  font-size: 22px;
+  letter-spacing: 0;
+  color: #ffd000;
+  text-transform: uppercase;
+}
+
+.footer__legal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--k-font-mono);
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  color: #7f7f7f;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.footer__links a {
+  color: #3ad76f;
+}
+
+.footer__links a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+@media (max-width: 1023px) {
+  .footer {
+    padding-top: 44px;
+    padding-bottom: 44px;
+    gap: 12px;
+  }
+
+  .footer__over {
+    font-size: 16px;
+  }
+
+  .footer__title {
+    font-size: 12px;
+  }
+
+  .footer__legal {
+    font-size: 12px;
+  }
+}
