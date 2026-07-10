@@ -29,10 +29,11 @@
   justify-content: space-between;
 }
 
-.whyjoin__glyph {
-  font-size: 44px;
-  line-height: 1;
-  color: #3fe0ff;
+.whyjoin__icon {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
 }
 
 .whyjoin__title {
@@ -69,8 +70,9 @@
     gap: 12px;
   }
 
-  .whyjoin__glyph {
-    font-size: 28px;
+  .whyjoin__icon {
+    width: 48px;
+    height: 48px;
   }
 
   .whyjoin__title {

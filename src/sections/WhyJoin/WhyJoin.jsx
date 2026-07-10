@@ -8,42 +8,42 @@ import './WhyJoin.css'
 const REASONS = [
   {
     n: '01',
-    glyph: '⚔',
+    icon: 'icon-challenge.png',
     title: 'CHALLENGE',
     body: 'Compare yourself with other market leaders in real-world conditions.',
     tag: 'POWER',
   },
   {
     n: '02',
-    glyph: '⌬',
+    icon: 'icon-community.png',
     title: 'COMMUNITY',
     body: 'Get into a closed, professional community of senior practitioners.',
     tag: 'UNITY',
   },
   {
     n: '03',
-    glyph: '⟁',
+    icon: 'icon-networking.png',
     title: 'NETWORKING',
     body: 'Networking with the jury, sponsors, and market colleagues.',
     tag: 'REACH',
   },
   {
     n: '04',
-    glyph: '✦',
+    icon: 'icon-opportunity.png',
     title: 'OPPORTUNITY',
     body: 'The best solutions on GitHub. Offers from sponsoring companies.',
     tag: 'LUCK',
   },
   {
     n: '05',
-    glyph: '◈',
+    icon: 'icon-portfolio.png',
     title: 'PORTFOLIO CASE',
     body: 'A real AI marketing case study — with numbers — in your portfolio.',
     tag: 'PROOF',
   },
   {
     n: '06',
-    glyph: '♛',
+    icon: 'icon-prize.png',
     title: 'PRIZE VAULT',
     body: 'Annual subscriptions to AI services and individual sessions with experts.',
     tag: 'LOOT',
@@ -67,9 +67,12 @@ export default function WhyJoin() {
           <li key={r.n} className="dcard whyjoin__card">
             <div className="whyjoin__top">
               <span className="dindex">{r.n}</span>
-              <span className="whyjoin__glyph" aria-hidden="true">
-                {r.glyph}
-              </span>
+              <img
+                className="whyjoin__icon pixelated"
+                src={`/assets/demo/whyjoin/${r.icon}`}
+                alt=""
+                aria-hidden="true"
+              />
             </div>
             <h3 className="whyjoin__title">{r.title}</h3>
             <p className="whyjoin__body">{r.body}</p>

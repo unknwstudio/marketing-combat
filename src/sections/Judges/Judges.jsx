@@ -2,12 +2,13 @@ import './Judges.css'
 
 /**
  * BOSS ROSTER — THE JUDGES. Three placeholder bosses + one secret boss.
- * Copy verbatim from the original site (which itself shows placeholders).
+ * Copy verbatim from the original site (which itself shows placeholders);
+ * portraits are generated pixel-art bosses.
  */
 const JUDGES = [
-  { n: '01', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
-  { n: '02', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
-  { n: '03', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
+  { n: '01', img: 'boss-01.png', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
+  { n: '02', img: 'boss-02.png', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
+  { n: '03', img: 'boss-03.png', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
 ]
 
 export default function Judges() {
@@ -24,9 +25,11 @@ export default function Judges() {
       <ul className="judges__grid">
         {JUDGES.map((j) => (
           <li key={j.n} className="dcard judges__card">
-            <div className="judges__portrait" aria-hidden="true">
-              <span className="judges__silhouette">◈</span>
-            </div>
+            <img
+              className="judges__portrait pixelated"
+              src={`/assets/demo/judges/${j.img}`}
+              alt={`Boss ${j.n} portrait`}
+            />
             <span className="judges__tag">BOSS · {j.n}</span>
             <h3 className="judges__name">{j.name}</h3>
             <p className="judges__line">{j.line}</p>
@@ -34,9 +37,11 @@ export default function Judges() {
         ))}
 
         <li className="dcard judges__card judges__card--secret">
-          <div className="judges__portrait judges__portrait--secret" aria-hidden="true">
-            <span className="judges__question">?</span>
-          </div>
+          <img
+            className="judges__portrait pixelated"
+            src={`/assets/demo/judges/secret-boss.png`}
+            alt="Secret boss — identity hidden"
+          />
           <span className="judges__tag judges__tag--secret">SECRET BOSS ???</span>
           <h3 className="judges__name">UNLOCK SOON</h3>
           <p className="judges__line">Identity revealed before the main tour</p>

@@ -7,6 +7,7 @@ import './Arenas.css'
 const ARENAS = [
   {
     n: '01',
+    img: 'healthcare.png',
     name: 'HEALTHCARE',
     body: 'Complex funnel. Long cycle. High LTV. Mission: cut CAC and speed up first-purchase conversion.',
     tags: ['CYCLE LONG', 'LTV HIGH'],
@@ -14,6 +15,7 @@ const ARENAS = [
   },
   {
     n: '02',
+    img: 'b2b-saas.png',
     name: 'B2B SAAS',
     body: 'Long sales cycles. Many stakeholders. Mission: turn PQLs into pipeline with AI-driven demand gen.',
     tags: ['MOTION PLG', 'ACV HIGH'],
@@ -21,6 +23,7 @@ const ARENAS = [
   },
   {
     n: '03',
+    img: 'e-commerce.png',
     name: 'E-COMMERCE',
     body: 'High volume. Thin margins. ROAS pressure. Mission: scale creative and squeeze CAC with AI.',
     tags: ['VOLUME HIGH', 'MARGIN THIN'],
@@ -28,6 +31,7 @@ const ARENAS = [
   },
   {
     n: '04',
+    img: 'enterprise.png',
     name: 'ENTERPRISE',
     body: 'Six-figure deals. Long procurement. Mission: run AI-powered ABM that lands target accounts.',
     tags: ['DEAL 6-FIG', 'CYCLE LONG'],
@@ -52,6 +56,11 @@ export default function Arenas() {
       <ul className="arenas__grid">
         {ARENAS.map((a) => (
           <li key={a.n} className="dcard arenas__card">
+            <img
+              className="arenas__art pixelated"
+              src={`/assets/demo/arenas/${a.img}`}
+              alt={`${a.name} arena`}
+            />
             <div className="arenas__top">
               <span className="arenas__track">CASE TRACK · {a.n}</span>
               <h3 className="arenas__name">{a.name}</h3>

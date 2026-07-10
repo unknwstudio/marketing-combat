@@ -16,6 +16,14 @@
   border-color: #3a2a10;
 }
 
+.tracks__art {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 2px solid #2a2140;
+  display: block;
+}
+
 .tracks__top {
   display: flex;
   align-items: center;

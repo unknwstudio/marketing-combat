@@ -15,19 +15,13 @@
   align-items: flex-start;
 }
 
-/* initials badge — pixel-art portrait drops in here in the art pass */
-.organizers__avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 96px;
-  height: 96px;
-  background: linear-gradient(160deg, #1a0938 0%, #06010f 100%);
-  border: 2px solid #3fe0ff;
-  font-family: var(--k-font-accent);
-  font-size: 40px;
-  color: #3fe0ff;
-  letter-spacing: 1px;
+/* generated pixel-art fighter portrait */
+.organizers__portrait {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 2px solid #2a2140;
 }
 
 .organizers__tag {
@@ -60,12 +54,6 @@
   .organizers__grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
-  }
-
-  .organizers__avatar {
-    width: 64px;
-    height: 64px;
-    font-size: 26px;
   }
 
   .organizers__tag {

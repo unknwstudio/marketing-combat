@@ -14,6 +14,14 @@
   gap: 20px;
 }
 
+.arenas__art {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 2px solid #2a2140;
+  display: block;
+}
+
 .arenas__top {
   display: flex;
   flex-direction: column;

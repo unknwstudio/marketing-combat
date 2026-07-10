@@ -7,6 +7,7 @@ import './Tracks.css'
 const TRACKS = [
   {
     n: '01',
+    img: 'ai-creatives.png',
     name: 'AI-CREATIVES',
     special: 'HOLOGRAPHIC BANNER MAKER',
     bullets: [
@@ -17,6 +18,7 @@ const TRACKS = [
   },
   {
     n: '02',
+    img: 'ai-performance.png',
     name: 'AI-PERFORMANCE',
     special: 'ZERO-WASTE MEDIA SPLIT',
     bullets: [
@@ -40,6 +42,11 @@ export default function Tracks() {
       <ul className="tracks__grid">
         {TRACKS.map((t) => (
           <li key={t.n} className="dcard tracks__card">
+            <img
+              className="tracks__art pixelated"
+              src={`/assets/demo/tracks/${t.img}`}
+              alt={`${t.name} track illustration`}
+            />
             <div className="tracks__top">
               <span className="dindex">{t.n}</span>
               <h3 className="tracks__name">{t.name}</h3>

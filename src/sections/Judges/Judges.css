@@ -15,31 +15,17 @@
   align-items: flex-start;
 }
 
-/* portrait placeholder tile (swapped for generated pixel art in the art pass) */
+/* generated pixel-art boss portrait */
 .judges__portrait {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: linear-gradient(160deg, #140a26 0%, #06010f 100%);
+  object-fit: cover;
   border: 2px solid #2a2140;
 }
 
-.judges__silhouette {
-  font-size: 72px;
-  color: #2f2450;
-}
-
-.judges__portrait--secret {
-  background: linear-gradient(160deg, #2a0714 0%, #06010f 100%);
+.judges__card--secret .judges__portrait {
   border-color: var(--k-red);
-}
-
-.judges__question {
-  font-family: var(--k-font-accent);
-  font-size: 96px;
-  color: var(--k-red);
 }
 
 .judges__tag {
@@ -76,14 +62,6 @@
   .judges__grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
-  }
-
-  .judges__silhouette {
-    font-size: 44px;
-  }
-
-  .judges__question {
-    font-size: 60px;
   }
 
   .judges__tag {
