@@ -113,7 +113,7 @@ const snd = (scene, key, vol = 1) => { try { if (scene.cache.audio.exists(key)) 
 const emitScene = (key) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:scene', { detail: { key } })); } catch (e) { /* no DOM */ } } };
 // Result screen -> GameChrome: it renders the matched action bar (Rematch / Next /
 // Roster + Change Fighter + Exit). Pass null to clear it when the match screen leaves.
-const emitResult = (action) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:result', { detail: action ? { show: true, action } : { show: false } })); } catch (e) { /* no DOM */ } } };
+const emitResult = (action, meta) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:result', { detail: action ? { show: true, action, ...(meta || {}) } : { show: false } })); } catch (e) { /* no DOM */ } } };
 
 /* =========================================================================
    BOOT — load every fighter atlas + every stage once, then go to Select.
@@ -692,7 +692,7 @@ function finishMatch(scene, playerWon) {
       : scene.matchAction === 'advance' ? `RUNG ${scene.rung + 1}/5 CLEARED`
       : 'PROMOTED!';                          // the GameChrome buttons are the CTA now
     scene.result.setText(text).setVisible(true);
-    emitResult(scene.matchAction);
+    emitResult(scene.matchAction, { fighter: scene.p.stats.name, won: true });
   });
 }
 
@@ -733,7 +733,7 @@ function endRound(scene, playerWon) {
         : gaunt ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}`
         : 'PIVOT TO CONSULTING';               // the GameChrome buttons are the CTA now
       scene.result.setText(text).setVisible(true);
-      emitResult(scene.matchAction);
+      emitResult(scene.matchAction, { fighter: scene.p.stats.name, won: playerWon });
     } else {
       scene.result.setText(flawless ? 'FLAWLESS!' : 'K.P.I.').setVisible(true);
       scene.time.delayedCall(900, () => { scene.round++; startRound(scene); });

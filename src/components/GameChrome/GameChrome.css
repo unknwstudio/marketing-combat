@@ -176,6 +176,30 @@
 }
 .gc-result-primary { border-color: var(--gc-gold); color: var(--gc-gold); }
 .gc-result-primary:hover { background: rgba(255, 210, 63, 0.18); border-color: var(--gc-gold); color: #fff; }
+.gc-share-btn { border-color: rgba(143, 232, 255, 0.5); color: var(--gc-blue); }
+.gc-share-btn:hover { background: rgba(143, 232, 255, 0.16); border-color: var(--gc-blue); color: #fff; }
+
+/* ---- share / brag card ---- */
+.gc-bragcard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 22px 34px;
+  margin: 4px 0 2px;
+  background: linear-gradient(160deg, rgba(20, 12, 40, 0.9), rgba(8, 4, 20, 0.9));
+  border: 2px solid var(--gc-gold);
+  box-shadow: 0 0 26px rgba(255, 210, 63, 0.25), inset 0 0 40px rgba(0, 0, 0, 0.4);
+}
+.gc-brag-badge { font-size: 40px; line-height: 1; }
+.gc-brag-head {
+  font-size: clamp(13px, 3vw, 18px);
+  letter-spacing: 1.5px;
+  color: var(--gc-gold);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+.gc-brag-fighter { font-size: 9px; letter-spacing: 1.5px; color: #eaf4ff; }
+.gc-brag-game { font-size: 7px; letter-spacing: 2px; color: var(--gc-blue); opacity: 0.85; margin-top: 2px; }
 
 @keyframes gc-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.12; } }
 @media (prefers-reduced-motion: reduce) { .gc-start { animation: none; } }

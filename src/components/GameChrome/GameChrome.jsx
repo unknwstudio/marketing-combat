@@ -20,6 +20,16 @@ const RESULT_ACTIONS = {
   gameover: { primary: 'BACK TO ROSTER', changeFighter: false },
 };
 
+// Brag card per outcome — the viral loop: a player shares their result and pulls the
+// next marketer into the arena. line() omits the URL, which is appended at share time.
+const BRAG = {
+  victory: { badge: '🏆', head: 'BEAT THE ALGORITHM', line: (f) => `I DEFEATED THE ALGORITHM as ${f} in AI Marketing Kombat.` },
+  advance: { badge: '📊', head: 'CLIMBING THE GAUNTLET', line: (f) => `Climbing the gauntlet as ${f} in AI Marketing Kombat.` },
+  won: { badge: '📈', head: 'PROMOTED', line: (f) => `I got PROMOTED as ${f} in AI Marketing Kombat — the pixel fighter for senior AI marketers.` },
+  lost: { badge: '💼', head: 'PIVOT TO CONSULTING', line: (f) => `I pivoted to consulting in AI Marketing Kombat (${f}).` },
+};
+const bragKey = (r) => (r.action === 'victory' ? 'victory' : r.action === 'advance' ? 'advance' : r.won ? 'won' : 'lost');
+
 export default function GameChrome() {
   const [scene, setScene] = useState('boot');     // boot | select | fight
   const [started, setStarted] = useState(false);  // dismissed the title / press-start?
@@ -27,17 +37,23 @@ export default function GameChrome() {
   const [howto, setHowto] = useState(false);
   const [confirmExit, setConfirmExit] = useState(false);
   const [muted, setMuted] = useState(false);
-  const [result, setResult] = useState(null);   // matchend action: rematch | advance | victory | gameover
+  const [result, setResult] = useState(null);   // matchend { action, fighter, won } or null
+  const [share, setShare] = useState(false);     // brag/share card open?
+  const [copied, setCopied] = useState(false);
+  const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   // game -> chrome: track the live scene (pause shows only in a fight) and the result
   // screen (shows the matched action bar). A new scene always clears any stale result.
   useEffect(() => {
     const onScene = (e) => { setScene((e.detail && e.detail.key) || 'boot'); setResult(null); };
-    const onResult = (e) => setResult(e.detail && e.detail.show ? e.detail.action : null);
+    const onResult = (e) => setResult(e.detail && e.detail.show ? { action: e.detail.action, fighter: e.detail.fighter, won: e.detail.won } : null);
     window.addEventListener('mk:scene', onScene);
     window.addEventListener('mk:result', onResult);
     return () => { window.removeEventListener('mk:scene', onScene); window.removeEventListener('mk:result', onResult); };
   }, []);
+
+  // the share card belongs to a result; close it whenever the result clears
+  useEffect(() => { if (!result) setShare(false); }, [result]);
 
   // restore the saved mute preference and push it to the game once it exists
   useEffect(() => {
@@ -54,7 +70,7 @@ export default function GameChrome() {
   // don't leak through to the live Select/Fight scene underneath. Re-assert on every
   // scene change too: the game boots async, so the first emit can land before it exists
   // — re-emitting when a scene reports in guarantees the gate is applied.
-  const overlayOpen = !started || paused || howto || confirmExit;
+  const overlayOpen = !started || paused || howto || confirmExit || share;
   useEffect(() => { emit('mk:overlay', { open: overlayOpen }); }, [overlayOpen, scene]);
 
   // the result bar's buttons replace the D-pad's role at matchend, so hide the pad
@@ -72,12 +88,25 @@ export default function GameChrome() {
     try { localStorage.setItem('mk_muted', nm ? '1' : '0'); } catch (e) { /* no storage */ }
     return nm;
   });
+  // native share sheet where available (mobile), clipboard fallback everywhere else
+  const doShare = async () => {
+    if (!result) return;
+    const b = BRAG[bragKey(result)];
+    const f = result.fighter || 'a top marketer';
+    const url = window.location.origin + '/play';
+    const text = `${b.badge} ${b.line(f)} Think you can out-market me?`;
+    if (canShare) {
+      try { await navigator.share({ title: 'AI Marketing Kombat', text, url }); return; } catch (e) { /* cancelled or unsupported -> fall through */ }
+    }
+    try { await navigator.clipboard.writeText(`${text} ${url}`); setCopied(true); setTimeout(() => setCopied(false), 2200); } catch (e) { /* clipboard blocked */ }
+  };
 
   // ESC = pause toggle in a fight (and a universal "close this overlay"); ENTER/SPACE
   // dismiss the title. Owned entirely here — the game no longer binds ESC.
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') {
+        if (share) { setShare(false); return; }
         if (confirmExit) { setConfirmExit(false); return; }
         if (howto) { setHowto(false); return; }
         if (!started) return;
@@ -89,7 +118,7 @@ export default function GameChrome() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [started, scene, paused, howto, confirmExit]);
+  }, [started, scene, paused, howto, confirmExit, share]);
 
   return (
     <div className="gc-root">
@@ -161,15 +190,31 @@ export default function GameChrome() {
       )}
 
       {/* RESULT ACTION BAR — real buttons under the Phaser result text (touch + desktop) */}
-      {result && (
+      {result && !share && (
         <div className="gc-resultbar">
           <button className="gc-item gc-result-primary" onClick={() => { setResult(null); emit('mk:confirm'); }}>
-            {(RESULT_ACTIONS[result] || RESULT_ACTIONS.rematch).primary}
+            {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).primary}
           </button>
-          {(RESULT_ACTIONS[result] || RESULT_ACTIONS.rematch).changeFighter && (
+          <button className="gc-item gc-share-btn" onClick={() => setShare(true)}>SHARE</button>
+          {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).changeFighter && (
             <button className="gc-item" onClick={() => { setResult(null); emit('mk:menu'); }}>CHANGE FIGHTER</button>
           )}
           <button className="gc-item gc-danger" onClick={exitToSite}>EXIT</button>
+        </div>
+      )}
+
+      {/* SHARE / BRAG CARD — the viral hook off the result screen */}
+      {share && result && (
+        <div className="gc-overlay gc-menu gc-share">
+          <div className="gc-menu-title">SHARE YOUR RESULT</div>
+          <div className="gc-bragcard">
+            <div className="gc-brag-badge" aria-hidden="true">{BRAG[bragKey(result)].badge}</div>
+            <div className="gc-brag-head">{BRAG[bragKey(result)].head}</div>
+            {result.fighter && <div className="gc-brag-fighter">{result.fighter}</div>}
+            <div className="gc-brag-game">AI MARKETING KOMBAT</div>
+          </div>
+          <button className="gc-item gc-result-primary" onClick={doShare}>{copied ? 'COPIED!' : canShare ? 'SHARE' : 'COPY LINK'}</button>
+          <button className="gc-item" onClick={() => setShare(false)}>BACK</button>
         </div>
       )}
     </div>
