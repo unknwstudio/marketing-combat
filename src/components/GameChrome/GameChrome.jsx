@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { MK } from '../../game/fight/events';
 import './GameChrome.css';
 
 // One DOM "chrome" layer over the Phaser canvas: title / press-start, the always-on
@@ -40,6 +41,7 @@ export default function GameChrome() {
   const [result, setResult] = useState(null);   // matchend { action, fighter, won } or null
   const [share, setShare] = useState(false);     // brag/share card open?
   const [copied, setCopied] = useState(false);
+  const [copyMsg, setCopyMsg] = useState('');    // manual-copy fallback text when clipboard is unavailable
   const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   // game -> chrome: track the live scene (pause shows only in a fight) and the result
@@ -47,17 +49,17 @@ export default function GameChrome() {
   useEffect(() => {
     const onScene = (e) => { setScene((e.detail && e.detail.key) || 'boot'); setResult(null); };
     const onResult = (e) => setResult(e.detail && e.detail.show ? { action: e.detail.action, fighter: e.detail.fighter, won: e.detail.won } : null);
-    window.addEventListener('mk:scene', onScene);
-    window.addEventListener('mk:result', onResult);
-    return () => { window.removeEventListener('mk:scene', onScene); window.removeEventListener('mk:result', onResult); };
+    window.addEventListener(MK.SCENE, onScene);
+    window.addEventListener(MK.RESULT, onResult);
+    return () => { window.removeEventListener(MK.SCENE, onScene); window.removeEventListener(MK.RESULT, onResult); };
   }, []);
 
   // the share card belongs to a result; close it whenever the result clears
-  useEffect(() => { if (!result) setShare(false); }, [result]);
+  useEffect(() => { if (!result) { setShare(false); setCopyMsg(''); } }, [result]);
 
   // restore the saved mute preference and push it to the game once it exists
   useEffect(() => {
-    try { const m = localStorage.getItem('mk_muted') === '1'; setMuted(m); emit('mk:mute', { muted: m }); } catch (e) { /* no storage */ }
+    try { const m = localStorage.getItem('mk_muted') === '1'; setMuted(m); emit(MK.MUTE, { muted: m }); } catch (e) { /* no storage */ }
   }, []);
 
   // show the how-to card once, automatically, the first time a player starts
@@ -71,34 +73,40 @@ export default function GameChrome() {
   // scene change too: the game boots async, so the first emit can land before it exists
   // — re-emitting when a scene reports in guarantees the gate is applied.
   const overlayOpen = !started || paused || howto || confirmExit || share;
-  useEffect(() => { emit('mk:overlay', { open: overlayOpen }); }, [overlayOpen, scene]);
+  useEffect(() => { emit(MK.OVERLAY, { open: overlayOpen }); }, [overlayOpen, scene]);
 
   // the result bar's buttons replace the D-pad's role at matchend, so hide the pad
   useEffect(() => { document.body.classList.toggle('mk-in-result', !!result); return () => document.body.classList.remove('mk-in-result'); }, [result]);
 
   const doStart = () => setStarted(true);
-  const openPause = () => { setPaused(true); emit('mk:pause'); };
-  const resume = () => { setPaused(false); emit('mk:resume'); };
-  const restart = () => { setPaused(false); emit('mk:restart'); };
-  const toMenu = () => { setPaused(false); emit('mk:menu'); };
+  const openPause = () => { setPaused(true); emit(MK.PAUSE); };
+  const resume = () => { setPaused(false); emit(MK.RESUME); };
+  const restart = () => { setPaused(false); emit(MK.RESTART); };
+  const toMenu = () => { setPaused(false); emit(MK.MENU); };
   const exitToSite = () => { window.location.href = '/'; };
   const requestExit = () => { if (result || scene !== 'fight') exitToSite(); else setConfirmExit(true); };  // match over or in a menu -> no confirm needed
   const toggleMute = () => setMuted((m) => {
-    const nm = !m; emit('mk:mute', { muted: nm });
+    const nm = !m; emit(MK.MUTE, { muted: nm });
     try { localStorage.setItem('mk_muted', nm ? '1' : '0'); } catch (e) { /* no storage */ }
     return nm;
   });
-  // native share sheet where available (mobile), clipboard fallback everywhere else
+  // native share sheet where available (mobile), clipboard fallback, manual-copy field if both fail
   const doShare = async () => {
     if (!result) return;
+    setCopyMsg('');
     const b = BRAG[bragKey(result)];
     const f = result.fighter || 'a top marketer';
     const url = window.location.origin + '/play';
     const text = `${b.badge} ${b.line(f)} Think you can out-market me?`;
+    const full = `${text} ${url}`;
     if (canShare) {
-      try { await navigator.share({ title: 'AI Marketing Kombat', text, url }); return; } catch (e) { /* cancelled or unsupported -> fall through */ }
+      try { await navigator.share({ title: 'AI Marketing Kombat', text, url }); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; /* user cancelled -> don't silently copy */ }
     }
-    try { await navigator.clipboard.writeText(`${text} ${url}`); setCopied(true); setTimeout(() => setCopied(false), 2200); } catch (e) { /* clipboard blocked */ }
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error('no clipboard');
+      await navigator.clipboard.writeText(full); setCopied(true); setTimeout(() => setCopied(false), 2200);
+    } catch (e) { setCopyMsg(full); } // clipboard blocked (e.g. embedded webview) -> show a selectable field
   };
 
   // ESC = pause toggle in a fight (and a universal "close this overlay"); ENTER/SPACE
@@ -106,51 +114,79 @@ export default function GameChrome() {
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') {
-        if (share) { setShare(false); return; }
+        if (share) { setShare(false); setCopyMsg(''); return; }
         if (confirmExit) { setConfirmExit(false); return; }
         if (howto) { setHowto(false); return; }
         if (!started) return;
         if (paused) { resume(); return; }
-        if (scene === 'fight') { e.preventDefault(); openPause(); }
+        if (scene === 'fight' && !result) { e.preventDefault(); openPause(); } // not over the result screen (matches the ⏸ button's guard)
         return;
       }
-      if (!started && (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar')) { e.preventDefault(); doStart(); }
+      // "press any key" to start — honour the title's promise: any real key except Tab (focus nav),
+      // Escape and bare modifiers. NOT while the how-to card is open over the title, and not for
+      // browser shortcuts (Ctrl/Cmd/Alt combos) — those must stay cancelable and not boot the game.
+      if (!started && !howto && !(e.ctrlKey || e.metaKey || e.altKey) && !['Tab', 'Escape', 'Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) { e.preventDefault(); doStart(); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [started, scene, paused, howto, confirmExit, share]);
+  }, [started, scene, paused, howto, confirmExit, share, result]);
+
+  // a11y: treat pause/how-to/confirm/share as modal dialogs — focus the topmost one on open,
+  // trap Tab inside it, and restore focus on close (corner buttons behind are made inert below).
+  const anyModal = paused || howto || confirmExit || share;
+  useEffect(() => {
+    if (!anyModal) return;
+    const dialogs = document.querySelectorAll('.gc-root [role="dialog"]');
+    const el = dialogs[dialogs.length - 1];
+    if (!el) return;
+    const prev = document.activeElement;
+    const focusables = () => [...el.querySelectorAll('button:not([disabled]),[href],[tabindex]:not([tabindex="-1"])')];
+    const first = focusables()[0];
+    if (first) first.focus();
+    const onTab = (e) => {
+      if (e.key !== 'Tab') return;
+      const f = focusables(); if (!f.length) return;
+      const a = f[0], z = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+      else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+    };
+    document.addEventListener('keydown', onTab, true);
+    return () => { document.removeEventListener('keydown', onTab, true); try { if (prev && prev.focus) prev.focus(); } catch (e) { /* gone */ } };
+  }, [anyModal, paused, howto, confirmExit, share]);
 
   return (
     <div className="gc-root">
       {/* persistent escape hatches — hidden only while the title is up */}
       {started && (
         <>
-          <button className="gc-corner gc-exit" onClick={requestExit} aria-label="Exit to site" title="Exit to site">✕</button>
+          <button className="gc-corner gc-exit" onClick={requestExit} aria-label="Exit to site" title="Exit to site" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}>✕</button>
           <div className="gc-topright">
-            <button className="gc-corner" onClick={() => setHowto(true)} aria-label="How to play" title="How to play">?</button>
+            <button className="gc-corner" onClick={() => setHowto(true)} aria-label="How to play" title="How to play" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}>?</button>
             {scene === 'fight' && !paused && !result && (
-              <button className="gc-corner" onClick={openPause} aria-label="Pause" title="Pause">❚❚</button>
+              <button className="gc-corner" onClick={openPause} aria-label="Pause" title="Pause" tabIndex={overlayOpen ? -1 : 0}>❚❚</button>
             )}
           </div>
         </>
       )}
 
-      {/* TITLE / PRESS START — also the audio-unlock gesture */}
+      {/* TITLE / PRESS START — also the audio-unlock gesture. The start affordance is its own
+          full-bleed transparent <button> BEHIND the content (no role=button wrapping a heading /
+          nested button); the content is pointer-transparent so a tap anywhere starts. */}
       {!started && (
-        <div className="gc-overlay gc-title" onClick={doStart} role="button" tabIndex={0}
-             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') doStart(); }}>
+        <div className="gc-overlay gc-title">
+          <button className="gc-startbtn" aria-label="Press start" onClick={doStart} />
           <div className="gc-kicker">SENIOR AI MARKETERS ONLY</div>
           <h1 className="gc-logo">AI MARKETING<br /><span>KOMBAT</span></h1>
           <div className="gc-legend"><span>WASD move</span><span>J K L attack</span><span>S block</span></div>
           <div className="gc-start">PRESS START</div>
-          <button className="gc-howtolink" onClick={(e) => { e.stopPropagation(); setHowto(true); }}>HOW TO PLAY ▸</button>
+          <button className="gc-howtolink" onClick={() => setHowto(true)}>HOW TO PLAY ▸</button>
           <div className="gc-hint">tap the screen · or press any key</div>
         </div>
       )}
 
       {/* PAUSE */}
       {paused && (
-        <div className="gc-overlay gc-menu">
+        <div className="gc-overlay gc-menu" role="dialog" aria-modal="true" aria-label="Paused">
           <div className="gc-menu-title">PAUSED</div>
           <button className="gc-item" onClick={resume}>RESUME</button>
           <button className="gc-item" onClick={restart}>RESTART FIGHT</button>
@@ -163,7 +199,7 @@ export default function GameChrome() {
 
       {/* HOW TO PLAY */}
       {howto && (
-        <div className="gc-overlay gc-menu gc-howto">
+        <div className="gc-overlay gc-menu gc-howto" role="dialog" aria-modal="true" aria-label="How to play">
           <div className="gc-menu-title">HOW TO PLAY</div>
           <p className="gc-lead">Pick a marketer. Fight to the KO. Best of three.</p>
           <div className="gc-keys">
@@ -181,7 +217,7 @@ export default function GameChrome() {
 
       {/* EXIT CONFIRM (only mid-fight, where there's progress to lose) */}
       {confirmExit && (
-        <div className="gc-overlay gc-menu">
+        <div className="gc-overlay gc-menu" role="dialog" aria-modal="true" aria-label="Leave the arena?">
           <div className="gc-menu-title">LEAVE THE ARENA?</div>
           <p className="gc-lead">You'll go back to the site. Match progress is lost.</p>
           <button className="gc-item gc-danger" onClick={exitToSite}>LEAVE</button>
@@ -192,12 +228,12 @@ export default function GameChrome() {
       {/* RESULT ACTION BAR — real buttons under the Phaser result text (touch + desktop) */}
       {result && !share && (
         <div className="gc-resultbar">
-          <button className="gc-item gc-result-primary" onClick={() => { setResult(null); emit('mk:confirm'); }}>
+          <button className="gc-item gc-result-primary" onClick={() => { setResult(null); emit(MK.CONFIRM); }}>
             {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).primary}
           </button>
           <button className="gc-item gc-share-btn" onClick={() => setShare(true)}>SHARE</button>
           {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).changeFighter && (
-            <button className="gc-item" onClick={() => { setResult(null); emit('mk:menu'); }}>CHANGE FIGHTER</button>
+            <button className="gc-item" onClick={() => { setResult(null); emit(MK.MENU); }}>CHANGE FIGHTER</button>
           )}
           <button className="gc-item gc-danger" onClick={exitToSite}>EXIT</button>
         </div>
@@ -205,7 +241,7 @@ export default function GameChrome() {
 
       {/* SHARE / BRAG CARD — the viral hook off the result screen */}
       {share && result && (
-        <div className="gc-overlay gc-menu gc-share">
+        <div className="gc-overlay gc-menu gc-share" role="dialog" aria-modal="true" aria-label="Share your result">
           <div className="gc-menu-title">SHARE YOUR RESULT</div>
           <div className="gc-bragcard">
             <div className="gc-brag-badge" aria-hidden="true">{BRAG[bragKey(result)].badge}</div>
@@ -214,7 +250,11 @@ export default function GameChrome() {
             <div className="gc-brag-game">AI MARKETING KOMBAT</div>
           </div>
           <button className="gc-item gc-result-primary" onClick={doShare}>{copied ? 'COPIED!' : canShare ? 'SHARE' : 'COPY LINK'}</button>
-          <button className="gc-item" onClick={() => setShare(false)}>BACK</button>
+          {copyMsg && (
+            <input className="gc-copyfield" readOnly value={copyMsg} aria-label="Shareable link — select to copy"
+                   onFocus={(e) => e.target.select()} onClick={(e) => e.target.select()} />
+          )}
+          <button className="gc-item" onClick={() => { setShare(false); setCopyMsg(''); }}>BACK</button>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { MK } from '../../game/fight/events';
 
 /**
  * Client-only Phaser island. Phaser and the fight engine are dynamically
@@ -19,14 +20,21 @@ export default function FightGame() {
     // manager; while an overlay (title / pause / how-to) is open we disable the active
     // scene's keyboard so those keys never leak through to the live game underneath.
     const applyKb = () => {
-      try { if (game) game.scene.getScenes(true).forEach((s) => { if (s.input && s.input.keyboard) s.input.keyboard.enabled = !overlayOpen; }); } catch (e) { /* scenes not ready */ }
+      try {
+        if (!game) return;
+        game.scene.getScenes(true).forEach((s) => {
+          if (!s.input || !s.input.keyboard) return;
+          s.input.keyboard.enabled = !overlayOpen;
+          if (!overlayOpen) s.input.keyboard.resetKeys(); // clear any key held down while an overlay was open, so it doesn't stick on resume
+        });
+      } catch (e) { /* scenes not ready */ }
     };
     const onOverlay = (e) => { overlayOpen = !!(e.detail && e.detail.open); applyKb(); };
     const onScene = () => applyKb();                                   // re-assert on every scene change
     const onMute = (e) => { try { if (game && game.sound) game.sound.mute = !!(e.detail && e.detail.muted); } catch (err) { /* no sound yet */ } };
-    window.addEventListener('mk:overlay', onOverlay);
-    window.addEventListener('mk:scene', onScene);
-    window.addEventListener('mk:mute', onMute);
+    window.addEventListener(MK.OVERLAY, onOverlay);
+    window.addEventListener(MK.SCENE, onScene);
+    window.addEventListener(MK.MUTE, onMute);
 
     (async () => {
       const Phaser = (await import('phaser')).default;
@@ -51,9 +59,9 @@ export default function FightGame() {
 
     return () => {
       cancelled = true;
-      window.removeEventListener('mk:overlay', onOverlay);
-      window.removeEventListener('mk:scene', onScene);
-      window.removeEventListener('mk:mute', onMute);
+      window.removeEventListener(MK.OVERLAY, onOverlay);
+      window.removeEventListener(MK.SCENE, onScene);
+      window.removeEventListener(MK.MUTE, onMute);
       if (game) game.destroy(true);
     };
   }, []);

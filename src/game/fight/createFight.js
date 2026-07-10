@@ -2,6 +2,7 @@
  * Boot (load all) -> Select (fighter + stage) -> Fight (best-of-3, juice).
  * SSR-safe: Phaser is injected from the client island (no top-level import).
  * Combat runs on a fixed 60Hz tick; rendering happens after. */
+import { MK } from './events';
 
 export const GAME_W = 480;
 export const GAME_H = 270;
@@ -110,10 +111,20 @@ const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'fla
 const snd = (scene, key, vol = 1) => { try { if (scene.cache.audio.exists(key)) scene.sound.play(key, { volume: vol }); } catch (e) { /* audio not unlocked yet */ } };
 // Tell the React chrome layer (GameChrome) which scene is live, so it shows the
 // right escape hatches: ✕ exit is always available; the ⏸ pause menu only in a fight.
-const emitScene = (key) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:scene', { detail: { key } })); } catch (e) { /* no DOM */ } } };
+const emitScene = (key) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent(MK.SCENE, { detail: { key } })); } catch (e) { /* no DOM */ } } };
 // Result screen -> GameChrome: it renders the matched action bar (Rematch / Next /
 // Roster + Change Fighter + Exit). Pass null to clear it when the match screen leaves.
-const emitResult = (action, meta) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent('mk:result', { detail: action ? { show: true, action, ...(meta || {}) } : { show: false } })); } catch (e) { /* no DOM */ } } };
+const emitResult = (action, meta) => { if (typeof window !== 'undefined') { try { window.dispatchEvent(new CustomEvent(MK.RESULT, { detail: action ? { show: true, action, ...(meta || {}) } : { show: false } })); } catch (e) { /* no DOM */ } } };
+// Honour OS "Reduce Motion" for the heavy full-screen juice (camera flash/shake/punch-zoom — a
+// photosensitivity hazard). Checked live per use so a mid-session toggle is respected. Hitstop and
+// slow-mo timing are NOT motion and stay; the site's other components already guard the same way.
+const reducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// single source of truth for touch detection (select hints, control hints, finisher wording, zoom-fill)
+const isCoarsePointer = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+// select-screen bottom hint — touch uses the on-screen D-pad (◀▶▲▼ + OK), not a keyboard's arrows/ENTER
+const SELECT_HINT = (scene, fighterPhase) => scene.isTouch
+  ? (fighterPhase ? '◀ ▶ select   ▲▼ mode   OK confirm' : '◀ ▶ stage   OK fight')
+  : (fighterPhase ? '<  >  select      ENTER  confirm' : '<  >  stage      ENTER  fight');
 
 /* =========================================================================
    BOOT — load every fighter atlas + every stage once, then go to Select.
@@ -137,10 +148,11 @@ function selectCreate() {
   this.fi2 = 3; // P2's pick (2P modes)
   this.si = 3;
   this.mi = 0; // mode index into MODES
+  this.isTouch = isCoarsePointer();
 
   this.title = txt(this, GAME_W / 2, 22, 'CHOOSE YOUR FIGHTER', 15, '#ffd23f');
   this.modeLabel = txt(this, GAME_W / 2, 8, '', 7, '#8fe8ff');
-  this.sub = txt(this, GAME_W / 2, GAME_H - 16, '<  >  select      ENTER  confirm', 8, '#8fe8ff');
+  this.sub = txt(this, GAME_W / 2, GAME_H - 16, SELECT_HINT(this, true), 8, '#8fe8ff');
 
   // fighter row
   this.picks = ROSTER.map((f, i) => {
@@ -173,7 +185,14 @@ function selectCreate() {
   this.input.keyboard.on('keydown-RIGHT', () => move(1));
   this.input.keyboard.on('keydown-A', () => { if (this.phase !== 'fighter2') move(-1); }); // A/D are P1's move keys in 2P select
   this.input.keyboard.on('keydown-D', () => { if (this.phase !== 'fighter2') move(1); });
-  const toggleMode = (d) => { if (this.phase === 'fighter') { this.mi = (this.mi + d + MODES.length) % MODES.length; snd(this, 'snd_confirm', 0.4); refresh(this); } };
+  // cycle modes; on touch skip 2P + SUDDEN DEATH (one on-screen pad can't drive two fighters, so
+  // they're literally unplayable on a phone). vs + gauntlet always remain, so this never loops forever.
+  const playableMode = (i) => !this.isTouch || (MODES[i].key !== 'p2' && MODES[i].key !== 'sudden');
+  const toggleMode = (d) => {
+    if (this.phase !== 'fighter') return;
+    do { this.mi = (this.mi + d + MODES.length) % MODES.length; } while (!playableMode(this.mi));
+    snd(this, 'snd_confirm', 0.4); refresh(this);
+  };
   this.input.keyboard.on('keydown-UP', () => toggleMode(-1));
   this.input.keyboard.on('keydown-DOWN', () => toggleMode(1));
   this.input.keyboard.on('keydown-W', () => toggleMode(-1));
@@ -216,7 +235,7 @@ function refresh(scene) {
   });
   scene.nameLabel.setText(fighterPhase ? ROSTER[idx].name : STAGES[scene.si].name)
     .setColor(p2 ? '#ff8fa3' : fighterPhase ? '#fff' : '#ffd23f');
-  scene.sub.setText(fighterPhase ? '<  >  select      ENTER  confirm' : '<  >  stage      ENTER  fight');
+  scene.sub.setText(SELECT_HINT(scene, fighterPhase));
   drawStats(scene, idx);
 }
 function drawStats(scene, idx) {
@@ -260,6 +279,9 @@ function resetFighter(f) {
   f.dir = f.startFace ? 1 : -1;
   f.action = null; f.hp = f.hpMax; f.ghostHp = f.hpMax; f.ghostDelay = 0; f.tookDamage = false;
   f.hitstun = 0; f.blockstun = 0; f.wakeBlock = 0; f.blocking = false; f.koed = false; f.dazed = false; f.pose = POSE.idle; f.flash = 0;
+  // restore render state — a fatality (e.g. UNSUBSCRIBED fades the sprite to alpha 0) must not
+  // bleed into the next round, since rematch/restart reuse the same sprite (never scene.start).
+  if (f.spr) { f.spr.setAlpha(1); f.spr.clearTint(); f.spr.setScale(1); }
 }
 
 // Procedural life on the single-frame poses using INTEGER-pixel offsets only
@@ -307,14 +329,15 @@ function fightCreate() {
   this.humanInputs = this.versus
     ? [{ f: this.p, ks: KEYSET_P1, buf: null, down: {} }, { f: this.o, ks: KEYSET_P2, buf: null, down: {} }]
     : [{ f: this.p, ks: KEYSET_SOLO, buf: null, down: {} }];
-  this.isTouch = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : false;
+  this.isTouch = isCoarsePointer();
   this._acc = 0;
   this.paused = false;
   this.hitstop = 0;
   this.slowmoT = 0;
   this._frozenDef = null;
   this.animClock = 0;
-  this.aiProfile = baseAiProfile(this); // per-archetype (or boss) brain; rubber band mutates the clone
+  // aiProfile is set by startRound (round 1, always true on a fresh create) — its single source of
+  // truth; nothing reads it before then, so don't compute a second one here.
   this.aiTimer = 700; this.aiBlock = 0;
   this.pWins = 0; this.oWins = 0; this.round = 1;
   this.playerDmgMult = 1; this.shadowbanT = this.boss ? 9000 : 0; this.shadowbanActive = 0;
@@ -341,21 +364,38 @@ function fightCreate() {
   // GameChrome (React overlay) drives the escape hatches via window events so touch
   // and desktop share one set. Pause is a bare early-return in fightUpdate; the delta
   // clamps there already stop any resume fast-forward.
+  // Real pause: freeze the Clock (this.time.paused stops the KO-cinematic delayedCalls that would
+  // auto-advance the round behind the menu), the TweenManager and the SoundManager — done via direct
+  // scene APIs, NOT this.scene.pause()/resume(), whose no-key ScenePlugin form silently no-ops here.
+  // fightUpdate also early-returns on this.paused, and applyKb resetKeys on resume (no stuck keys).
+  // Key resume off our own flag: restart/menu can fire from the result screen where we never paused.
+  const unpause = () => { if (this.paused) { this.time.paused = false; this.tweens.resumeAll(); this.sound.resumeAll(); } this.paused = false; this._acc = 0; };
   const chrome = {
-    'mk:pause': () => { this.paused = true; },
-    'mk:resume': () => { this.paused = false; this._acc = 0; },
-    'mk:restart': () => { this.paused = false; this._acc = 0; this.pWins = this.oWins = 0; this.round = 1; startRound(this); },
-    'mk:menu': () => { this.paused = false; emitResult(null); this.scene.start('select'); },
-    'mk:confirm': () => matchendAdvance(this),   // result-screen primary button (Rematch / Next / Roster)
+    [MK.PAUSE]: () => { this.paused = true; this.time.paused = true; this.tweens.pauseAll(); this.sound.pauseAll(); },
+    [MK.RESUME]: () => { unpause(); },
+    [MK.RESTART]: () => { unpause(); this.pWins = this.oWins = 0; this.round = 1; startRound(this); },
+    [MK.MENU]: () => { unpause(); emitResult(null); this.scene.start('select'); },
+    [MK.CONFIRM]: () => matchendAdvance(this),   // result-screen primary button (Rematch / Next / Roster)
   };
   for (const ev in chrome) window.addEventListener(ev, chrome[ev]);
-  this.events.once('shutdown', () => { for (const ev in chrome) window.removeEventListener(ev, chrome[ev]); });
+  // Clean up on BOTH events: scene transitions emit 'shutdown', but game.destroy(true) on unmount
+  // emits only 'destroy' (never 'shutdown') — binding only to shutdown would leak all five window
+  // listeners (each pinning the destroyed scene) on every unmount / Fast-Refresh.
+  const cleanupChrome = () => { for (const ev in chrome) window.removeEventListener(ev, chrome[ev]); };
+  this.events.once('shutdown', cleanupChrome);
+  this.events.once('destroy', cleanupChrome);
   emitScene('fight');
 
   startRound(this);
 }
 
 function startRound(scene) {
+  // purge match/round-boundary state that the reused scene would otherwise carry over:
+  // stale KO-cinematic timers (a pending round++ would double-fire), a lingering fatality
+  // fade tween (would re-hide the sprite), and any leaked G.D.P.R. consent cards.
+  scene.time.removeAllEvents();
+  scene.tweens.killTweensOf([scene.p.spr, scene.o.spr]);
+  if (scene._gdprCards) { scene._gdprCards.forEach((o) => o.destroy()); scene._gdprCards = null; }
   resetFighter(scene.p); resetFighter(scene.o);
   // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
   // the per-round rubber band adapts away from.
@@ -391,7 +431,8 @@ function integrate(f, dt) {
   if (k.x < X_MIN) k.x = X_MIN;
   if (k.x > X_MAX) k.x = X_MAX;
   if (k.y >= FLOOR_Y) { k.y = FLOOR_Y; k.vy = 0; k.grounded = true; }
-  f.spr.x = Math.round(k.x); f.spr.y = Math.round(k.y);
+  // sprite position is owned solely by the render loop in tick() (kin + animOffset); it runs the
+  // same frame and overwrites any spr.x/y set here, and collision reads kin — so don't touch spr.
 }
 
 // keep the fighters' bodies from walking through each other (they'd overlap and
@@ -405,14 +446,14 @@ function separate(a, b) {
   const push = (BODY_SEP - gap) / 2, sign = dx >= 0 ? 1 : -1;
   a.kin.x = Math.max(X_MIN, Math.min(X_MAX, a.kin.x - sign * push));
   b.kin.x = Math.max(X_MIN, Math.min(X_MAX, b.kin.x + sign * push));
-  a.spr.x = Math.round(a.kin.x); b.spr.x = Math.round(b.kin.x);
+  // (no spr writes — the render loop owns sprite position; see integrate)
 }
 
 function control(f, intent, dtMs) {
   f.blocking = false;
   if (f.koed) { f.pose = POSE.ko; f.kin.vx *= 0.90; return; } // decay (not zero) so the KO launch arc plays out
   if (f.dazed) { f.pose = POSE.hit; f.kin.vx = 0; return; }    // finish-him: standing but defenceless
-  if (f.hitstun > 0) { f.hitstun -= dtMs; if (f.hitstun <= 0) f.wakeBlock = 200; f.kin.vx *= 0.82; f.pose = POSE.hit; return; }
+  if (f.hitstun > 0) { f.hitstun -= dtMs; if (f.hitstun <= 0 && !f.isPlayer) f.wakeBlock = 200; f.kin.vx *= 0.82; f.pose = POSE.hit; return; } // wakeBlock is read only by aiIntent (the CPU), so seed it only there
   if (f.action) {
     // telegraphed wind-up (readable big move): hold the pose without advancing the
     // attack so a watchful player can react/block/punish before it goes active.
@@ -552,12 +593,15 @@ function spawnSpark(scene, x, y, color, big) {
 }
 // Impact weight scales with the move: a jab taps (~5 frames), a special detonates (~11).
 function juiceHit(scene, x, y, blocked, ko, type, color) {
-  const cam = scene.cameras.main;
-  if (ko) { scene.hitstop = 500; cam.shake(320, 0.012); cam.flash(140, 255, 255, 255); }
-  else if (blocked) { scene.hitstop = 50; cam.shake(80, 0.003); }
-  else if (type === 'special') { scene.hitstop = 180; cam.shake(200, 0.010); }
-  else if (type === 'kick') { scene.hitstop = 120; cam.shake(150, 0.007); }
-  else { scene.hitstop = 85; cam.shake(110, 0.005); }
+  const cam = scene.cameras.main, rm = reducedMotion();
+  scene.hitstop = ko ? 500 : blocked ? 50 : type === 'special' ? 180 : type === 'kick' ? 120 : 85; // timing (kept)
+  if (!rm) { // camera shake/flash is motion — skipped under Reduce Motion
+    if (ko) { cam.shake(320, 0.012); cam.flash(140, 255, 255, 255); }
+    else if (blocked) cam.shake(80, 0.003);
+    else if (type === 'special') cam.shake(200, 0.010);
+    else if (type === 'kick') cam.shake(150, 0.007);
+    else cam.shake(110, 0.005);
+  }
   const c = blocked ? 0x9fd8ff : ko ? 0xffe08a : type === 'special' ? (color || 0xffffff) : 0xffffff;
   spawnSpark(scene, x, y, c, ko || type === 'special');
 }
@@ -604,10 +648,12 @@ function applyHit(att, def, scene) {
     // koed branch now decays vx (no longer zeroes it) so the body flies back and flops.
     def.kin.vx = att.dir * 250; def.kin.vy = -210; def.kin.grounded = false;
     // KO cinematic: hard 500ms freeze -> slow-mo -> camera punch-in on the fallen body.
-    scene.slowmoT = 850;
+    scene.slowmoT = 850; // slow-mo is timing (kept under Reduce Motion); the camera punch-in is motion
     const cam = scene.cameras.main;
-    cam.zoomTo(1.3, 340, 'Sine.easeOut');
-    cam.pan(Math.round((att.kin.x + def.kin.x) / 2), Math.round(def.kin.y - 40), 340, 'Sine.easeOut');
+    if (!reducedMotion()) {
+      cam.zoomTo(1.3, 340, 'Sine.easeOut');
+      cam.pan(Math.round((att.kin.x + def.kin.x) / 2), Math.round(def.kin.y - 40), 340, 'Sine.easeOut');
+    }
     snd(scene, 'snd_kothud', 0.7); // the announcer call is scheduled in endRound (it knows round-vs-match + flawless)
     endRound(scene, att.isPlayer);
   }
@@ -637,7 +683,7 @@ function triggerFatality(scene) {
   const loser = scene.finLoser;
   if (scene.finPrompt) { scene.finPrompt.destroy(); scene.finPrompt = null; }
   scene.hitstop = 220;
-  scene.cameras.main.flash(160, 255, 40, 20); scene.cameras.main.shake(220, 0.011);
+  if (!reducedMotion()) { scene.cameras.main.flash(160, 255, 40, 20); scene.cameras.main.shake(220, 0.011); } // fatality red flash/shake — motion
   const cards = [fatalityBudgetCut, fatalityUnsubscribed, fatalityGdprd];
   cards[Math.floor(Math.random() * cards.length)](scene, loser, () => finishMatch(scene, scene.finWinner.isPlayer));
 }
@@ -667,14 +713,18 @@ function fatalityGdprd(scene, loser, done) {
   scene.banner.setText("G.D.P.R.'D!").setColor('#ff3020');
   scene.time.delayedCall(200, () => snd(scene, 'snd_gdprd', 1));
   const cx = Math.round(loser.kin.x), labels = ['We value your privacy', 'Manage cookies', 'Necessary only', 'Analytics? sure', 'ACCEPT ALL'];
+  const cards = scene._gdprCards = [];   // tracked so they get destroyed (not left frozen across the rematch)
   for (let i = 0; i < 5; i++) {
     scene.time.delayedCall(150 * i, () => {
-      scene.add.rectangle(cx + (i % 2 ? 5 : -5), Math.round(loser.kin.y - 34 - i * 20), 96, 20, 0xdedede).setDepth(56);
-      txt(scene, cx + (i % 2 ? 5 : -5), Math.round(loser.kin.y - 34 - i * 20), labels[i], 5, '#333').setDepth(57);
+      cards.push(scene.add.rectangle(cx + (i % 2 ? 5 : -5), Math.round(loser.kin.y - 34 - i * 20), 96, 20, 0xdedede).setDepth(56));
+      cards.push(txt(scene, cx + (i % 2 ? 5 : -5), Math.round(loser.kin.y - 34 - i * 20), labels[i], 5, '#333').setDepth(57));
       snd(scene, 'snd_confirm', 0.3);
     });
   }
-  scene.time.delayedCall(1750, done);
+  scene.time.delayedCall(1750, () => {
+    if (cards.length) scene.tweens.add({ targets: cards, alpha: 0, duration: 300, onComplete: () => { cards.forEach((o) => o.destroy()); scene._gdprCards = null; } });
+    done();
+  });
 }
 function finishMatch(scene, playerWon) {
   if (playerWon) scene.pWins++; else scene.oWins++;
@@ -697,6 +747,7 @@ function finishMatch(scene, playerWon) {
 }
 
 function endRound(scene, playerWon) {
+  if (scene.phase === 'roundend' || scene.phase === 'matchend') return; // never process a round-end twice (e.g. a same-tick double-KO)
   scene.phase = 'roundend';
   if (playerWon) scene.pWins++; else scene.oWins++;
   const matchOver = scene.pWins >= scene.roundsToWin || scene.oWins >= scene.roundsToWin;
@@ -736,7 +787,7 @@ function endRound(scene, playerWon) {
       emitResult(scene.matchAction, { fighter: scene.p.stats.name, won: playerWon });
     } else {
       scene.result.setText(flawless ? 'FLAWLESS!' : 'K.P.I.').setVisible(true);
-      scene.time.delayedCall(900, () => { scene.round++; startRound(scene); });
+      scene.time.delayedCall(900, () => { if (scene.phase === 'roundend') { scene.round++; startRound(scene); } }); // guard: never double-advance if a restart already re-entered
     }
   });
 }
@@ -745,7 +796,10 @@ function endRound(scene, playerWon) {
 // result buttons: gauntlet advances a rung, a decisive win/loss returns to roster,
 // everything else rematches the same fight.
 function matchendAdvance(scene) {
-  if (scene.phase !== 'matchend') return;
+  // require the result to actually be on screen: finishMatch sets phase='matchend' but defers the
+  // result 700ms, and R/ENTER is live in that window — advancing early would fire a stale result
+  // timer over the fresh round. Gating on result.visible closes that race.
+  if (scene.phase !== 'matchend' || !scene.result.visible) return;
   emitResult(null);
   if (scene.matchAction === 'advance') scene.scene.start('fight', { playerKey: scene.playerKey, stageKey: scene.stageKey, mode: 'gauntlet', rung: scene.rung + 1, gauntletOpps: scene.gauntletOpps });
   else if (scene.matchAction === 'victory' || scene.matchAction === 'gameover') scene.scene.start('select');
@@ -777,11 +831,18 @@ function tick(scene, dtMs) {
   }
 
   if (live) {
-    for (const [att, def] of [[p, o], [o, p]]) {
-      if (att.action && !att.action.hasHit && phase(ATTACK[att.action.type], att.action.e) === 'active') {
-        if (overlap(hitbox(att), hurtbox(def))) { att.action.hasHit = true; applyHit(att, def, scene); }
-      }
-    }
+    // Resolve BOTH attackers from pre-hit state so a same-frame exchange is a true trade — the old
+    // fixed p-then-o order let applyHit null o's action before o's own hit was ever tested, so P1
+    // won every simultaneous trade and took no damage.
+    const pAct = p.action, oAct = o.action;
+    const canHit = (a, act, d) => act && !act.hasHit && phase(ATTACK[act.type], act.e) === 'active' && overlap(hitbox(a), hurtbox(d));
+    const pHit = canHit(p, pAct, o), oHit = canHit(o, oAct, p);
+    if (pHit) { pAct.hasHit = true; applyHit(p, o, scene); }
+    // apply o's counter only if o SURVIVED p's hit and the round is still live: p's hit may have KO'd
+    // o or opened the finisher (phase left 'fight'), and a posthumous counter would double-KO (crediting
+    // both wins) or clobber the finisher/round-end flow. A genuine both-survive trade still lands both.
+    if (oHit && !o.koed && scene.phase === 'fight') { oAct.hasHit = true; o.action = oAct; applyHit(o, p, scene); }
+    if (pHit && oHit) { p.action = null; o.action = null; scene.combo = { owner: null, n: 0, t: 0 }; } // a trade cancels both attacks + both combos
   }
   // FUNNEL counter: the streak decays when no fresh hit lands; label climbs the B2B funnel
   if (live && scene.combo.n > 0) { scene.combo.t -= dtMs; if (scene.combo.t <= 0) { scene.combo.n = 0; scene.combo.owner = null; } }
@@ -811,7 +872,9 @@ function tick(scene, dtMs) {
     else { scene.shadowbanT -= dtMs; if (scene.shadowbanT <= 0) {
       scene.shadowbanActive = 4000; scene.playerDmgMult = 0.5; scene.shadowbanT = 11000;
       scene.banner.setText('SHADOWBANNED').setColor('#00ff88').setVisible(true);
-      scene.time.delayedCall(1500, () => { if (scene.phase === 'fight') scene.banner.setVisible(false); });
+      // key the hide on the banner's own text, not phase — if the round ends inside the 1.5s the
+      // banner must still clear (a phase check would leave it lingering over the K.P.I. result).
+      scene.time.delayedCall(1500, () => { if (scene.banner.text === 'SHADOWBANNED') scene.banner.setVisible(false); });
     } }
   }
 
@@ -901,7 +964,7 @@ export function createFightGame(Phaser, parent) {
     const w = (parent && parent.clientWidth) || window.innerWidth;
     const h = (parent && parent.clientHeight) || window.innerHeight;
     const z = Math.min(w / GAME_W, h / GAME_H);
-    const coarse = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    const coarse = isCoarsePointer();
     // Desktop: whole-number zoom => a crisp integer pixel grid. Touch: fill the space
     // with a fractional zoom instead — on a phone a big arena (image-rendering:pixelated
     // keeps it blocky, just an uneven grid) beats a tiny 1x stage lost in black bars.

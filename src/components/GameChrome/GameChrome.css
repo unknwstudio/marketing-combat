@@ -38,6 +38,10 @@
 .gc-corner:hover { opacity: 1; background: rgba(20, 10, 40, 0.85); }
 .gc-corner:active { transform: scale(0.92); }
 .gc-corner:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; opacity: 1; }
+/* touch has no :hover, so the always-there escape hatches must be full-opacity and >=44px */
+@media (hover: none), (pointer: coarse) {
+  .gc-corner { opacity: 1; width: 44px; height: 44px; border-color: rgba(255, 255, 255, 0.5); }
+}
 .gc-exit { left: 10px; font-size: 15px; }
 .gc-exit:hover { border-color: var(--gc-red); color: #ffd7de; }
 .gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: 8px; pointer-events: none; }
@@ -62,6 +66,12 @@
 
 /* ---- title / press start ---- */
 .gc-title { cursor: pointer; gap: 20px; }
+/* full-bleed transparent start button BEHIND the content; content is pointer-transparent so a tap
+   anywhere starts, while the HOW TO PLAY link keeps its own clicks (no interactive nesting). */
+.gc-startbtn { position: absolute; inset: 0; z-index: 0; margin: 0; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.gc-startbtn:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: -4px; }
+.gc-title > :not(.gc-startbtn) { position: relative; z-index: 1; pointer-events: none; }
+.gc-title .gc-howtolink { pointer-events: auto; }
 .gc-kicker { font-size: 8px; letter-spacing: 3px; color: var(--gc-blue); opacity: 0.85; }
 .gc-logo {
   margin: 0;
@@ -99,7 +109,7 @@
   padding: 6px 10px;
 }
 .gc-howtolink:hover { color: #fff; text-decoration: underline; }
-.gc-hint { font-size: 8px; letter-spacing: 1px; color: #5f7686; }
+.gc-hint { font-size: 8px; letter-spacing: 1px; color: #9fb6c8; } /* >=4.5:1 on the dark overlay (was #5f7686, ~4.36:1) */
 
 /* ---- menus (pause / how-to / confirm) ---- */
 .gc-menu { gap: 12px; }
@@ -170,6 +180,7 @@
   pointer-events: auto;
   min-width: 0;
   width: auto;
+  min-height: 44px;   /* post-match CTAs (rematch/share) meet the 44px touch target */
   padding: 11px 20px;
   font-size: 10px;
   background: rgba(5, 1, 12, 0.82);
@@ -199,6 +210,9 @@
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
 .gc-brag-fighter { font-size: 9px; letter-spacing: 1.5px; color: #eaf4ff; }
+/* manual-copy fallback when the clipboard API is blocked (embedded webviews) */
+.gc-copyfield { pointer-events: auto; width: min(320px, 82vw); padding: 9px 11px; font-family: ui-monospace, monospace;
+  font-size: 11px; color: #eaf4ff; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--gc-blue); border-radius: 6px; text-align: center; }
 .gc-brag-game { font-size: 7px; letter-spacing: 2px; color: var(--gc-blue); opacity: 0.85; margin-top: 2px; }
 
 @keyframes gc-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.12; } }
