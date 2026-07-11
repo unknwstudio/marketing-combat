@@ -49,12 +49,18 @@ export default function Organizers() {
 
       <ul className="organizers__grid">
         {CREW.map((c) => (
-          <li key={c.n} className="dcard organizers__card">
-            <img
-              className="organizers__portrait pixelated"
-              src={`/assets/demo/organizers/${c.img}`}
-              alt={`${c.name} portrait`}
-            />
+          <li key={c.n} className="dcard organizers__card" data-select-sfx="hit">
+            <div className="organizers__frame">
+              <img
+                className="organizers__portrait pixelated"
+                src={`/assets/demo/organizers/${c.img}`}
+                alt={`${c.name} portrait`}
+              />
+              <span className="organizers__sweep" aria-hidden="true" />
+              <span className="organizers__select" aria-hidden="true">
+                ► select
+              </span>
+            </div>
             <span className="organizers__tag">CREW · {c.n}</span>
             <h3 className="organizers__name">{c.name}</h3>
             <p className="organizers__bio">{c.bio}</p>

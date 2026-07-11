@@ -15,6 +15,13 @@
   align-items: flex-start;
 }
 
+/* portrait frame: clips the hover zoom + sweep to the portrait's own bounds */
+.judges__frame {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
 /* generated pixel-art boss portrait */
 .judges__portrait {
   display: block;
@@ -22,10 +29,78 @@
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border: 2px solid #2a2140;
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
 
 .judges__card--secret .judges__portrait {
   border-color: var(--k-red);
+}
+
+/* character-select hover: zoom + chromatic-aberration (see RGBSplitFilter),
+   a light sweep, and a "► select" blip -- same recipe as Fighters/Organizers */
+.judges__sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.judges__select {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translate(-50%, 6px) scale(0.9);
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--k-cyan);
+  font-family: var(--k-font-mono);
+  font-size: 15px;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
+  color: var(--k-cyan);
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .judges__card:hover .judges__portrait {
+    transform: scale(1.06);
+    filter: url(#k-rgb-split);
+  }
+
+  .judges__card:hover .judges__sweep {
+    opacity: 1;
+    animation: judges-sweep 0.6s ease-out;
+  }
+
+  .judges__card:hover .judges__select {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+@keyframes judges-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .judges__card:hover .judges__sweep {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 .judges__tag {

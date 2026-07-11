@@ -35,6 +35,8 @@ import KonamiFatality from '@/components/KonamiFatality/KonamiFatality'
 import SoundToggle from '@/components/SoundToggle/SoundToggle'
 import MagneticCTA from '@/components/MagneticCTA/MagneticCTA'
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal'
+import RGBSplitFilter from '@/components/RGBSplitFilter/RGBSplitFilter'
+import SelectSfx from '@/components/SelectSfx/SelectSfx'
 
 /**
  * AI Marketing Kombat — /demo.
@@ -46,6 +48,7 @@ import ScrollReveal from '@/components/ScrollReveal/ScrollReveal'
 export default function Page() {
   return (
     <div className="app">
+      <RGBSplitFilter />
       <JuiceProvider>
         <HitSparks>
           <PixelCursor enabled>
@@ -83,6 +86,7 @@ export default function Page() {
       <KonamiFatality />
       <SoundToggle />
       <MagneticCTA />
+      <SelectSfx />
       <ScrollReveal />
       <ModeSwitcher active="ai" />
     </div>

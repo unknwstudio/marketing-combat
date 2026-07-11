@@ -40,12 +40,19 @@ export default function Fighters() {
                 'fighters__card' +
                 (f.selected ? ' fighters__card--selected' : '')
               }
+              data-select-sfx="hit"
             >
-              <img
-                className="fighters__portrait"
-                src={`/assets/fighters/${f.img}`}
-                alt={`${f.label} fighter portrait`}
-              />
+              <div className="fighters__frame">
+                <img
+                  className="fighters__portrait"
+                  src={`/assets/fighters/${f.img}`}
+                  alt={`${f.label} fighter portrait`}
+                />
+                <span className="fighters__sweep" aria-hidden="true" />
+                <span className="fighters__select" aria-hidden="true">
+                  ► select
+                </span>
+              </div>
               <div className="fighters__label">{f.label}</div>
             </li>
           ))}

@@ -24,24 +24,36 @@ export default function Judges() {
 
       <ul className="judges__grid">
         {JUDGES.map((j) => (
-          <li key={j.n} className="dcard judges__card">
-            <img
-              className="judges__portrait pixelated"
-              src={`/assets/demo/judges/${j.img}`}
-              alt={`Boss ${j.n} portrait`}
-            />
+          <li key={j.n} className="dcard judges__card" data-select-sfx="hit">
+            <div className="judges__frame">
+              <img
+                className="judges__portrait pixelated"
+                src={`/assets/demo/judges/${j.img}`}
+                alt={`Boss ${j.n} portrait`}
+              />
+              <span className="judges__sweep" aria-hidden="true" />
+              <span className="judges__select" aria-hidden="true">
+                ► select
+              </span>
+            </div>
             <span className="judges__tag">BOSS · {j.n}</span>
             <h3 className="judges__name">{j.name}</h3>
             <p className="judges__line">{j.line}</p>
           </li>
         ))}
 
-        <li className="dcard judges__card judges__card--secret">
-          <img
-            className="judges__portrait pixelated"
-            src={`/assets/demo/judges/secret-boss.png`}
-            alt="Secret boss — identity hidden"
-          />
+        <li className="dcard judges__card judges__card--secret" data-select-sfx="hit">
+          <div className="judges__frame">
+            <img
+              className="judges__portrait pixelated"
+              src={`/assets/demo/judges/secret-boss.png`}
+              alt="Secret boss — identity hidden"
+            />
+            <span className="judges__sweep" aria-hidden="true" />
+            <span className="judges__select" aria-hidden="true">
+              ► select
+            </span>
+          </div>
           <span className="judges__tag judges__tag--secret">SECRET BOSS ???</span>
           <h3 className="judges__name">UNLOCK SOON</h3>
           <p className="judges__line">Identity revealed before the main tour</p>
