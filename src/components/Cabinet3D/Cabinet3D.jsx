@@ -45,39 +45,6 @@ function makeAttractTexture() {
   return t
 }
 
-/* custom lit marquee (replaces the model's stock "ARCADE" panel) */
-function makeMarqueeTexture(text) {
-  const c = document.createElement('canvas')
-  c.width = 1024
-  c.height = 256
-  const x = c.getContext('2d')
-  x.fillStyle = '#0a0810'
-  x.fillRect(0, 0, 1024, 256)
-  const g = x.createLinearGradient(0, 0, 0, 256)
-  g.addColorStop(0, 'rgba(255,46,77,0)')
-  g.addColorStop(1, 'rgba(255,46,77,0.18)')
-  x.fillStyle = g
-  x.fillRect(0, 0, 1024, 256)
-  x.textAlign = 'center'
-  x.textBaseline = 'middle'
-  x.font = '800 132px "Arial Black", Arial, sans-serif'
-  x.lineJoin = 'round'
-  x.shadowColor = 'rgba(255,80,0,0.9)'
-  x.shadowBlur = 34
-  x.lineWidth = 15
-  x.strokeStyle = '#ff5000'
-  x.strokeText(text, 512, 140)
-  x.shadowBlur = 0
-  x.fillStyle = '#ffd000'
-  x.fillText(text, 512, 140)
-  const t = new THREE.CanvasTexture(c)
-  t.anisotropy = 8
-  t.colorSpace = THREE.SRGBColorSpace
-  // NB: keep the default flipY (true) — that is the orientation this
-  // model's marquee UVs expect for a canvas texture.
-  return t
-}
-
 const SCREEN_VERT = `
 varying vec2 vUv;
 void main() {
@@ -171,13 +138,15 @@ function CabinetModel() {
           c.metalness = 0.0
           set(i, c)
         } else if (mat.name === 'ARCADE') {
+          // keep the model's own baked marquee art (ARCADE_baseColor.png:
+          // gold "ai-kombat" on red) and light it like a real lit marquee
           const c = mat.clone()
-          const tex = makeMarqueeTexture('AI KOMBAT')
-          c.map = tex
-          if ('emissiveMap' in c) c.emissiveMap = tex
           c.color = new THREE.Color('#ffffff')
-          c.emissive = new THREE.Color('#ffffff')
-          c.emissiveIntensity = 1.0
+          if (c.map) {
+            c.emissive = new THREE.Color('#ffffff')
+            c.emissiveMap = c.map
+            c.emissiveIntensity = 0.9
+          }
           c.needsUpdate = true
           set(i, c)
         }
@@ -204,14 +173,15 @@ function Cabinet() {
   const { pointer } = useThree()
   useFrame((_, dt) => {
     if (!group.current) return
-    const ty = 0.3 + pointer.x * 0.3 // base 3/4 view + parallax
-    const tx = -pointer.y * 0.12
+    // near-front so the CRT screen reads clearly; gentle parallax only
+    const ty = 0.12 + pointer.x * 0.1
+    const tx = -pointer.y * 0.05
     const k = Math.min(1, dt * 4)
     group.current.rotation.y += (ty - group.current.rotation.y) * k
     group.current.rotation.x += (tx - group.current.rotation.x) * k
   })
   return (
-    <group ref={group} rotation={[0, 0.3, 0]}>
+    <group ref={group} rotation={[0, 0.12, 0]}>
       <CabinetModel />
     </group>
   )

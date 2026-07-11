@@ -21,8 +21,8 @@ export default function ArcadeCabinet() {
       >
         <Cabinet3DMount />
       </a>
-      {/* CC-BY-4.0 attribution for the cabinet model is kept in
-          public/assets/demo/MODEL-CREDITS.txt (author: Nikita Borovkov). */}
+      {/* Cabinet model credit is kept in
+          public/assets/demo/MODEL-CREDITS.txt (author: Alena Zolotareva, via Rodin). */}
     </section>
   )
 }
