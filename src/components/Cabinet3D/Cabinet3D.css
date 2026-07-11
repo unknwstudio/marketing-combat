@@ -1,0 +1,22 @@
+/* 3D cabinet canvas fills the section slot; the whole thing links to /play. */
+.cab3d {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cab3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* shown only when WebGL is unavailable */
+.cab3d__fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

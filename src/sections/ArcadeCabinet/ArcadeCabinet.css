@@ -15,6 +15,12 @@
   transition: filter 0.2s ease-out;
 }
 
+/* 3D mode: a taller stage for the upright cabinet */
+.cabinet__unit--3d {
+  width: min(560px, 100%);
+  aspect-ratio: 4 / 5;
+}
+
 .cabinet__frame {
   position: absolute;
   inset: 0;
