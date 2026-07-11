@@ -69,24 +69,3 @@
   }
 }
 
-/* tiny model attribution (CC-BY-4.0) — kept legible above the vignette */
-.cabinet__credit {
-  position: relative;
-  z-index: 2;
-  margin-top: 10px;
-  font-family: var(--k-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: color-mix(in srgb, var(--k-ink) 42%, transparent);
-  text-align: center;
-}
-
-.cabinet__credit a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.cabinet__credit a:hover {
-  color: var(--k-red);
-}
