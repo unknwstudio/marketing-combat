@@ -13,7 +13,7 @@
   --gc-green: #8bffa0;
   --gc-blue: #8fe8ff;
 }
-.gc-root button { font-family: inherit; }
+.gc-root button:not(.gc-corner) { font-family: inherit; } /* menus use the pixel font; corner icons set their own (below) */
 
 /* ---- corner buttons (exit / help / pause) ---- */
 .gc-corner {
@@ -29,7 +29,11 @@
   background: rgba(8, 4, 20, 0.6);
   border: 2px solid rgba(255, 255, 255, 0.28);
   color: #eaf4ff;
-  font-size: 12px;
+  /* utility icons in a clean system font, NOT the pixel HUD font: Press Start 2P lacks ✕/❚❚ (they
+     fall back) and sits ? high, so the pixel font made the three glyphs mismatch. One font + one
+     size + line-height:1 + flex-center => all three identically centered. */
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 17px;
   line-height: 1;
   opacity: 0.62;
   cursor: pointer;
@@ -42,7 +46,7 @@
 @media (hover: none), (pointer: coarse) {
   .gc-corner { opacity: 1; width: 44px; height: 44px; border-color: rgba(255, 255, 255, 0.5); }
 }
-.gc-exit { left: 10px; font-size: 15px; }
+.gc-exit { left: 10px; }
 .gc-exit:hover { border-color: var(--gc-red); color: #ffd7de; }
 .gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: 8px; pointer-events: none; }
 .gc-topright .gc-corner { position: static; }
