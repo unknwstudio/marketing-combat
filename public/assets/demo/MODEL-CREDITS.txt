@@ -1,0 +1,11 @@
+3D model credit — arcade-machine.glb (section "play the game" on /demo)
+
+This work is based on "Arcade Machine"
+(https://sketchfab.com/3d-models/arcade-machine-444b485039474d818aa661ca13ff4dff)
+by Nikita Borovkov (https://sketchfab.com/NickBorovik)
+licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/).
+
+Modifications: exported to Draco-compressed .glb; cabinet body (STEEL3) and
+neon trim (NEON) recolored to the site palette; the SCREEN material is replaced
+at runtime with a live CRT attract shader; the GLASS panel is dimmed.
+Commercial use is permitted under the license; author credited on-page and here.

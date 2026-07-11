@@ -21,6 +21,22 @@ export default function ArcadeCabinet() {
       >
         <Cabinet3DMount />
       </a>
+
+      <p className="cabinet__credit">
+        Cabinet model{' '}
+        <a
+          href="https://sketchfab.com/3d-models/arcade-machine-444b485039474d818aa661ca13ff4dff"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          “Arcade Machine”
+        </a>{' '}
+        by{' '}
+        <a href="https://sketchfab.com/NickBorovik" target="_blank" rel="noopener noreferrer">
+          Nikita Borovkov
+        </a>{' '}
+        — CC-BY-4.0
+      </p>
     </section>
   )
 }

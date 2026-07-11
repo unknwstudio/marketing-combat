@@ -1,4 +1,4 @@
-/* Photoreal arcade cabinet render + a live CRT screen overlay; links to /play. */
+/* Interactive 3D arcade cabinet (R3F). The whole unit links to /play. */
 .cabinet {
   display: flex;
   flex-direction: column;
@@ -8,181 +8,35 @@
 .cabinet__unit {
   position: relative;
   display: block;
-  width: min(940px, 100%);
-  aspect-ratio: 4096 / 2748;
+  width: min(560px, 100%);
+  aspect-ratio: 4 / 5;
   text-decoration: none;
   color: inherit;
   transition: filter 0.2s ease-out;
-}
-
-/* 3D mode: a taller stage for the upright cabinet */
-.cabinet__unit--3d {
-  width: min(560px, 100%);
-  aspect-ratio: 4 / 5;
-}
-
-.cabinet__frame {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
-  image-rendering: auto; /* photoreal — keep it smooth, not pixelated */
-}
-
-/* --- the live screen sits over the render's green glass (percent-tuned) --- */
-.cabinet__screen {
-  position: absolute;
-  left: 27%;
-  top: 15.5%;
-  width: 47.8%;
-  height: 56%;
-  overflow: hidden;
-  border-radius: 13% / 17%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* fade the content toward the edges so it melts into the curved CRT glass
-     instead of showing a hard rectangle over the rounded bezel */
-  -webkit-mask-image: radial-gradient(
-    ellipse 92% 90% at 50% 48%,
-    #000 56%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(
-    ellipse 92% 90% at 50% 48%,
-    #000 56%,
-    transparent 100%
-  );
-}
-
-/* the game scene playing on the tube */
-.cabinet__game {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  opacity: 0.72;
-  filter: saturate(0.92) brightness(0.7) contrast(1.05);
-  transition: opacity 0.25s ease-out, filter 0.25s ease-out;
-}
-
-/* green phosphor cast + curved vignette (dims edges so PLAY reads) */
-.cabinet__glass {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background:
-    radial-gradient(ellipse 82% 78% at 50% 46%, transparent 34%, rgba(0, 0, 0, 0.72) 100%),
-    linear-gradient(rgba(28, 70, 46, 0.16), rgba(8, 20, 13, 0.34));
-}
-
-/* RGB aperture-grille subpixel shimmer */
-.cabinet__grille {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.06),
-    rgba(0, 255, 0, 0.03) 1px,
-    rgba(0, 0, 255, 0.06) 2px,
-    rgba(255, 0, 0, 0.06) 3px
-  );
-  mix-blend-mode: screen;
-}
-
-/* hard scanlines (50% step, not a soft ramp) */
-.cabinet__scan {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
-  background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.34) 50%);
-  background-size: 100% 3px;
-}
-
-/* diagonal glass glare sheen */
-.cabinet__sheen {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
-  background: linear-gradient(
-    128deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.03) 22%,
-    transparent 45%
-  );
-  mix-blend-mode: screen;
-}
-
-.cabinet__cta {
-  position: relative;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
-.cabinet__play {
-  font-family: var(--k-font-accent);
-  font-size: clamp(30px, 5vw, 68px);
-  line-height: 1;
-  color: #ffd000;
-  -webkit-text-stroke: 0.05em #ff5000;
-  paint-order: stroke fill;
-  text-shadow: 0 0 0.22em rgba(255, 80, 0, 0.9);
-  transition: transform 0.18s ease-out;
-  animation: cabinet-pulse 1.4s ease-in-out infinite;
-}
-
-.cabinet__blink {
-  font-family: var(--k-font);
-  font-size: clamp(9px, 1.4vw, 15px);
-  letter-spacing: 1px;
-  color: #3ad76f;
-  animation: cabinet-blink 1.1s steps(2, start) infinite;
 }
 
 @media (hover: hover) {
   .cabinet__unit:hover {
     filter: drop-shadow(0 0 46px rgba(255, 46, 77, 0.28));
   }
-  .cabinet__unit:hover .cabinet__game {
-    opacity: 0.8;
-    filter: saturate(1) brightness(0.82) contrast(1.05);
-  }
-  .cabinet__unit:hover .cabinet__play {
-    transform: scale(1.06);
-  }
 }
 
-@keyframes cabinet-pulse {
-  50% {
-    text-shadow:
-      0 0 0.32em rgba(255, 80, 0, 1),
-      0 0 0.6em rgba(255, 208, 0, 0.6);
-  }
+/* tiny model attribution (CC-BY-4.0) */
+.cabinet__credit {
+  margin-top: 10px;
+  font-family: var(--k-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--k-ink) 42%, transparent);
+  text-align: center;
 }
 
-@keyframes cabinet-blink {
-  50% {
-    opacity: 0.2;
-  }
+.cabinet__credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .cabinet__play,
-  .cabinet__blink {
-    animation: none;
-  }
+.cabinet__credit a:hover {
+  color: var(--k-red);
 }
