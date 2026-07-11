@@ -54,13 +54,13 @@ function Display({ pointerRef }) {
         // with only a soft tint + specular highlights catching the curve
         glassMeshes.push(o)
         o.material = new THREE.MeshPhysicalMaterial({
-          color: new THREE.Color('#0a1a12'),
+          color: new THREE.Color('#0b1c13'),
           transparent: true,
-          opacity: 0.16,
-          roughness: 0.12,
+          opacity: 0.22,
+          roughness: 0.06,
           metalness: 0.0,
           clearcoat: 1.0,
-          clearcoatRoughness: 0.12,
+          clearcoatRoughness: 0.06,
           envMapIntensity: 0.0,
           depthWrite: false,
           toneMapped: false,
@@ -104,9 +104,9 @@ function Display({ pointerRef }) {
     <group ref={group}>
       <CoverCamera glassW={glassW} />
       <primitive object={model} />
-      {/* neutral moving speculars that read as glass; kept subtle so the hero stays clear */}
-      <pointLight position={[-glassW * 0.5, GLASS_H * 0.5, 1.2]} intensity={2.6} distance={8} />
-      <pointLight position={[glassW * 0.55, -GLASS_H * 0.3, 1.2]} color="#cfe6ff" intensity={1.4} distance={8} />
+      {/* bright moving speculars so a glass highlight visibly sweeps the curve */}
+      <pointLight position={[-glassW * 0.5, GLASS_H * 0.5, 1.4]} intensity={5.5} distance={9} />
+      <pointLight position={[glassW * 0.55, -GLASS_H * 0.3, 1.4]} color="#bfe0ff" intensity={2.6} distance={9} />
     </group>
   )
 }

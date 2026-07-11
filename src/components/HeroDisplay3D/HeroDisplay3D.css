@@ -22,21 +22,61 @@
   display: block;
 }
 
-/* CRT read over the hero: convex edge-darkening (bulge) + a soft glass glare +
-   a bright glass rim. Scanlines come from the hero's own scoped CRTOverlay. */
+/* CRT read over the hero: a real curved-tube look — strong barrel vignette that
+   goes near-black in the corners (reads as tube curvature), a bright glass rim,
+   a big diagonal glass glare, and its own heavier scanlines + a slow flicker. */
 .herodisp__crt {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 3;
-  /* bright glass edge catching light */
-  box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.28),
-    inset 0 0 60px rgba(0, 0, 0, 0.35);
+  /* bright glass rim + deep tube vignette pressed in from the edges */
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.4),
+    inset 0 0 70px 14px rgba(0, 0, 0, 0.5),
+    inset 0 0 190px 56px rgba(0, 0, 0, 0.42);
   background:
-    /* soft top-left glare */
-    radial-gradient(120% 85% at 20% 4%, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 42%),
-    /* faint lower-right counter-glare */
-    radial-gradient(90% 70% at 88% 96%, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 40%),
-    /* convex barrel edge-darkening */
-    radial-gradient(135% 135% at 50% 50%, rgba(0, 0, 0, 0) 48%, rgba(0, 0, 0, 0.62) 100%);
+    /* main glass glare, sweeping from top-left */
+    linear-gradient(
+      122deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.07) 13%,
+      rgba(255, 255, 255, 0) 34%
+    ),
+    /* soft counter-reflection, bottom-right */
+    radial-gradient(52% 44% at 85% 90%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 60%),
+    /* barrel corner darkening -> curved tube */
+    radial-gradient(122% 118% at 50% 47%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.72) 100%),
+    /* the CRT's own scanlines (a touch heavier than the hero's base overlay) */
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.24) 3px
+    );
+  animation: hd-flicker 6s steps(48) infinite;
+}
+
+@keyframes hd-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  4% {
+    opacity: 0.93;
+  }
+  8% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.97;
+  }
+  52% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .herodisp__crt {
+    animation: none;
+  }
 }

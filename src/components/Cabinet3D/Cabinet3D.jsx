@@ -1,8 +1,8 @@
 'use client'
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF } from '@react-three/drei'
-import { Suspense, useEffect, useMemo, useRef } from 'react'
+import { useGLTF, ContactShadows } from '@react-three/drei'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import './Cabinet3D.css'
@@ -57,6 +57,7 @@ precision mediump float;
 uniform sampler2D uTex;
 uniform vec2 uRes;
 uniform float uTime;
+uniform float uPower;
 varying vec2 vUv;
 void main() {
   vec2 cc = vUv * 2.0 - 1.0;
@@ -79,6 +80,8 @@ void main() {
   float vig = pow(16.0 * uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y), 0.2);
   col *= vig;
   col *= 0.97 + 0.03 * sin(uTime * 7.0 + uv.y * 8.0);
+  // power-on: the screen brightens as the cabinet scrolls into view
+  col *= uPower;
   gl_FragColor = vec4(col * inside, 1.0);
 }`
 
@@ -87,7 +90,7 @@ void main() {
 const BODY_COLOR = new THREE.Color('#17121f') // near-black cabinet
 const NEON_COLOR = new THREE.Color('#ff2e4d') // our --k-red neon
 
-function CabinetModel() {
+function CabinetModel({ progressRef }) {
   const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const uniformsRef = useRef(null)
 
@@ -119,6 +122,7 @@ function CabinetModel() {
             uTex: { value: makeAttractTexture() },
             uRes: { value: new THREE.Vector2(512, 384) },
             uTime: { value: 0 },
+            uPower: { value: 0.3 },
           }
           uniformsRef.current = uniforms
           set(
@@ -162,13 +166,18 @@ function CabinetModel() {
   }, [scene])
 
   useFrame((_, dt) => {
-    if (uniformsRef.current) uniformsRef.current.uTime.value += dt
+    const u = uniformsRef.current
+    if (!u) return
+    u.uTime.value += dt
+    // brighten the CRT from a dim standby to full-on as the cabinet centers
+    const target = 0.3 + 0.7 * (progressRef?.current ?? 1)
+    u.uPower.value += (target - u.uPower.value) * Math.min(1, dt * 3)
   })
 
   return <primitive object={model} />
 }
 
-function Cabinet() {
+function Cabinet({ progressRef }) {
   const group = useRef()
   const { pointer } = useThree()
   useFrame((_, dt) => {
@@ -182,9 +191,33 @@ function Cabinet() {
   })
   return (
     <group ref={group} rotation={[0, 0.12, 0]}>
-      <CabinetModel />
+      <CabinetModel progressRef={progressRef} />
     </group>
   )
+}
+
+/* dolly the camera in as the PLAY section scrolls to centre (window scroll,
+   not drei ScrollControls — that would hijack the page's own scroll). */
+const CAM_FAR = 8.0
+const CAM_NEAR = 6.6
+function ScrollDolly({ progressRef }) {
+  const { camera, gl } = useThree()
+  const secRef = useRef(null)
+  useFrame((_, dt) => {
+    if (!secRef.current) secRef.current = gl.domElement.closest('.cabinet')
+    const sec = secRef.current
+    if (sec && typeof window !== 'undefined') {
+      const r = sec.getBoundingClientRect()
+      const vh = window.innerHeight || 1
+      const center = r.top + r.height / 2
+      // 0 when the section centre sits at the viewport bottom, 1 at the middle
+      const p = Math.max(0, Math.min(1, (vh - center) / (vh / 2)))
+      progressRef.current = p
+    }
+    const targetZ = CAM_FAR - (CAM_FAR - CAM_NEAR) * progressRef.current
+    camera.position.z += (targetZ - camera.position.z) * Math.min(1, dt * 3)
+  })
+  return null
 }
 
 function StudioEnv() {
@@ -217,6 +250,22 @@ export default function Cabinet3D() {
     }
   }, [])
 
+  const wrapRef = useRef(null)
+  const progressRef = useRef(0)
+  const [active, setActive] = useState(true)
+
+  // pause the WebGL loop while the cabinet is off-screen (saves GPU); a 200px
+  // margin wakes it just before it scrolls in so the dolly is ready
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), {
+      rootMargin: '200px 0px',
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [supported])
+
   if (!supported) {
     return (
       <img
@@ -228,19 +277,30 @@ export default function Cabinet3D() {
   }
 
   return (
-    <div className="cab3d">
+    <div className="cab3d" ref={wrapRef}>
       <Canvas
+        frameloop={active ? 'always' : 'never'}
         dpr={[1, 1.8]}
-        camera={{ position: [0, 0.15, 7.4], fov: 30 }}
+        camera={{ position: [0, 0.15, CAM_FAR], fov: 30 }}
         gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.4} />
         <directionalLight position={[2.5, 4, 5]} intensity={1.5} />
         <pointLight position={[-4, 1, 3]} color="#ff2e4d" intensity={55} distance={22} />
         <pointLight position={[4, 1, 3]} color="#3fe0ff" intensity={40} distance={22} />
+        <ScrollDolly progressRef={progressRef} />
         <Suspense fallback={null}>
           <StudioEnv />
-          <Cabinet />
+          <Cabinet progressRef={progressRef} />
+          <ContactShadows
+            position={[0, -1.62, 0]}
+            opacity={0.55}
+            scale={5.5}
+            blur={2.6}
+            far={3.2}
+            resolution={512}
+            color="#000000"
+          />
         </Suspense>
       </Canvas>
     </div>
