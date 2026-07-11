@@ -41,6 +41,124 @@
   color: #7fd39a;
 }
 
+/* GAME OVER -> CONTINUE? ritual (see FinalCta.jsx for the stage sequencer).
+   Both strips reserve their final rendered height always, so nothing shifts
+   the layout as stages toggle. */
+.finalcta__gameover {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.finalcta__gameover-text {
+  font-family: var(--k-font-accent);
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--k-red);
+  text-shadow: 0 0 0.16em rgba(255, 46, 77, 0.75);
+  opacity: 0;
+  transform: scale(1.6);
+  filter: blur(6px);
+}
+
+.finalcta--stage-gameover .finalcta__gameover-text {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+  transition: opacity 140ms steps(3, end), transform 220ms cubic-bezier(0.2, 1.4, 0.4, 1),
+    filter 180ms ease;
+}
+
+.finalcta--stage-countdown .finalcta__gameover-text,
+.finalcta--stage-ready .finalcta__gameover-text {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.finalcta__continue {
+  min-height: 58px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 14px;
+}
+
+.finalcta__continue-label,
+.finalcta__continue-num {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.finalcta__continue-label {
+  font-family: var(--k-font-mono);
+  font-size: 26px;
+  letter-spacing: 1px;
+  color: var(--k-cyan);
+  text-transform: uppercase;
+}
+
+.finalcta__continue-num {
+  font-family: var(--k-font-accent);
+  font-size: 52px;
+  font-weight: 500;
+  line-height: 1;
+  color: #ffd000;
+  -webkit-text-stroke: 0.03em #ff5000;
+  paint-order: stroke fill;
+}
+
+.finalcta--stage-countdown .finalcta__continue-label,
+.finalcta--stage-countdown .finalcta__continue-num {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 120ms steps(2, end), transform 160ms cubic-bezier(0.3, 1.6, 0.4, 1);
+}
+
+/* the CTA + prompt dim during the ritual, then pop back at "ready" -- selling
+   "instead of losing, here's your one more move" */
+.finalcta__cta,
+.finalcta__press {
+  transition: opacity 300ms ease, filter 300ms ease;
+}
+
+.finalcta--stage-gameover .finalcta__cta,
+.finalcta--stage-countdown .finalcta__cta,
+.finalcta--stage-gameover .finalcta__press,
+.finalcta--stage-countdown .finalcta__press {
+  opacity: 0.35;
+  filter: grayscale(0.6) brightness(0.7);
+}
+
+.finalcta--stage-ready .finalcta__cta {
+  animation: finalcta-powerup 420ms ease;
+}
+
+@keyframes finalcta-powerup {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.6);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finalcta__gameover-text,
+  .finalcta__continue-label,
+  .finalcta__continue-num {
+    transition: none;
+  }
+
+  .finalcta--stage-ready .finalcta__cta {
+    animation: none;
+  }
+}
+
 .finalcta__cta {
   margin-top: 8px;
 }
@@ -79,6 +197,27 @@
 
   .finalcta__title {
     font-size: clamp(30px, 9vw, 56px);
+  }
+
+  .finalcta__gameover {
+    min-height: 44px;
+  }
+
+  .finalcta__gameover-text {
+    font-size: clamp(22px, 7vw, 36px);
+  }
+
+  .finalcta__continue {
+    min-height: 40px;
+    gap: 8px;
+  }
+
+  .finalcta__continue-label {
+    font-size: 14px;
+  }
+
+  .finalcta__continue-num {
+    font-size: 32px;
   }
 
   .finalcta__body {
