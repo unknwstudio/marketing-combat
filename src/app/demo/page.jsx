@@ -10,7 +10,7 @@ import CRTOverlay from '@/effects/crt/CRTOverlay'
 import './demo.css'
 
 // existing landing sections (same as `/`) — reused so /demo is the full page
-import Hero from '@/sections/Hero/Hero'
+import HeroStage from '@/components/HeroDisplay3D/HeroStage'
 import Champion from '@/sections/Champion/Champion'
 import Fighters from '@/sections/Fighters/Fighters'
 
@@ -50,7 +50,7 @@ export default function Page() {
         <HitSparks>
           <PixelCursor enabled>
             <ScaleCanvas width={1440}>
-              <Hero />
+              <HeroStage />
               <Champion />
               <Fighters />
 

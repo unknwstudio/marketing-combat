@@ -1,0 +1,6 @@
+/* HeroStage — the real pixel Hero is the base layer; on desktop+WebGL the
+   convex CRT glass (HeroDisplay3D) is laid OVER it (transparent), so the hero
+   stays fully visible and just reads as if it's behind a real CRT. */
+.herostage {
+  position: relative;
+}
