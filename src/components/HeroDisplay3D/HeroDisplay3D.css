@@ -1,9 +1,12 @@
 /* ============================================================
-   HERO-UNDER-GLASS — the real pixel Hero stays visible in HeroStage;
-   this overlays the model's convex CRT glass (transparent) + a CSS
-   convex vignette / glare so the whole hero reads like it's behind a
-   real CRT. No neon. Canvas + overlay live in ScaleCanvas, so they
-   scale with the hero and stay aligned. Desktop / WebGL only.
+   HERO CRT — a genuine WebGL shader pass (see HeroDisplay3D.jsx). The real
+   DOM Hero stays mounted underneath (a11y baseline + mobile/no-WebGL/
+   reduced-motion fallback); this canvas fully covers it with an opaque
+   shader render, so it must win the stacking order unambiguously (explicit
+   z-index here AND on .herostage__flat in HeroStage.css — the flat layer's
+   own child `.hero` has position:relative, which can otherwise compete).
+   Canvas + DOM both live inside the same ScaleCanvas, so they scale in
+   lock-step. Desktop / WebGL only (HeroStage gates it).
    ============================================================ */
 
 .herodisp {
@@ -13,70 +16,16 @@
   height: 804px;
   margin: 0 auto;
   overflow: hidden;
-  z-index: 2;
-  background: transparent;
-  pointer-events: none; /* the pixel hero underneath stays interactive */
+  z-index: 1;
+  pointer-events: none; /* clicks pass through to the real hero's link below */
 }
 
 .herodisp canvas {
   display: block;
-}
-
-/* CRT read over the hero: a real curved-tube look — strong barrel vignette that
-   goes near-black in the corners (reads as tube curvature), a bright glass rim,
-   a big diagonal glass glare, and its own heavier scanlines + a slow flicker. */
-.herodisp__crt {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
-  /* bright glass rim + deep tube vignette pressed in from the edges */
-  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.4),
-    inset 0 0 70px 14px rgba(0, 0, 0, 0.5),
-    inset 0 0 190px 56px rgba(0, 0, 0, 0.42);
-  background:
-    /* main glass glare, sweeping from top-left */
-    linear-gradient(
-      122deg,
-      rgba(255, 255, 255, 0.18) 0%,
-      rgba(255, 255, 255, 0.07) 13%,
-      rgba(255, 255, 255, 0) 34%
-    ),
-    /* soft counter-reflection, bottom-right */
-    radial-gradient(52% 44% at 85% 90%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 60%),
-    /* barrel corner darkening -> curved tube */
-    radial-gradient(122% 118% at 50% 47%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.72) 100%),
-    /* the CRT's own scanlines (a touch heavier than the hero's base overlay) */
-    repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0,
-      rgba(0, 0, 0, 0) 2px,
-      rgba(0, 0, 0, 0.24) 3px
-    );
-  animation: hd-flicker 6s steps(48) infinite;
-}
-
-@keyframes hd-flicker {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  4% {
-    opacity: 0.93;
-  }
-  8% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.97;
-  }
-  52% {
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .herodisp__crt {
-    animation: none;
-  }
+  width: 100% !important;
+  height: 100% !important;
+  /* R3F sets pointer-events:auto on the canvas itself (for its own raycasting),
+     which breaks the inherited :none from .herodisp -- force it back off so
+     clicks always reach the real hero's DOM underneath. */
+  pointer-events: none !important;
 }

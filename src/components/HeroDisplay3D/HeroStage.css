@@ -1,6 +1,15 @@
-/* HeroStage — the real pixel Hero is the base layer; on desktop+WebGL the
-   convex CRT glass (HeroDisplay3D) is laid OVER it (transparent), so the hero
-   stays fully visible and just reads as if it's behind a real CRT. */
+/* HeroStage — the real pixel Hero is the base layer (also the mobile/no-WebGL/
+   reduced-motion fallback); on desktop+WebGL a genuine WebGL CRT render
+   (HeroDisplay3D) fully covers it — canvas is opaque, so the DOM below is
+   invisible but stays mounted (a11y + the real registration link, reachable
+   because the canvas is pointer-events:none). Explicit stacking on BOTH
+   layers (not just z-index on the overlay) so the flat layer's own child
+   (.hero has position:relative) can never win the paint order. */
 .herostage {
   position: relative;
+}
+
+.herostage__flat {
+  position: relative;
+  z-index: 0;
 }
