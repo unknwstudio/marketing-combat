@@ -34,6 +34,7 @@ import Announcer from '@/components/Announcer/Announcer'
 import KonamiFatality from '@/components/KonamiFatality/KonamiFatality'
 import SoundToggle from '@/components/SoundToggle/SoundToggle'
 import MagneticCTA from '@/components/MagneticCTA/MagneticCTA'
+import ScrollReveal from '@/components/ScrollReveal/ScrollReveal'
 
 /**
  * AI Marketing Kombat — /demo.
@@ -82,6 +83,7 @@ export default function Page() {
       <KonamiFatality />
       <SoundToggle />
       <MagneticCTA />
+      <ScrollReveal />
       <ModeSwitcher active="ai" />
     </div>
   )

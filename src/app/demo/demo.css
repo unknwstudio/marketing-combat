@@ -107,14 +107,34 @@
 }
 
 .dcta:hover {
-  background: #ffd000;
+  background: #fff;
   color: #000;
-  border-color: #ffd000;
+  border-color: #fff;
 }
 
 /* magnetic CTAs ease back to rest when the cursor leaves */
 [data-magnetic] {
   transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), background 0.12s, color 0.12s;
+}
+
+/* ============================================================
+   Scroll reveal — JS adds `.reveal-on` to <html> then `.revealed`
+   per element as it enters view. No-JS / reduced-motion: no hiding.
+   Transition also carries the hover props so hovers stay snappy.
+   ============================================================ */
+.reveal-on .dcard,
+.reveal-on .dsec__head,
+.reveal-on .stats__cell,
+.reveal-on .faq__item {
+  transition: opacity 0.6s ease-out, transform 0.16s ease-out,
+    border-color 0.14s ease-out, box-shadow 0.14s ease-out;
+}
+
+.reveal-on .dcard:not(.revealed),
+.reveal-on .dsec__head:not(.revealed),
+.reveal-on .stats__cell:not(.revealed),
+.reveal-on .faq__item:not(.revealed) {
+  opacity: 0;
 }
 
 /* small numeric index used across cards ("01".."06") */

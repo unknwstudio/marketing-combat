@@ -22,13 +22,8 @@ export default function ArcadeCabinet() {
         />
 
         <span className="cabinet__screen">
-          <img
-            className="cabinet__teaser pixelated"
-            src={`/assets/fighters/bg.png`}
-            alt=""
-            aria-hidden="true"
-          />
           <span className="cabinet__glass" aria-hidden="true" />
+          <span className="cabinet__glow" aria-hidden="true" />
           <span className="cabinet__scan" aria-hidden="true" />
           <span className="cabinet__cta">
             <span className="cabinet__play">▶ PLAY</span>

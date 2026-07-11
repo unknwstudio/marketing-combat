@@ -52,39 +52,39 @@
   color: #7fd39a;
 }
 
+/* same shape as the hero registration badge: black, thin white border, invert on hover */
 .stages__cta {
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 16px;
-  border: 2px solid #ffd000;
-  background: rgba(255, 208, 0, 0.07);
+  padding: 10px 14px;
+  background: #000;
+  border: 1px solid #fff;
+  color: #fff;
   font-family: var(--k-font-mono);
   font-size: 18px;
   letter-spacing: -0.3px;
-  color: #ffd000;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.14s, color 0.14s, box-shadow 0.14s, transform 0.14s;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
 }
 
 .stages__cta--final {
   border-color: var(--k-red);
-  background: rgba(255, 46, 77, 0.09);
   color: var(--k-red);
 }
 
 @media (hover: hover) {
   .stages__cta:hover {
-    background: #ffd000;
+    background: #fff;
     color: #000;
-    box-shadow: 0 0 18px rgba(255, 208, 0, 0.4);
+    border-color: #fff;
   }
   .stages__cta--final:hover {
     background: var(--k-red);
     color: #000;
-    box-shadow: 0 0 18px rgba(255, 46, 77, 0.45);
+    border-color: var(--k-red);
   }
 }
 
