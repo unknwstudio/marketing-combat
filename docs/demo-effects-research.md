@@ -153,3 +153,49 @@ Bundle/effort: PixiJS+filters ~150 KB gz (prebuilt filters, best ROI, one shared
 4. CTA juice pass — magnetic + hit-stop + direct-DOM particles + coin/hit SFX (first click = audio unlock) — **S · 🔥**
 5. Portrait character-select hover — VFX-JS or `@pixi/filters` RGBSplit + scanline + Shockwave on SELECT — **M · ✦**
 6. Pixel-dither section transition (+ View-Transitions pixel wipe to /play) — **M · ✦**
+
+---
+
+## Addendum — CRT / arcade-screen techniques (how to make our composited screen read as a real CRT)
+
+Background-agent research, July 2026. Grounded in the libretro CRT shader family + web CRT demos.
+
+### The effect stack (each artifact + best medium)
+A convincing CRT is the *combination* of small artifacts, not one big effect:
+- **Barrel curvature** (biggest "it's a CRT" cue): warp UVs outward, `uv *= 1.0 + (dot(uv,uv)-1.0)*CURV` with CURV **0.02–0.05**. Best in **WebGL**; SVG `feDisplacementMap` can bulge flat DOM; CSS only fakes via `border-radius`+inset shadow.
+- **Scanlines**: HARD step, not a soft ramp — CSS `linear-gradient(transparent 50%, rgba(0,0,0,.25) 50%)` at `background-size:100% 2-4px`, opacity **0.15–0.3**. CSS is genuinely enough.
+- **Aperture-grille / phosphor RGB subpixel**: vertical RGB stripe. WebGL for real; CSS approx `linear-gradient(90deg, rgba(255,0,0,.06), rgba(0,255,0,.02), rgba(0,0,255,.06))` at `background-size:3px 100%`.
+- **Chromatic aberration**: tiny (<1px) R/B split, heavier at edges. GLSL offset UVs, or CSS animated `text-shadow`.
+- **Bloom/glow**: WebGL best; CSS `text-shadow`/`drop-shadow` fakes it on text.
+- **Vignette + glare sheen**: cheap **CSS** radial-gradient / inset shadow + one diagonal `mix-blend:screen` highlight — huge realism-per-effort on glossy glass.
+- **Flicker + slow roll + SVG-`feTurbulence` snow (~3-8%)**: keep subtle, gate behind `prefers-reduced-motion`.
+- **Power-on `scale3d`** (line → overshoot → settle + white flash): pure CSS, highest juice-to-effort.
+- Skip burn-in / interlacing for a landing page.
+
+### CSS-only vs SVG-filter vs WebGL
+- **CSS-only** (0 KB JS): scanlines, vignette, glare, flicker, RGB text-shadow, power-on, faux-curve. Enough for a flat/lightly-curved small screen. Lowest risk.
+- **SVG filters**: animated RF noise (`feTurbulence`), bulge flat DOM (`feDisplacementMap` from a radial identity map). WebKit caveats (no feImage on HTML, data-URI maps, add tiny blur for AA).
+- **WebGL/GLSL** (gold standard): everything correct + cheap on GPU; its curvature makes the image bow to the glass automatically. Needs a canvas + render target.
+
+### Compositing into our cabinet glass
+1. **Baseline (do regardless)**: absolutely position the live screen in the glass rect, constrain with `border-radius`/`mask` matching the tube; two-PNG split (bezel-with-hole on top, screen middle, optional glare-PNG on top) is most controllable.
+2. Angled screens → CSS 3D `matrix3d` corner-pin (ours is front-facing → skip).
+3. Bulge flat content → SVG `feDisplacementMap` (no WebGL).
+4. **Gold standard**: render the screen in a WebGL fragment shader with the cabinet as backplate — the shader's own warp aligns the image to the glass.
+
+### Libraries
+- **CRTFilter.js (Ichiaka)** — framework-agnostic WebGL, MIT, zero-config, wraps any `<canvas>`; barrel + aberration + noise + bloom + scanline + curvature + flicker + roll. Ideal for static export.
+- **PixiJS `@pixi/filter-crt`** — if the game already uses Pixi (params: curvature, lineWidth, lineContrast .25, noise .3, vignetting .3, time).
+- **vault66-crt-effect (React)** — CSS/SVG presets incl. `arcade`; overlay-only (no content warp).
+- **VFX-JS** — attach `scanline`/`bloom`/`pixelate` shaders to a DOM `<img>/<canvas>`, CDN, no build.
+- **ogl (~50KB)** or a raw WebGL quad — leanest gold-standard shader host.
+- Copy GLSL from: libretro crt-lottes (warp 0.031/0.041, hardScan −8), Fast-CRT shadertoy, GM Shaders Mini: CRT, gingerbeardman WebGL CRT (2026).
+
+### ★ Recommended for OUR cabinet screen (least effort/risk)
+1. **One small WebGL fragment shader** on a `<canvas>` in the glass (port a compact Lottes/Fast-CRT onto a raw quad or `ogl`, no Pixi/three) → curvature warp ~0.03–0.05 (image bows to the glass), hard scanlines, subpixel mask, mild aberration. Client component, guard SSR/`window`.
+2. **Glass realism in CSS**: one diagonal `mix-blend:screen` glare sheen + corner highlights + radial vignette (crib vault66 layer stack).
+3. **CSS `scale3d` power-on** on first paint.
+4. Flicker/noise/roll subtle + `prefers-reduced-motion` gated.
+5. **Zero-JS fallback** if we avoid WebGL: hard 50%-stop scanline gradient + 3px RGB stripe + `border-radius` faux-curve + optional `feDisplacementMap` bulge (flatter look, no WebGL-context risk).
+
+**Key refs:** [Alec Lownes CSS CRT](https://aleclownes.com/2017/02/01/crt-display.html) · [GM Shaders Mini: CRT](https://mini.gmshaders.com/p/gm-shaders-mini-crt) · [libretro crt-lottes](https://github.com/libretro/glsl-shaders/blob/master/crt/shaders/crt-lottes.glsl) · [crt-royale docs](https://docs.libretro.com/shader/crt_royale/) · [Ichiaka CRTFilter.js](https://github.com/Ichiaka/CRTFilter) · [PixiJS CRTFilter](https://pixijs.io/filters/docs/CRTFilter.html) · [vault66-crt-effect](https://github.com/mdombrov-33/vault66-crt-effect) · [gingerbeardman WebGL CRT (2026)](https://blog.gingerbeardman.com/2026/01/04/webgl-crt-shader/) · [cool-retro-term-webgl](https://github.com/remojansen/cool-retro-term-webgl) · [Smashing SVG displacement](https://www.smashingmagazine.com/2021/09/deep-dive-wonderful-world-svg-displacement-filtering/) · [TV shutdown scale3d](https://www.jqueryscript.net/animation/Creating-A-TV-Shutdown-Effect-with-CSS3-Transitions-Transforms.html) · [sivan matrix3d video](https://codepen.io/sivan/pen/XmXXbx) · [VFX-JS](https://github.com/fand/vfx-js) · [ogl](https://github.com/oframe/ogl)

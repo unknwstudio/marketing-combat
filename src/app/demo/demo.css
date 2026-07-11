@@ -89,7 +89,43 @@
   padding: 28px;
 }
 
-/* --- CTA button (champion/hero idiom) ------------------------------ */
+/* --- shared CTA: matches the hero registration badge exactly -------- */
+.d-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px 10px;
+  background: #000;
+  border: 1px solid #fff;
+  color: #fff;
+  font-family: var(--k-font-mono);
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.72px;
+  text-transform: lowercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.d-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* red variant (e.g. FINISH HIM) — same box, red accent */
+.d-btn--red {
+  border-color: var(--k-red);
+  color: var(--k-red);
+}
+
+.d-btn--red:hover {
+  background: var(--k-red);
+  color: #000;
+  border-color: var(--k-red);
+}
+
+/* --- CTA button (legacy champion/hero idiom) ----------------------- */
 .dcta {
   display: inline-flex;
   align-items: center;
@@ -254,6 +290,11 @@
   .dcta {
     font-size: 13px;
     padding: 11px 14px;
+  }
+
+  .d-btn {
+    font-size: 15px;
+    padding: 6px 8px 8px;
   }
 
   .dindex {

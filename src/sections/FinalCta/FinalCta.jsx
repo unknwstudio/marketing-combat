@@ -15,8 +15,13 @@ export default function FinalCta() {
         Compare your skills, put yourself on the map, and find out who is the best marketer on
         the planet. One battle. One leaderboard.
       </p>
-      <button type="button" className="dcta finalcta__cta" data-magnetic data-sfx="confirm">
-        ▶ REGISTRATION
+      <button
+        type="button"
+        className="d-btn finalcta__cta"
+        data-magnetic
+        data-sfx="confirm"
+      >
+        &gt;&gt;&gt; registration &lt;&lt;&lt;
       </button>
       <span className="finalcta__press">▮ PRESS ANY KEY TO CONTINUE ▮</span>
     </section>
