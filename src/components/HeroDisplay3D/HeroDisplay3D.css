@@ -24,8 +24,13 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
-  /* R3F sets pointer-events:auto on the canvas itself (for its own raycasting),
-     which breaks the inherited :none from .herodisp -- force it back off so
-     clicks always reach the real hero's DOM underneath. */
+}
+
+/* R3F wraps the canvas in its own internal container div AND sets
+   pointer-events:auto on the canvas itself (for its own raycasting) -- both
+   break the inherited :none from .herodisp. Force EVERY descendant back off
+   so hover/clicks always reach the real hero's DOM underneath. */
+.herodisp,
+.herodisp * {
   pointer-events: none !important;
 }

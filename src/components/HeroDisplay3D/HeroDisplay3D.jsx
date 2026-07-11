@@ -176,13 +176,13 @@ vec3 bloomTap(vec2 s, vec2 dir, float texel) {
 
 void main() {
   vec2 cc = vUv * 2.0 - 1.0;
-  float barrel = 0.15;
+  float barrel = 0.05;
   vec2 uv = (cc * (1.0 + dot(cc, cc) * barrel)) * 0.5 + 0.5;
   float inside = step(0.0, uv.x) * step(uv.x, 1.0) * step(0.0, uv.y) * step(uv.y, 1.0);
   vec2 s = clamp(uv, 0.0, 1.0);
 
   float rim = length(cc);
-  float ca = 0.0032 * (0.3 + rim);
+  float ca = 0.0011 * (0.3 + rim);
   vec3 col;
   col.r = sampleTex(s + vec2(ca, 0.0)).r;
   col.g = sampleTex(s).g;
@@ -195,25 +195,25 @@ void main() {
              + bloomTap(s, vec2(0.0, -1.0), texel)
              + bloomTap(s, vec2(0.7, 0.7), texel)
              + bloomTap(s, vec2(-0.7, -0.7), texel);
-  col += (bloom / 6.0) * 0.85;
+  col += (bloom / 6.0) * 0.5;
 
   float sl = sin(gl_FragCoord.y * 3.14159 * 0.95);
-  col *= 0.85 + 0.15 * (0.5 + 0.5 * sl);
+  col *= 0.9 + 0.1 * (0.5 + 0.5 * sl);
 
   float mx = mod(gl_FragCoord.x, 3.0);
-  vec3 mask = vec3(0.92);
-  mask.r += step(mx, 1.0) * 0.18;
-  mask.g += step(1.0, mx) * step(mx, 2.0) * 0.18;
-  mask.b += step(2.0, mx) * 0.18;
+  vec3 mask = vec3(0.96);
+  mask.r += step(mx, 1.0) * 0.08;
+  mask.g += step(1.0, mx) * step(mx, 2.0) * 0.08;
+  mask.b += step(2.0, mx) * 0.08;
   col *= mask;
 
-  float vig = pow(16.0 * s.x * s.y * (1.0 - s.x) * (1.0 - s.y), 0.2);
-  col *= vig;
+  float vig = pow(16.0 * s.x * s.y * (1.0 - s.x) * (1.0 - s.y), 0.32);
+  col *= mix(1.0, vig, 0.6);
 
   float t = uTime * uMotion;
-  col *= 0.965 + 0.035 * sin(t * 5.0 + s.y * 6.0);
+  col *= 0.98 + 0.02 * sin(t * 5.0 + s.y * 6.0);
   float band = fract(s.y - t * 0.035);
-  col += smoothstep(0.0, 0.06, band) * smoothstep(0.16, 0.08, band) * 0.05;
+  col += smoothstep(0.0, 0.06, band) * smoothstep(0.16, 0.08, band) * 0.03;
 
   gl_FragColor = vec4(col * inside, 1.0);
 }`
