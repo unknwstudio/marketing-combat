@@ -89,6 +89,61 @@
   }
 }
 
+/* --- one-shot burst (section-enter) --------------------------------
+   A single ~0.6s glitch that ends CLEAN (ghosts fade to nothing) so the
+   title settles crisp even if the trigger never removes the class. Used by
+   the GlitchTitles behavior to fire the effect as titles scroll into view
+   instead of glitching forever. */
+.k-glitch--burst::before {
+  animation: k-burst-cyan 0.62s steps(3) both;
+}
+
+.k-glitch--burst::after {
+  animation: k-burst-magenta 0.62s steps(3) both;
+}
+
+@keyframes k-burst-cyan {
+  0% {
+    opacity: 0.95;
+    clip-path: inset(0 0 82% 0);
+    transform: translate(-4px, -1px);
+  }
+  35% {
+    clip-path: inset(42% 0 34% 0);
+    transform: translate(4px, 0);
+  }
+  70% {
+    clip-path: inset(72% 0 8% 0);
+    transform: translate(-2px, 1px);
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes k-burst-magenta {
+  0% {
+    opacity: 0.95;
+    clip-path: inset(66% 0 10% 0);
+    transform: translate(4px, 1px);
+  }
+  35% {
+    clip-path: inset(14% 0 60% 0);
+    transform: translate(-4px, 0);
+  }
+  70% {
+    clip-path: inset(48% 0 30% 0);
+    transform: translate(3px, -1px);
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translate(0, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .k-glitch::before,
   .k-glitch::after {
@@ -100,5 +155,11 @@
   }
   .k-glitch::after {
     transform: translate(2px, 0);
+  }
+  /* the burst is decorative-only — never run it under reduced motion */
+  .k-glitch--burst::before,
+  .k-glitch--burst::after {
+    animation: none;
+    opacity: 0;
   }
 }

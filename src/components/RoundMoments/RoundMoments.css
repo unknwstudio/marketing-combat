@@ -1,0 +1,87 @@
+/* Pinned ROUND placards — viewport-fixed, scrubbed in by GSAP ScrollTrigger.
+   Default state is HIDDEN (opacity+visibility): under reduced motion the JS
+   bails before it can hide them, so CSS must, or three giant ROUND numbers
+   would sit stacked on screen. GSAP's autoAlpha overrides this to reveal. */
+.roundmoment-root {
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  pointer-events: none;
+}
+
+.roundmoment {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+  text-align: center;
+  /* sits over content like a projected arcade card without washing it out */
+  mix-blend-mode: screen;
+}
+
+.roundmoment__kicker {
+  font-family: var(--k-font-mono);
+  font-size: clamp(16px, 2.6vw, 32px);
+  line-height: 1;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: #3ad76f;
+}
+
+.roundmoment__num {
+  font-family: var(--k-font-accent);
+  font-size: clamp(150px, 30vw, 420px);
+  line-height: 0.8;
+  color: #ffd000;
+  -webkit-text-stroke: 0.05em #ff5000;
+  paint-order: stroke fill;
+  letter-spacing: -0.03em;
+  text-shadow:
+    0 0 0.06em #ff5000,
+    0 0 0.22em rgba(255, 80, 0, 0.6);
+  will-change: transform;
+}
+
+.roundmoment__tag {
+  font-family: var(--k-font-mono);
+  font-size: clamp(13px, 2vw, 24px);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7fd39a;
+}
+
+.roundmoment__pips {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.roundmoment__pip {
+  width: 14px;
+  height: 14px;
+  background: #ffd23f;
+  box-shadow: 0 0 12px rgba(255, 210, 63, 0.85);
+}
+
+@media (max-width: 1023px) {
+  .roundmoment__pip {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Belt-and-braces: even if GSAP fails to load, never show the placards under
+   reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .roundmoment {
+    display: none;
+  }
+}

@@ -1,0 +1,8 @@
+/* GlitchTitles — the section titles keep their branded yellow fill + orange
+   stroke while only the cyan/magenta ghosts glitch during the burst. Without
+   this, GlitchText's base `.k-glitch { color: var(--k-ink) }` would flip the
+   title white. Higher specificity (.dsec__title.k-glitch) wins regardless of
+   stylesheet import order. */
+.dsec__title.k-glitch {
+  color: #ffd000;
+}

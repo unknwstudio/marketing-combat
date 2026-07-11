@@ -173,6 +173,65 @@
   opacity: 0;
 }
 
+/* ============================================================
+   Pixel-dissolve reveal — cards/cells assemble out of a mosaic of
+   growing pixel blocks as they enter view (layered on top of the
+   opacity fade above). A registered custom property (--k-pxr) drives
+   a repeating radial mask so each ~9px cell fills like a lit pixel.
+   ScrollReveal strips the mask inline once the burst ends, so a
+   browser without @property support just fades (never gets stuck
+   masked). Reduced-motion: no mask at all.
+   (--k-pxr is registered globally in App.css so the same driver powers both the
+   section dissolve here and the /demo -> /play View Transition.)
+   ============================================================ */
+.reveal-on .dcard:not(.revealed),
+.reveal-on .stats__cell:not(.revealed),
+.reveal-on .faq__item:not(.revealed) {
+  --k-pxr: 0px;
+  -webkit-mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  -webkit-mask-size: 9px 9px;
+  mask-size: 9px 9px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+.reveal-on .dcard.revealed,
+.reveal-on .stats__cell.revealed,
+.reveal-on .faq__item.revealed {
+  -webkit-mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  -webkit-mask-size: 9px 9px;
+  mask-size: 9px 9px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  animation: k-px-dissolve 0.5s steps(6) forwards;
+}
+
+@keyframes k-px-dissolve {
+  from {
+    --k-pxr: 0px;
+  }
+  to {
+    /* 9px cell, corner distance ~6.4px — 9px radius overfills so the
+       resting mask is fully opaque (no seams between cells). */
+    --k-pxr: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on .dcard:not(.revealed),
+  .reveal-on .stats__cell:not(.revealed),
+  .reveal-on .faq__item:not(.revealed),
+  .reveal-on .dcard.revealed,
+  .reveal-on .stats__cell.revealed,
+  .reveal-on .faq__item.revealed {
+    -webkit-mask-image: none;
+    mask-image: none;
+    animation: none;
+  }
+}
+
 /* small numeric index used across cards ("01".."06") */
 .dindex {
   font-family: var(--k-font-accent);

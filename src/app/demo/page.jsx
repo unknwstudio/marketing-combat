@@ -37,6 +37,8 @@ import MagneticCTA from '@/components/MagneticCTA/MagneticCTA'
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal'
 import RGBSplitFilter from '@/components/RGBSplitFilter/RGBSplitFilter'
 import SelectSfx from '@/components/SelectSfx/SelectSfx'
+import GlitchTitles from '@/components/GlitchTitles/GlitchTitles'
+import RoundMoments from '@/components/RoundMoments/RoundMoments'
 
 /**
  * AI Marketing Kombat — /demo.
@@ -52,7 +54,10 @@ export default function Page() {
       <JuiceProvider>
         <HitSparks>
           <PixelCursor enabled>
-            <ScaleCanvas width={1440}>
+            {/* zoom (not transform) so scroll math + GSAP ScrollTrigger pins
+                stay layout-accurate; transform:scale drifts pinned elements.
+                Same engine /classic already ships. */}
+            <ScaleCanvas width={1440} mode="zoom">
               <HeroStage />
               <Champion />
               <Fighters />
@@ -88,6 +93,8 @@ export default function Page() {
       <MagneticCTA />
       <SelectSfx />
       <ScrollReveal />
+      <GlitchTitles />
+      <RoundMoments />
       <ModeSwitcher active="ai" />
     </div>
   )

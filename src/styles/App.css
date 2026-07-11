@@ -2,3 +2,75 @@
   min-height: 100%;
   background: var(--k-bg);
 }
+
+/* Registered globally (not just on /demo) so the pixel-mosaic driver is available
+   to BOTH the section-dissolve on /demo AND the incoming-page snapshot of the
+   /demo -> /play View Transition, which animates on /play's document. */
+@property --k-pxr {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* ============================================================
+   Cross-document (MPA) View Transitions — a pixel-mosaic dissolve on
+   same-origin navigations (the arcade cabinet's plain <a href="/play">
+   full-page nav is the headline case; all in-site links inherit it).
+   Chromium-only today; every other browser just navigates instantly.
+   ============================================================ */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* incoming page assembles out of a mosaic of lit pixel blocks */
+  ::view-transition-new(root) {
+    animation: k-vt-pixel-in 0.5s steps(7) both;
+  }
+  /* outgoing page dissolves back into pixel blocks + sinks slightly */
+  ::view-transition-old(root) {
+    animation: k-vt-pixel-out 0.36s steps(6) both;
+  }
+
+  @keyframes k-vt-pixel-in {
+    from {
+      --k-pxr: 0px;
+      opacity: 0.15;
+    }
+    to {
+      --k-pxr: 11px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes k-vt-pixel-out {
+    from {
+      --k-pxr: 11px;
+      opacity: 1;
+    }
+    to {
+      --k-pxr: 0px;
+      opacity: 0;
+    }
+  }
+
+  /* the mosaic mask itself, applied to both snapshots (10px cells) */
+  ::view-transition-new(root),
+  ::view-transition-old(root) {
+    -webkit-mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+    mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+    -webkit-mask-size: 10px 10px;
+    mask-size: 10px 10px;
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+  }
+}
+
+/* Reduced-motion: skip the mosaic, keep a fast plain crossfade so the nav still
+   reads as a transition without the blocky motion. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.12s;
+  }
+}
