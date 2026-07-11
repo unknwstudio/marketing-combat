@@ -197,18 +197,23 @@ void main() {
              + bloomTap(s, vec2(-0.7, -0.7), texel);
   col += (bloom / 6.0) * 0.5;
 
+  // overall gain — the CRT passes below (scanline + grille + vignette) are all
+  // multiplicative dimmers; lift the picture first so the hero reads bright.
+  col *= 1.14;
+
   float sl = sin(gl_FragCoord.y * 3.14159 * 0.95);
-  col *= 0.9 + 0.1 * (0.5 + 0.5 * sl);
+  col *= 0.94 + 0.06 * (0.5 + 0.5 * sl);
 
   float mx = mod(gl_FragCoord.x, 3.0);
-  vec3 mask = vec3(0.96);
-  mask.r += step(mx, 1.0) * 0.08;
-  mask.g += step(1.0, mx) * step(mx, 2.0) * 0.08;
-  mask.b += step(2.0, mx) * 0.08;
+  vec3 mask = vec3(0.99);
+  mask.r += step(mx, 1.0) * 0.05;
+  mask.g += step(1.0, mx) * step(mx, 2.0) * 0.05;
+  mask.b += step(2.0, mx) * 0.05;
   col *= mask;
 
-  float vig = pow(16.0 * s.x * s.y * (1.0 - s.x) * (1.0 - s.y), 0.32);
-  col *= mix(1.0, vig, 0.6);
+  // gentler vignette — was mix(...,0.6): corners fell to ~40% and swallowed the art
+  float vig = pow(16.0 * s.x * s.y * (1.0 - s.x) * (1.0 - s.y), 0.28);
+  col *= mix(1.0, vig, 0.3);
 
   float t = uTime * uMotion;
   col *= 0.98 + 0.02 * sin(t * 5.0 + s.y * 6.0);
