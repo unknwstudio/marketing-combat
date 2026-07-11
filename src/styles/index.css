@@ -68,6 +68,13 @@ body,
   height: 100%;
 }
 
+/* Keep page content on the true window axis: reserve symmetric scrollbar
+   gutters so a classic (Windows/Linux) right-hand scrollbar doesn't push
+   centered content leftward. No-op with macOS overlay scrollbars. */
+html {
+  scrollbar-gutter: stable both-edges;
+}
+
 body {
   font-family: var(--k-font);
   color: var(--k-ink);

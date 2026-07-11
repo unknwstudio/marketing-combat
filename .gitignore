@@ -31,3 +31,6 @@ out/
 next-env.d.ts
 game-assets/sprites-wip/
 funnel-combo.png
+
+# local Claude Code settings (per-machine)
+.claude/settings.local.json
