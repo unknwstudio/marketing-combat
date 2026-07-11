@@ -30,15 +30,27 @@
 /* --- the live screen sits over the render's green glass (percent-tuned) --- */
 .cabinet__screen {
   position: absolute;
-  left: 26%;
-  top: 15%;
-  width: 49.5%;
-  height: 57.5%;
+  left: 26.5%;
+  top: 16%;
+  width: 48.5%;
+  height: 55.5%;
   overflow: hidden;
-  border-radius: 9% / 12%;
+  border-radius: 13% / 17%;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* fade the content toward the edges so it melts into the curved CRT glass
+     instead of showing a hard rectangle over the rounded bezel */
+  -webkit-mask-image: radial-gradient(
+    ellipse 92% 90% at 50% 48%,
+    #000 56%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 92% 90% at 50% 48%,
+    #000 56%,
+    transparent 100%
+  );
 }
 
 /* animated teaser behind the CTA (the lightning arena) */

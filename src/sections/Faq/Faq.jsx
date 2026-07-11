@@ -56,7 +56,17 @@ export default function Faq() {
                 <span className="faq__caret" aria-hidden="true">▶</span>
                 {item.q}
               </span>
-              <span className="faq__combo" aria-hidden="true">↓↘→</span>
+              <span className="faq__combo" aria-hidden="true">
+                <span className="faq__arrow" style={{ '--rot': '90deg' }}>
+                  &#10148;
+                </span>
+                <span className="faq__arrow" style={{ '--rot': '45deg' }}>
+                  &#10148;
+                </span>
+                <span className="faq__arrow" style={{ '--rot': '0deg' }}>
+                  &#10148;
+                </span>
+              </span>
             </summary>
             <p className="faq__a">{item.a}</p>
           </details>

@@ -52,10 +52,20 @@
 
 .faq__combo {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-family: var(--k-font-mono);
   font-size: 22px;
   color: #ff5000;
   white-space: nowrap;
+}
+
+/* all three arrows are the SAME glyph, rotated — so they read the same length */
+.faq__arrow {
+  display: inline-block;
+  line-height: 1;
+  transform: rotate(var(--rot, 0deg));
 }
 
 .faq__a {

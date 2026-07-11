@@ -77,7 +77,7 @@ export default function Page() {
 
       {/* fixed overlays live OUTSIDE JuiceProvider — its `will-change: transform`
           wrapper would otherwise pin position:fixed to the page, not the viewport */}
-      <CRTOverlay intensity={0.1} flicker powerOn={false} />
+      <CRTOverlay intensity={0.22} flicker powerOn />
       <ScrollHealth />
       <KonamiFatality />
       <SoundToggle />

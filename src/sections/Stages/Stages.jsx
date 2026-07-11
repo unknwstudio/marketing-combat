@@ -57,6 +57,8 @@ export default function Stages() {
             <p className="stages__body">{s.body}</p>
             <span
               className={'stages__cta' + (s.final ? ' stages__cta--final' : '')}
+              data-magnetic
+              data-sfx="confirm"
             >
               {s.cta}
             </span>
