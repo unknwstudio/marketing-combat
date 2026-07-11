@@ -68,11 +68,14 @@ body,
   height: 100%;
 }
 
-/* Keep page content on the true window axis: reserve symmetric scrollbar
-   gutters so a classic (Windows/Linux) right-hand scrollbar doesn't push
-   centered content leftward. No-op with macOS overlay scrollbars. */
+/* Reserve space for a classic (Windows/Linux) right-hand scrollbar so its
+   appearance doesn't shift centered content. Right-only: this page always
+   scrolls (long landing page), so the scrollbar never toggles in/out, and
+   `both-edges` was reserving an equal dead gutter on the LEFT too, showing
+   as a visible strip of the body background. No-op with macOS overlay
+   scrollbars either way. */
 html {
-  scrollbar-gutter: stable both-edges;
+  scrollbar-gutter: stable;
 }
 
 body {
