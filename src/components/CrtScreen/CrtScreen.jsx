@@ -31,7 +31,7 @@ varying vec2 vUv;
 
 vec2 curve(vec2 uv) {
   uv = uv * 2.0 - 1.0;
-  vec2 off = abs(uv.yx) / vec2(6.5, 4.8); // curvature strength
+  vec2 off = abs(uv.yx) / vec2(5.0, 3.6); // curvature strength (lower = more bulge)
   uv = uv + uv * off * off;
   return uv * 0.5 + 0.5;
 }
@@ -160,27 +160,27 @@ export default function CrtScreen() {
 
     const draw = (t) => {
       const ctx = c2
-      // tube background
+      // tube background (a lit green-black CRT, not pure black)
       const g = ctx.createLinearGradient(0, 0, 0, H)
-      g.addColorStop(0, '#0a1a11')
-      g.addColorStop(0.5, '#06120c')
-      g.addColorStop(1, '#040d08')
+      g.addColorStop(0, '#12281b')
+      g.addColorStop(0.5, '#0b1c12')
+      g.addColorStop(1, '#08150d')
       ctx.fillStyle = g
       ctx.fillRect(0, 0, W, H)
       // warm attract glow
-      const rg = ctx.createRadialGradient(W / 2, H * 0.5, 0, W / 2, H * 0.5, W * 0.55)
-      rg.addColorStop(0, 'rgba(255,160,40,0.16)')
-      rg.addColorStop(1, 'rgba(255,160,40,0)')
+      const rg = ctx.createRadialGradient(W / 2, H * 0.48, 0, W / 2, H * 0.48, W * 0.6)
+      rg.addColorStop(0, 'rgba(255,170,50,0.26)')
+      rg.addColorStop(1, 'rgba(255,170,50,0)')
       ctx.fillStyle = rg
       ctx.fillRect(0, 0, W, H)
 
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       const cx = W / 2
-      const cy = H * 0.46
+      const cy = H * 0.45
 
       // PLAY
-      const playSize = Math.round(H * 0.17)
+      const playSize = Math.round(H * 0.2)
       ctx.font = `${playSize}px "Platform", sans-serif`
       ctx.lineJoin = 'round'
       ctx.lineWidth = Math.max(2, playSize * 0.07)

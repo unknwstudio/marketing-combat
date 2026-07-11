@@ -55,7 +55,7 @@ export default function Hero() {
       </div>
 
       {/* CRT screen effect scoped to this section only (not global) */}
-      <CRTOverlay scoped intensity={0.16} flicker powerOn={false} />
+      <CRTOverlay scoped intensity={0.34} flicker powerOn={false} />
     </section>
   )
 }
