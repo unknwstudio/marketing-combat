@@ -22,9 +22,16 @@ export default function Hero() {
       {/* glowing wordmark + underline */}
       <img className="hero__logo" src={`/assets/hero/logo.png`} alt="ai-kombat" />
 
-      {/* top-left: registration badge + lede */}
+      {/* top-left: registration badge + lede. The badge is a REAL link to the
+          FinalCta section (#register on /demo): on /demo it's a same-page
+          fragment scroll (smooth via the motion-gated rule in FinalCta.css);
+          from / it's a cross-page nav that rides the site's @view-transition.
+          data-sfx follows the MagneticCTA contract (see MagneticCTA.jsx) so a
+          click SFX attaches if the badge is ever tagged data-magnetic. */}
       <div className="hero__intro">
-        <div className="hero__badge">{'>>> registration <<<'}</div>
+        <a href="/demo#register" className="hero__badge" data-sfx="confirm">
+          {'>>> registration <<<'}
+        </a>
         <p className="hero__lede">
           The first international hackathon for senior marketers of the AI era.
           <br aria-hidden="true" />

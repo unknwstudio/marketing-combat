@@ -1,5 +1,19 @@
-/* Centered closing CTA. */
+/* GLOBAL (documented exception to component-scoped CSS): the hero badge links
+   to this section as /demo#register. `html` can't be scoped to a component,
+   and this file styles the only fragment-nav target on the site, so the rule
+   lives here next to it. Motion-gated per house rules — reduced-motion users
+   get an instant jump instead of an animated scroll. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Centered closing CTA — also the #register fragment target (see FinalCta.jsx):
+   scroll-margin keeps the section title from landing flush against the
+   viewport edge (and clear of fixed overlays) after a fragment jump. */
 .finalcta {
+  scroll-margin-top: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;

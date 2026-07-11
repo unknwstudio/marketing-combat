@@ -32,9 +32,6 @@ export default function Judges() {
                 alt={`Boss ${j.n} portrait`}
               />
               <span className="judges__sweep" aria-hidden="true" />
-              <span className="judges__select" aria-hidden="true">
-                ► select
-              </span>
             </div>
             <span className="judges__tag">BOSS · {j.n}</span>
             <h3 className="judges__name">{j.name}</h3>
@@ -50,9 +47,6 @@ export default function Judges() {
               alt="Secret boss — identity hidden"
             />
             <span className="judges__sweep" aria-hidden="true" />
-            <span className="judges__select" aria-hidden="true">
-              ► select
-            </span>
           </div>
           <span className="judges__tag judges__tag--secret">SECRET BOSS ???</span>
           <h3 className="judges__name">UNLOCK SOON</h3>

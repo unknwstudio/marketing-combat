@@ -1,3 +1,4 @@
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import './Faq.css'
 
 /**
@@ -53,7 +54,9 @@ export default function Faq() {
           <details key={i} className="faq__item">
             <summary className="faq__summary">
               <span className="faq__q">
-                <span className="faq__caret" aria-hidden="true">▶</span>
+                <span className="faq__caret" aria-hidden="true">
+                  <PixelIcon name="play" size="0.75em" />
+                </span>
                 {item.q}
               </span>
               <span className="faq__combo" aria-hidden="true">

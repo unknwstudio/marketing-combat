@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import './Marquee.css'
 
 /**
@@ -27,7 +28,12 @@ function Track() {
     <div className="marquee__track" aria-hidden="true">
       {ITEMS.map((t, i) => (
         <span key={i} className="marquee__item">
-          <span className="marquee__star">★</span> {t}
+          {/* SVG pixel star — the ★ glyph rendered as a gold emoji on some
+              platforms and broke the pixel look (see PixelIcon) */}
+          <span className="marquee__star">
+            <PixelIcon name="star" size="0.95em" />
+          </span>{' '}
+          {t}
         </span>
       ))}
     </div>

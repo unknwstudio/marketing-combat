@@ -41,7 +41,15 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   return lines.length
 }
 
-async function buildHeroTexture(bgImg, logoImg) {
+/**
+ * `hover` — draw the registration badge INVERTED (white fill, black text,
+ * white border stays), mirroring the DOM badge's :hover style. The canvas
+ * covers the DOM hero, so the CSS hover is invisible; instead we pre-bake a
+ * second texture and swap uniforms on pointerenter/leave — and on keyboard
+ * focusin/focusout, where the invert doubles as the focus indicator — of the
+ * real badge (see CRTPlane): the state reads *through* the CRT, warp and all.
+ */
+async function buildHeroTexture(bgImg, logoImg, hover = false) {
   const S = TEX_SCALE
   const c = document.createElement('canvas')
   c.width = HERO_W * S
@@ -53,18 +61,18 @@ async function buildHeroTexture(bgImg, logoImg) {
 
   const MONO = '"GT Pressura Mono", "Courier New", monospace'
 
-  // badge (top-left)
+  // badge (top-left) — inverts on hover, matching .hero__badge:hover
   x.font = `24px ${MONO}`
   x.textBaseline = 'alphabetic'
   const badgeText = '>>> registration <<<'
   const bw = x.measureText(badgeText).width + 16
   const bh = 24 + 18
-  x.fillStyle = '#000'
+  x.fillStyle = hover ? '#fff' : '#000'
   x.fillRect(19, 23, bw, bh)
   x.strokeStyle = '#fff'
   x.lineWidth = 1
   x.strokeRect(19.5, 23.5, bw - 1, bh - 1)
-  x.fillStyle = '#fff'
+  x.fillStyle = hover ? '#000' : '#fff'
   x.fillText(badgeText, 27, 23 + bh - 14)
 
   // lede (below badge)
@@ -144,6 +152,16 @@ function loadImage(src) {
     img.onerror = reject
     img.src = src
   })
+}
+
+/** matches() that survives engines without :focus-visible (pre-2022 Safari):
+    if the selector can't parse, err on SHOWING the focus state. */
+function matchesSafe(el, selector) {
+  try {
+    return el.matches(selector)
+  } catch {
+    return true
+  }
 }
 
 /* ---------- the CRT fragment shader: barrel + chromatic aberration + ---------- */
@@ -248,7 +266,7 @@ function OrthoFit() {
 }
 
 function CRTPlane() {
-  const { size } = useThree()
+  const { size, gl } = useThree()
   const [texture, setTexture] = useState(null)
   const reducedMotion = useMemo(
     () =>
@@ -269,6 +287,43 @@ function CRTPlane() {
 
   useEffect(() => {
     let cancelled = false
+    // Both states are pre-baked (normal + hovered badge) and kept alive; the
+    // pointer just swaps uTex between them — no per-hover canvas redraw.
+    let texNormal = null
+    let texHover = null
+    // The canvas is pointer-events:none, so hover lands on the REAL DOM badge
+    // underneath (the <a> in Hero.jsx) — we mirror its state onto the shader.
+    // KEYBOARD focus is mirrored the same way: the opaque canvas also hides
+    // the DOM :focus-visible ring, so without this Tab lands on the badge
+    // (/demo's first tab stop) with no visible indicator anywhere on screen
+    // (WCAG 2.4.7). One flag each — the inverted texture shows while EITHER
+    // holds, matching Hero.css's .hero__badge:hover / :focus-visible pair.
+    let badgeEl = null
+    let hovered = false
+    let focused = false
+    const sync = () => {
+      if (!texNormal || !texHover) return
+      uniforms.uTex.value = hovered || focused ? texHover : texNormal
+    }
+    const onEnter = () => {
+      hovered = true
+      sync()
+    }
+    const onLeave = () => {
+      hovered = false
+      sync()
+    }
+    // :focus-visible only — a mouse click also focuses the badge, but must not
+    // latch the invert after pointerleave (the CSS styles :focus-visible too)
+    const onFocus = () => {
+      focused = matchesSafe(badgeEl, ':focus-visible')
+      sync()
+    }
+    const onBlur = () => {
+      focused = false
+      sync()
+    }
+
     async function build() {
       const [bgImg, logoImg] = await Promise.all([
         loadImage('/assets/hero/hero-bg.png'),
@@ -280,16 +335,53 @@ function CRTPlane() {
         } catch {}
       }
       if (cancelled) return
-      const tex = await buildHeroTexture(bgImg, logoImg)
-      if (cancelled) return
-      uniforms.uTex.value = tex
-      setTexture(tex)
+      texNormal = await buildHeroTexture(bgImg, logoImg, false)
+      texHover = await buildHeroTexture(bgImg, logoImg, true)
+      if (cancelled) {
+        // cleanup already ran (it saw both as null) — dispose here instead
+        texNormal.dispose()
+        texHover.dispose()
+        return
+      }
+      // Upload BOTH textures to the GPU now, while we're still in the async
+      // build phase. three uploads a texture lazily the first time it's used —
+      // for texHover that used to be the first pointerenter, stalling that
+      // frame on a full-res texImage2D (~10-40ms on integrated GPUs): a hitch
+      // on exactly the interaction the pre-bake exists to make instant. Warmed
+      // here, the hover/focus swap is a pure uniform pointer change.
+      gl.initTexture(texNormal)
+      gl.initTexture(texHover)
+      uniforms.uTex.value = texNormal
+      setTexture(texNormal)
+
+      // guard: flat-only mode unmounts this component, but query defensively —
+      // if the badge is ever missing the CRT simply shows the normal texture.
+      badgeEl = document.querySelector('.herostage__flat .hero__badge')
+      if (badgeEl) {
+        badgeEl.addEventListener('pointerenter', onEnter)
+        badgeEl.addEventListener('pointerleave', onLeave)
+        badgeEl.addEventListener('focusin', onFocus)
+        badgeEl.addEventListener('focusout', onBlur)
+        // pointer or focus may already be resting on the badge when textures
+        // finish loading — sync once so the first frame isn't stale
+        if (badgeEl.matches(':hover')) hovered = true
+        if (document.activeElement === badgeEl) focused = matchesSafe(badgeEl, ':focus-visible')
+        sync()
+      }
     }
     build()
     return () => {
       cancelled = true
+      if (badgeEl) {
+        badgeEl.removeEventListener('pointerenter', onEnter)
+        badgeEl.removeEventListener('pointerleave', onLeave)
+        badgeEl.removeEventListener('focusin', onFocus)
+        badgeEl.removeEventListener('focusout', onBlur)
+      }
+      if (texNormal) texNormal.dispose()
+      if (texHover) texHover.dispose()
     }
-  }, [uniforms])
+  }, [uniforms, gl])
 
   useFrame((_, dt) => {
     uniforms.uTime.value += dt

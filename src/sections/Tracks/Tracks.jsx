@@ -1,4 +1,5 @@
 import './Tracks.css'
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 
 /**
  * ROUND 03 — HACKATHON TRACKS. Two fighting-style tracks.
@@ -60,9 +61,16 @@ export default function Tracks() {
             </div>
 
             <ul className="tracks__bullets">
+              {/* bullets keep their verbatim ↘/↗ copy in data; the arrow is
+                  rendered as an SVG PixelIcon (unicode arrows emoji-render on
+                  some platforms) */}
               {t.bullets.map((b) => (
                 <li key={b} className="tracks__bullet">
-                  {b}
+                  <PixelIcon
+                    name={b.startsWith('↗') ? 'arrowNE' : 'arrowSE'}
+                    size="0.85em"
+                  />{' '}
+                  {b.slice(2)}
                 </li>
               ))}
             </ul>

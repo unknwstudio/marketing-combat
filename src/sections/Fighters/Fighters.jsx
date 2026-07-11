@@ -50,7 +50,7 @@ export default function Fighters() {
                 />
                 <span className="fighters__sweep" aria-hidden="true" />
                 <span className="fighters__select" aria-hidden="true">
-                  ► select
+                  {'>>> select <<<'}
                 </span>
               </div>
               <div className="fighters__label">{f.label}</div>

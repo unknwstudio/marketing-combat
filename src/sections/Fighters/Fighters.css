@@ -130,7 +130,9 @@
 }
 
 /* character-select hover: zoom + chromatic-aberration (see RGBSplitFilter),
-   a light sweep, and a "► select" blip -- same recipe as Judges/Organizers */
+   a light sweep, and a select blip in the site's shared button idiom
+   (black box, hairline border, lowercase mono — see .d-btn) with the roster's
+   cyan accent. Judges/Organizers share the zoom+sweep but dropped the blip. */
 .fighters__sweep {
   position: absolute;
   inset: 0;
@@ -150,13 +152,15 @@
   left: 50%;
   bottom: 10px;
   transform: translate(-50%, 6px) scale(0.9);
-  padding: 4px 10px;
-  background: rgba(0, 0, 0, 0.7);
+  padding: 6px 8px 8px;
+  background: #000;
   border: 1px solid var(--k-cyan);
   font-family: var(--k-font-mono);
   font-size: 15px;
-  letter-spacing: -0.3px;
-  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -0.45px;
+  text-transform: lowercase;
+  white-space: nowrap;
   color: var(--k-cyan);
   opacity: 0;
   transition: opacity 0.18s ease, transform 0.18s ease;

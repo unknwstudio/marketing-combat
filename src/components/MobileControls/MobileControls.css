@@ -31,6 +31,9 @@
   touch-action: none;
 }
 .mc-btn:active { background: rgba(255, 255, 255, 0.32); transform: scale(0.93); }
+/* the SVG pixel arrows must never intercept the pointer — the slide-between-
+   buttons logic reads pointerenter/leave on the BUTTONS themselves */
+.mc-btn svg { pointer-events: none; }
 
 /* left cluster — a D-pad in the bottom-left thumb zone */
 .mc-up    { left: 72px;  bottom: 156px; }

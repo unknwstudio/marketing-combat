@@ -57,9 +57,6 @@ export default function Organizers() {
                 alt={`${c.name} portrait`}
               />
               <span className="organizers__sweep" aria-hidden="true" />
-              <span className="organizers__select" aria-hidden="true">
-                ► select
-              </span>
             </div>
             <span className="organizers__tag">CREW · {c.n}</span>
             <h3 className="organizers__name">{c.name}</h3>

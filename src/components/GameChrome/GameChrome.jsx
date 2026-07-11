@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { MK } from '../../game/fight/events';
+import PixelIcon from '@/components/PixelIcon/PixelIcon';
 import './GameChrome.css';
 
 // One DOM "chrome" layer over the Phaser canvas: title / press-start, the always-on
@@ -159,11 +160,11 @@ export default function GameChrome() {
       {/* persistent escape hatches — hidden only while the title is up */}
       {started && (
         <>
-          <button className="gc-corner gc-exit" onClick={requestExit} aria-label="Exit to site" title="Exit to site" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}>✕</button>
+          <button className="gc-corner gc-exit" onClick={requestExit} aria-label="Exit to site" title="Exit to site" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}><PixelIcon name="cross" size="0.9em" /></button>
           <div className="gc-topright">
             <button className="gc-corner" onClick={() => setHowto(true)} aria-label="How to play" title="How to play" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}>?</button>
             {scene === 'fight' && !paused && !result && (
-              <button className="gc-corner" onClick={openPause} aria-label="Pause" title="Pause" tabIndex={overlayOpen ? -1 : 0}>❚❚</button>
+              <button className="gc-corner" onClick={openPause} aria-label="Pause" title="Pause" tabIndex={overlayOpen ? -1 : 0}><PixelIcon name="pause" size="0.8em" /></button>
             )}
           </div>
         </>
@@ -179,7 +180,7 @@ export default function GameChrome() {
           <h1 className="gc-logo">AI MARKETING<br /><span>KOMBAT</span></h1>
           <div className="gc-legend"><span>WASD move</span><span>J K L attack</span><span>S block</span></div>
           <div className="gc-start">PRESS START</div>
-          <button className="gc-howtolink" onClick={() => setHowto(true)}>HOW TO PLAY ▸</button>
+          <button className="gc-howtolink" onClick={() => setHowto(true)}>HOW TO PLAY <PixelIcon name="play" size="0.7em" /></button>
           <div className="gc-hint">tap the screen · or press any key</div>
         </div>
       )}
@@ -210,7 +211,7 @@ export default function GameChrome() {
             <div><b>KICK</b><span>K</span></div>
             <div><b>SPECIAL</b><span>L</span></div>
           </div>
-          <p className="gc-note">Chain clean hits to climb the funnel — LEAD → MQL → SQL → CLOSED-WON. On a phone, use the on-screen buttons. Pause any time with the ❚❚ button or ESC.</p>
+          <p className="gc-note">Chain clean hits to climb the funnel — LEAD → MQL → SQL → CLOSED-WON. On a phone, use the on-screen buttons. Pause any time with the <PixelIcon name="pause" size="0.75em" label="pause" /> button or ESC.</p>
           <button className="gc-item" onClick={() => setHowto(false)}>GOT IT</button>
         </div>
       )}

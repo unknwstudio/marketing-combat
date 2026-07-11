@@ -1,16 +1,38 @@
-/* Interactive 3D arcade cabinet (R3F). The whole unit links to /play.
-   The cabinet is the hero: it's large and lit by a red halo, while the
-   surrounding section chrome dissolves into the near-black background. */
+/* Interactive 3D arcade cabinet (R3F) staged as a scroll act (see the JSX doc
+   comment for the choreography). The cabinet is the hero: it's large and lit by
+   a red halo, while the surrounding section chrome dissolves into the near-black
+   background. Navigation: 3D hotspots on the meshes + the .cabinet__enter link.
+
+   ACT ARCHITECTURE: the hold is NATIVE position:sticky (stage + runway), never
+   a ScrollTrigger pin — under ScaleCanvas's CSS zoom a pin's local-px translate
+   is multiplied by the zoom and the section drifts on every viewport whose zoom
+   isn't exactly 1. Sticky is computed in zoomed layout space and holds true at
+   any width (same pattern as ClassicChampionFor). */
 .cabinet {
+  position: relative;
+  /* sticky dies inside a scroll container, and .dsec's overflow:hidden makes
+     this box one. clip crops identically but is NOT a scroll container, so the
+     sticky stage tracks the real page scroll (same trick as .scale-canvas;
+     hidden first = fallback for very old browsers). */
+  overflow: hidden;
+  overflow: clip;
+}
+
+/* the STAGE is the visible frame (head + cabinet + link + handoff). It carries
+   the section's old flex layout; armed, it becomes the sticky element. */
+.cabinet__stage {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* vignette that fades the header + section edges into the bg,
-   concentrating attention on the cabinet */
-.cabinet::after {
+/* vignette that fades the header + section edges into the bg, concentrating
+   attention on the cabinet. Lives on the STAGE (not the section) so it rides
+   the sticky hold during the act; the -96px/-80px bleed mirrors .dsec's
+   padding, so it still reaches the section's edges (and is cropped there by
+   the section's overflow like before). */
+.cabinet__stage::after {
   content: '';
   position: absolute;
   inset: -96px -80px;
@@ -24,14 +46,32 @@
   );
 }
 
+/* ---------- the act's sticky hold (armed only) ---------- */
+
+/* top:96px = .dsec's padding-top: the stage's natural offset equals its sticky
+   offset, so the stick engages exactly when the SECTION's top reaches the
+   viewport top — the same beat as the old pin's start:'top top'. */
+.cabinet--armed .cabinet__stage {
+  position: sticky;
+  top: 96px;
+}
+
+/* runway: empty block after the stage. Its height — set by the act effect in
+   local px so it measures 130% of the real viewport after zoom — is the sticky
+   travel and the scrub's whole range. Stays 0 until the act's JS sizes it, so
+   a failed gsap import degrades to today's static flow. */
+.cabinet__runway {
+  width: 100%;
+  height: 0;
+}
+
+/* the canvas slot (a div now — an <a> here would swallow the mesh clicks) */
 .cabinet__unit {
   position: relative;
   z-index: 2; /* stay above the dissolve vignette */
   display: block;
   width: min(860px, 100%);
   aspect-ratio: 4 / 5;
-  text-decoration: none;
-  color: inherit;
   transition: filter 0.2s ease-out;
 }
 
@@ -69,3 +109,115 @@
   }
 }
 
+/* canonical enter path — keyboard, screen reader, touch. The 3D hotspots are a
+   pointer garnish on top of this real link; box styling comes from .d-btn */
+.cabinet__enter {
+  position: relative;
+  z-index: 2;
+  margin-top: 20px;
+}
+
+/* while the act is armed the cabinet grows past its frame (phase A); this
+   bottom fade makes the leg crop read intentional rather than clipped */
+.cabinet--armed .cabinet__unit--3d {
+  -webkit-mask-image: linear-gradient(#000 76%, transparent 98%);
+  mask-image: linear-gradient(#000 76%, transparent 98%);
+}
+
+/* ---------- HANDOFF overlay (end of the act, fades in p .75 → .95) ----------
+   Full-bleed game still + blinking PRESS START. Opacity is written imperatively
+   from the scrub (never a transition — it must track the scroll hand). */
+.cabinet__handoff {
+  position: absolute;
+  /* bleed past the stage by .dsec's padding: while stuck the stage sits 96px
+     below the viewport top, and the frame must still cover the section
+     edge-to-edge (the section's overflow crops the excess at its box) */
+  inset: -96px -80px;
+  z-index: 3; /* above vignette (1) and cabinet/link (2) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none; /* inert until fully shown */
+  background: #08010f;
+}
+
+.cabinet__handoff--live {
+  pointer-events: auto; /* fully shown → the whole frame is one big START button */
+  cursor: pointer;
+}
+
+.cabinet__handoff-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated; /* it IS the game's pixel art — keep it crunchy */
+  filter: brightness(0.5); /* darkened so PRESS START carries the frame */
+}
+
+/* the copy is a real <button> — the takeover's keyboard target (focus moves
+   here while live) — so strip the UA button chrome; the frame itself is the
+   visual affordance */
+.cabinet__handoff-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* keyboard ring for PRESS START, drawn on top of the opaque frame so focus is
+   never obscured (WCAG 2.4.11) */
+.cabinet__handoff-copy:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 8px;
+}
+
+.cabinet__handoff-press {
+  font-family: var(--k-font);
+  font-size: 40px;
+  color: #fff;
+  text-shadow:
+    0 0 18px rgba(255, 46, 77, 0.9),
+    4px 4px 0 #000;
+  /* hard on/off arcade blink — steps, not a fade */
+  animation: cabinet-blink 1.1s steps(1, end) infinite;
+}
+
+.cabinet__handoff-coin {
+  font-family: var(--k-font-mono);
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@keyframes cabinet-blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.08;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* house rule: every effect honours reduced motion. The act never arms there,
+   so the overlay never mounts — but keep the guard local and explicit. */
+@media (prefers-reduced-motion: reduce) {
+  .cabinet__handoff-press {
+    animation: none;
+  }
+}

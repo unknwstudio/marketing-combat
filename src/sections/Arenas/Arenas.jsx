@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import './Arenas.css'
 
 /**
@@ -111,7 +112,7 @@ export default function Arenas() {
                       }
                       aria-hidden="true"
                     >
-                      ★
+                      <PixelIcon name="star" size="1em" />
                     </span>
                   ))}
                 </span>

@@ -104,8 +104,15 @@ export default function FinalCta() {
     }
   }, [shake])
 
+  // id="register" — fragment target of the hero's ">>> registration <<<"
+  // badge link (Hero.jsx); the scroll offset lives in FinalCta.css.
   return (
-    <section className="dsec dsec--alt finalcta" aria-label="Join the battle" ref={sectionRef}>
+    <section
+      id="register"
+      className="dsec dsec--alt finalcta"
+      aria-label="Join the battle"
+      ref={sectionRef}
+    >
       <span className="finalcta__finish" data-announce="FINISH HIM" data-sound="ko">
         ★ FINISH HIM ★
       </span>

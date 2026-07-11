@@ -67,7 +67,13 @@
   z-index: 3;
 }
 
+/* The badge is a live <a> to /demo#register (see Hero.jsx). It keeps the
+   Figma box exactly, but needs anchor resets (no underline, block box) plus
+   pressable affordances: hover/focus-visible INVERT (white bg, black text) —
+   the same idiom as .d-btn:hover in demo.css, so every "registration" CTA on
+   the site answers the pointer identically. */
 .hero__badge {
+  display: inline-block;
   padding: 8px 8px 10px;
   background: #000;
   border: 1px solid #fff;
@@ -76,11 +82,20 @@
   letter-spacing: -0.72px;
   white-space: nowrap;
   cursor: pointer;
+  text-decoration: none;
 }
 
-.hero__badge:hover {
+.hero__badge:hover,
+.hero__badge:focus-visible {
   background: #fff;
   color: #000;
+}
+
+/* keyboard focus gets an extra offset ring — the invert alone can read as
+   "hover leftovers" when tabbing through the page */
+.hero__badge:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 
 .hero__lede {

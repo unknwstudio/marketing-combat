@@ -39,6 +39,7 @@ import RGBSplitFilter from '@/components/RGBSplitFilter/RGBSplitFilter'
 import SelectSfx from '@/components/SelectSfx/SelectSfx'
 import GlitchTitles from '@/components/GlitchTitles/GlitchTitles'
 import RoundMoments from '@/components/RoundMoments/RoundMoments'
+import AttractTitle from '@/components/AttractTitle/AttractTitle'
 
 /**
  * AI Marketing Kombat — /demo.
@@ -95,6 +96,7 @@ export default function Page() {
       <ScrollReveal />
       <GlitchTitles />
       <RoundMoments />
+      <AttractTitle />
       <ModeSwitcher active="ai" />
     </div>
   )

@@ -40,9 +40,10 @@
   text-transform: uppercase;
 }
 
+/* gold pixel-SVG star (PixelIcon inherits this color via currentColor) */
 .marquee__star {
+  display: inline-flex;
   color: #ffd000;
-  -webkit-text-stroke: 1px #000;
 }
 
 @keyframes marquee-scroll {
