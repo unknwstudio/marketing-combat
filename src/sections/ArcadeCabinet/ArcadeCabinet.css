@@ -1,28 +1,78 @@
-/* Interactive 3D arcade cabinet (R3F). The whole unit links to /play. */
+/* Interactive 3D arcade cabinet (R3F). The whole unit links to /play.
+   The cabinet is the hero: it's large and lit by a red halo, while the
+   surrounding section chrome dissolves into the near-black background. */
 .cabinet {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* vignette that fades the header + section edges into the bg,
+   concentrating attention on the cabinet */
+.cabinet::after {
+  content: '';
+  position: absolute;
+  inset: -96px -80px;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse 52% 56% at 50% 62%,
+    transparent 34%,
+    rgba(8, 1, 15, 0.6) 68%,
+    #08010f 100%
+  );
+}
+
 .cabinet__unit {
   position: relative;
+  z-index: 2; /* stay above the dissolve vignette */
   display: block;
-  width: min(560px, 100%);
+  width: min(860px, 100%);
   aspect-ratio: 4 / 5;
   text-decoration: none;
   color: inherit;
   transition: filter 0.2s ease-out;
 }
 
+/* red neon halo bleeding out from behind the cabinet into the dark */
+.cabinet__unit::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140%;
+  height: 118%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 46, 77, 0.32),
+    rgba(255, 46, 77, 0.1) 48%,
+    transparent 74%
+  );
+  filter: blur(26px);
+}
+
+/* the header dissolves — quieter, letting the cabinet lead */
+.cabinet .dsec__head {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
 @media (hover: hover) {
   .cabinet__unit:hover {
-    filter: drop-shadow(0 0 46px rgba(255, 46, 77, 0.28));
+    filter: drop-shadow(0 0 60px rgba(255, 46, 77, 0.34));
   }
 }
 
-/* tiny model attribution (CC-BY-4.0) */
+/* tiny model attribution (CC-BY-4.0) — kept legible above the vignette */
 .cabinet__credit {
+  position: relative;
+  z-index: 2;
   margin-top: 10px;
   font-family: var(--k-font-mono);
   font-size: 11px;
