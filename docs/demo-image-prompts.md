@@ -80,3 +80,16 @@ Sega Genesis / Mega Drive 16-bit fighting-game stage background, early-1990s con
 
 **21. public/assets/demo/arenas/enterprise.png — 16:9, 4k**
 Sega Genesis / Mega Drive 16-bit fighting-game stage background, early-1990s console graphics aesthetic with digitized sprite look, limited retro color palette, heavy visible pixel dithering and chunky blocky pixels, slight scanline feel. Composition: an empty corporate arcade fighting stage set atop a skyscraper boardroom, arena floor of polished dark marble with a long glass conference table pushed to the side, floor-to-ceiling windows revealing a pixel city skyline at dusk, imposing and formal, no fighters. 16-bit dithered gradient bands of deep charcoal fading to gold-lit dusk skyline, cold interior glow against warm window light. Retro Sega arcade stage vibe, moody, high contrast. Rendered in 4K resolution, 16:9 widescreen stage framing. No logo, no emblem, no text, no watermark.
+
+---
+
+## Arcade cabinet (PLAY section) — PHOTOREAL (deliberate contrast to the pixel site)
+
+Model: **Nano Banana Pro** · Aspect **3:4** · Resolution **2k–4k** (realism wants detail — NOT 1k).
+A premium photoreal cabinet as a "portal" housing our pixel game on its CRT. Screen kept EMPTY /
+OFF so we composite the live PLAY screen + game teaser over it; marquee blank (text added in code).
+Dark near-black background so it blends onto the section. Output → `public/assets/demo/cabinet.png`.
+
+Photorealistic 3D product render of a premium upright arcade cabinet, front three-quarter view, standing on a dark glossy reflective floor in a dark room. Ultra-detailed, cinematic studio lighting with dramatic red-magenta-and-cyan neon rim light like an arcade fighting game. Glossy black and deep-indigo cabinet body with brushed-metal edges and glowing neon trim strips down the sides. A blank illuminated marquee header panel at the very top — empty, no text. In the upper-middle a large CRT screen that is switched OFF: a clean flat black glass screen with subtle soft reflections and a faint green phosphor tint, framed by a thick glossy black bezel — leave the screen totally empty, no image on it. Below the screen a control panel with a red ball-top joystick and a row of glossy arcade buttons in yellow, red and cyan, plus a coin door. Volumetric haze, subtle bloom, moody near-black background, shallow depth of field, 50mm lens, high detail, octane render, 8k. No text, no name label, no logo, no watermark.
+
+Variant B (screen ON): replace the "switched OFF … empty" sentence with — "a large CRT screen glowing with a 16-bit pixel-art fighting-game frozen on it: two pixel ninja fighters mid-clash, chunky pixels, bright scanlines" — then just overlay a PLAY button and link the whole cabinet.

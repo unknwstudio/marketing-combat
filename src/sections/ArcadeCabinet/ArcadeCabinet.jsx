@@ -1,9 +1,10 @@
 import './ArcadeCabinet.css'
 
 /**
- * PLAY THE GAME — an arcade cabinet whose screen is a big PLAY button that
- * links to the real Phaser game at /play. Pure CSS cabinet; the whole unit is
- * a link so it works under static export with no JS.
+ * PLAY THE GAME — a photoreal arcade cabinet (render) whose empty CRT screen is
+ * overlaid with a live "▶ PLAY / PRESS START" screen. The whole unit links to
+ * the real Phaser game at /play. The screen rectangle is positioned in percent
+ * over the render's glass; on hover the screen "powers on".
  */
 export default function ArcadeCabinet() {
   return (
@@ -14,30 +15,25 @@ export default function ArcadeCabinet() {
       </div>
 
       <a className="cabinet__unit" href="/play" aria-label="Play AI Marketing Kombat">
-        <span className="cabinet__marquee">AI · MARKETING KOMBAT</span>
+        <img
+          className="cabinet__frame"
+          src={`/assets/demo/cabinet.png`}
+          alt="Arcade cabinet — play AI Marketing Kombat"
+        />
 
         <span className="cabinet__screen">
           <img
-            className="cabinet__screenImg pixelated"
+            className="cabinet__teaser pixelated"
             src={`/assets/fighters/bg.png`}
             alt=""
             aria-hidden="true"
           />
+          <span className="cabinet__glass" aria-hidden="true" />
           <span className="cabinet__scan" aria-hidden="true" />
           <span className="cabinet__cta">
             <span className="cabinet__play">▶ PLAY</span>
             <span className="cabinet__blink">PRESS START</span>
           </span>
-        </span>
-
-        <span className="cabinet__panel">
-          <span className="cabinet__joystick" aria-hidden="true" />
-          <span className="cabinet__buttons" aria-hidden="true">
-            <span className="cabinet__btn cabinet__btn--y" />
-            <span className="cabinet__btn cabinet__btn--r" />
-            <span className="cabinet__btn cabinet__btn--c" />
-          </span>
-          <span className="cabinet__coin">◉ INSERT COIN</span>
         </span>
       </a>
     </section>
