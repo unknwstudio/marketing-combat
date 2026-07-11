@@ -69,9 +69,36 @@ export default function PixelCursor({ enabled = true, children }) {
       anim.oncancel = cleanup
     }
 
+    const slash = (e) => {
+      const layer = layerRef.current
+      if (reduce || !layer) return
+      const x = e.clientX
+      const y = e.clientY
+      const angle = Math.random() * 60 - 30 // -30..30deg, a quick diagonal swipe
+      const el = document.createElement('span')
+      el.className = 'k-cursor-slash'
+      el.style.left = `${x}px`
+      el.style.top = `${y}px`
+      el.style.setProperty('--angle', `${angle}deg`)
+      layer.appendChild(el)
+      const anim = el.animate(
+        [
+          { opacity: 1, transform: `translate(-50%, -50%) rotate(${angle}deg) scaleX(0)` },
+          { opacity: 1, transform: `translate(-50%, -50%) rotate(${angle}deg) scaleX(1)`, offset: 0.4 },
+          { opacity: 0, transform: `translate(-50%, -50%) rotate(${angle}deg) scaleX(1.15)` },
+        ],
+        { duration: 260, easing: 'steps(5, end)' }
+      )
+      const cleanup = () => el.remove()
+      anim.onfinish = cleanup
+      anim.oncancel = cleanup
+    }
+
     window.addEventListener('mousemove', move, { passive: true })
+    window.addEventListener('pointerdown', slash, { passive: true })
     return () => {
       window.removeEventListener('mousemove', move)
+      window.removeEventListener('pointerdown', slash)
       root.classList.remove('k-cursor-on')
       layerRef.current?.replaceChildren()
     }

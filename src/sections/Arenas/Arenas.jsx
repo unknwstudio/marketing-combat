@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
 import './Arenas.css'
 
 /**
@@ -42,6 +45,25 @@ const ARENAS = [
 const MAX_STARS = 5
 
 export default function Arenas() {
+  const gridRef = useRef(null)
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return
+    const stars = gridRef.current?.querySelectorAll('.arenas__stars') ?? []
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          entry.target.classList.add('arenas__stars--revealed')
+          io.unobserve(entry.target)
+        })
+      },
+      { threshold: 0.5 }
+    )
+    stars.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+
   return (
     <section className="dsec dsec--alt arenas" aria-label="Battle arenas">
       <div className="dsec__head">
@@ -55,7 +77,7 @@ export default function Arenas() {
         </p>
       </div>
 
-      <ul className="arenas__grid">
+      <ul className="arenas__grid" ref={gridRef}>
         {ARENAS.map((a) => (
           <li key={a.n} className="dcard arenas__card">
             <img

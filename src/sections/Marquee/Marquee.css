@@ -14,6 +14,12 @@
   animation: marquee-scroll 28s linear infinite;
 }
 
+/* JS has taken over (scroll-velocity-driven crawl) -- stop the keyframe so it
+   doesn't fight the per-frame inline transform */
+.marquee__viewport--driven {
+  animation: none;
+}
+
 .marquee__track {
   display: flex;
   align-items: center;

@@ -49,9 +49,26 @@ html.k-cursor-on * {
   image-rendering: pixelated;
 }
 
+/* click slash: a quick pixelated sword-swipe streak, built the same way as
+   the crosshair (box-shadow blocks, no gradients) so it reads as one system */
+.k-cursor-slash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 46px;
+  height: 4px;
+  transform-origin: center;
+  background: var(--k-yellow);
+  box-shadow:
+    0 -4px 0 0 var(--k-red),
+    0 4px 0 0 var(--k-red);
+  image-rendering: pixelated;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  /* keep the static crosshair, drop the motion trail */
-  .k-cursor-dust {
+  /* keep the static crosshair, drop the motion trail + click slash */
+  .k-cursor-dust,
+  .k-cursor-slash {
     display: none;
   }
 }
