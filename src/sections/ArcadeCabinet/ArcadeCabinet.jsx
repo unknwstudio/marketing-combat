@@ -1,5 +1,4 @@
 import './ArcadeCabinet.css'
-import CrtScreen from '@/components/CrtScreen/CrtScreen'
 
 /**
  * PLAY THE GAME — a photoreal arcade cabinet (render) whose empty CRT screen is
@@ -23,16 +22,21 @@ export default function ArcadeCabinet() {
         />
 
         <span className="cabinet__screen">
-          {/* CSS attract screen — fallback shown with no JS / no WebGL */}
+          {/* a real game scene on the tube */}
+          <img
+            className="cabinet__game pixelated"
+            src={`/assets/hero/hero-bg.png`}
+            alt=""
+            aria-hidden="true"
+          />
           <span className="cabinet__glass" aria-hidden="true" />
-          <span className="cabinet__glow" aria-hidden="true" />
+          <span className="cabinet__grille" aria-hidden="true" />
           <span className="cabinet__scan" aria-hidden="true" />
+          <span className="cabinet__sheen" aria-hidden="true" />
           <span className="cabinet__cta">
             <span className="cabinet__play">▶ PLAY</span>
             <span className="cabinet__blink">PRESS START</span>
           </span>
-          {/* real WebGL CRT on top (covers the fallback when it renders) */}
-          <CrtScreen />
         </span>
       </a>
     </section>
