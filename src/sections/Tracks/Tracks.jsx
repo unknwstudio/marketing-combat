@@ -7,7 +7,7 @@ import './Tracks.css'
 const TRACKS = [
   {
     n: '01',
-    img: 'ai-creatives.png',
+    img: 'ai-creatives.webp',
     name: 'AI-CREATIVES',
     special: 'HOLOGRAPHIC BANNER MAKER',
     bullets: [
@@ -18,7 +18,7 @@ const TRACKS = [
   },
   {
     n: '02',
-    img: 'ai-performance.png',
+    img: 'ai-performance.webp',
     name: 'AI-PERFORMANCE',
     special: 'ZERO-WASTE MEDIA SPLIT',
     bullets: [

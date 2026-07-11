@@ -8,31 +8,31 @@ import './Organizers.css'
 const CREW = [
   {
     n: '01',
-    img: 'crew-01.png',
+    img: 'crew-01.webp',
     name: 'VLADISLAV FEDOSEEV',
     bio: 'Managing Partner at Allformance, Founder of AI-Formance; performance marketing and AdTech operator.',
   },
   {
     n: '02',
-    img: 'crew-02.png',
+    img: 'crew-02.webp',
     name: 'ROMAN KUMAR VYAS',
     bio: 'Serial IT entrepreneur, marketing expert, founder / co-founder of Refocus, Qlean and Qmarketing.',
   },
   {
     n: '03',
-    img: 'crew-03.png',
+    img: 'crew-03.webp',
     name: 'ALEXANDER SOLOVYOV',
     bio: 'IT entrepreneur and growth operator; ex Co-founder of Qmarketing Academy, Co-founder of Refocus; performance, EdTech and AI-in-sales expert.',
   },
   {
     n: '04',
-    img: 'crew-04.png',
+    img: 'crew-04.webp',
     name: 'MARIA KULIKOVSKAIA',
     bio: 'AI HealthTech Product & Digital Transformation Strategist; 10+ years in tech, MedTech and AI-enabled products.',
   },
   {
     n: '05',
-    img: 'crew-05.png',
+    img: 'crew-05.webp',
     name: 'ANNA SHOLINA',
     bio: 'VC partner & serial entrepreneur; SOULS agency founder; exited founder of EMERGE Global Tech Conference.',
   },

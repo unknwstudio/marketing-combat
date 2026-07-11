@@ -270,7 +270,7 @@ export default function Cabinet3D() {
     return (
       <img
         className="cab3d__fallback"
-        src="/assets/demo/arcade-machine.png"
+        src="/assets/demo/arcade-machine.webp"
         alt="Arcade cabinet — play AI Marketing Kombat"
       />
     )

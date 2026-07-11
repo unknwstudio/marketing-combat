@@ -10,7 +10,7 @@ import './Arenas.css'
 const ARENAS = [
   {
     n: '01',
-    img: 'healthcare.png',
+    img: 'healthcare.webp',
     name: 'HEALTHCARE',
     body: 'Complex funnel. Long cycle. High LTV. Mission: cut CAC and speed up first-purchase conversion.',
     tags: ['CYCLE LONG', 'LTV HIGH'],
@@ -18,7 +18,7 @@ const ARENAS = [
   },
   {
     n: '02',
-    img: 'b2b-saas.png',
+    img: 'b2b-saas.webp',
     name: 'B2B SAAS',
     body: 'Long sales cycles. Many stakeholders. Mission: turn PQLs into pipeline with AI-driven demand gen.',
     tags: ['MOTION PLG', 'ACV HIGH'],
@@ -26,7 +26,7 @@ const ARENAS = [
   },
   {
     n: '03',
-    img: 'e-commerce.png',
+    img: 'e-commerce.webp',
     name: 'E-COMMERCE',
     body: 'High volume. Thin margins. ROAS pressure. Mission: scale creative and squeeze CAC with AI.',
     tags: ['VOLUME HIGH', 'MARGIN THIN'],
@@ -34,7 +34,7 @@ const ARENAS = [
   },
   {
     n: '04',
-    img: 'enterprise.png',
+    img: 'enterprise.webp',
     name: 'ENTERPRISE',
     body: 'Six-figure deals. Long procurement. Mission: run AI-powered ABM that lands target accounts.',
     tags: ['DEAL 6-FIG', 'CYCLE LONG'],

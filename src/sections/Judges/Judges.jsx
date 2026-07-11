@@ -6,9 +6,9 @@ import './Judges.css'
  * portraits are generated pixel-art bosses.
  */
 const JUDGES = [
-  { n: '01', img: 'boss-01.png', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
-  { n: '02', img: 'boss-02.png', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
-  { n: '03', img: 'boss-03.png', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
+  { n: '01', img: 'boss-01.webp', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
+  { n: '02', img: 'boss-02.webp', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
+  { n: '03', img: 'boss-03.webp', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
 ]
 
 export default function Judges() {
@@ -46,7 +46,7 @@ export default function Judges() {
           <div className="judges__frame">
             <img
               className="judges__portrait pixelated"
-              src={`/assets/demo/judges/secret-boss.png`}
+              src={`/assets/demo/judges/secret-boss.webp`}
               alt="Secret boss — identity hidden"
             />
             <span className="judges__sweep" aria-hidden="true" />
