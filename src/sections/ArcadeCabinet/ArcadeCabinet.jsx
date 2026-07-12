@@ -299,7 +299,7 @@ export default function ArcadeCabinet() {
           >
             <img
               className="cabinet__handoff-bg"
-              src="/game/stages/rooftop.png"
+              src="/game/stages/enterprise.png"
               alt=""
               draggable="false"
             />

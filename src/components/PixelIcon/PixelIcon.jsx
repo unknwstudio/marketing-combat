@@ -77,17 +77,32 @@ const GRIDS = {
     '.XXXXXXXXX.',
     '.XXXXXXXXX.',
   ],
-  // ◀ triangle — mirror of play (6x9)
+  // ◀ triangle (5x9) — directional, perfectly centered (unlike `play`, whose
+  // 6th empty column gives it breathing room next to text but off-centers it
+  // half a cell inside a square button — noticeable on the game D-pad)
   triLeft: [
-    '.....X',
-    '....XX',
-    '...XXX',
-    '..XXXX',
-    '.XXXXX',
-    '..XXXX',
-    '...XXX',
-    '....XX',
-    '.....X',
+    '....X',
+    '...XX',
+    '..XXX',
+    '.XXXX',
+    'XXXXX',
+    '.XXXX',
+    '..XXX',
+    '...XX',
+    '....X',
+  ],
+  // ▶ triangle (5x9) — mirror of triLeft. Use for DIRECTION (D-pad, key
+  // hints, step chains); keep `play` for play/select affordances.
+  triRight: [
+    'X....',
+    'XX...',
+    'XXX..',
+    'XXXX.',
+    'XXXXX',
+    'XXXX.',
+    'XXX..',
+    'XX...',
+    'X....',
   ],
   // ▲ triangle (9x5)
   triUp: [

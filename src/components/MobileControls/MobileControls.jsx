@@ -53,7 +53,7 @@ export default function MobileControls() {
             device, and pointer-events:none via CSS so they never eat a touch */}
         <button className="mc-btn mc-up" {...bind('up')}><PixelIcon name="triUp" size="0.9em" /></button>
         <button className="mc-btn mc-left" {...bind('left')}><PixelIcon name="triLeft" size="0.9em" /></button>
-        <button className="mc-btn mc-right" {...bind('right')}><PixelIcon name="play" size="0.9em" /></button>
+        <button className="mc-btn mc-right" {...bind('right')}><PixelIcon name="triRight" size="0.9em" /></button>
         <button className="mc-btn mc-down" {...bind('down')}><PixelIcon name="triDown" size="0.9em" /></button>
       </div>
       <div className="mc-actions">

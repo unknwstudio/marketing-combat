@@ -204,14 +204,20 @@ export default function GameChrome() {
           <div className="gc-menu-title">HOW TO PLAY</div>
           <p className="gc-lead">Pick a marketer. Fight to the KO. Best of three.</p>
           <div className="gc-keys">
-            <div><b>MOVE</b><span>A D&nbsp;&nbsp;/&nbsp;&nbsp;← →</span></div>
-            <div><b>JUMP</b><span>W&nbsp;&nbsp;/&nbsp;&nbsp;↑</span></div>
-            <div><b>BLOCK</b><span>S&nbsp;&nbsp;/&nbsp;&nbsp;↓</span></div>
+            {/* arrow KEYS as PixelIcons, not ← → ↑ ↓ text — the pixel font has
+                no arrow glyphs, so unicode arrows fell back to a thin system
+                font and clashed with the pixel type around them (the exact
+                font-lottery PixelIcon exists to end). Labeled: they NAME keys. */}
+            <div><b>MOVE</b><span>A D&nbsp;&nbsp;/&nbsp;&nbsp;<PixelIcon name="triLeft" size="0.9em" label="left arrow" /> <PixelIcon name="triRight" size="0.9em" label="right arrow" /></span></div>
+            <div><b>JUMP</b><span>W&nbsp;&nbsp;/&nbsp;&nbsp;<PixelIcon name="triUp" size="0.9em" label="up arrow" /></span></div>
+            <div><b>BLOCK</b><span>S&nbsp;&nbsp;/&nbsp;&nbsp;<PixelIcon name="triDown" size="0.9em" label="down arrow" /></span></div>
             <div><b>PUNCH</b><span>J</span></div>
             <div><b>KICK</b><span>K</span></div>
             <div><b>SPECIAL</b><span>L</span></div>
           </div>
-          <p className="gc-note">Chain clean hits to climb the funnel — LEAD → MQL → SQL → CLOSED-WON. On a phone, use the on-screen buttons. Pause any time with the <PixelIcon name="pause" size="0.75em" label="pause" /> button or ESC.</p>
+          {/* funnel steps chain with the same pixel triangle (decorative here —
+              the sequence still reads without them for screen readers) */}
+          <p className="gc-note">Chain clean hits to climb the funnel — LEAD <PixelIcon name="triRight" size="0.6em" /> MQL <PixelIcon name="triRight" size="0.6em" /> SQL <PixelIcon name="triRight" size="0.6em" /> CLOSED-WON. On a phone, use the on-screen buttons. Pause any time with the <PixelIcon name="pause" size="0.75em" label="pause" /> button or ESC.</p>
           <button className="gc-item" onClick={() => setHowto(false)}>GOT IT</button>
         </div>
       )}

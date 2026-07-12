@@ -51,11 +51,14 @@ export const ROSTER = [
   { key: 'fighter4', name: 'AI CREATORS',          color: 0xffcf3f, style: 'HEAVY',     hp: 124, speed: 80,  dmg: 1.32, reach: 1.08, atkSpeed: 0.80 },
   { key: 'fighter5', name: 'FUTURE LEGENDS',       color: 0xb08bff, style: 'ASSASSIN',  hp: 84,  speed: 126, dmg: 0.85, reach: 0.98, atkSpeed: 1.22 },
 ];
+// The four BATTLE ARENAS from the landing's ROUND 04 section (same art,
+// downscaled to the game's 480x270) — you fight IN the case tracks the site
+// promises, not in generic fantasy sets. Keys mirror the landing image names.
 export const STAGES = [
-  { key: 'server', name: 'SERVER ROOM' },
-  { key: 'rooftop', name: 'NEON ROOFTOP' },
-  { key: 'stadium', name: 'VIRAL STADIUM' },
-  { key: 'dungeon', name: 'THE DUNGEON' },
+  { key: 'healthcare', name: 'HEALTHCARE' },
+  { key: 'b2b-saas', name: 'B2B SAAS' },
+  { key: 'e-commerce', name: 'E-COMMERCE' },
+  { key: 'enterprise', name: 'ENTERPRISE' },
 ];
 
 // Per-archetype move names — the marketing-satire joke floats off the defender on
@@ -142,7 +145,7 @@ function bootCreate() { this.scene.start('select'); }
    ========================================================================= */
 function selectCreate() {
   this.add.rectangle(0, 0, GAME_W, GAME_H, 0x05010c).setOrigin(0, 0);
-  this.add.image(GAME_W / 2, GAME_H / 2, 'stage_dungeon').setDisplaySize(GAME_W, GAME_H).setAlpha(0.18);
+  this.add.image(GAME_W / 2, GAME_H / 2, 'stage_b2b-saas').setDisplaySize(GAME_W, GAME_H).setAlpha(0.18);
 
   this.phase = 'fighter';
   this.fi = 2; // default: the highlighted landing fighter
@@ -305,7 +308,7 @@ function animOffset(f, clock) {
 function fightInit(data) {
   data = data || {};
   this.playerKey = data.playerKey || 'fighter3';
-  this.stageKey = data.stageKey || 'dungeon';
+  this.stageKey = data.stageKey || 'enterprise';
   this.mode = data.mode || 'vs';
   this.rung = data.rung || 0;
   this.gauntletOpps = data.gauntletOpps || [];

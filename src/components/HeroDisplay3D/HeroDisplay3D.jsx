@@ -139,7 +139,12 @@ async function buildHeroTexture(bgImg, logoImg, hover = false) {
   })
 
   const tex = new THREE.CanvasTexture(c)
-  tex.colorSpace = THREE.SRGBColorSpace
+  // NO colorSpace tag (passthrough), deliberately: tagging SRGBColorSpace
+  // makes the GPU decode samples to linear, and a RAW ShaderMaterial never
+  // re-encodes on output (no colorspace_fragment chunk) — the picture shipped
+  // linear-as-sRGB and read crushed-dark in the mids, which no flat gain
+  // could honestly compensate. Passthrough keeps the canvas2D pixel values
+  // end-to-end — exactly how Cabinet3D's screen texture already works.
   tex.anisotropy = 4
   tex.needsUpdate = true
   return tex
@@ -162,6 +167,64 @@ function matchesSafe(el, selector) {
   } catch {
     return true
   }
+}
+
+/* ---------- badge hit-area ↔ curved screen registration ---------- */
+
+// MUST stay in sync with `barrel` in CRT_FRAG. The shader maps every OUTPUT
+// pixel cc_o to SOURCE texel cc_s = cc_o·(1 + |cc_o|²·k) — i.e. it draws the
+// picture pulled toward the screen center, strongest in the corners. The DOM
+// badge sits at the UN-warped position (top-left corner ⇒ ~2.5% of the frame
+// off), so pointer/hover landed beside the badge the eye sees. We invert the
+// mapping and transform the (invisible, hit-area-only) DOM badge to sit
+// exactly under the pixels the shader draws.
+const BARREL = 0.05
+
+/** invert r_s = r_o·(1 + k·r_o²) by fixed-point iteration (k is small, so
+    3-4 passes converge to far below a pixel at hero scale) */
+function unwarpPoint(fx, fy) {
+  const cx = fx * 2 - 1
+  const cy = fy * 2 - 1
+  const rs = Math.hypot(cx, cy)
+  if (rs === 0) return [fx, fy]
+  let ro = rs
+  for (let i = 0; i < 4; i++) ro = rs / (1 + BARREL * ro * ro)
+  const s = ro / rs
+  return [(cx * s + 1) / 2, (cy * s + 1) / 2]
+}
+
+/** compute + apply the badge transform; returns a cleanup that restores it.
+    All rects are measured live so ScaleCanvas zoom / relayout can't drift us:
+    normalized fractions are zoom-invariant, and the px offset is converted to
+    the badge's LOCAL units via the measured zoom (rect ÷ offsetWidth). */
+function warpBadgeToScreen(badgeEl, canvasEl) {
+  badgeEl.style.transform = '' // measure the untransformed layout box
+  const stage = canvasEl.getBoundingClientRect()
+  const rect = badgeEl.getBoundingClientRect()
+  if (!stage.width || !rect.width || !badgeEl.offsetWidth) return
+  const zoom = rect.width / badgeEl.offsetWidth
+
+  // warp all 4 corners, take the bounding box (the true shape is a hair
+  // trapezoidal; at k=0.05 the difference is sub-pixel — fine for a hit-area)
+  const corners = [
+    [rect.left, rect.top],
+    [rect.right, rect.top],
+    [rect.left, rect.bottom],
+    [rect.right, rect.bottom],
+  ].map(([x, y]) =>
+    unwarpPoint((x - stage.left) / stage.width, (y - stage.top) / stage.height)
+  )
+  const xs = corners.map((c) => stage.left + c[0] * stage.width)
+  const ys = corners.map((c) => stage.top + c[1] * stage.height)
+  const left = Math.min(...xs)
+  const top = Math.min(...ys)
+  const w = Math.max(...xs) - left
+  const h = Math.max(...ys) - top
+
+  badgeEl.style.transformOrigin = '0 0'
+  badgeEl.style.transform =
+    `translate(${(left - rect.left) / zoom}px, ${(top - rect.top) / zoom}px) ` +
+    `scale(${w / rect.width}, ${h / rect.height})`
 }
 
 /* ---------- the CRT fragment shader: barrel + chromatic aberration + ---------- */
@@ -188,7 +251,9 @@ vec3 sampleTex(vec2 uv) {
 
 vec3 bloomTap(vec2 s, vec2 dir, float texel) {
   vec3 c = sampleTex(s + dir * texel);
-  float b = max(0.0, dot(c, vec3(0.299, 0.587, 0.114)) - 0.58);
+  // threshold tuned for sRGB-space samples (passthrough texture): 0.58 was
+  // picked when samples arrived linear-decoded and darker across the board
+  float b = max(0.0, dot(c, vec3(0.299, 0.587, 0.114)) - 0.68);
   return c * b;
 }
 
@@ -216,8 +281,10 @@ void main() {
   col += (bloom / 6.0) * 0.5;
 
   // overall gain — the CRT passes below (scanline + grille + vignette) are all
-  // multiplicative dimmers; lift the picture first so the hero reads bright.
-  col *= 1.14;
+  // multiplicative dimmers; lift the picture so their average cancels out.
+  // (Was 1.14 back when it also fought the sRGB-decode darkening — with the
+  // passthrough texture that big a gain clips the sky gradient to bands.)
+  col *= 1.06;
 
   float sl = sin(gl_FragCoord.y * 3.14159 * 0.95);
   col *= 0.94 + 0.06 * (0.5 + 0.5 * sl);
@@ -299,6 +366,7 @@ function CRTPlane() {
     // (WCAG 2.4.7). One flag each — the inverted texture shows while EITHER
     // holds, matching Hero.css's .hero__badge:hover / :focus-visible pair.
     let badgeEl = null
+    let ro = null // ResizeObserver keeping the warped hit-area registered
     let hovered = false
     let focused = false
     const sync = () => {
@@ -367,16 +435,29 @@ function CRTPlane() {
         if (badgeEl.matches(':hover')) hovered = true
         if (document.activeElement === badgeEl) focused = matchesSafe(badgeEl, ':focus-visible')
         sync()
+
+        // slide the DOM hit-area under the barrel-warped badge pixels (see
+        // warpBadgeToScreen). Re-derived on resize: the fractions are
+        // zoom-invariant, but a reflow can move the badge inside the stage.
+        warpBadgeToScreen(badgeEl, gl.domElement)
+        ro = new ResizeObserver(() => {
+          if (badgeEl) warpBadgeToScreen(badgeEl, gl.domElement)
+        })
+        ro.observe(gl.domElement)
       }
     }
     build()
     return () => {
       cancelled = true
+      if (ro) ro.disconnect()
       if (badgeEl) {
         badgeEl.removeEventListener('pointerenter', onEnter)
         badgeEl.removeEventListener('pointerleave', onLeave)
         badgeEl.removeEventListener('focusin', onFocus)
         badgeEl.removeEventListener('focusout', onBlur)
+        // hand the flat fallback its untouched layout back
+        badgeEl.style.transform = ''
+        badgeEl.style.transformOrigin = ''
       }
       if (texNormal) texNormal.dispose()
       if (texHover) texHover.dispose()
