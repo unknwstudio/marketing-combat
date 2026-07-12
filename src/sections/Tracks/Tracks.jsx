@@ -43,7 +43,7 @@ export default function Tracks() {
       </div>
 
       <ul className="tracks__grid">
-        {TRACKS.map((t) => (
+        {TRACKS.map((t, i) => [
           /* deliberately NOT focusable: the card does nothing on Enter, so a
              tab stop would only add dead stops before the real CTAs and make
              screen readers announce the whole card as actionable. The
@@ -90,8 +90,17 @@ export default function Tracks() {
             </div>
 
             <span className="tracks__fight">FIGHT!</span>
-          </li>
-        ))}
+          </li>,
+          /* VS badge sits between the two cards so "pick one track" reads
+             instantly from the grid itself, without depending on the
+             section head (which can scroll out of view above it). Hidden
+             from AT: the section aria-label + track names already say it. */
+          i === 0 && (
+            <li key="vs" className="tracks__vs" aria-hidden="true">
+              <span>vs</span>
+            </li>
+          ),
+        ])}
       </ul>
     </section>
   )
