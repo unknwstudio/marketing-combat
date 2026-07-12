@@ -10,31 +10,35 @@ const FIGHTERS = [
   {
     img: 'fighter1.webp',
     label: 'CMOs',
-    // leans in hard from the right — this card sits far left of the real
-    // bg bolt's trunk, so its fork has the longest reach back to it
-    bolt: 'M211,0 L187,44 L164,89 L161,133 L126,178 L120,222 L100,267 L76,311 L68,356 L44,400 L50,400 L80,356 L83,311 L112,267 L127,222 L138,178 L168,133 L176,89 L194,44 L223,0 Z M170,89 L136,115 L122,125 L155,108 Z M164,133 L194,157 L206,167 L185,142 Z M124,222 L106,238 L98,245 L116,234 Z M106,267 L120,281 L126,287 L116,272 Z M79,311 L70,321 L66,325 L75,318 Z',
+    // top end sits at local x=678 -- ~700px right of this card's own
+    // center, which lands it exactly on the real bg bolt's trunk (all
+    // five paths converge on that same point; see the shared comment
+    // below the FIGHTERS array)
+    bolt: 'M678,0 L596,44 L539,89 L464,133 L388,178 L333,222 L247,267 L189,311 L116,356 L41,400 L48,400 L128,356 L195,311 L259,267 L339,222 L400,178 L470,133 L551,89 L603,44 L690,0 Z M545,89 L511,115 L497,125 L530,108 Z M467,133 L497,157 L509,167 L487,142 Z M336,222 L318,238 L311,245 L329,234 Z M253,267 L267,281 L273,287 L263,272 Z M192,311 L182,321 L178,325 L188,318 Z',
   },
   {
     img: 'fighter2.webp',
     label: 'HEADS OF GROWTH',
-    bolt: 'M125,0 L134,44 L113,89 L102,133 L102,178 L80,222 L76,267 L69,311 L48,356 L53,400 L59,400 L60,356 L76,311 L88,267 L87,222 L114,178 L109,133 L125,89 L140,44 L137,0 Z M119,89 L85,115 L71,125 L104,108 Z M106,133 L136,157 L148,167 L126,142 Z M83,222 L65,238 L58,245 L76,234 Z M82,267 L97,281 L103,287 L93,272 Z M73,311 L63,321 L59,325 L69,318 Z',
+    bolt: 'M353,0 L336,44 L290,89 L254,133 L228,178 L181,222 L153,267 L120,311 L73,356 L53,400 L59,400 L85,356 L127,311 L165,267 L188,222 L240,178 L261,133 L302,89 L343,44 L365,0 Z M296,89 L262,115 L248,125 L281,108 Z M258,133 L288,157 L300,167 L278,142 Z M185,222 L167,238 L160,245 L177,234 Z M159,267 L173,281 L179,287 L169,272 Z M123,311 L114,321 L110,325 L120,318 Z',
   },
   {
     img: 'fighter3.webp',
     label: 'PERFORMANCE LEAD GEN',
     // near-vertical: this card sits almost directly under the real
     // trunk, so its own strike barely has to lean at all
-    bolt: 'M50,0 L38,44 L51,89 L45,133 L40,178 L54,222 L38,267 L49,311 L47,356 L41,400 L48,400 L59,356 L56,311 L50,267 L61,222 L52,178 L52,133 L63,89 L45,44 L62,0 Z M57,89 L23,115 L9,125 L42,108 Z M49,133 L79,157 L91,167 L69,142 Z M57,222 L39,238 L32,245 L50,234 Z M44,267 L58,281 L64,287 L54,272 Z M52,311 L43,321 L39,325 L49,318 Z',
+    bolt: 'M60,0 L53,44 L46,89 L60,133 L42,178 L53,222 L50,267 L42,311 L51,356 L44,400 L50,400 L63,356 L49,311 L62,267 L60,222 L54,178 L67,133 L58,89 L60,44 L72,0 Z M52,89 L18,115 L5,125 L38,108 Z M64,133 L94,157 L106,167 L84,142 Z M57,222 L39,238 L31,245 L49,234 Z M56,267 L70,281 L76,287 L66,272 Z M46,311 L36,321 L32,325 L42,318 Z',
   },
   {
     img: 'fighter4.webp',
     label: 'AI CREATORS',
-    bolt: 'M-48,0 L-38,44 L-18,89 L-20,133 L-3,178 L10,222 L7,267 L33,311 L31,356 L45,400 L52,400 L43,356 L40,311 L19,267 L16,222 L9,178 L-14,133 L-6,89 L-31,44 L-36,0 Z M-12,89 L22,115 L36,125 L11,98 Z M-17,133 L-47,157 L-59,167 L-30,151 Z M13,222 L31,238 L38,245 L25,228 Z M13,267 L-1,281 L-7,287 L8,277 Z M37,311 L46,321 L50,325 L43,315 Z',
+    bolt: 'M-258,0 L-225,44 L-182,89 L-161,133 L-120,178 L-84,222 L-63,267 L-13,311 L7,356 L45,400 L52,400 L19,356 L-7,311 L-51,267 L-77,222 L-108,178 L-154,133 L-170,89 L-218,44 L-246,0 Z M-176,89 L-142,115 L-128,125 L-153,98 Z M-157,133 L-187,157 L-199,167 L-170,151 Z M-81,222 L-63,238 L-55,245 L-68,228 Z M-57,267 L-71,281 L-77,287 L-62,277 Z M-10,311 L-1,321 L3,325 L-3,315 Z',
   },
   {
     img: 'fighter5.webp',
     label: '…& FUTURE LEGENDS',
-    bolt: 'M-121,0 L-87,44 L-88,89 L-57,133 L-42,178 L-31,222 L-2,267 L8,311 L25,356 L52,400 L58,400 L37,356 L14,311 L10,267 L-25,222 L-30,178 L-51,133 L-76,89 L-81,44 L-109,0 Z M-82,89 L-48,115 L-34,125 L-59,98 Z M-54,133 L-84,157 L-96,167 L-67,151 Z M-28,222 L-10,238 L-3,245 L-16,228 Z M4,267 L-11,281 L-17,287 L-2,277 Z M11,311 L21,321 L24,325 L18,315 Z',
+    // top end sits ~610 local units left of this card's own center --
+    // the longest reach of the five, back to the same shared trunk point
+    bolt: 'M-571,0 L-487,44 L-438,89 L-357,133 L-292,178 L-231,222 L-152,267 L-92,311 L-25,356 L52,400 L58,400 L-13,356 L-86,311 L-140,267 L-225,222 L-280,178 L-350,133 L-426,89 L-480,44 L-559,0 Z M-432,89 L-398,115 L-384,125 L-409,98 Z M-354,133 L-384,157 L-396,167 L-367,151 Z M-228,222 L-210,238 L-203,245 L-215,228 Z M-146,267 L-161,281 L-167,287 L-152,277 Z M-89,311 L-79,321 L-76,325 L-82,315 Z',
   },
 ]
 
@@ -74,14 +78,18 @@ export default function Fighters() {
                   (see .fighters__bolt in Fighters.css). Tall enough to run
                   behind "choose your fighter" itself (the title's z-index
                   keeps it legible on top). Each card gets its own path
-                  (f.bolt) rather than one shared shape: the five paths all
-                  lean toward the same point above the row — where
-                  fighters__bg's real painted bolt actually runs — so on
-                  hover a card's strike reads as a fork breaking off that
-                  bolt, not an unrelated line. Same forking-ribbon style as
-                  the bg art (thin core + small perpendicular ticks) so the
-                  two match. A fresh SVG layer, not a crop of fighters__bg:
-                  that background is one flat composite image. */}
+                  (f.bolt) rather than one shared shape: all five paths'
+                  top ends are placed at local x=720-cardCenter (converted
+                  to the svg's local units) so, despite five very different
+                  lean angles, every one lands on the exact same pixel —
+                  x=720, the top of the section — which is where
+                  fighters__bg's real painted trunk sits. On hover, a
+                  card's strike touches down right out of that trunk
+                  instead of floating as an unrelated line. Same
+                  forking-ribbon style as the bg art (thin core + small
+                  perpendicular ticks) so the two match visually too. A
+                  fresh SVG layer, not a crop of fighters__bg: that
+                  background is one flat composite image. */}
               <svg
                 className="fighters__bolt"
                 aria-hidden="true"
