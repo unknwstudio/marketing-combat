@@ -44,6 +44,10 @@ export default function Tracks() {
 
       <ul className="tracks__grid">
         {TRACKS.map((t) => (
+          /* deliberately NOT focusable: the card does nothing on Enter, so a
+             tab stop would only add dead stops before the real CTAs and make
+             screen readers announce the whole card as actionable. The
+             marching ants stay a hover flourish. */
           <li key={t.n} className="dcard tracks__card">
             <img
               className="tracks__art pixelated"

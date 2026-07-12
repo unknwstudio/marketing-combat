@@ -60,6 +60,15 @@ export const STAGES = [
   { key: 'e-commerce', name: 'E-COMMERCE' },
   { key: 'enterprise', name: 'ENTERPRISE' },
 ];
+// Arena mission one-liners for the ROUND intro card — each round restates the case
+// promise the landing's ROUND 04 section makes for that track, as the fight's stakes.
+const MISSIONS = {
+  healthcare: 'MISSION: CUT CAC, SPEED UP CONVERSION',
+  'b2b-saas': 'MISSION: TURN PQLs INTO PIPELINE',
+  'e-commerce': 'MISSION: SCALE CREATIVE, SQUEEZE CAC',
+  enterprise: 'MISSION: LAND TARGET ACCOUNTS',
+};
+const INTRO_T = 1900; // intro card ~1.2s (1900->700) + the existing 700ms FIGHT! beat
 
 // Per-archetype move names — the marketing-satire joke floats off the defender on
 // every clean hit. Keyed by atlas key (the boss reuses fighter3's).
@@ -122,7 +131,38 @@ const emitResult = (action, meta) => { if (typeof window !== 'undefined') { try 
 // Honour OS "Reduce Motion" for the heavy full-screen juice (camera flash/shake/punch-zoom — a
 // photosensitivity hazard). Checked live per use so a mid-session toggle is respected. Hitstop and
 // slow-mo timing are NOT motion and stay; the site's other components already guard the same way.
-const reducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Cached MediaQueryList: this is polled from per-tick paths (arena fx, intro card,
+// initials blink), and matchMedia() allocates a fresh MQL on every call — 60/sec of
+// garbage. A retained MQL's .matches stays live, so mid-session toggles still apply.
+let _rmq = null;
+const reducedMotion = () => {
+  if (!_rmq && typeof window !== 'undefined' && window.matchMedia) _rmq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  return !!_rmq && _rmq.matches;
+};
+// HAPTICS: a physical tick on phones when the PLAYER lands a clean hit / a heavier buzz
+// when they get KO'd. Shaking the device IS motion, so Reduce Motion silences it too.
+// Guarded twice (feature check + try) so it can never throw on browsers without vibrate.
+const buzz = (ms) => { try { if (!reducedMotion() && typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(ms); } catch (e) { /* blocked (e.g. iframe permission) */ } };
+// GAUNTLET leaderboard, persisted like a real cabinet's battery-backed RAM. Top 10 of
+// { initials, score, date }; score = rungs cleared * 1000 + remaining HP on the final win.
+const SCORES_KEY = 'kombat_scores';
+function loadScores() {
+  // Sanitize here so EVERY consumer (idle table, Leaderboard section, share) gets
+  // well-formed rows — a corrupt '[null]' or numeric initials in storage would
+  // otherwise throw inside per-frame code (selectUpdate's row template).
+  try {
+    const a = JSON.parse(localStorage.getItem(SCORES_KEY) || '[]');
+    return Array.isArray(a) ? a.filter((e) => e && typeof e === 'object' && typeof e.initials === 'string' && Number.isFinite(e.score)) : [];
+  }
+  catch (e) { return []; }
+}
+function saveScore(entry) {
+  try {
+    const a = loadScores(); a.push(entry);
+    a.sort((x, y) => (y.score || 0) - (x.score || 0));
+    localStorage.setItem(SCORES_KEY, JSON.stringify(a.slice(0, 10)));
+  } catch (e) { /* no storage (private mode) — the run still ends normally */ }
+}
 // single source of truth for touch detection (select hints, control hints, finisher wording, zoom-fill)
 const isCoarsePointer = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 // select-screen bottom hint — touch uses the on-screen D-pad (◀▶▲▼ + OK), not a keyboard's arrows/ENTER
@@ -218,8 +258,37 @@ function selectCreate() {
   this.input.keyboard.on('keydown-ENTER', confirm);
   this.input.keyboard.on('keydown-SPACE', confirm);
 
+  // idle attract: leave the select screen untouched for ~9s and the GAUNTLET high-score
+  // table surfaces over it (classic cabinet attract loop). ANY input clears it — the same
+  // press also acts on the select screen underneath, which is exactly how arcades behave.
+  this.idleT = 0; this.hs = null;
+  const resetIdle = () => { this.idleT = 0; if (this.hs) { this.hs.forEach((o) => o.destroy()); this.hs = null; } };
+  this.input.keyboard.on('keydown', resetIdle);
+  this.input.on('pointerdown', resetIdle);
+
   refresh(this);
   emitScene('select');
+}
+// select-scene update exists ONLY for the idle timer — everything else is event-driven.
+function selectUpdate(time, delta) {
+  if (this.hs) return;                       // table is up; resetIdle tears it down on input
+  // While GameChrome has an overlay up it disables Phaser's keyboard AND eats all
+  // pointer events — resetIdle can never fire, so idling here would arm the HIGH
+  // SCORES wall behind the title screen and ambush the player's first ENTER.
+  if (!this.input.keyboard.enabled) { this.idleT = 0; return; }
+  this.idleT += delta;
+  if (this.idleT < 9000) return;
+  const scores = loadScores();
+  if (!scores.length) { this.idleT = 0; return; } // nothing to brag about yet — re-arm and wait
+  const rows = scores.map((s, i) => `${String(i + 1).padStart(2, ' ')}  ${(s.initials || '???').slice(0, 3).padEnd(3, ' ')}  ${String(s.score || 0).padStart(6, ' ')}`);
+  this.hs = [
+    this.add.rectangle(0, 0, GAME_W, GAME_H, 0x05010c, 0.88).setOrigin(0, 0).setDepth(90),
+    txt(this, GAME_W / 2, 34, 'HIGH SCORES', 15, '#ffd23f').setDepth(91),
+    // one text object for all rows — Press Start 2P is monospaced, so padStart columns align
+    this.add.text(GAME_W / 2, 58, rows.join('\n'), { fontFamily: FONT_FAMILY, fontSize: '8px', color: '#cfeaff', align: 'center', lineSpacing: 6, stroke: '#000', strokeThickness: 3 })
+      .setOrigin(0.5, 0).setResolution(3).setDepth(91),
+    txt(this, GAME_W / 2, GAME_H - 14, 'SURVIVE THE GAUNTLET TO ENTER', 7, '#8fe8ff').setDepth(91),
+  ];
 }
 function refresh(scene) {
   const p1 = scene.phase === 'fighter', p2 = scene.phase === 'fighter2', fighterPhase = p1 || p2;
@@ -320,6 +389,7 @@ function fightInit(data) {
 }
 function fightCreate() {
   this.add.image(0, 0, `stage_${this.stageKey}`).setOrigin(0, 0).setDisplaySize(GAME_W, GAME_H).setDepth(0);
+  setupArenaFx(this); // ambient per-arena gimmick layer (between the backdrop and the fighters)
 
   this.p = makeFighter(this, this.playerKey, 150, true, true);
   this.o = makeFighter(this, this.oppKey, 330, false, false);
@@ -329,6 +399,11 @@ function fightCreate() {
   }
 
   this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,A,D,W,SPACE,J,K,L,S,DOWN,R,ESC,ENTER,F,G,H');
+  // Un-capture ENTER/SPACE: addKeys preventDefaults them window-wide, which silently
+  // kills keyboard activation of the focused DOM buttons in GameChrome's result bar
+  // (SHARE, CHANGE FIGHTER). The game still reads both keys fine without capture,
+  // and /play's layout is fixed-viewport so SPACE has no page to scroll.
+  this.input.keyboard.removeCapture('ENTER,SPACE');
   // one input per human: solo = the roomy combined mapping; 2P = P1 left cluster, P2 arrows/JKL
   this.humanInputs = this.versus
     ? [{ f: this.p, ks: KEYSET_P1, buf: null, down: {} }, { f: this.o, ks: KEYSET_P2, buf: null, down: {} }]
@@ -346,6 +421,9 @@ function fightCreate() {
   this.pWins = 0; this.oWins = 0; this.round = 1;
   this.playerDmgMult = 1; this.shadowbanT = this.boss ? 9000 : 0; this.shadowbanActive = 0;
   this.combo = { owner: null, n: 0, t: 0 };
+  this.lastWinBlow = null; // how the player's match-deciding blow landed (feeds the "-ALITY" title)
+  this._advLock = 0;       // ms lock so the ENTER that confirms initials can't also fire matchendAdvance
+  this._initials = null;   // live initials-entry UI (see startInitials)
 
   this.ui = this.add.graphics().setDepth(40);
   const pName = ROSTER.find((r) => r.key === this.playerKey).name;
@@ -401,6 +479,9 @@ function startRound(scene) {
   scene.time.removeAllEvents();
   scene.tweens.killTweensOf([scene.p.spr, scene.o.spr]);
   if (scene._gdprCards) { scene._gdprCards.forEach((o) => o.destroy()); scene._gdprCards = null; }
+  // a RESTART can land mid-intro or over the initials entry — tear both down cleanly
+  destroyIntroCard(scene);
+  if (scene._initials) { scene._initials.off(); scene._initials.objs.forEach((o) => o.destroy()); scene._initials = null; }
   resetFighter(scene.p); resetFighter(scene.o);
   // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
   // the per-round rubber band adapts away from.
@@ -417,9 +498,41 @@ function startRound(scene) {
   const cam = scene.cameras.main; cam.setZoom(1); cam.centerOn(GAME_W / 2, GAME_H / 2); // undo any KO punch-in
   scene.result.setVisible(false);
   emitResult(null);
-  scene.phase = 'intro'; scene.introT = 1500; scene.fightSaid = false;
-  scene.banner.setText(`ROUND ${scene.round}`).setVisible(true);
+  // ENTERPRISE gimmick: the ambient light warms a notch every round (a static per-round
+  // tint, not an animation, so it needs no Reduce Motion branch).
+  if (scene.arenaFx && scene.arenaFx.warm) scene.arenaFx.warm.setAlpha(Math.min(0.11, (scene.round - 1) * 0.045));
+  scene.phase = 'intro'; scene.introT = INTRO_T; scene.fightSaid = false;
+  scene._introSkipHeld = true; // assume ENTER/SPACE is held from the previous screen until seen released
+  // arena-branded ROUND intro: arena name + its case mission slide in (steps(), integer x)
+  // above the ROUND N banner; any attack/confirm press skips straight to the FIGHT! beat.
+  buildIntroCard(scene);
+  // reset text AND color/y: the banner object is shared, and the previous user (FIGHT! /
+  // SHADOWBANNED / an "-ALITY" title) may have left it red/green or vertically displaced.
+  scene.banner.setText(`ROUND ${scene.round}`).setColor('#ffd23f').setY(108).setVisible(true);
   snd(scene, `snd_round${Math.min(scene.round, 3)}`, 0.9);
+}
+
+/* ---- ROUND intro card — the arena + mission, pixel-typeset, quantized slide-in ---- */
+function buildIntroCard(scene) {
+  destroyIntroCard(scene);
+  const st = STAGES.find((s) => s.key === scene.stageKey);
+  scene.introCard = {
+    name: txt(scene, GAME_W / 2, 64, (st ? st.name : '').toUpperCase() + ' ARENA', 13, '#ffffff').setDepth(60),
+    mission: txt(scene, GAME_W / 2, 86, MISSIONS[scene.stageKey] || '', 7, '#8fe8ff').setDepth(60),
+  };
+  positionIntroCard(scene); // place immediately (off-screen, or centered under Reduce Motion)
+}
+function destroyIntroCard(scene) {
+  if (!scene.introCard) return;
+  scene.introCard.name.destroy(); scene.introCard.mission.destroy(); scene.introCard = null;
+}
+// steps() slide: 6 discrete 40ms hops from off-screen to center — never a smooth glide
+// (sub-pixel motion reads as mush at 480x270). Reduce Motion pins both lines in place.
+function positionIntroCard(scene) {
+  const c = scene.introCard; if (!c) return;
+  const q = reducedMotion() ? 1 : Math.min(6, Math.floor((INTRO_T - scene.introT) / 40)) / 6;
+  c.name.x = Math.round(-160 + (GAME_W / 2 + 160) * q);              // arena name from the left
+  c.mission.x = Math.round(GAME_W + 160 - (GAME_W / 2 + 160) * q);   // mission from the right
 }
 
 /* boxes */
@@ -599,9 +712,14 @@ function spawnSpark(scene, x, y, color, big) {
   scene.tweens.add({ targets: core, alpha: 0, duration: big ? 180 : 120, onComplete: () => core.destroy() });
 }
 // Impact weight scales with the move: a jab taps (~5 frames), a special detonates (~11).
-function juiceHit(scene, x, y, blocked, ko, type, color) {
+// `wt` (the attacker's damage multiplier, 0.85–1.32) stretches the HITSTOP further, so a
+// HEAVY's special genuinely freezes longer than an ASSASSIN's — damage IS felt time.
+// Both fighters and the round clock freeze for the duration: fightUpdate early-returns
+// while hitstop > 0, so tick (movement, AI, clock) simply doesn't run.
+function juiceHit(scene, x, y, blocked, ko, type, color, wt = 1) {
   const cam = scene.cameras.main, rm = reducedMotion();
-  scene.hitstop = ko ? 500 : blocked ? 50 : type === 'special' ? 180 : type === 'kick' ? 120 : 85; // timing (kept)
+  const base = ko ? 500 : blocked ? 50 : type === 'special' ? 180 : type === 'kick' ? 120 : 85; // timing (kept)
+  scene.hitstop = ko ? base : Math.round(base * wt);
   if (!rm) { // camera shake/flash is motion — skipped under Reduce Motion
     if (ko) { cam.shake(320, 0.012); cam.flash(140, 255, 255, 255); }
     else if (blocked) cam.shake(80, 0.003);
@@ -611,6 +729,69 @@ function juiceHit(scene, x, y, blocked, ko, type, color) {
   }
   const c = blocked ? 0x9fd8ff : ko ? 0xffe08a : type === 'special' ? (color || 0xffffff) : 0xffffff;
   spawnSpark(scene, x, y, c, ko || type === 'special');
+}
+
+/* =========================================================================
+   ARENA GIMMICKS — one cheap ambient effect per stage, pure Phaser shapes
+   (no assets). Every object is created ONCE here and mutated per tick in
+   updateArenaFx (no per-frame allocations); depth 4-5 sits between the
+   backdrop (0) and the fighters (10). Under Reduce Motion each reduces to a
+   static treatment (frozen trace / steady LEDs / constant glow) — the flavour
+   stays, the flicker goes.
+   ========================================================================= */
+function setupArenaFx(scene) {
+  const fx = scene.arenaFx = { ledT: 0 };
+  if (scene.stageKey === 'healthcare') {
+    fx.ekg = scene.add.graphics().setDepth(5);                 // vitals trace along the top
+  } else if (scene.stageKey === 'b2b-saas') {
+    // a little 2x2 rack of server LEDs; they light up when a combo connects (applyHit)
+    fx.leds = [0, 1, 2, 3].map((i) => scene.add.rectangle(432 + (i % 2) * 7, 56 + Math.floor(i / 2) * 7, 3, 3, 0x8bffa0).setDepth(5).setAlpha(0.15));
+  } else if (scene.stageKey === 'e-commerce') {
+    fx.glow = scene.add.rectangle(GAME_W / 2, 124, 150, 104, 0xb08bff).setDepth(4).setAlpha(0.05).setBlendMode('ADD'); // the portal's breath
+  } else if (scene.stageKey === 'enterprise') {
+    fx.warm = scene.add.rectangle(0, 0, GAME_W, GAME_H, 0xff7a26).setOrigin(0, 0).setDepth(4).setAlpha(0).setBlendMode('ADD'); // per-round warming (set in startRound)
+  }
+}
+function updateArenaFx(scene, dtMs) {
+  const fx = scene.arenaFx; if (!fx) return;
+  const rm = reducedMotion(), t = scene.animClock;
+  if (fx.ekg) {
+    // HEALTHCARE: a scrolling EKG blip that beats ~2x faster once either fighter is
+    // critical (<25% HP) — the arena itself panics. Quantized y offsets on a 4px x grid.
+    const low = scene.p.hp < scene.p.hpMax * 0.25 || scene.o.hp < scene.o.hpMax * 0.25;
+    // scroll quantized to the same 4px grid as the sample step: the trace only
+    // MOVES every ~3-4 frames, so we skip clear+rebuild on the frames in between —
+    // Phaser re-tessellates a stroked Graphics path (with per-point allocations in
+    // the WebGL renderer) on every redraw, and a 121-point path at 60fps is pure
+    // GC churn for pixels that haven't changed. Chunkier steps also read MORE
+    // arcade, not less.
+    const period = low ? 56 : 104, scroll = rm ? 0 : Math.round(t * (low ? 0.16 : 0.07) / 4) * 4;
+    const ekgKey = scroll * 2 + (low ? 1 : 0);
+    if (fx.ekgKey !== ekgKey) {
+      fx.ekgKey = ekgKey;
+      const g = fx.ekg; g.clear();
+      g.lineStyle(1, low ? 0xff3b30 : 0x2fe08a, low ? 0.7 : 0.45);
+      g.beginPath(); g.moveTo(0, 62); // y 62: below the HUD rows (bars/pips/GAUNTLET label), above the action
+      for (let x = 0; x <= GAME_W; x += 4) {
+        const u = (x + scroll) % period;
+        g.lineTo(x, 62 + (u < 4 ? -10 : u < 8 ? 5 : u < 12 ? -2 : 0)); // the QRS spike
+      }
+      g.strokePath();
+    }
+  }
+  if (fx.leds) {
+    // B2B SAAS: LEDs strobe alternately while a combo is hot, else sit dim. rm: steady glow.
+    if (fx.ledT > 0) fx.ledT -= dtMs;
+    const hot = fx.ledT > 0;
+    for (let i = 0; i < fx.leds.length; i++) {
+      fx.leds[i].setAlpha(hot ? (rm ? 0.85 : ((Math.floor(t / 70) + i) % 2 ? 1 : 0.25)) : 0.15);
+    }
+  }
+  if (fx.glow) {
+    // E-COMMERCE: the portal glow breathes in 5 quantized alpha steps (never a smooth fade)
+    fx.glow.setAlpha(rm ? 0.07 : 0.03 + Math.round((Math.sin(t * 0.0011) + 1) * 2) * 0.02);
+  }
+  // enterprise warm tint is static per round — startRound owns it, nothing to animate here
 }
 
 function applyHit(att, def, scene) {
@@ -624,7 +805,9 @@ function applyHit(att, def, scene) {
   if (scene.suddenDeath && !blocked) def.hp = 0; // one clean hit ends the round
   const ko = def.hp <= 0 && !def.koed;
   scene._frozenDef = def;               // this body buzzes ±1px during the freeze
-  juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko, att.action.type, att.stats.color);
+  juiceHit(scene, (att.kin.x + def.kin.x) / 2 + att.dir * 6, def.kin.y - 92, blocked, ko, att.action.type, att.stats.color, att.stats.dmg);
+  if (!blocked && att.isPlayer) buzz(25);      // haptic tick: the PLAYER landed clean
+  if (ko && def.isPlayer) buzz(60);            // heavier buzz: the player just got KO'd
   if (blocked) snd(scene, 'snd_block', 0.55);
   else if (!ko) snd(scene, att.action.type === 'special' ? 'snd_special' : att.action.type === 'kick' ? 'snd_kick' : 'snd_hit', 0.6);
   if (!blocked) {
@@ -639,8 +822,11 @@ function applyHit(att, def, scene) {
     if (scene.combo.owner === owner && scene.combo.t > 0) scene.combo.n++;
     else { scene.combo.owner = owner; scene.combo.n = 1; }
     scene.combo.t = 1300;
+    // B2B SAAS gimmick: the rack LEDs light up whenever a combo (2+) connects
+    if (scene.arenaFx && scene.arenaFx.leds && scene.combo.n >= 2) scene.arenaFx.ledT = 520;
   }
   if (ko) {
+    if (att.isPlayer) scene.lastWinBlow = att.action.type; // remember HOW the player closed it (feeds the "-ALITY" title)
     // Match-deciding PLAYER blow -> don't kill; leave the loser dazed and open the
     // "CLOSE THE DEAL!" finisher window (MK's FINISH HIM). Only the player gets it.
     const willWinMatch = ((att.isPlayer ? scene.pWins : scene.oWins) + 1) >= scene.roundsToWin;
@@ -733,6 +919,15 @@ function fatalityGdprd(scene, loser, done) {
     done();
   });
 }
+// VICTORY "-ALITY" (MK's Fatality board, funnel-skinned): name the match win by HOW it
+// happened. Priority: a no-damage final round beats everything, then the clock, then the
+// closing move. Solo only — in 2P this would spam the loser sitting next to you.
+function alityTitle(scene) {
+  if (!scene.p.tookDamage) return { text: 'FLAWLESS FUNNEL', color: '#8bffa0' };
+  if (scene.lastWinBlow === 'timeover') return { text: 'PIPELINE VICTORY', color: '#8fe8ff' };
+  if (scene.lastWinBlow === 'special') return { text: 'MQL-ALITY', color: '#ffd23f' };
+  return { text: 'CLOSED-WON', color: '#ffd23f' };
+}
 function finishMatch(scene, playerWon) {
   if (playerWon) scene.pWins++; else scene.oWins++;
   scene.finLoser.koed = true; scene.finLoser.dazed = false;
@@ -743,13 +938,23 @@ function finishMatch(scene, playerWon) {
   const gaunt = scene.mode === 'gauntlet' && playerWon;
   scene.matchAction = gaunt ? (scene.boss ? 'victory' : 'advance') : 'rematch';
   scene.time.delayedCall(700, () => {
-    scene.banner.setVisible(false);
     snd(scene, playerWon ? 'snd_win' : 'snd_lose', 1);
     const text = scene.matchAction === 'victory' ? 'YOU BEAT THE ALGORITHM'
       : scene.matchAction === 'advance' ? `RUNG ${scene.rung + 1}/5 CLEARED`
       : 'PROMOTED!';                          // the GameChrome buttons are the CTA now
-    scene.result.setText(text).setVisible(true);
-    emitResult(scene.matchAction, { fighter: scene.p.stats.name, won: true });
+    // shared tail: initials entry (gauntlet run end) may defer this behind the A-Z wheel
+    const showResult = (score, initials) => {
+      scene.phase = 'matchend';
+      if (playerWon && !scene.versus) {       // big center "-ALITY" title, riding the win sfx
+        const t = alityTitle(scene);
+        scene.banner.setText(t.text).setColor(t.color).setY(74).setVisible(true);
+      } else scene.banner.setVisible(false);
+      scene.result.setText(text).setVisible(true);
+      emitResult(scene.matchAction, { fighter: scene.p.stats.name, won: true, ...(score != null ? { score, initials } : {}) });
+    };
+    // beating THE ALGORITHM ends the gauntlet run -> classic initials entry first
+    if (scene.matchAction === 'victory') { scene.banner.setVisible(false); startInitials(scene, true, showResult); }
+    else showResult();
   });
 }
 
@@ -790,8 +995,14 @@ function endRound(scene, playerWon) {
       const text = scene.versus ? `${playerWon ? 'P1' : 'P2'}  WINS`   // 2P: P1/P2 win (finisher is off)
         : gaunt ? `GAME OVER\nreached ${scene.boss ? 'THE ALGORITHM' : 'rung ' + (scene.rung + 1)}`
         : 'PIVOT TO CONSULTING';               // the GameChrome buttons are the CTA now
-      scene.result.setText(text).setVisible(true);
-      emitResult(scene.matchAction, { fighter: scene.p.stats.name, won: playerWon });
+      const showResult = (score, initials) => {
+        scene.phase = 'matchend';
+        scene.result.setText(text).setVisible(true);
+        emitResult(scene.matchAction, { fighter: scene.p.stats.name, won: playerWon, ...(score != null ? { score, initials } : {}) });
+      };
+      // a gauntlet DEATH past the first rung still earns a board entry (score = rungs cleared)
+      if (gaunt && scene.rung >= 1) startInitials(scene, false, showResult);
+      else showResult();
     } else {
       scene.result.setText(flawless ? 'FLAWLESS!' : 'K.P.I.').setVisible(true);
       scene.time.delayedCall(900, () => { if (scene.phase === 'roundend') { scene.round++; startRound(scene); } }); // guard: never double-advance if a restart already re-entered
@@ -813,6 +1024,69 @@ function matchendAdvance(scene) {
   else { scene.pWins = scene.oWins = 0; scene.round = 1; startRound(scene); }
 }
 
+/* =========================================================================
+   INITIALS — classic 3-letter arcade entry when a GAUNTLET run ends.
+   ▲▼ (W/S) spin the A-Z wheel, ◀▶ (A/D) change slot, J/ENTER confirm the
+   slot (the last confirm saves). The touch D-pad + J + OK drive the exact
+   same keys, so phones need zero extra wiring. `after(score, initials)` is
+   the deferred result screen (emitResult waits until the entry is done).
+   ========================================================================= */
+function startInitials(scene, playerWon, after) {
+  scene.phase = 'initials';
+  const cleared = playerWon ? scene.gauntletOpps.length + 1 : scene.rung; // rung index == rungs already cleared
+  const score = cleared * 1000 + (playerWon ? Math.max(0, Math.round(scene.p.hp)) : 0);
+  const cx = GAME_W / 2, letters = [0, 0, 0];
+  let slot = 0;
+  const slotX = (i) => cx + (i - 1) * 36;
+  const glyphs = letters.map((_, i) => txt(scene, slotX(i), 138, 'A', 20, '#eaf4ff').setDepth(71));
+  const unders = letters.map((_, i) => scene.add.rectangle(slotX(i), 156, 24, 3, 0xffd23f).setDepth(71));
+  const objs = [
+    scene.add.rectangle(0, 0, GAME_W, GAME_H, 0x05010c, 0.8).setOrigin(0, 0).setDepth(70),
+    txt(scene, cx, 52, playerWon ? 'GAUNTLET CHAMPION' : 'GAME OVER', 14, playerWon ? '#8bffa0' : '#ff4d6d').setDepth(71),
+    txt(scene, cx, 78, `SCORE  ${score}`, 10, '#ffd23f').setDepth(71),
+    txt(scene, cx, 102, 'ENTER YOUR INITIALS', 8, '#8fe8ff').setDepth(71),
+    txt(scene, cx, 182, scene.isTouch ? '▲▼ letter   ◀▶ slot   OK save' : '▲▼ letter   ◀▶ slot   ENTER save', 7, '#9fb8c8').setDepth(71),
+    ...glyphs, ...unders,
+  ];
+  const paint = () => {
+    for (let i = 0; i < 3; i++) {
+      glyphs[i].setText(String.fromCharCode(65 + letters[i])).setColor(i === slot ? '#ffd23f' : '#eaf4ff');
+      unders[i].setFillStyle(i === slot ? 0xffd23f : 0x4a5560);
+    }
+  };
+  const spin = (d) => { letters[slot] = (letters[slot] + d + 26) % 26; snd(scene, 'snd_confirm', 0.2); paint(); };
+  const move = (d) => { slot = Math.max(0, Math.min(2, slot + d)); paint(); };
+  const done = () => {
+    off();
+    const initials = letters.map((li) => String.fromCharCode(65 + li)).join('');
+    saveScore({ initials, score, date: new Date().toISOString().slice(0, 10) });
+    objs.forEach((o) => o.destroy());
+    scene._initials = null;
+    scene._advLock = 350; // the ENTER that just saved must not ALSO advance the fresh result screen
+    after(score, initials);
+  };
+  const confirm = () => { snd(scene, 'snd_confirm', 0.5); if (slot < 2) { slot++; paint(); } else done(); };
+  // scene-level key handlers (not this.keys polling): they need edge semantics and they're
+  // gated by GameChrome's overlay lock (keyboard.enabled=false) exactly like every other key.
+  const H = {
+    'keydown-UP': () => spin(1), 'keydown-W': () => spin(1),
+    'keydown-DOWN': () => spin(-1), 'keydown-S': () => spin(-1),
+    'keydown-LEFT': () => move(-1), 'keydown-A': () => move(-1),
+    'keydown-RIGHT': () => move(1), 'keydown-D': () => move(1),
+    'keydown-J': confirm, 'keydown-ENTER': confirm,
+  };
+  const kb = scene.input.keyboard;
+  for (const ev in H) kb.on(ev, H[ev]);
+  const off = () => { for (const ev in H) kb.off(ev, H[ev]); };
+  // blink is driven from tick (quantized, and pinned solid under Reduce Motion)
+  const blink = (t) => {
+    const on = reducedMotion() || Math.floor(t / 280) % 2 === 0;
+    for (let i = 0; i < 3; i++) unders[i].setAlpha(i === slot ? (on ? 1 : 0.25) : 0.6);
+  };
+  scene._initials = { objs, off, blink };
+  paint();
+}
+
 // Time-over (round clock hit 0): the higher-HP fighter wins the round like a KO; a dead heat drops
 // into sudden death (first clean hit decides). Routes through the SAME finisher/endRound/finishMatch
 // paths a real KO uses, so match flow, the finisher and 2P all stay correct.
@@ -832,6 +1106,7 @@ function resolveTimeOver(scene) {
   scene.banner.setText('TIME OVER').setColor('#ffd23f').setVisible(true);
   scene.time.delayedCall(600, () => scene.banner.setVisible(false));
   scene.finLoser = loser; // finishMatch reads this
+  if (pWon) scene.lastWinBlow = 'timeover'; // a clock-out win earns the PIPELINE VICTORY title
   const willWinMatch = ((pWon ? scene.pWins : scene.oWins) + 1) >= scene.roundsToWin;
   if (willWinMatch && pWon && !scene.versus) finishMatch(scene, true); // solo player match-win -> PROMOTED (no finisher on a clock-out)
   else endRound(scene, pWon);
@@ -839,6 +1114,7 @@ function resolveTimeOver(scene) {
 
 function tick(scene, dtMs) {
   if (scene.phase === 'fatality') return; // the fatality card's tweens own every visual
+  if (scene._advLock > 0) scene._advLock -= dtMs;
   const dt = dtMs / 1000, p = scene.p, o = scene.o;
   p.dir = o.kin.x >= p.kin.x ? 1 : -1;
   o.dir = p.kin.x >= o.kin.x ? 1 : -1;
@@ -892,10 +1168,13 @@ function tick(scene, dtMs) {
     scene.timerText.setText(String(secs)).setColor(secs <= 10 ? '#ff3b30' : '#ffd23f').setVisible(true);
   } else if (scene.timerText.visible) scene.timerText.setVisible(false);
   // the standing fighter strikes the victory pose once a round/match is decided
-  if (scene.phase === 'roundend' || scene.phase === 'matchend') {
+  // ('initials' included: the tableau holds behind the letter wheel)
+  if (scene.phase === 'roundend' || scene.phase === 'matchend' || scene.phase === 'initials') {
     for (const f of [p, o]) if (!f.koed) f.pose = POSE.victory;
   }
   scene.animClock += dtMs;
+  updateArenaFx(scene, dtMs);
+  if (scene._initials) scene._initials.blink(scene.animClock);
   for (const f of [p, o]) {
     f.spr.flipX = f.dir < 0;
     f.spr.setFrame(f.pose);
@@ -921,7 +1200,20 @@ function tick(scene, dtMs) {
 
   if (scene.phase === 'intro') {
     scene.introT -= dtMs;
+    // any attack press (already edge-buffered) or ENTER/SPACE skips the arena card and
+    // jumps straight to the FIGHT! beat — the intro never holds an impatient player
+    if (scene.introT > 700) {
+      // ENTER/SPACE need edge semantics here: the ENTER that advanced the result screen is
+      // often still held when the next intro starts, and must not auto-skip the fresh card.
+      const dn = scene.keys.ENTER.isDown || scene.keys.SPACE.isDown;
+      let skip = dn && !scene._introSkipHeld;
+      if (!dn) scene._introSkipHeld = false;
+      for (const inp of scene.humanInputs) if (inp.buf) skip = true; // attack buffer is already edge-detected
+      if (skip) { scene.introT = 700; for (const inp of scene.humanInputs) inp.buf = null; } // the press was "skip", not an attack
+    }
+    positionIntroCard(scene); // quantized steps() slide-in
     if (scene.introT <= 700) {
+      destroyIntroCard(scene);
       scene.banner.setText('FIGHT!').setColor('#ff5000');
       if (!scene.fightSaid) { scene.fightSaid = true; snd(scene, 'snd_fight', 0.9); }
     }
@@ -929,7 +1221,13 @@ function tick(scene, dtMs) {
   }
   // R or ENTER (the mobile OK button dispatches Enter) advances: gauntlet -> next rung,
   // else rematch. Without ENTER, touch players were softlocked at the result screen.
-  if (scene.phase === 'matchend' && (scene.keys.R.isDown || scene.keys.ENTER.isDown)) matchendAdvance(scene);
+  // _advLock keeps the ENTER that just confirmed the initials from double-firing here.
+  // DOM-focus guard: when the player has Tabbed onto a GameChrome result button
+  // (SHARE etc.), ENTER belongs to THAT button — advancing here would destroy the
+  // result screen out from under the click the browser is about to deliver.
+  const focusEl = typeof document !== 'undefined' ? document.activeElement : null;
+  const chromeFocus = !!focusEl && ['BUTTON', 'A', 'INPUT', 'TEXTAREA'].includes(focusEl.tagName);
+  if (scene.phase === 'matchend' && scene._advLock <= 0 && !chromeFocus && (scene.keys.R.isDown || scene.keys.ENTER.isDown)) matchendAdvance(scene);
 }
 
 function drawUI(scene) {
@@ -997,7 +1295,7 @@ export function createFightGame(Phaser, parent) {
     scale: { mode: Phaser.Scale.NONE, autoCenter: Phaser.Scale.NO_CENTER, width: GAME_W, height: GAME_H },
     scene: [
       { key: 'boot', preload: bootPreload, create: bootCreate },
-      { key: 'select', create: selectCreate },
+      { key: 'select', create: selectCreate, update: selectUpdate },
       { key: 'fight', init: fightInit, create: fightCreate, update: fightUpdate },
     ],
   });

@@ -3,6 +3,7 @@
 import ScaleCanvas from '@/components/ScaleCanvas/ScaleCanvas'
 import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
 import PlayLink from '@/components/PlayLink/PlayLink'
+import VsSplash from '@/components/VsSplash/VsSplash'
 import JuiceProvider from '@/effects/juice/JuiceProvider'
 import HitSparks from '@/effects/particles/HitSparks'
 import PixelCursor from '@/effects/cursor/PixelCursor'
@@ -33,6 +34,9 @@ export default function Page() {
         </HitSparks>
       </JuiceProvider>
       <PlayLink />
+      {/* intercepts PlayLink's /play nav for the first-visit VS flash; fixed
+          overlay, so it lives OUTSIDE JuiceProvider (see VsSplash doc) */}
+      <VsSplash />
       <ModeSwitcher active="ai" />
     </div>
   )

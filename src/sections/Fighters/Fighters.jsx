@@ -41,6 +41,10 @@ export default function Fighters() {
                 (f.selected ? ' fighters__card--selected' : '')
               }
               data-select-sfx="hit"
+              /* deliberately NOT focusable: the card does nothing on Enter,
+                 so a tab stop would add 5 dead stops on the way to the real
+                 CTAs and make screen readers announce whole cards as
+                 actionable. The marching ants stay a hover flourish. */
             >
               <div className="fighters__frame">
                 <img

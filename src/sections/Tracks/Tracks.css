@@ -95,6 +95,61 @@
   text-transform: uppercase;
 }
 
+/* ============================================================
+   MARCHING ANTS — 16-bit selection border on hover / keyboard focus,
+   in the section's yellow accent (titles are #ffd000 here, so the
+   roster's cyan would read off-palette). Same mechanics as
+   Fighters.css: four 2px dashed edges on one ::after, crawled
+   clockwise by stepping background-position a full 12px dash-period
+   per cycle in steps(6) — quantized 2px jumps, never smooth. The card
+   had no hover state of its own, so this only ADDS. Doubles as the
+   visible focus indicator, hence reduced-motion FREEZES the dashes
+   (static outline) rather than hiding them.
+   ============================================================ */
+.tracks__card {
+  /* .dcard (demo.css) already sets this; restated so the ants frame
+     never silently loses its anchor if the shared class evolves */
+  position: relative;
+}
+
+.tracks__card::after {
+  content: '';
+  position: absolute;
+  inset: -6px; /* just outside the 2px card border, like a selection cursor */
+  pointer-events: none;
+  opacity: 0;
+  /* layer order everywhere below: top, bottom, left, right */
+  background-image:
+    linear-gradient(90deg, var(--k-yellow) 0 6px, transparent 6px 12px),
+    linear-gradient(90deg, var(--k-yellow) 0 6px, transparent 6px 12px),
+    linear-gradient(0deg, var(--k-yellow) 0 6px, transparent 6px 12px),
+    linear-gradient(0deg, var(--k-yellow) 0 6px, transparent 6px 12px);
+  background-size: 12px 2px, 12px 2px, 2px 12px, 2px 12px;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+}
+
+@media (hover: hover) {
+  .tracks__card:hover::after {
+    opacity: 1;
+    animation: tracks-ants 0.5s steps(6) infinite;
+  }
+}
+
+/* one dash-period per cycle: top marches right, right down, bottom left,
+   left up — a clockwise crawl around the card */
+@keyframes tracks-ants {
+  to {
+    background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tracks__card:hover::after {
+    animation: none; /* static dashes still mark hover/focus */
+  }
+}
+
 @media (max-width: 1023px) {
   .tracks__grid {
     grid-template-columns: 1fr;

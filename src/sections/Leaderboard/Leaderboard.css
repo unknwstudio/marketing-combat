@@ -1,0 +1,150 @@
+/* ============================================================
+   Leaderboard — arcade HIGH SCORES table.
+   Digits/initials in the pixel font (Press Start 2P via --k-font),
+   headers + titles in the site's GT Pressura Mono, palette straight
+   from the demo language: arcade green headers, orange ranks,
+   yellow scores, red machine row, cyan "YOU?" row.
+   ============================================================ */
+.leaderboard__board {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 36px 40px;
+  /* the table's nowrap cells scroll INSIDE the card on narrow screens
+     instead of pushing the page sideways */
+  overflow-x: auto;
+}
+
+.leaderboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--k-font);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.leaderboard__table th {
+  font-family: var(--k-font-mono);
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  font-weight: 400;
+  color: #3ad76f;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0 16px 16px;
+  border-bottom: 2px solid #2a2140;
+}
+
+.leaderboard__table td {
+  padding: 20px 16px 0;
+  white-space: nowrap;
+}
+
+.leaderboard__rank {
+  color: #ff5000;
+}
+
+.leaderboard__name {
+  color: #fff;
+  letter-spacing: 0.15em;
+}
+
+/* scores right-align so the zero-padded columns read as one register */
+th.leaderboard__score,
+td.leaderboard__score {
+  text-align: right;
+  color: var(--k-yellow);
+}
+
+th.leaderboard__score {
+  color: #3ad76f; /* header stays header-green; only the digits go yellow */
+}
+
+.leaderboard__title {
+  font-family: var(--k-font-mono);
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  color: #7fd39a;
+  text-transform: uppercase;
+}
+
+/* slot 01 — the machine's row, in machine red */
+.leaderboard__row--boss .leaderboard__rank,
+.leaderboard__row--boss .leaderboard__name,
+.leaderboard__row--boss td.leaderboard__score,
+.leaderboard__row--boss .leaderboard__title {
+  color: var(--k-red);
+}
+
+/* the player's spliced-in real score — select-screen cyan */
+.leaderboard__row--you .leaderboard__rank,
+.leaderboard__row--you .leaderboard__name,
+.leaderboard__row--you td.leaderboard__score,
+.leaderboard__row--you .leaderboard__title {
+  color: var(--k-cyan);
+}
+
+.leaderboard__youtag {
+  color: var(--k-cyan);
+  font-family: var(--k-font);
+  font-size: 0.8em;
+}
+
+.leaderboard__row--enter .leaderboard__rank,
+.leaderboard__row--enter .leaderboard__name,
+.leaderboard__row--enter td.leaderboard__score {
+  color: #7f7f7f;
+}
+
+/* the open slot blinks like a free-play prompt: steps(1) square wave —
+   an arcade lamp, not a fade */
+.leaderboard__enter {
+  color: #fff;
+  animation: lb-blink 1.06s steps(1, end) infinite;
+}
+
+/* hover parks the blink so the click target holds still */
+.leaderboard__enter:hover,
+.leaderboard__enter:focus-visible {
+  color: var(--k-yellow);
+  animation: none;
+}
+
+@keyframes lb-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* reduced-motion: the slot stays, solid — no blink */
+@media (prefers-reduced-motion: reduce) {
+  .leaderboard__enter {
+    animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .leaderboard__board {
+    padding: 16px;
+  }
+
+  .leaderboard__table {
+    font-size: 11px;
+  }
+
+  .leaderboard__table th {
+    font-size: 10px;
+    padding: 0 8px 10px;
+  }
+
+  .leaderboard__table td {
+    padding: 12px 8px 0;
+  }
+
+  .leaderboard__title {
+    font-size: 11px;
+  }
+}

@@ -38,3 +38,13 @@
 @media (max-width: 520px) {
   .play-link { top: 12px; right: 12px; padding: 9px 13px; font-size: 10px; gap: 7px; }
 }
+
+/* under-HUD variant (/demo): clear the ScrollHealth strip — ~36px of HP bars
+   (8px padding ×2 + 20px bar) that slide in over the top edge after the hero.
+   Declared LAST so it also wins over the phone top:12px above (equal
+   specificity → source order decides). */
+.play-link--under-hud { top: 52px; }
+@media (max-width: 520px) {
+  /* the strip shrinks to ~26px on phones (6px padding ×2 + 14px bar) */
+  .play-link--under-hud { top: 40px; }
+}

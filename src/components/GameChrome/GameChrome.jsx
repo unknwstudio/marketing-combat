@@ -49,7 +49,8 @@ export default function GameChrome() {
   // screen (shows the matched action bar). A new scene always clears any stale result.
   useEffect(() => {
     const onScene = (e) => { setScene((e.detail && e.detail.key) || 'boot'); setResult(null); };
-    const onResult = (e) => setResult(e.detail && e.detail.show ? { action: e.detail.action, fighter: e.detail.fighter, won: e.detail.won } : null);
+    // score/initials arrive only at the end of a GAUNTLET run (the game's initials entry)
+    const onResult = (e) => setResult(e.detail && e.detail.show ? { action: e.detail.action, fighter: e.detail.fighter, won: e.detail.won, score: e.detail.score, initials: e.detail.initials } : null);
     window.addEventListener(MK.SCENE, onScene);
     window.addEventListener(MK.RESULT, onResult);
     return () => { window.removeEventListener(MK.SCENE, onScene); window.removeEventListener(MK.RESULT, onResult); };
@@ -98,7 +99,9 @@ export default function GameChrome() {
     const b = BRAG[bragKey(result)];
     const f = result.fighter || 'a top marketer';
     const url = window.location.origin + '/play';
-    const text = `${b.badge} ${b.line(f)} Think you can out-market me?`;
+    // a gauntlet run carries a score — the number is the brag, so it leads the challenge
+    const scorePart = result.score != null ? ` Gauntlet score: ${result.score}.` : '';
+    const text = `${b.badge} ${b.line(f)}${scorePart} Think you can out-market me?`;
     const full = `${text} ${url}`;
     if (canShare) {
       try { await navigator.share({ title: 'AI Marketing Kombat', text, url }); return; }
@@ -254,6 +257,10 @@ export default function GameChrome() {
             <div className="gc-brag-badge" aria-hidden="true">{BRAG[bragKey(result)].badge}</div>
             <div className="gc-brag-head">{BRAG[bragKey(result)].head}</div>
             {result.fighter && <div className="gc-brag-fighter">{result.fighter}</div>}
+            {/* gauntlet runs show the arcade-board line: the entered initials + the score */}
+            {result.score != null && (
+              <div className="gc-brag-score">{result.initials ? `${result.initials} · ` : ''}SCORE {result.score}</div>
+            )}
             <div className="gc-brag-game">AI MARKETING KOMBAT</div>
           </div>
           <button className="gc-item gc-result-primary" onClick={doShare}>{copied ? 'COPIED!' : canShare ? 'SHARE' : 'COPY LINK'}</button>

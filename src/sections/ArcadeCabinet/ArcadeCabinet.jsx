@@ -280,6 +280,7 @@ export default function ArcadeCabinet() {
           href="/play"
           data-magnetic
           data-sfx="confirm"
+          data-burst
           aria-label="Play AI Marketing Kombat"
           tabIndex={handoffLive ? -1 : undefined}
           aria-hidden={handoffLive || undefined}
@@ -294,6 +295,7 @@ export default function ArcadeCabinet() {
           <div
             ref={overlayRef}
             className={`cabinet__handoff${handoffLive ? ' cabinet__handoff--live' : ''}`}
+            data-burst
             aria-hidden={!handoffLive}
             onClick={handoffLive ? goPlay : undefined}
           >

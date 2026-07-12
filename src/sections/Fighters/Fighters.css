@@ -200,6 +200,58 @@
   }
 }
 
+/* ============================================================
+   MARCHING ANTS — 16-bit selection border on hover / keyboard focus.
+   Four 2px dashed edges drawn by one ::after (a gradient layer per
+   edge), circulated clockwise by shifting each layer's background-
+   position a full 12px dash-period per cycle in steps(6) — 2px jumps,
+   never smooth, per the pixel-motion rule. ADDS to the zoom/sweep/blip
+   hover above (separate pseudo-element, no shared properties). Doubles
+   as the card's visible focus indicator, which is why reduced-motion
+   only FREEZES the dashes (static outline) instead of hiding them.
+   ============================================================ */
+.fighters__card {
+  position: relative; /* anchor for the ::after ants frame */
+}
+
+.fighters__card::after {
+  content: '';
+  position: absolute;
+  inset: -5px; /* just outside the art, like a character-select cursor */
+  pointer-events: none;
+  opacity: 0;
+  /* layer order everywhere below: top, bottom, left, right */
+  background-image:
+    linear-gradient(90deg, var(--k-cyan) 0 6px, transparent 6px 12px),
+    linear-gradient(90deg, var(--k-cyan) 0 6px, transparent 6px 12px),
+    linear-gradient(0deg, var(--k-cyan) 0 6px, transparent 6px 12px),
+    linear-gradient(0deg, var(--k-cyan) 0 6px, transparent 6px 12px);
+  background-size: 12px 2px, 12px 2px, 2px 12px, 2px 12px;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+}
+
+@media (hover: hover) {
+  .fighters__card:hover::after {
+    opacity: 1;
+    animation: fighters-ants 0.5s steps(6) infinite;
+  }
+}
+
+/* one dash-period per cycle: top marches right, right down, bottom left,
+   left up — a clockwise crawl around the card */
+@keyframes fighters-ants {
+  to {
+    background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fighters__card:hover::after {
+    animation: none; /* static dashes still mark hover/focus */
+  }
+}
+
 /* caption strip under each portrait (33px), white hairline top/bottom */
 .fighters__label {
   display: flex;

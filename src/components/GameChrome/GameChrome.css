@@ -214,6 +214,7 @@
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
 .gc-brag-fighter { font-size: 9px; letter-spacing: 1.5px; color: #eaf4ff; }
+.gc-brag-score { font-size: 11px; letter-spacing: 2px; color: var(--gc-green); } /* the gauntlet board line: initials · score */
 /* manual-copy fallback when the clipboard API is blocked (embedded webviews) */
 .gc-copyfield { pointer-events: auto; width: min(320px, 82vw); padding: 9px 11px; font-family: ui-monospace, monospace;
   font-size: 11px; color: #eaf4ff; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--gc-blue); border-radius: 6px; text-align: center; }

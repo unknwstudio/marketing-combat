@@ -232,6 +232,41 @@
   }
 }
 
+/* ============================================================
+   Terminal caret — every section eyebrow (.dsec__round, the shared
+   "ROUND 04 — …" label idiom across all .dsec sections) ends in a
+   blinking '_', a terminal waiting for input. ::after so no markup
+   changes anywhere; steps(1) square-wave blink (a cursor, not a
+   fade). Reduced-motion: the caret STAYS but holds solid — it's
+   punctuation, only the blinking is motion.
+   ============================================================ */
+.dsec__round::after {
+  content: '_';
+  /* alt-text syntax marks the caret decorative for AT — without it the
+     generated '_' enters the accessibility tree and braille output / verbose
+     screen readers append "underscore" to every section label. The plain
+     declaration above stays as the fallback for older engines. */
+  content: '_' / '';
+  margin-left: 0.12em;
+  animation: dsec-caret 1.06s steps(1, end) infinite;
+}
+
+@keyframes dsec-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dsec__round::after {
+    animation: none;
+  }
+}
+
 /* small numeric index used across cards ("01".."06") */
 .dindex {
   font-family: var(--k-font-accent);

@@ -2,6 +2,7 @@
 
 import ScaleCanvas from '@/components/ScaleCanvas/ScaleCanvas'
 import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
+import PlayLink from '@/components/PlayLink/PlayLink'
 import JuiceProvider from '@/effects/juice/JuiceProvider'
 import HitSparks from '@/effects/particles/HitSparks'
 import PixelCursor from '@/effects/cursor/PixelCursor'
@@ -23,6 +24,7 @@ import Stages from '@/sections/Stages/Stages'
 import ArcadeCabinet from '@/sections/ArcadeCabinet/ArcadeCabinet'
 import Judges from '@/sections/Judges/Judges'
 import Organizers from '@/sections/Organizers/Organizers'
+import Leaderboard from '@/sections/Leaderboard/Leaderboard'
 import Faq from '@/sections/Faq/Faq'
 import Sponsors from '@/sections/Sponsors/Sponsors'
 import FinalCta from '@/sections/FinalCta/FinalCta'
@@ -40,13 +42,17 @@ import SelectSfx from '@/components/SelectSfx/SelectSfx'
 import GlitchTitles from '@/components/GlitchTitles/GlitchTitles'
 import RoundMoments from '@/components/RoundMoments/RoundMoments'
 import AttractTitle from '@/components/AttractTitle/AttractTitle'
+import AttractMode from '@/components/AttractMode/AttractMode'
+import VsSplash from '@/components/VsSplash/VsSplash'
+import ClickBurst from '@/components/ClickBurst/ClickBurst'
 
 /**
  * AI Marketing Kombat — /demo.
  * The FULL pixel-art landing (Hero → Footer, copy verbatim from the original)
  * plus the interactive arcade layer: a page-wide CRT, a health-bar scroll
  * indicator, MK announcer call-outs on section-enter, a PLAY arcade cabinet
- * that boots the game, and a Konami-code FATALITY easter egg.
+ * that boots the game (plus the same floating PLAY link as /, intercepted by
+ * VsSplash), and a Konami-code FATALITY easter egg.
  */
 export default function Page() {
   return (
@@ -54,6 +60,10 @@ export default function Page() {
       <RGBSplitFilter />
       <JuiceProvider>
         <HitSparks>
+          {/* delegated [data-burst] pixel-shard bursts — needs useSparks(),
+              so it must sit INSIDE the HitSparks provider (outside it the
+              hook returns the no-op fallback and taps silently do nothing) */}
+          <ClickBurst />
           <PixelCursor enabled>
             {/* zoom (not transform) so scroll math + GSAP ScrollTrigger pins
                 stay layout-accurate; transform:scale drifts pinned elements.
@@ -72,6 +82,7 @@ export default function Page() {
               <ArcadeCabinet />
               <Judges />
               <Organizers />
+              <Leaderboard />
               <Faq />
               <Sponsors />
               <FinalCta />
@@ -97,6 +108,12 @@ export default function Page() {
       <GlitchTitles />
       <RoundMoments />
       <AttractTitle />
+      <AttractMode />
+      {/* floating PLAY entry, same as / — the cabinet is a full scroll away,
+          this keeps the game one click from anywhere. underHud drops it below
+          the ScrollHealth strip; VsSplash intercepts it for the VS flash. */}
+      <PlayLink underHud />
+      <VsSplash />
       <ModeSwitcher active="ai" />
     </div>
   )

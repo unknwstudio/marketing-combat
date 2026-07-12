@@ -26,6 +26,10 @@
 }
 
 .stats__value {
+  /* flex so the odometer digit windows, prefix ("$"), suffix ("M") and unit
+     all sit on one centered 1em line regardless of inline-block baselines */
+  display: inline-flex;
+  align-items: center;
   font-family: var(--k-font-accent);
   font-size: 88px;
   font-weight: 500;
@@ -33,7 +37,51 @@
   color: #ffd000;
   -webkit-text-stroke: 0.04em #ff5000;
   paint-order: stroke fill;
-  text-shadow: 0 0 0.1em rgba(255, 80, 0, 0.55);
+  /* glow via drop-shadow, NOT text-shadow: the odometer windows clip their
+     strips, and a filter applies AFTER clipping so spinning digits keep the
+     same halo as the static prefix/suffix */
+  filter: drop-shadow(0 0 0.1em rgba(255, 80, 0, 0.55));
+}
+
+/* ============================================================
+   Odometer — each digit is a 1em-tall overflow-hidden window over a
+   vertical strip of 0-9 glyphs; GSAP spins the strip (steps(10), snapped
+   to whole digits) and parks it so the last glyph = the real digit.
+   All heights are em-based so the mobile font-size overrides just work.
+   ============================================================ */
+.stats__odo {
+  display: inline-flex;
+}
+
+.stats__digit {
+  overflow: hidden;
+  height: 1em; /* the window: exactly one glyph */
+}
+
+.stats__strip {
+  display: block;
+  /* no will-change: it would pin 13 strips (the tallest ~3600px of glyphs) as
+     permanent compositor layers for a one-shot ~1s spin — GSAP's inline
+     transform is promotion enough for a steps() tween */
+}
+
+.stats__strip span {
+  display: block;
+  height: 1em;
+  line-height: 1;
+  text-align: center;
+}
+
+/* real value for screen readers while the decorative strips spin */
+.stats__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .stats__unit {

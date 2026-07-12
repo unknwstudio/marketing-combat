@@ -77,6 +77,22 @@
   color: #7fd39a;
 }
 
+/* Screen-reader twin of the answer (see Faq.jsx): the visible .faq__a-visual
+   span is aria-hidden and gets GSAP-scrambled on first open, so this intact
+   clone is what AT actually announces — it must stay in the accessibility
+   tree while being visually collapsed (hence clip, not display:none). */
+.faq__a-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (max-width: 1023px) {
   .faq__summary {
     padding: 18px 4px;

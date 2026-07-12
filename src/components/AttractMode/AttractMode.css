@@ -1,0 +1,87 @@
+/* ============================================================
+   AttractMode — idle "INSERT COIN" overlay.
+   Dim glass over the hero; both lines in the pixel font, blinking
+   on a hard steps(1) square wave (a real cabinet's marquee lamp has
+   no fade). Entry is a coarse steps() fade — quantized, not smooth.
+   pointer-events: auto — the overlay swallows the waking press itself
+   (its onPointerDown in AttractMode.jsx); a pass-through tap would
+   otherwise click the PLAY link / hero badge hidden under the glass.
+   Keys, wheel and scroll still dismiss via the window listeners.
+   ============================================================ */
+.attract {
+  position: fixed;
+  inset: 0;
+  /* above content + announcer call-outs (1200), below KonamiFatality (3000)
+     and the CRT glass (9000) — the scanlines keep dressing the idle screen */
+  z-index: 2600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background: rgba(6, 1, 15, 0.78);
+  pointer-events: auto;
+  font-family: var(--k-font);
+  text-align: center;
+  animation: attract-in 0.4s steps(4) both;
+}
+
+.attract__coin {
+  font-size: 40px;
+  line-height: 1;
+  color: var(--k-yellow);
+  text-shadow: 4px 4px 0 #000;
+  animation: attract-blink 1.2s steps(1, end) infinite;
+}
+
+.attract__key {
+  font-size: 16px;
+  line-height: 1;
+  color: var(--k-green);
+  text-shadow: 3px 3px 0 #000;
+  /* negative delay = opposite phase, so the two lines alternate like the
+     two lamps of an idle marquee instead of flashing in unison */
+  animation: attract-blink 1.2s steps(1, end) -0.6s infinite;
+}
+
+@keyframes attract-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes attract-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Belt-and-braces: the component never mounts under reduced-motion (JS gate
+   in AttractMode.jsx), but if it ever did, show nothing rather than a frozen
+   full-screen wall. */
+@media (prefers-reduced-motion: reduce) {
+  .attract {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .attract {
+    gap: 20px;
+  }
+
+  .attract__coin {
+    font-size: 22px;
+  }
+
+  .attract__key {
+    font-size: 11px;
+  }
+}
