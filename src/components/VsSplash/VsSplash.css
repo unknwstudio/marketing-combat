@@ -8,11 +8,11 @@
 .vs-splash {
   position: fixed;
   inset: 0;
-  /* above every content overlay incl. KonamiFatality (3000), below the CRT
-     glass (9000) + sparks/cursor — the scanlines dress the splash too.
-     Deliberately NOT pointer-events:none: for its 500ms it swallows any
-     extra clicks so a double-tap can't double-navigate. */
-  z-index: 8500;
+  /* above every content overlay incl. KonamiFatality (--z-fatality), below
+     the CRT glass (--z-crt) + sparks/cursor — the scanlines dress the
+     splash too. Deliberately NOT pointer-events:none: for its 500ms it
+     swallows any extra clicks so a double-tap can't double-navigate. */
+  z-index: var(--z-splash);
   display: flex;
   align-items: center;
   justify-content: center;

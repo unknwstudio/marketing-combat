@@ -32,19 +32,19 @@
   letter-spacing: 0.42em;
   text-indent: 0.42em;
   text-transform: uppercase;
-  color: #3ad76f;
+  color: var(--k-accent-green);
 }
 
 .roundmoment__num {
   font-family: var(--k-font-accent);
   font-size: clamp(150px, 30vw, 420px);
   line-height: 0.8;
-  color: #ffd000;
-  -webkit-text-stroke: 0.05em #ff5000;
+  color: var(--k-title-yellow);
+  -webkit-text-stroke: 0.05em var(--k-orange);
   paint-order: stroke fill;
   letter-spacing: -0.03em;
   text-shadow:
-    0 0 0.06em #ff5000,
+    0 0 0.06em var(--k-orange),
     0 0 0.22em rgba(255, 80, 0, 0.6);
   will-change: transform;
 }
@@ -55,7 +55,7 @@
   line-height: 1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #7fd39a;
+  color: var(--k-body-green);
 }
 
 .roundmoment__pips {

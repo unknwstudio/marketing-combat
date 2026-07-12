@@ -10,11 +10,24 @@ html.k-cursor-on * {
   cursor: none !important;
 }
 
+/* Windows High Contrast Mode etc: the OS renders its own high-visibility
+   cursor and ignores custom cursor art anyway — give the real one back
+   rather than hiding it under a pixel-art layer forced-colors can't theme */
+@media (forced-colors: active) {
+  html.k-cursor-on,
+  html.k-cursor-on * {
+    cursor: auto !important;
+  }
+  .k-cursor {
+    display: none;
+  }
+}
+
 .k-cursor {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: var(--z-cursor);
 }
 
 /* pixel crosshair: a yellow core with cyan tips, built from box-shadows.

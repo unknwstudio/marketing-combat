@@ -22,9 +22,9 @@ import './RoundMoments.css'
  * the fixed placard. Reduced-motion: never runs (nothing shown).
  */
 const ROUNDS = [
-  { key: 'ROUND 03', num: '03', tag: 'choose your style' },
-  { key: 'ROUND 04', num: '04', tag: 'select your arena' },
-  { key: 'ROUND 05', num: '05', tag: 'three stages' },
+  { key: 'STAGE 03', num: '03', tag: 'choose your style' },
+  { key: 'STAGE 04', num: '04', tag: 'select your arena' },
+  { key: 'STAGE 05', num: '05', tag: 'three stages' },
 ]
 
 export default function RoundMoments() {
@@ -111,7 +111,7 @@ export default function RoundMoments() {
     <div className="roundmoment-root" ref={rootRef} aria-hidden="true">
       {ROUNDS.map((r) => (
         <div className="roundmoment" data-round={r.num} key={r.num}>
-          <span className="roundmoment__kicker">round</span>
+          <span className="roundmoment__kicker">stage</span>
           <span className="roundmoment__num">{r.num}</span>
           <span className="roundmoment__tag">{r.tag}</span>
           <span className="roundmoment__pips">

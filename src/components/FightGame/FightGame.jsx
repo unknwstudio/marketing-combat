@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { MK } from '../../game/fight/events';
+import { isMuted } from '@/effects/audio/arcadeAudio';
 
 /**
  * Client-only Phaser island. Phaser and the fight engine are dynamically
@@ -52,7 +53,7 @@ export default function FightGame() {
       // apply the saved mute preference once the sound manager exists, and honour any
       // overlay that opened before the game finished loading
       game.events.once('ready', () => {
-        try { game.sound.mute = localStorage.getItem('mk_muted') === '1'; } catch (e) { /* no storage */ }
+        try { game.sound.mute = isMuted(); } catch (e) { /* no storage */ }
         applyKb();
       });
     })();

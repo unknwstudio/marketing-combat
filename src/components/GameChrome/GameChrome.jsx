@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { MK } from '../../game/fight/events';
 import PixelIcon from '@/components/PixelIcon/PixelIcon';
+import { initAudio, isMuted as isSiteMuted, setMuted as setSiteMuted, subscribeMuted } from '@/effects/audio/arcadeAudio';
 import './GameChrome.css';
 
 // One DOM "chrome" layer over the Phaser canvas: title / press-start, the always-on
@@ -59,9 +60,22 @@ export default function GameChrome() {
   // the share card belongs to a result; close it whenever the result clears
   useEffect(() => { if (!result) { setShare(false); setCopyMsg(''); } }, [result]);
 
-  // restore the saved mute preference and push it to the game once it exists
+  // Shared mute state with the rest of the site (one 'amk-muted' key via
+  // arcadeAudio — was a second, disconnected 'mk_muted' key, so muting on
+  // /demo silently didn't carry over to /play and vice versa). Restore it
+  // and push it to the game once it exists; subscribe so a change made
+  // elsewhere (there is no "elsewhere" reachable from /play today, but this
+  // keeps both surfaces honest if that changes) updates this UI too.
   useEffect(() => {
-    try { const m = localStorage.getItem('mk_muted') === '1'; setMuted(m); emit(MK.MUTE, { muted: m }); } catch (e) { /* no storage */ }
+    // /play doesn't mount SoundToggle (that's a /demo-only control), so this
+    // is the only place on this page that ever reads the persisted
+    // preference into arcadeAudio's module state — without it, isSiteMuted()
+    // below would always report the default (unmuted).
+    initAudio();
+    const m = isSiteMuted();
+    setMuted(m);
+    emit(MK.MUTE, { muted: m });
+    return subscribeMuted((next) => { setMuted(next); emit(MK.MUTE, { muted: next }); });
   }, []);
 
   // show the how-to card once, automatically, the first time a player starts
@@ -87,11 +101,9 @@ export default function GameChrome() {
   const toMenu = () => { setPaused(false); emit(MK.MENU); };
   const exitToSite = () => { window.location.href = '/'; };
   const requestExit = () => { if (result || scene !== 'fight') exitToSite(); else setConfirmExit(true); };  // match over or in a menu -> no confirm needed
-  const toggleMute = () => setMuted((m) => {
-    const nm = !m; emit(MK.MUTE, { muted: nm });
-    try { localStorage.setItem('mk_muted', nm ? '1' : '0'); } catch (e) { /* no storage */ }
-    return nm;
-  });
+  // setSiteMuted() triggers the subscribeMuted callback above, which updates
+  // `muted` and emits MK.MUTE to the game — no need to duplicate either here.
+  const toggleMute = () => setSiteMuted(!isSiteMuted());
   // native share sheet where available (mobile), clipboard fallback, manual-copy field if both fail
   const doShare = async () => {
     if (!result) return;
@@ -263,7 +275,7 @@ export default function GameChrome() {
             )}
             <div className="gc-brag-game">AI MARKETING KOMBAT</div>
           </div>
-          <button className="gc-item gc-result-primary" onClick={doShare}>{copied ? 'COPIED!' : canShare ? 'SHARE' : 'COPY LINK'}</button>
+          <button className="gc-item gc-result-primary" onClick={doShare} aria-live="polite">{copied ? 'COPIED!' : canShare ? 'SHARE' : 'COPY LINK'}</button>
           {copyMsg && (
             <input className="gc-copyfield" readOnly value={copyMsg} aria-label="Shareable link — select to copy"
                    onFocus={(e) => e.target.select()} onClick={(e) => e.target.select()} />

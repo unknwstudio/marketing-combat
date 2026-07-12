@@ -16,16 +16,20 @@ const TICKER = Array.from({ length: 20 });
 
 export default function Champion() {
   return (
-    <section className="champion" aria-label="Champion prizes">
+    <section id="prizes" className="champion" aria-label="Champion prizes">
       <img
         className="champion__panel pixelated"
-        src={`/assets/champion/panel.png`}
+        src={`/assets/champion/panel.webp`}
         alt=""
+        loading="lazy"
+        decoding="async"
       />
       <img
         className="champion__banner pixelated"
-        src={`/assets/champion/banner.png`}
+        src={`/assets/champion/banner.webp`}
         alt="Use AI or get finished"
+        loading="lazy"
+        decoding="async"
       />
 
       <div className="champion__topbox">

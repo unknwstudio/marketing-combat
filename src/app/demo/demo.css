@@ -2,9 +2,10 @@
    /demo — shared section chrome
    Reuses the landing's visual language (see Hero.css / Fighters.css /
    Champion.css): fixed 1440px stages, GT Pressura Mono UI text in
-   arcade green (#3ad76f), Platform display titles in yellow (#ffd000)
-   with an orange (#ff5000) outline + glow, black hairline pills.
-   Every section below 1024px reflows to a fluid single column.
+   arcade green (--k-accent-green), Platform display titles in yellow
+   (--k-title-yellow) with an orange (--k-orange) outline + glow, black
+   hairline pills. Every section below 1024px reflows to a fluid single
+   column.
    ============================================================ */
 
 /* --- section shell ------------------------------------------------- */
@@ -37,7 +38,7 @@
   font-size: 24px;
   line-height: 1;
   letter-spacing: -0.72px;
-  color: #3ad76f;
+  color: var(--k-accent-green);
   text-transform: uppercase;
 }
 
@@ -48,12 +49,12 @@
   font-weight: 500;
   line-height: 1;
   text-transform: lowercase;
-  color: #ffd000;
-  -webkit-text-stroke: 0.0625em #ff5000;
+  color: var(--k-title-yellow);
+  -webkit-text-stroke: 0.0625em var(--k-orange);
   paint-order: stroke fill;
   text-shadow:
-    0 0 0.03em #ff5000,
-    0 0 0.08em #ff5000,
+    0 0 0.03em var(--k-orange),
+    0 0 0.08em var(--k-orange),
     0 0 0.16em rgba(255, 80, 0, 0.65);
 }
 
@@ -62,7 +63,7 @@
   font-size: 22px;
   line-height: 1.4;
   letter-spacing: -0.5px;
-  color: #7fd39a;
+  color: var(--k-body-green);
 }
 
 /* --- pill (hero tag idiom): black, white hairline top/bottom -------- */
@@ -73,7 +74,7 @@
   background: rgba(0, 0, 0, 0.6);
   border-top: 1px solid #fff;
   border-bottom: 1px solid #fff;
-  color: #3ad76f;
+  color: var(--k-accent-green);
   font-size: 18px;
   line-height: 1;
   letter-spacing: -0.5px;
@@ -85,7 +86,7 @@
 .dcard {
   position: relative;
   background: #050109;
-  border: 2px solid #2a2140;
+  border: 2px solid var(--k-line);
   padding: 28px;
 }
 
@@ -111,6 +112,11 @@
 .d-btn:hover {
   background: #fff;
   color: #000;
+}
+
+.d-btn:focus-visible {
+  outline: 3px solid var(--k-title-yellow);
+  outline-offset: 3px;
 }
 
 /* red variant (e.g. FINISH HIM) — same box, red accent */
@@ -146,6 +152,11 @@
   background: #fff;
   color: #000;
   border-color: #fff;
+}
+
+.dcta:focus-visible {
+  outline: 3px solid var(--k-title-yellow);
+  outline-offset: 3px;
 }
 
 /* magnetic CTAs ease back to rest when the cursor leaves */
@@ -234,7 +245,7 @@
 
 /* ============================================================
    Terminal caret — every section eyebrow (.dsec__round, the shared
-   "ROUND 04 — …" label idiom across all .dsec sections) ends in a
+   "STAGE 04 — …" label idiom across all .dsec sections) ends in a
    blinking '_', a terminal waiting for input. ::after so no markup
    changes anywhere; steps(1) square-wave blink (a cursor, not a
    fade). Reduced-motion: the caret STAYS but holds solid — it's
@@ -272,7 +283,7 @@
   font-family: var(--k-font-accent);
   font-size: 40px;
   line-height: 1;
-  color: #ff5000;
+  color: var(--k-orange);
 }
 
 /* ============================================================

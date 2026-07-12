@@ -64,24 +64,48 @@ const eventJsonLd = {
   description: DESCRIPTION,
   startDate: '2026-07',
   eventStatus: 'https://schema.org/EventScheduled',
-  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  // the final is in-person in Barcelona, but qualifying + the main tour run
+  // online (see Faq.jsx) — Mixed is the honest attendance mode, not Offline
+  eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
   location: {
     '@type': 'Place',
     name: 'Barcelona',
     address: { '@type': 'PostalAddress', addressLocality: 'Barcelona', addressCountry: 'ES' },
   },
   organizer: { '@type': 'Organization', name: 'AI Marketing Kombat', url: SITE },
+  image: [`${SITE}/assets/hero/hero-bg.png`],
   url: SITE,
+  // exact day, ticket price/availability and an endDate aren't settled yet
+  // (the hero copy says "two days", the /mcp prompt says "45 min + 2 hours" —
+  // those two accounts of the format actively disagree) — Rich Results wants
+  // real values for `offers`/`endDate`, and a guessed one would be worse than
+  // omitting the field, so both stay out until the format is locked.
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={pressStart.variable}>
+      <head>
+        {/* both are used on the very first paint (Platform in section
+            titles, GT Pressura Mono as the body/UI font) — preloading
+            avoids a flash of fallback-font text on slow connections */}
+        <link rel="preload" href="/fonts/Platform-Medium.otf" as="font" type="font/otf" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          href="/fonts/GT-Pressura-Mono-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         {children}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+          // belt-and-braces: the object above is a static literal today (no
+          // exploitable path), but escaping '<' means a future dynamic field
+          // can never accidentally close the <script> tag early.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd).replace(/</g, '\\u003c') }}
         />
       </body>
     </html>

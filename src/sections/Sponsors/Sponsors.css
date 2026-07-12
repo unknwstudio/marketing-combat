@@ -26,7 +26,9 @@
   font-family: var(--k-font-mono);
   font-size: 22px;
   letter-spacing: 2px;
-  color: #3a3358;
+  /* #7a7aa8 on this striped near-black bg: ~5:1, clears WCAG AA
+     (was #3a3358 at ~1.76:1 — unreadable) */
+  color: #7a7aa8;
   text-transform: uppercase;
 }
 

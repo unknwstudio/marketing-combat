@@ -32,6 +32,7 @@ import Footer from '@/sections/Footer/Footer'
 
 // interactive arcade layer
 import ScrollHealth from '@/components/ScrollHealth/ScrollHealth'
+import DemoNav from '@/components/DemoNav/DemoNav'
 import Announcer from '@/components/Announcer/Announcer'
 import KonamiFatality from '@/components/KonamiFatality/KonamiFatality'
 import SoundToggle from '@/components/SoundToggle/SoundToggle'
@@ -57,6 +58,9 @@ import ClickBurst from '@/components/ClickBurst/ClickBurst'
 export default function Page() {
   return (
     <div className="app">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
       <RGBSplitFilter />
       <JuiceProvider>
         <HitSparks>
@@ -69,23 +73,25 @@ export default function Page() {
                 stay layout-accurate; transform:scale drifts pinned elements.
                 Same engine /classic already ships. */}
             <ScaleCanvas width={1440} mode="zoom">
-              <HeroStage />
-              <Champion />
-              <Fighters />
+              <main id="main">
+                <HeroStage />
+                <Champion />
+                <Fighters />
 
-              <Marquee />
-              <Stats />
-              <WhyJoin />
-              <Tracks />
-              <Arenas />
-              <Stages />
-              <ArcadeCabinet />
-              <Judges />
-              <Organizers />
-              <Leaderboard />
-              <Faq />
-              <Sponsors />
-              <FinalCta />
+                <Marquee />
+                <Stats />
+                <WhyJoin />
+                <Tracks />
+                <Arenas />
+                <Stages />
+                <ArcadeCabinet />
+                <Judges />
+                <Organizers />
+                <Leaderboard />
+                <Faq />
+                <Sponsors />
+                <FinalCta />
+              </main>
               <Footer />
             </ScaleCanvas>
           </PixelCursor>
@@ -100,6 +106,7 @@ export default function Page() {
           wrapper would otherwise pin position:fixed to the page, not the viewport */}
       <CRTOverlay intensity={0.09} flicker powerOn />
       <ScrollHealth />
+      <DemoNav />
       <KonamiFatality />
       <SoundToggle />
       <MagneticCTA />

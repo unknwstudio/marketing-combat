@@ -1,7 +1,7 @@
 'use client'
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import './HeroDisplay3D.css'
 
@@ -394,8 +394,8 @@ function CRTPlane() {
 
     async function build() {
       const [bgImg, logoImg] = await Promise.all([
-        loadImage('/assets/hero/hero-bg.png'),
-        loadImage('/assets/hero/logo.png'),
+        loadImage('/assets/hero/hero-bg.webp'),
+        loadImage('/assets/hero/logo.webp'),
       ])
       if (document.fonts && document.fonts.ready) {
         try {
@@ -485,13 +485,30 @@ function CRTPlane() {
 }
 
 export default function HeroDisplay3D() {
+  const wrapRef = useRef(null)
+  const [active, setActive] = useState(true)
+
+  // pause the WebGL loop once the hero scrolls out (same recipe as
+  // Cabinet3D) — this shader ran at 60fps for the whole session even
+  // deep into the /demo scroll, with nothing left to animate on-screen
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), {
+      rootMargin: '200px 0px',
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
   return (
-    <div className="herodisp" aria-hidden="true">
+    <div className="herodisp" aria-hidden="true" ref={wrapRef}>
       <Canvas
         orthographic
         dpr={[1, 1.6]}
         gl={{ antialias: false, alpha: true }}
         camera={{ position: [0, 0, 5] }}
+        frameloop={active ? 'always' : 'never'}
       >
         <OrthoFit />
         <Suspense fallback={null}>

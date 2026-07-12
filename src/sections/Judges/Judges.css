@@ -28,7 +28,7 @@
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border: 2px solid #2a2140;
+  border: 2px solid var(--k-line);
   transition: transform 0.25s ease, filter 0.25s ease;
 }
 
@@ -82,9 +82,9 @@
 
 .judges__tag {
   font-family: var(--k-font-mono);
-  font-size: 17px;
+  font-size: 18px;
   letter-spacing: -0.3px;
-  color: #ff5000;
+  color: var(--k-orange);
   text-transform: uppercase;
 }
 

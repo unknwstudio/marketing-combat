@@ -1,7 +1,7 @@
 import './Stages.css'
 
 /**
- * ROUND 05 — HACKATHON STAGES. Three stages to compete.
+ * STAGE 05 — HACKATHON STAGES. Three stages to compete.
  * Copy verbatim from the original site (meta line, body, CTA text).
  */
 const STAGES = [
@@ -32,10 +32,10 @@ const STAGES = [
 
 export default function Stages() {
   return (
-    <section className="dsec stages" aria-label="Hackathon stages">
+    <section id="format" className="dsec stages" aria-label="Hackathon stages">
       <div className="dsec__head">
-        <span className="dsec__round" data-announce="ROUND 05" data-sound="round3">
-          Round 05 — three stages to compete
+        <span className="dsec__round" data-announce="STAGE 05" data-sound="round3">
+          Stage 05 — three stages to compete
         </span>
         <h2 className="dsec__title">hackathon stages</h2>
         <p className="dsec__sub">

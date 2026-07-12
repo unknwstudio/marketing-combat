@@ -43,7 +43,7 @@
 /* gold pixel-SVG star (PixelIcon inherits this color via currentColor) */
 .marquee__star {
   display: inline-flex;
-  color: #ffd000;
+  color: var(--k-title-yellow);
 }
 
 @keyframes marquee-scroll {
@@ -53,6 +53,14 @@
   to {
     transform: translateX(-50%);
   }
+}
+
+/* WCAG 2.2.2: a mechanism to pause auto-moving content — hover/focus parks
+   the CSS keyframe; the JS-driven crawl pauses via the same events in
+   Marquee.jsx (an inline transform can't be stopped by CSS alone). */
+.marquee:hover .marquee__viewport,
+.marquee:focus-within .marquee__viewport {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {

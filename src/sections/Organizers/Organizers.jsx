@@ -55,6 +55,8 @@ export default function Organizers() {
                 className="organizers__portrait pixelated"
                 src={`/assets/demo/organizers/${c.img}`}
                 alt={`${c.name} portrait`}
+                loading="lazy"
+                decoding="async"
               />
               <span className="organizers__sweep" aria-hidden="true" />
             </div>

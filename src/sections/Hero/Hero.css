@@ -99,7 +99,7 @@
 }
 
 .hero__lede {
-  color: #3ad76f;
+  color: var(--k-accent-green);
   font-size: 24px; /* Figma 33:3903 */
   line-height: 1.25; /* Figma normal leading -> 3-line block ~= 77px */
   letter-spacing: -0.72px;
@@ -125,7 +125,7 @@
   height: 43px;
   padding: 4px 8px 4px 4px;
   background: rgba(0, 0, 0, 0.6);
-  border: 2px solid #ff5000;
+  border: 2px solid var(--k-orange);
 }
 
 .hero__bars {
@@ -138,17 +138,17 @@
 .hero__bar {
   width: 8px;
   height: 100%;
-  background: #ff5000;
+  background: var(--k-orange);
 }
 
 .hero__meter-pct {
-  color: #ff5000;
+  color: var(--k-orange);
   font-size: 24px; /* Figma 33:3929 (Input Mono Condensed -> mono) */
   letter-spacing: -0.72px;
 }
 
 .hero__survive {
-  color: #ff5000;
+  color: var(--k-orange);
   font-size: 24px; /* Figma 33:3911 */
   letter-spacing: -0.72px;
   white-space: nowrap;
@@ -171,7 +171,7 @@
   background: rgba(0, 0, 0, 0.6);
   border-top: 1px solid #fff;
   border-bottom: 1px solid #fff;
-  color: #3ad76f;
+  color: var(--k-accent-green);
   font-size: 24px; /* Figma 33:3894 tags: 24px, -0.72px */
   letter-spacing: -0.72px;
   white-space: nowrap;

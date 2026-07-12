@@ -27,8 +27,11 @@ export default function PixelCursor({ enabled = true, children }) {
   const lastTrail = useRef(0)
 
   // Decide on mount / when toggled whether we take over the cursor at all.
+  // prefers-reduced-motion opts out of the takeover entirely (not just the
+  // dust-trail animation) — the OS cursor is the more predictable, more
+  // visible-at-a-glance affordance for anyone who's asked for less motion.
   useEffect(() => {
-    setActive(enabled && canHover())
+    setActive(enabled && canHover() && !prefersReducedMotion())
   }, [enabled])
 
   useEffect(() => {

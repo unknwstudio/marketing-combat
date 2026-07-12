@@ -27,11 +27,11 @@
   font-size: 18px;
   letter-spacing: -0.3px;
   font-weight: 400;
-  color: #3ad76f;
+  color: var(--k-accent-green);
   text-transform: uppercase;
   text-align: left;
   padding: 0 16px 16px;
-  border-bottom: 2px solid #2a2140;
+  border-bottom: 2px solid var(--k-line);
 }
 
 .leaderboard__table td {
@@ -40,7 +40,7 @@
 }
 
 .leaderboard__rank {
-  color: #ff5000;
+  color: var(--k-orange);
 }
 
 .leaderboard__name {
@@ -56,14 +56,14 @@ td.leaderboard__score {
 }
 
 th.leaderboard__score {
-  color: #3ad76f; /* header stays header-green; only the digits go yellow */
+  color: var(--k-accent-green); /* header stays header-green; only the digits go yellow */
 }
 
 .leaderboard__title {
   font-family: var(--k-font-mono);
   font-size: 18px;
   letter-spacing: -0.3px;
-  color: #7fd39a;
+  color: var(--k-body-green);
   text-transform: uppercase;
 }
 

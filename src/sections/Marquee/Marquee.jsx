@@ -65,7 +65,7 @@ export default function Marquee() {
     }
     window.addEventListener('scroll', onScroll, { passive: true })
 
-    let raf
+    let raf = 0
     let last = performance.now()
     const tick = (now) => {
       const dt = Math.min(0.05, (now - last) / 1000)
@@ -77,10 +77,55 @@ export default function Marquee() {
       track.style.transform = `translateX(${-dist}px)`
       raf = requestAnimationFrame(tick)
     }
-    raf = requestAnimationFrame(tick)
+
+    // the strip used to crawl at 60fps for the whole session even deep
+    // into the page — pause the rAF loop off-screen (perf) and on hover
+    // (WCAG 2.2.2 — a mechanism to pause auto-moving content), resyncing
+    // `last` on resume so the paused time doesn't count as a jump in `dist`
+    let intersecting = true
+    let hovering = false
+    const resume = () => {
+      if (raf || !intersecting || hovering) return
+      last = performance.now()
+      raf = requestAnimationFrame(tick)
+    }
+    const pause = () => {
+      if (!raf) return
+      cancelAnimationFrame(raf)
+      raf = 0
+    }
+
+    let io
+    const section = track.closest('.marquee')
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(
+        ([entry]) => {
+          intersecting = entry.isIntersecting
+          if (intersecting) resume()
+          else pause()
+        },
+        { rootMargin: '200px 0px' }
+      )
+      io.observe(track)
+    } else {
+      raf = requestAnimationFrame(tick)
+    }
+    const onEnter = () => {
+      hovering = true
+      pause()
+    }
+    const onLeave = () => {
+      hovering = false
+      resume()
+    }
+    section?.addEventListener('mouseenter', onEnter)
+    section?.addEventListener('mouseleave', onLeave)
 
     return () => {
       window.removeEventListener('scroll', onScroll)
+      section?.removeEventListener('mouseenter', onEnter)
+      section?.removeEventListener('mouseleave', onLeave)
+      if (io) io.disconnect()
       cancelAnimationFrame(raf)
     }
   }, [])

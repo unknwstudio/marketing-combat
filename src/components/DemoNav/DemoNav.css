@@ -1,0 +1,97 @@
+/* LEVEL SELECT strip — sits just under ScrollHealth's bar (--z-health),
+   same fade-in-after-hero behavior so the two read as one HUD. */
+.dnav {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  background: rgba(6, 1, 15, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  font-family: var(--k-font-mono);
+}
+
+.dnav--shown {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.dnav__kicker {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--k-body-green);
+  white-space: nowrap;
+}
+
+.dnav__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dnav__link {
+  padding: 4px 10px;
+  font-size: 13px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: var(--k-accent-green);
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.dnav__link:hover {
+  background: rgba(58, 215, 111, 0.16);
+  color: #fff;
+}
+
+.dnav__link:focus-visible {
+  outline: 2px solid var(--k-title-yellow);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dnav {
+    transition: opacity 0.12s linear;
+  }
+}
+
+@media (max-width: 767px) {
+  .dnav {
+    top: 30px;
+    gap: 8px;
+    padding: 5px 10px;
+  }
+  .dnav__kicker {
+    display: none;
+  }
+  .dnav__link {
+    padding: 4px 7px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 479px) {
+  .dnav {
+    max-width: calc(100vw - 24px);
+  }
+  .dnav__links {
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .dnav__links::-webkit-scrollbar {
+    display: none;
+  }
+}

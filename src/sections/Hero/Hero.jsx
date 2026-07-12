@@ -9,10 +9,17 @@ import CRTOverlay from '@/effects/crt/CRTOverlay'
 export default function Hero() {
   return (
     <section className="hero" aria-label="AI Marketing Kombat">
+      {/* the real, styled title is the logo image below — this is the page's
+          only h1 (there was none before), kept off-screen so the pixel
+          wordmark stays the visual title */}
+      <h1 className="sr-only">AI Marketing Kombat — hackathon for senior AI marketers</h1>
       <img
         className="hero__bg"
-        src={`/assets/hero/hero-bg.png`}
+        src={`/assets/hero/hero-bg.webp`}
         alt="Two pixel-art ninja fighters facing off on a cliff before a giant sun"
+        width={1440}
+        height={804}
+        fetchPriority="high"
       />
 
       {/* decorative flanking grid lines */}
@@ -20,7 +27,7 @@ export default function Hero() {
       <div className="hero__grid hero__grid--right" aria-hidden="true" />
 
       {/* glowing wordmark + underline */}
-      <img className="hero__logo" src={`/assets/hero/logo.png`} alt="ai-kombat" />
+      <img className="hero__logo" src={`/assets/hero/logo.webp`} alt="AI Marketing Kombat" />
 
       {/* top-left: registration badge + lede. The badge is a REAL link to the
           FinalCta section (#register on /demo): on /demo it's a same-page

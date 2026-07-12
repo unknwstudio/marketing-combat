@@ -7,11 +7,11 @@ import './Fighters.css'
  */
 
 const FIGHTERS = [
-  { img: 'fighter1.png', label: 'CMOs' },
-  { img: 'fighter2.png', label: 'HEADS OF GROWTH' },
-  { img: 'fighter3.png', label: 'PERFORMANCE LEAD GEN', selected: true },
-  { img: 'fighter4.png', label: 'AI CREATORS' },
-  { img: 'fighter5.png', label: '…& FUTURE LEGENDS' },
+  { img: 'fighter1.webp', label: 'CMOs' },
+  { img: 'fighter2.webp', label: 'HEADS OF GROWTH' },
+  { img: 'fighter3.webp', label: 'PERFORMANCE LEAD GEN', selected: true },
+  { img: 'fighter4.webp', label: 'AI CREATORS' },
+  { img: 'fighter5.webp', label: '…& FUTURE LEGENDS' },
 ]
 
 export default function Fighters() {
@@ -19,9 +19,11 @@ export default function Fighters() {
     <section className="fighters" aria-label="Choose your fighter">
       <img
         className="fighters__bg"
-        src={`/assets/fighters/bg.png`}
+        src={`/assets/fighters/bg.webp`}
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
       />
 
       <h2 className="fighters__title">choose your fighter</h2>
@@ -51,6 +53,8 @@ export default function Fighters() {
                   className="fighters__portrait"
                   src={`/assets/fighters/${f.img}`}
                   alt={`${f.label} fighter portrait`}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <span className="fighters__sweep" aria-hidden="true" />
                 <span className="fighters__select" aria-hidden="true">

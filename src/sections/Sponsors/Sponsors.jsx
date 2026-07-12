@@ -1,8 +1,8 @@
 import './Sponsors.css'
 
 /**
- * SPONSORS — OUR PARTNERS. The original site shows placeholder partner tiles;
- * we mirror that (no invented sponsor names).
+ * SPONSORS — OUR PARTNERS. No sponsor names to show yet; the slots stay
+ * honest about being open rather than reading as an unfinished section.
  */
 const SLOTS = Array.from({ length: 6 })
 
@@ -17,7 +17,7 @@ export default function Sponsors() {
       <ul className="sponsors__grid">
         {SLOTS.map((_, i) => (
           <li key={i} className="dcard sponsors__slot" aria-hidden="true">
-            <span className="sponsors__mark">PARTNER</span>
+            <span className="sponsors__mark">SLOT OPEN</span>
           </li>
         ))}
       </ul>

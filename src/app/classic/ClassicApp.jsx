@@ -17,9 +17,14 @@ import './classic.css'
 export default function ClassicApp() {
   return (
     <div className="classic">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
       <ScaleCanvas width={1440} mode="zoom">
-        <ClassicHero />
-        <ClassicChampionFor />
+        <main id="main">
+          <ClassicHero />
+          <ClassicChampionFor />
+        </main>
       </ScaleCanvas>
       <ClassicMenu />
       <ModeSwitcher active="classic" />

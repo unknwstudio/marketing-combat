@@ -11,7 +11,7 @@
 .crt {
   position: fixed;
   inset: 0;
-  z-index: 9000;
+  z-index: var(--z-crt);
   pointer-events: none;
   overflow: hidden;
   /* defaults; overridden inline by the component props */

@@ -2,11 +2,11 @@
 .faq__list {
   max-width: 1040px;
   margin: 0 auto;
-  border-top: 2px solid #2a2140;
+  border-top: 2px solid var(--k-line);
 }
 
 .faq__item {
-  border-bottom: 2px solid #2a2140;
+  border-bottom: 2px solid var(--k-line);
 }
 
 .faq__summary {
@@ -29,6 +29,11 @@
   background: rgba(63, 224, 255, 0.06);
 }
 
+.faq__summary:focus-visible {
+  outline: 3px solid var(--k-title-yellow);
+  outline-offset: -3px;
+}
+
 .faq__q {
   display: flex;
   align-items: center;
@@ -42,7 +47,7 @@
 }
 
 .faq__caret {
-  color: #3ad76f;
+  color: var(--k-accent-green);
   transition: transform 0.15s ease-out;
 }
 
@@ -57,7 +62,7 @@
   gap: 4px;
   font-family: var(--k-font-mono);
   font-size: 22px;
-  color: #ff5000;
+  color: var(--k-orange);
   white-space: nowrap;
 }
 
@@ -71,10 +76,10 @@
 .faq__a {
   padding: 0 8px 26px 36px;
   font-family: var(--k-font-mono);
-  font-size: 21px;
+  font-size: 22px;
   line-height: 1.5;
   letter-spacing: -0.5px;
-  color: #7fd39a;
+  color: var(--k-body-green);
 }
 
 /* Screen-reader twin of the answer (see Faq.jsx): the visible .faq__a-visual

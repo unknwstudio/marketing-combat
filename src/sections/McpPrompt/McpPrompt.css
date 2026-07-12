@@ -70,7 +70,8 @@
   letter-spacing: -0.48px;
   line-height: normal;
   text-transform: lowercase;
-  color: #cd6d00;
+  /* #6b3800 on #ffb000: ~5.2:1, clears WCAG AA (was #cd6d00 at ~1.98:1) */
+  color: #6b3800;
   white-space: pre-line;
   display: -webkit-box;
   -webkit-box-orient: vertical;

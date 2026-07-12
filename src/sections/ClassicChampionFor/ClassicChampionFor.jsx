@@ -90,8 +90,8 @@ export default function ClassicChampionFor() {
               <p className="cfw__card-s cap-trim">from sponsoring companies</p>
             </div>
             <div className="cfw__card">
-              <p className="cfw__card-t cap-trim">Offers</p>
-              <p className="cfw__card-s cap-trim">from sponsoring companies</p>
+              <p className="cfw__card-t cap-trim">The title</p>
+              <p className="cfw__card-s cap-trim">#1 AI marketer of 2026</p>
             </div>
             <div className="cfw__strip">
               <p className="cap-trim">5 min to apply · 3 questions · AI review · 48 hr response</p>

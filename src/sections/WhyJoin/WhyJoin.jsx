@@ -57,8 +57,8 @@ export default function WhyJoin() {
         <span className="dsec__round">Why join?</span>
         <h2 className="dsec__title">why join the hackathon?</h2>
         <p className="dsec__sub">
-          Find out your real level of mastering AI tools for marketing alongside your peers.
-          Decide who is №1 marketer on the planet — and №1 AI Creator.
+          Find out how good you really are with AI tools for marketing, alongside your peers.
+          Decide who is #1 marketer on the planet — and #1 AI Creator.
         </p>
       </div>
 
@@ -72,6 +72,8 @@ export default function WhyJoin() {
                 src={`/assets/demo/whyjoin/${r.icon}`}
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <h3 className="whyjoin__title">{r.title}</h3>

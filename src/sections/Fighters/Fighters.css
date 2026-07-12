@@ -31,22 +31,22 @@
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  /* Figma 35:4237 — Platform Medium 64px, fill #ffd000, orange outline + glow */
+  /* Figma 35:4237 — Platform Medium 64px, fill var(--k-title-yellow), orange outline + glow */
   font-family: var(--k-font-accent);
   font-size: 64px;
   font-weight: 500;
   line-height: 1;
   text-transform: lowercase;
   white-space: nowrap;
-  color: #ffd000;
+  color: var(--k-title-yellow);
   /* the accent "обводка": an orange outline, no dark stroke in Figma. Kept under
      the yellow fill (paint-order) so the core stays full-size. Sizes in em so the
      mobile clamp scales the outline + glow with the font. */
-  -webkit-text-stroke: 0.0625em #ff5000;
+  -webkit-text-stroke: 0.0625em var(--k-orange);
   paint-order: stroke fill;
   text-shadow:
-    0 0 0.03em #ff5000,
-    0 0 0.08em #ff5000,
+    0 0 0.03em var(--k-orange),
+    0 0 0.08em var(--k-orange),
     0 0 0.16em rgba(255, 80, 0, 0.65);
 }
 
@@ -68,13 +68,13 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  /* Figma 35:4226 — GT Pressura Mono 24px, #3ad76f, tracking -0.72px */
+  /* Figma 35:4226 — GT Pressura Mono 24px, var(--k-accent-green), tracking -0.72px */
   font-family: var(--k-font-mono);
   font-size: 24px;
   line-height: 1;
   letter-spacing: -0.72px;
   text-transform: lowercase;
-  color: #3ad76f;
+  color: var(--k-accent-green);
   white-space: nowrap;
 }
 

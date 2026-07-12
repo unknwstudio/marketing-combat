@@ -11,9 +11,10 @@
 .attract {
   position: fixed;
   inset: 0;
-  /* above content + announcer call-outs (1200), below KonamiFatality (3000)
-     and the CRT glass (9000) — the scanlines keep dressing the idle screen */
-  z-index: 2600;
+  /* above content + announcer call-outs (--z-announce), below KonamiFatality
+     (--z-fatality) and the CRT glass (--z-crt) — the scanlines keep
+     dressing the idle screen */
+  z-index: var(--z-attract);
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -52,7 +52,7 @@
   font-size: 20px;
   line-height: 1.4;
   letter-spacing: -0.5px;
-  color: #7fd39a;
+  color: var(--k-body-green);
 }
 
 .whyjoin__tag {

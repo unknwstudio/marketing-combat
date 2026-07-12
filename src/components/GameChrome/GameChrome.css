@@ -96,6 +96,11 @@
   color: #9fb6c8;
 }
 .gc-legend span { white-space: nowrap; }
+/* touch devices get on-screen buttons (MobileControls) — a WASD/JKL legend
+   for keys that don't exist there is confusing, not decorative */
+@media (hover: none), (pointer: coarse) {
+  .gc-legend { display: none; }
+}
 .gc-start {
   font-size: clamp(11px, 2.4vw, 15px);
   letter-spacing: 2px;

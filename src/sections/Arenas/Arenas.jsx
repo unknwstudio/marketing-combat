@@ -5,7 +5,7 @@ import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import './Arenas.css'
 
 /**
- * ROUND 04 — BATTLE ARENAS. Four example case tracks (real client briefs).
+ * STAGE 04 — BATTLE ARENAS. Four example case tracks (real client briefs).
  * Copy, stat tags and difficulty star counts verbatim from the original site.
  */
 const ARENAS = [
@@ -68,13 +68,13 @@ export default function Arenas() {
   return (
     <section className="dsec dsec--alt arenas" aria-label="Battle arenas">
       <div className="dsec__head">
-        <span className="dsec__round" data-announce="ROUND 04" data-sound="round2">
-          Round 04 — select your arena
+        <span className="dsec__round" data-announce="STAGE 04" data-sound="round2">
+          Stage 04 — select your arena
         </span>
         <h2 className="dsec__title">battle arenas</h2>
         <p className="dsec__sub">
-          Example case directions — real client briefs across industries. Win and the client
-          pays the prize.
+          Example case directions — real client briefs across industries. Win, and the prize
+          is funded by the client.
         </p>
       </div>
 
@@ -85,6 +85,8 @@ export default function Arenas() {
               className="arenas__art pixelated"
               src={`/assets/demo/arenas/${a.img}`}
               alt={`${a.name} arena`}
+              loading="lazy"
+              decoding="async"
             />
             <div className="arenas__top">
               <span className="arenas__track">CASE TRACK · {a.n}</span>

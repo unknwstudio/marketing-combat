@@ -550,6 +550,8 @@ export default function Cabinet3D({
         className="cab3d__fallback"
         src="/assets/demo/arcade-machine.webp"
         alt="Arcade cabinet — play AI Marketing Kombat"
+        loading="lazy"
+        decoding="async"
       />
     )
   }

@@ -85,7 +85,8 @@ export default function Faq() {
           gsap.to(visual, {
             duration: 0.5, // quick — decode, don't gate reading
             ease: 'none', // char swaps ARE the quantization — no easing on top
-            scrambleText: { text: original, chars: '▓▒░<>/0123456789', speed: 0.4 },
+            // fixed-width glyphs only — see FinalCta.jsx for why ▓▒░ was dropped
+            scrambleText: { text: original, chars: '<>/0123456789', speed: 0.4 },
           })
         )
       })()
@@ -103,7 +104,7 @@ export default function Faq() {
   }, [])
 
   return (
-    <section className="dsec faq" aria-label="Frequently asked questions">
+    <section id="faq" className="dsec faq" aria-label="Frequently asked questions">
       <div className="dsec__head">
         <span className="dsec__round">Menu — fighter’s manual</span>
         <h2 className="dsec__title">frequently asked questions</h2>

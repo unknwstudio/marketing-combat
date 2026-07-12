@@ -1,19 +1,20 @@
 import './Judges.css'
 
 /**
- * BOSS ROSTER — THE JUDGES. Three placeholder bosses + one secret boss.
- * Copy verbatim from the original site (which itself shows placeholders);
- * portraits are generated pixel-art bosses.
+ * BOSS ROSTER — THE JUDGES. Three unrevealed bosses + one secret boss.
+ * Roster is announced closer to the event — copy stays in-world (matches
+ * the secret-boss idiom below) instead of shipping a literal "placeholder"
+ * to production. Portraits are generated pixel-art bosses.
  */
 const JUDGES = [
-  { n: '01', img: 'boss-01.webp', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
-  { n: '02', img: 'boss-02.webp', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
-  { n: '03', img: 'boss-03.webp', name: 'JUDGE PLACEHOLDER', line: 'Position, company — placeholder' },
+  { n: '01', img: 'boss-01.webp', name: 'BOSS 01 — REVEALED SOON', line: 'Identity unlocks before the main tour' },
+  { n: '02', img: 'boss-02.webp', name: 'BOSS 02 — REVEALED SOON', line: 'Identity unlocks before the main tour' },
+  { n: '03', img: 'boss-03.webp', name: 'BOSS 03 — REVEALED SOON', line: 'Identity unlocks before the main tour' },
 ]
 
 export default function Judges() {
   return (
-    <section className="dsec judges" aria-label="The judges">
+    <section id="judges" className="dsec judges" aria-label="The judges">
       <div className="dsec__head">
         <span className="dsec__round">Boss roster — meet the masters</span>
         <h2 className="dsec__title">the judges</h2>
@@ -30,6 +31,8 @@ export default function Judges() {
                 className="judges__portrait pixelated"
                 src={`/assets/demo/judges/${j.img}`}
                 alt={`Boss ${j.n} portrait`}
+                loading="lazy"
+                decoding="async"
               />
               <span className="judges__sweep" aria-hidden="true" />
             </div>
@@ -45,6 +48,8 @@ export default function Judges() {
               className="judges__portrait pixelated"
               src={`/assets/demo/judges/secret-boss.webp`}
               alt="Secret boss — identity hidden"
+              loading="lazy"
+              decoding="async"
             />
             <span className="judges__sweep" aria-hidden="true" />
           </div>

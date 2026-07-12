@@ -20,7 +20,7 @@
   width: 100%;
   aspect-ratio: 3 / 2;
   object-fit: cover;
-  border: 2px solid #2a2140;
+  border: 2px solid var(--k-line);
   display: block;
 }
 
@@ -29,7 +29,7 @@
   align-items: center;
   gap: 18px;
   padding-bottom: 18px;
-  border-bottom: 2px solid #2a2140;
+  border-bottom: 2px solid var(--k-line);
 }
 
 .tracks__name {
@@ -39,7 +39,7 @@
   font-weight: 500;
   line-height: 1;
   text-transform: lowercase;
-  color: #ffd000;
+  color: var(--k-title-yellow);
 }
 
 .tracks__special {
@@ -53,7 +53,7 @@
 }
 
 .tracks__specialLabel {
-  color: #ff5000;
+  color: var(--k-orange);
   text-transform: uppercase;
 }
 
@@ -77,7 +77,7 @@
   font-size: 22px;
   line-height: 1.35;
   letter-spacing: -0.5px;
-  color: #7fd39a;
+  color: var(--k-body-green);
 }
 
 .tracks__tags {
@@ -97,7 +97,7 @@
 
 /* ============================================================
    MARCHING ANTS — 16-bit selection border on hover / keyboard focus,
-   in the section's yellow accent (titles are #ffd000 here, so the
+   in the section's yellow accent (titles are var(--k-title-yellow) here, so the
    roster's cyan would read off-palette). Same mechanics as
    Fighters.css: four 2px dashed edges on one ::after, crawled
    clockwise by stepping background-position a full 12px dash-period

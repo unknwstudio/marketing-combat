@@ -18,6 +18,7 @@ export default function ModeSwitcher({ active }) {
           (active === 'ai' ? ' mode-switch__opt--active' : '')
         }
         aria-current={active === 'ai' ? 'page' : undefined}
+        title="AI mode — the pixel-art arcade experience"
       >
         AI mode
       </a>
@@ -28,6 +29,7 @@ export default function ModeSwitcher({ active }) {
           (active === 'classic' ? ' mode-switch__opt--active' : '')
         }
         aria-current={active === 'classic' ? 'page' : undefined}
+        title="Classic mode — a plain, readable version of the same info"
       >
         Classic
       </a>
@@ -38,6 +40,7 @@ export default function ModeSwitcher({ active }) {
           (active === 'mcp' ? ' mode-switch__opt--active' : '')
         }
         aria-current={active === 'mcp' ? 'page' : undefined}
+        title="MCP mode — the whole site as one prompt for your AI agent"
       >
         MCP
       </a>

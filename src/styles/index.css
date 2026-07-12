@@ -27,7 +27,7 @@
 }
 
 :root {
-  /* --- palette (placeholder arcade palette; swap for Figma tokens) --- */
+  /* --- palette: the hero/landing arcade set --- */
   --k-bg: #0b0221;
   --k-bg-2: #1a0938;
   --k-ink: #f4f4f8;
@@ -37,6 +37,21 @@
   --k-magenta: #ff3fd2;
   --k-green: #3fff87;
   --k-shadow: #06010f;
+
+  /* --- palette: the /demo tour ("dsec") arcade set --------------------
+     A second, de-facto palette grew alongside the one above as /demo's
+     ~20 sections shipped — same world, a warmer/greener variant. Both are
+     real, in active use (--k-yellow above is the mode-switcher/PLAY-button
+     gold; --k-title-yellow below is the section-title glow) — canonizing
+     them as named tokens (rather than 88 raw-hex repeats across 13 files)
+     is the fix; picking one over the other is a design call for later. */
+  --k-title-yellow: #ffd000;
+  --k-orange: #ff5000;
+  --k-accent-green: #3ad76f;
+  --k-body-green: #7fd39a;
+  --k-line: #2a2140;
+  --k-panel: #050109;
+  --k-bg-deep: #08010f;
 
   /* --- type --- */
   --k-font: var(--font-ps), 'Press Start 2P', 'Courier New', monospace;
@@ -52,6 +67,24 @@
   --k-4: 32px;
   --k-6: 48px;
   --k-8: 64px;
+
+  /* --- z-index scale for the page-level HUD/overlay layers (fixed or
+     portaled-to-body components that stack against EACH OTHER — not the
+     small 1-5 values used for local stacking within a single section's own
+     children, which stay as plain numbers). Named per current role, values
+     unchanged from what shipped — this replaces 12 unnamed magic numbers
+     with the same numeric order, not a renumbering. */
+  --z-dock: 900; /* /classic's fixed menu card */
+  --z-nav: 940; /* /demo's "level select" strip */
+  --z-health: 950; /* /demo's scroll-health bar */
+  --z-mode: 1000; /* mode switcher + sound toggle pills */
+  --z-announce: 1200; /* "ROUND / FIGHT" call-outs */
+  --z-attract: 2600; /* idle attract-mode overlay */
+  --z-fatality: 3000; /* Konami-code fatality overlay */
+  --z-splash: 8500; /* first-visit VS splash */
+  --z-crt: 9000; /* page-wide CRT scanline overlay */
+  --z-cursor: 9999; /* pixel cursor layer */
+  --z-skiplink: 10000; /* keyboard skip-to-content link */
 }
 
 *,
@@ -88,6 +121,18 @@ body {
   overflow-x: hidden;
 }
 
+/* /classic and /mcp are white pages, but their own background only paints
+   their own box — the scrollbar-gutter strip reserved above sits outside
+   any element's box and was showing body's dark purple through it as a
+   ~15px stripe down the right edge. Matching body's background to whichever
+   white page is mounted fixes the gutter color without touching the gutter
+   mechanism itself. (:has() — Chrome 105+/Safari 15.4+/Firefox 121+; older
+   engines just keep today's stripe, no worse than before.) */
+body:has(> .classic),
+body:has(> .mcp) {
+  background: #fff;
+}
+
 /* every pixel asset must render crisp */
 img,
 canvas,
@@ -99,6 +144,39 @@ canvas,
 a {
   color: var(--k-cyan);
   text-decoration: none;
+}
+
+/* visually hidden but announced by AT / crawled by search — for content
+   whose real heading is a styled image or pixel-art wordmark (site h1,
+   skip links) rather than plain text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  z-index: var(--z-skiplink);
+  padding: 10px 16px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  font-family: var(--k-font-mono);
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.skip-link:focus {
+  top: 8px;
 }
 
 /* accessibility: honor reduced motion globally; effect modules must check this too */

@@ -38,11 +38,11 @@
   font-weight: 500;
   line-height: 1;
   text-transform: lowercase;
-  color: #ffd000;
-  -webkit-text-stroke: 0.04em #ff5000;
+  color: var(--k-title-yellow);
+  -webkit-text-stroke: 0.04em var(--k-orange);
   paint-order: stroke fill;
   text-shadow:
-    0 0 0.05em #ff5000,
+    0 0 0.05em var(--k-orange),
     0 0 0.14em rgba(255, 80, 0, 0.6);
 }
 
@@ -52,7 +52,7 @@
   font-size: 24px;
   line-height: 1.45;
   letter-spacing: -0.5px;
-  color: #7fd39a;
+  color: var(--k-body-green);
 }
 
 /* GAME OVER -> CONTINUE? ritual (see FinalCta.jsx for the stage sequencer).
@@ -118,8 +118,8 @@
   font-size: 52px;
   font-weight: 500;
   line-height: 1;
-  color: #ffd000;
-  -webkit-text-stroke: 0.03em #ff5000;
+  color: var(--k-title-yellow);
+  -webkit-text-stroke: 0.03em var(--k-orange);
   paint-order: stroke fill;
 }
 
@@ -177,11 +177,25 @@
   margin-top: 8px;
 }
 
+.finalcta__facts {
+  font-family: var(--k-font-mono);
+  font-size: 16px;
+  letter-spacing: -0.3px;
+  color: #7f7f7f;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1023px) {
+  .finalcta__facts {
+    font-size: 11px;
+  }
+}
+
 .finalcta__press {
   font-family: var(--k-font);
   font-size: 16px;
   letter-spacing: 1px;
-  color: #3ad76f;
+  color: var(--k-accent-green);
   text-transform: uppercase;
   animation: finalcta-blink 1.1s steps(2, start) infinite;
 }

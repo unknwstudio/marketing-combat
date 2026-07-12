@@ -8,7 +8,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 900;
+  z-index: var(--z-dock);
   transform-origin: top right;
   pointer-events: none; /* only the card itself is interactive */
 }

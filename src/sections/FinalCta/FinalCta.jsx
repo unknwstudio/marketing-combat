@@ -99,7 +99,10 @@ export default function FinalCta() {
             scrambleTween = gsap.to(title, {
               duration: 1.2,
               ease: 'none', // char swaps ARE the quantization — no easing on top
-              scrambleText: { text: original, chars: '▓▒░<>/0123456789', speed: 0.4 },
+              // fixed-width glyphs only (no ▓▒░ blocks): those render wider
+              // than the mono font's cell and made the line visibly jump
+              // width mid-decode, right at the page's conversion moment.
+              scrambleText: { text: original, chars: '<>/0123456789', speed: 0.4 },
             })
           })()
         }
@@ -183,6 +186,10 @@ export default function FinalCta() {
       >
         &gt;&gt;&gt; registration &lt;&lt;&lt;
       </button>
+      {/* same fact line as /classic (ClassicChampionFor.jsx) and the /mcp
+          prompt — surfacing it here too so the / and /demo CTA isn't a leap
+          of faith about how much registering actually costs in time */}
+      <p className="finalcta__facts">5 min to apply · 3 questions · AI review · 48 hr response</p>
       <span className="finalcta__press">▮ PRESS ANY KEY TO CONTINUE ▮</span>
     </section>
   )

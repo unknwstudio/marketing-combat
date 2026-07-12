@@ -18,7 +18,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border: 2px solid #2a2140;
+  border: 2px solid var(--k-line);
   display: block;
 }
 
@@ -32,7 +32,7 @@
   font-family: var(--k-font-mono);
   font-size: 18px;
   letter-spacing: -0.5px;
-  color: #ff5000;
+  color: var(--k-orange);
   text-transform: uppercase;
 }
 
@@ -43,16 +43,16 @@
   font-weight: 500;
   line-height: 1;
   text-transform: lowercase;
-  color: #ffd000;
+  color: var(--k-title-yellow);
 }
 
 .arenas__body {
   flex: 1;
   font-family: var(--k-font-mono);
-  font-size: 21px;
+  font-size: 22px;
   line-height: 1.4;
   letter-spacing: -0.5px;
-  color: #7fd39a;
+  color: var(--k-body-green);
 }
 
 .arenas__meta {
@@ -62,7 +62,7 @@
   justify-content: space-between;
   gap: 14px;
   padding-top: 18px;
-  border-top: 2px solid #2a2140;
+  border-top: 2px solid var(--k-line);
 }
 
 .arenas__tags {
@@ -93,12 +93,12 @@
 }
 
 .arenas__star {
-  color: #2a2140;
+  color: var(--k-line);
 }
 
 /* difficulty stars light up one-by-one as the card scrolls into view */
 .arenas__star--on {
-  color: #ffd000;
+  color: var(--k-title-yellow);
   opacity: 0;
   transform: scale(0.4);
   transition: opacity 220ms ease, transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);

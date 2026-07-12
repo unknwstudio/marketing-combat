@@ -4,5 +4,5 @@
    title white. Higher specificity (.dsec__title.k-glitch) wins regardless of
    stylesheet import order. */
 .dsec__title.k-glitch {
-  color: #ffd000;
+  color: var(--k-title-yellow);
 }

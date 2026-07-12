@@ -2,7 +2,7 @@ import './Tracks.css'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
 
 /**
- * ROUND 03 — HACKATHON TRACKS. Two fighting-style tracks.
+ * STAGE 03 — HACKATHON TRACKS. Two fighting-style tracks.
  * Copy verbatim from the original site (special line, bullets, tags).
  */
 const TRACKS = [
@@ -25,7 +25,7 @@ const TRACKS = [
     bullets: [
       '↘ Strategy',
       '↘ Analytics',
-      '↗ Buying Paid Media',
+      '↗ Paid Media Buying',
       '↗ Media Split Management',
     ],
     tags: ['STRATEGY', 'ANALYTICS', 'ROAS'],
@@ -36,8 +36,8 @@ export default function Tracks() {
   return (
     <section className="dsec tracks" aria-label="Hackathon tracks">
       <div className="dsec__head">
-        <span className="dsec__round" data-announce="ROUND 03" data-sound="round1">
-          Round 03 — choose your fighting style
+        <span className="dsec__round" data-announce="STAGE 03" data-sound="round1">
+          Stage 03 — choose your fighting style
         </span>
         <h2 className="dsec__title">hackathon tracks</h2>
       </div>
@@ -53,6 +53,8 @@ export default function Tracks() {
               className="tracks__art pixelated"
               src={`/assets/demo/tracks/${t.img}`}
               alt={`${t.name} track illustration`}
+              loading="lazy"
+              decoding="async"
             />
             <div className="tracks__top">
               <span className="dindex">{t.n}</span>

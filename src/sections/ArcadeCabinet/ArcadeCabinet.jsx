@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import './ArcadeCabinet.css'
 import Cabinet3DMount from '@/components/Cabinet3D/Cabinet3DMount'
+import Error3DBoundary from '@/components/Error3DBoundary/Error3DBoundary'
 import { playSfx } from '@/effects/audio/arcadeAudio'
 
 /**
@@ -264,12 +265,25 @@ export default function ArcadeCabinet() {
         {/* a <div>, NOT a link: the canvas needs its pointer events for the 3D
             button hotspots; navigation lives on the meshes + the link below */}
         <div className="cabinet__unit cabinet__unit--3d">
-          <Cabinet3DMount
-            armed={armed}
-            pinned={pinned}
-            actProgressRef={actProgressRef}
-            onSupported={onSupported}
-          />
+          <Error3DBoundary
+            onError={() => onSupported(false)}
+            fallback={
+              <img
+                className="cab3d__fallback"
+                src="/assets/demo/arcade-machine.webp"
+                alt="Arcade cabinet — play AI Marketing Kombat"
+                loading="lazy"
+                decoding="async"
+              />
+            }
+          >
+            <Cabinet3DMount
+              armed={armed}
+              pinned={pinned}
+              actProgressRef={actProgressRef}
+              onSupported={onSupported}
+            />
+          </Error3DBoundary>
         </div>
 
         {/* while the opaque handoff covers this link it leaves the tab order —
@@ -304,6 +318,8 @@ export default function ArcadeCabinet() {
               src="/game/stages/enterprise.png"
               alt=""
               draggable="false"
+              loading="lazy"
+              decoding="async"
             />
             {/* a real <button> so the takeover has a focusable control with a
                 visible ring (focus is moved here while live). No onClick of its

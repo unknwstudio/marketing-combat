@@ -2,7 +2,7 @@
 .announce {
   position: fixed;
   inset: 0;
-  z-index: 1200;
+  z-index: var(--z-announce);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,14 +14,14 @@
   font-family: var(--k-font-accent);
   font-size: clamp(40px, 11vw, 160px);
   line-height: 1;
-  color: #ffd000;
+  color: var(--k-title-yellow);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   white-space: nowrap;
-  -webkit-text-stroke: 0.03em #ff5000;
+  -webkit-text-stroke: 0.03em var(--k-orange);
   paint-order: stroke fill;
   text-shadow:
-    0 0 0.08em #ff5000,
+    0 0 0.08em var(--k-orange),
     0 0 0.2em rgba(255, 80, 0, 0.7);
   animation: announce-slam 0.34s cubic-bezier(0.2, 1.4, 0.3, 1) both,
     announce-out 0.3s ease-in 1s both;

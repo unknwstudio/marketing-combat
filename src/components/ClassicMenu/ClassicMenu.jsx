@@ -30,15 +30,18 @@ export default function ClassicMenu() {
     <div className="c-menu" ref={ref}>
       <nav className="c-menu__card" aria-label="Page menu">
         <div className="c-menu__links">
-          <a className="c-menu__link" href="#">
+          {/* /classic doesn't carry these sections itself — they live on the
+              full /demo tour, so these are cross-page anchors (same pattern
+              as the hero's registration badge). */}
+          <a className="c-menu__link" href="/demo#format">
             How it works
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
-          <a className="c-menu__link" href="#">
+          <a className="c-menu__link" href="/demo#judges">
             Judges
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
-          <a className="c-menu__link" href="#">
+          <a className="c-menu__link" href="/demo#faq">
             FAQs
           </a>
           <span className="c-menu__rule" aria-hidden="true" />

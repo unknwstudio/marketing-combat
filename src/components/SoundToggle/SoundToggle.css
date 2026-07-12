@@ -1,16 +1,16 @@
-/* Arcade mute pill, bottom-left. */
+/* Arcade mute pill, bottom-left on desktop. */
 .sndtoggle {
   position: fixed;
   left: 16px;
   bottom: 16px;
-  z-index: 1000;
+  z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #fff;
-  color: #3ad76f;
+  color: var(--k-accent-green);
   font-family: var(--k-font-mono);
   font-size: 14px;
   letter-spacing: -0.3px;
@@ -20,9 +20,9 @@
 }
 
 .sndtoggle:hover {
-  background: #3ad76f;
+  background: var(--k-accent-green);
   color: #000;
-  border-color: #3ad76f;
+  border-color: var(--k-accent-green);
 }
 
 .sndtoggle--off {
@@ -77,8 +77,15 @@
 
 @media (max-width: 639px) {
   .sndtoggle {
+    /* was bottom-left, same as desktop — on narrow screens the
+       ModeSwitcher pill (bottom, centered, no responsive layout of its
+       own) is wide enough to sit directly on top of this corner. Moving
+       to top-left clears it instead of shrinking either control.
+       top:80px clears /demo's DemoNav strip too (measured 30-67.6px on a
+       390px viewport, centered but wide enough to reach this corner). */
     left: 10px;
-    bottom: 10px;
+    bottom: auto;
+    top: 80px;
     padding: 6px 9px;
     font-size: 11px;
   }

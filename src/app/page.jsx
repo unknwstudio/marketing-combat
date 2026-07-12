@@ -22,13 +22,18 @@ import Fighters from '@/sections/Fighters/Fighters'
 export default function Page() {
   return (
     <div className="app">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
       <JuiceProvider>
         <HitSparks>
           <PixelCursor enabled>
             <ScaleCanvas width={1440}>
-              <Hero />
-              <Champion />
-              <Fighters />
+              <main id="main">
+                <Hero />
+                <Champion />
+                <Fighters />
+              </main>
             </ScaleCanvas>
           </PixelCursor>
         </HitSparks>

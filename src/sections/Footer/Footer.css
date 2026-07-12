@@ -23,7 +23,7 @@
   font-family: var(--k-font-mono);
   font-size: 22px;
   letter-spacing: 0;
-  color: #ffd000;
+  color: var(--k-title-yellow);
   text-transform: uppercase;
 }
 
@@ -46,8 +46,9 @@
   gap: 10px;
 }
 
-.footer__links a {
-  color: #3ad76f;
+.footer__links a,
+.footer__linkPending {
+  color: var(--k-accent-green);
 }
 
 .footer__links a:hover {

@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import Hero from '@/sections/Hero/Hero'
+import Error3DBoundary from '@/components/Error3DBoundary/Error3DBoundary'
 import './HeroStage.css'
 
 // three/R3F are client-only + heavy → load on the client, out of the static build
@@ -38,7 +39,14 @@ export default function HeroStage() {
       <div className="herostage__flat">
         <Hero />
       </div>
-      {use3D && <HeroDisplay3D />}
+      {/* the flat Hero above already renders everything — this is a purely
+          additive 3D overlay, so a crash here just falls back to nothing
+          (not to a broken page) */}
+      {use3D && (
+        <Error3DBoundary fallback={null}>
+          <HeroDisplay3D />
+        </Error3DBoundary>
+      )}
     </div>
   )
 }
