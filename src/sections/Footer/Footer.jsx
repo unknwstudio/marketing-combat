@@ -1,65 +1,23 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import './Footer.css'
 
-const PAYOFF = 'YOU SURVIVED'
-
 /**
- * Footer — two distinct beats, not one loud one.
- *
- * 1. The payoff: Hero opens with "will you survive?" — this is the answer,
- *    for anyone who actually scrolled the full ~16 000px tour. Letters slam
- *    in one at a time (steps() stagger, once, on scroll-into-view) instead
- *    of fading, matching the site's house "quantized, never smooth" motion
- *    rule. Reduced-motion: the full word renders instantly, no stagger.
- * 2. Everything below — brand line + legal — stays deliberately quiet (small,
- *    muted, no glow). Dropped the old "GAME OVER" line here on purpose: right
- *    under "YOU SURVIVED" it read as a contradiction (lost vs. made it), and
- *    a quiet footer shouldn't carry a second loud statement anyway.
+ * Footer — the end-of-tour payoff is a full-viewport arcade call-out (see
+ * Announcer, which watches data-announce/data-sound/data-announce-burst
+ * below), the same system used for "FIGHT!" / "STAGE 0X" / "FINISH HIM"
+ * elsewhere on /demo. The footer itself stays deliberately quiet once the
+ * flash fades — no second loud element competing with that moment.
  */
 export default function Footer() {
-  const ref = useRef(null)
-  const [revealed, setRevealed] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el || typeof IntersectionObserver === 'undefined') return
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      setRevealed(true)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return
-        setRevealed(true)
-        io.disconnect()
-      },
-      { threshold: 0.6 }
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
   return (
-    <footer className="dsec footer" aria-label="Footer">
-      <div className="footer__payoff" ref={ref}>
-        <span className="footer__kicker">full tour cleared</span>
-        <h2 className={'footer__survived' + (revealed ? ' footer__survived--in' : '')}>
-          {PAYOFF.split('').map((ch, i) => (
-            <span
-              key={i}
-              className="footer__letter"
-              aria-hidden="true"
-              style={{ '--i': i }}
-            >
-              {ch === ' ' ? ' ' : ch}
-            </span>
-          ))}
-          <span className="sr-only">{PAYOFF}</span>
-        </h2>
-      </div>
-
+    <footer
+      className="dsec footer"
+      aria-label="Footer"
+      data-announce="YOU SURVIVED"
+      data-sound="win"
+      data-announce-burst
+    >
       <div className="footer__quiet">
         <span className="footer__title">AI MARKETING KOMBAT · JULY 2026 · BARCELONA</span>
         <div className="footer__legal">

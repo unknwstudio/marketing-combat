@@ -1,4 +1,6 @@
-/* Two beats: a loud payoff, then a quiet footer — see Footer.jsx. */
+/* Quiet legal footer — the loud payoff moment lives in the arcade Announcer
+   (Footer.jsx tags <footer> with data-announce/data-sound/data-announce-burst),
+   not here. This block stays deliberately understated. */
 .footer {
   display: flex;
   flex-direction: column;
@@ -10,76 +12,6 @@
   background: #000;
   border-top: 2px solid var(--k-line);
 }
-
-/* --- beat 1: the payoff ------------------------------------------------ */
-
-.footer__payoff {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.footer__kicker {
-  font-family: var(--k-font-mono);
-  font-size: 22px;
-  letter-spacing: -0.5px;
-  color: var(--k-accent-green);
-  text-transform: uppercase;
-}
-
-.footer__survived {
-  margin: 0;
-  font-family: var(--k-font-accent);
-  font-size: 80px;
-  font-weight: 500;
-  line-height: 1;
-  text-transform: lowercase;
-  color: var(--k-title-yellow);
-  -webkit-text-stroke: 0.04em var(--k-orange);
-  paint-order: stroke fill;
-  text-shadow:
-    0 0 0.05em var(--k-orange),
-    0 0 0.14em rgba(255, 80, 0, 0.6);
-}
-
-/* one letter at a time, hard scale-in — never a fade, this is a slam */
-.footer__letter {
-  display: inline-block;
-  opacity: 0;
-  transform: scale(2.2);
-}
-
-.footer__survived--in .footer__letter {
-  animation: footer-letter-slam 0.32s steps(4, end) forwards;
-  animation-delay: calc(var(--i) * 45ms);
-}
-
-@keyframes footer-letter-slam {
-  0% {
-    opacity: 0;
-    transform: scale(2.2);
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .footer__letter {
-    opacity: 1;
-    transform: none;
-  }
-  .footer__survived--in .footer__letter {
-    animation: none;
-  }
-}
-
-/* --- beat 2: quiet ------------------------------------------------------- */
 
 .footer__quiet {
   display: flex;
@@ -133,14 +65,6 @@
        on top of the page everywhere, footer included — extra clearance here
        so "Legal information / Code of conduct / Privacy" isn't hidden under it */
     padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .footer__kicker {
-    font-size: 13px;
-  }
-
-  .footer__survived {
-    font-size: clamp(32px, 11vw, 56px);
   }
 
   .footer__title {
