@@ -148,12 +148,20 @@
 /* Figma 34:4081: GT Pressura Mono Regular, 24px, white, -0.72px, lowercase
    (no text stroke). Bottom-anchored so the taller 24px button stays flush with
    the section's bottom edge (Figma frame ends at y=924) and is not clipped by
-   the section's overflow:hidden. */
+   the section's overflow:hidden. Centered via left/right + margin auto, NOT
+   transform: MagneticCTA (data-magnetic, see Champion.jsx) drives this
+   element's transform on hover, and setting el.style.transform overwrites
+   the whole property rather than composing with it — a translateX(-50%) here
+   would get wiped out the instant a hover starts, snapping the button ~half
+   its width sideways and out from under the cursor (which then reads as the
+   button jittering and fleeing on approach). */
 .champion__cta {
   position: absolute;
   bottom: -18px; /* overlap the seam so the lightning bolt emerges from under the button (no gap) */
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin-inline: auto;
   z-index: 5;
   padding: 8px 8px 10px;
   background: #000;
@@ -242,6 +250,9 @@
     position: static;
     top: auto;
     left: auto;
+    right: auto;
+    width: auto;
+    margin-inline: 0;
     transform: none;
   }
 }
