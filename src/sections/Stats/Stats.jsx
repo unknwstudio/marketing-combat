@@ -21,6 +21,17 @@ import './Stats.css'
  * allowed, and each strip's travel is computed (then pinned in onComplete) so
  * it lands EXACTLY on the real digit. Screen readers get a visually-hidden
  * copy of the value; the spinning strips are aria-hidden decoration.
+ *
+ * Digit-box width: while spinning, every digit window is left at its natural
+ * shrink-to-fit width (wide enough for the widest 0-9 glyph in the accent
+ * font) so no frame of the reel gets clipped. But that font is proportional —
+ * "1" renders roughly half as wide as "0" — so a narrow final digit centered
+ * in that wide box leaves visible dead space beside it (e.g. "$100M+" reads
+ * with a gap between "1" and "00"). Once every digit in a stat has landed
+ * (tracked per .stats__odo group so a still-spinning neighbor never gets
+ * shoved sideways), pinGroupWidths re-measures each landed glyph with a DOM
+ * Range and collapses its box to that exact width, matching how the plain
+ * (unspun) text lays out.
  */
 const STATS = [
   { prefix: '', count: 1, suffix: '', unit: 'st', caption: 'International hackathon' },
@@ -62,6 +73,20 @@ export default function Stats() {
     const finalTransform = (travel) =>
       `translateY(${(-travel * 100) / (travel + 1)}%)`
 
+    // collapse every digit in a landed stat to its own glyph's natural width
+    // (in em, so it keeps tracking the responsive font-size breakpoints)
+    // instead of the wide shrink-to-fit box sized for the widest 0-9 frame
+    const pinGroupWidths = (odo) => {
+      odo.querySelectorAll('.stats__digit').forEach((digit) => {
+        const finalGlyph = digit.querySelector('.stats__strip').lastElementChild
+        const range = document.createRange()
+        range.selectNodeContents(finalGlyph)
+        const widthPx = range.getBoundingClientRect().width
+        const fontSizePx = parseFloat(getComputedStyle(digit).fontSize)
+        digit.style.width = `${widthPx / fontSizePx}em`
+      })
+    }
+
     // same trigger timing as the old count-up: fire once at 40% visibility
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -72,9 +97,18 @@ export default function Stats() {
           try {
             const { gsap } = await import('gsap')
             if (cancelled) return
+            // per-stat countdown so width-pinning only runs once ALL of that
+            // stat's digits have landed — pinning mid-spin would yank a
+            // still-spinning neighbor sideways as its box narrows
+            const remaining = new Map()
+            strips.forEach((strip) => {
+              const odo = strip.closest('.stats__odo')
+              remaining.set(odo, (remaining.get(odo) || 0) + 1)
+            })
             strips.forEach((strip) => {
               const travel = Number(strip.dataset.travel)
               const col = Number(strip.dataset.col)
+              const odo = strip.closest('.stats__odo')
               // one digit, in % of strip height (4 decimals keeps gsap's snap
               // increment sane; the residual error is < 0.2px, and onComplete
               // pins the mathematically exact resting offset anyway)
@@ -94,6 +128,9 @@ export default function Stats() {
                     snap: { yPercent: step },
                     onComplete: () => {
                       strip.style.transform = finalTransform(travel)
+                      const left = remaining.get(odo) - 1
+                      remaining.set(odo, left)
+                      if (left === 0) pinGroupWidths(odo)
                     },
                   }
                 )
@@ -102,10 +139,13 @@ export default function Stats() {
           } catch {
             // gsap chunk failed to load: no spin, but the numbers MUST still
             // be right — park every strip on its final digit
-            if (!cancelled)
+            if (!cancelled) {
               strips.forEach((strip) => {
                 strip.style.transform = finalTransform(Number(strip.dataset.travel))
               })
+              const odoEls = new Set(strips.map((strip) => strip.closest('.stats__odo')))
+              odoEls.forEach(pinGroupWidths)
+            }
           }
         })()
       },
