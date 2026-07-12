@@ -72,6 +72,11 @@ export default function Page() {
               so it must sit INSIDE the HitSparks provider (outside it the
               hook returns the no-op fallback and taps silently do nothing) */}
           <ClickBurst />
+          {/* also needs useSparks() for its own opt-in data-announce-burst
+              flash burst (the footer's end-of-tour payoff); its overlay is
+              portalled to <body>, so where it sits in this tree only affects
+              which providers it can read from, not where it renders */}
+          <Announcer />
           <PixelCursor enabled>
             {/* zoom (not transform) so scroll math + GSAP ScrollTrigger pins
                 stay layout-accurate; transform:scale drifts pinned elements.
@@ -96,10 +101,6 @@ export default function Page() {
             </ScaleCanvas>
           </PixelCursor>
         </HitSparks>
-
-        {/* inside the provider so it can trigger screen-shake; its overlay is
-            portalled to <body> so the fixed positioning stays viewport-correct */}
-        <Announcer />
       </JuiceProvider>
 
       {/* fixed overlays live OUTSIDE JuiceProvider — its `will-change: transform`
