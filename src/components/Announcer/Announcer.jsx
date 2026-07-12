@@ -3,18 +3,21 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useJuice } from '@/effects/juice/useJuice'
+import { useSparks } from '@/effects/particles/HitSparks'
 import { playSfx } from '@/effects/audio/arcadeAudio'
 import './Announcer.css'
 
 /**
  * Announcer — arcade "ROUND / FIGHT / FINISH HIM" call-outs. Watches elements
- * tagged `data-announce="TEXT"` (optional `data-sound="clip"`); when one scrolls
- * into view it slams a big pixel title center-screen, shakes the stage, and —
- * only after the user has interacted (autoplay policy) — plays the VO clip.
- * Each fires once.
+ * tagged `data-announce="TEXT"` (optional `data-sound="clip"`, optional
+ * `data-announce-burst` for a center-screen HitSparks particle burst); when
+ * one scrolls into view it slams a big pixel title center-screen, shakes the
+ * stage, and — only after the user has interacted (autoplay policy) — plays
+ * the VO clip. Each fires once.
  */
 export default function Announcer() {
   const { shake } = useJuice()
+  const { burst } = useSparks()
   const [msg, setMsg] = useState(null)
 
   useEffect(() => {
@@ -33,6 +36,12 @@ export default function Announcer() {
           shake(7)
           const sound = el.getAttribute('data-sound')
           if (sound) playSfx(sound, 0.45)
+          // opt-in: a handful of call-outs (the end-of-tour payoff) also want
+          // a confetti-style particle burst, unlike mid-page ones ("FIGHT!",
+          // "STAGE 0X") which don't set this attribute and are unaffected.
+          if (el.hasAttribute('data-announce-burst')) {
+            burst(window.innerWidth / 2, window.innerHeight / 2, { count: 40, power: 2.2 })
+          }
           window.clearTimeout(hideTimer)
           hideTimer = window.setTimeout(() => setMsg(null), 1300)
           io.unobserve(el)
@@ -45,7 +54,7 @@ export default function Announcer() {
       io.disconnect()
       window.clearTimeout(hideTimer)
     }
-  }, [shake])
+  }, [shake, burst])
 
   if (!msg || typeof document === 'undefined') return null
 
