@@ -9,7 +9,7 @@ import './Fighters.css'
 const FIGHTERS = [
   { img: 'fighter1.webp', label: 'CMOs' },
   { img: 'fighter2.webp', label: 'HEADS OF GROWTH' },
-  { img: 'fighter3.webp', label: 'PERFORMANCE LEAD GEN', selected: true },
+  { img: 'fighter3.webp', label: 'PERFORMANCE LEAD GEN' },
   { img: 'fighter4.webp', label: 'AI CREATORS' },
   { img: 'fighter5.webp', label: '…& FUTURE LEGENDS' },
 ]
@@ -38,16 +38,33 @@ export default function Fighters() {
           {FIGHTERS.map((f) => (
             <li
               key={f.label}
-              className={
-                'fighters__card' +
-                (f.selected ? ' fighters__card--selected' : '')
-              }
+              className="fighters__card"
               data-select-sfx="hit"
               /* deliberately NOT focusable: the card does nothing on Enter,
                  so a tab stop would add 5 dead stops on the way to the real
                  CTAs and make screen readers announce whole cards as
                  actionable. The marching ants stay a hover flourish. */
             >
+              {/* strikes down from the section's arena glow into whichever
+                  card is hovered — hidden by default, flashed in on hover
+                  (see .fighters__bolt in Fighters.css). A fresh layer, not
+                  a crop of fighters__bg: that background is one flat
+                  composite image with its own bolt painted into it once,
+                  aimed at nothing in particular. */}
+              <svg
+                className="fighters__bolt"
+                aria-hidden="true"
+                viewBox="0 0 40 200"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M22 0 L14 62 L24 66 L10 132 L18 136 L4 200 L20 118 L11 113 L26 54 L16 50 Z"
+                  fill="#eaffff"
+                  stroke="#3fe0ff"
+                  strokeWidth="2"
+                  strokeLinejoin="miter"
+                />
+              </svg>
               <div className="fighters__frame">
                 <img
                   className="fighters__portrait"
@@ -57,9 +74,6 @@ export default function Fighters() {
                   decoding="async"
                 />
                 <span className="fighters__sweep" aria-hidden="true" />
-                <span className="fighters__select" aria-hidden="true">
-                  {'>>> select <<<'}
-                </span>
               </div>
               <div className="fighters__label">{f.label}</div>
             </li>

@@ -24,10 +24,21 @@ export default function MagneticCTA() {
 
       const strength = 0.3
       let raf = 0
-      const onMove = (e) => {
+      let origin = null // untransformed center, captured once per hover session
+      const onEnter = () => {
+        // el.style.transform is '' here (onLeave always clears it before this
+        // can fire again), so this rect is the true layout position — reading
+        // it fresh on every pointermove instead would measure the element
+        // AFTER last frame's translate, feeding the offset back into itself
+        // (each move's target center drifts toward wherever the cursor just
+        // was), which reads as exactly this: jittery, runaway motion.
         const r = el.getBoundingClientRect()
-        const dx = (e.clientX - (r.left + r.width / 2)) * strength
-        const dy = (e.clientY - (r.top + r.height / 2)) * strength
+        origin = { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+      }
+      const onMove = (e) => {
+        if (!origin) onEnter()
+        const dx = (e.clientX - origin.x) * strength
+        const dy = (e.clientY - origin.y) * strength
         cancelAnimationFrame(raf)
         raf = requestAnimationFrame(() => {
           el.style.transform = `translate(${dx}px, ${dy}px)`
@@ -36,7 +47,9 @@ export default function MagneticCTA() {
       const onLeave = () => {
         cancelAnimationFrame(raf)
         el.style.transform = ''
+        origin = null
       }
+      el.addEventListener('pointerenter', onEnter)
       el.addEventListener('pointermove', onMove)
       el.addEventListener('pointerleave', onLeave)
       cleanups.push(() => {

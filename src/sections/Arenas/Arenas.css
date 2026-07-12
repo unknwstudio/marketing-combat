@@ -1,8 +1,10 @@
-/* 2x2 grid of case-track cards. */
+/* One row of 4 compact case-track cards (was a 2x2 grid of much taller,
+   photo-led cards — the section was one of the longest scroll stretches
+   on /demo for what's fundamentally a 4-item comparison). */
 .arenas__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -11,7 +13,8 @@
 .arenas__card {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
+  padding: 18px;
 }
 
 .arenas__art {
@@ -25,13 +28,13 @@
 .arenas__top {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .arenas__track {
   font-family: var(--k-font-mono);
-  font-size: 18px;
-  letter-spacing: -0.5px;
+  font-size: 13px;
+  letter-spacing: -0.3px;
   color: var(--k-orange);
   text-transform: uppercase;
 }
@@ -39,29 +42,34 @@
 .arenas__name {
   margin: 0;
   font-family: var(--k-font-accent);
-  font-size: 40px;
+  font-size: 26px;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.1;
   text-transform: lowercase;
   color: var(--k-title-yellow);
 }
 
+/* clamped to 2 lines so the mission stays readable without re-tallying the
+   card back up to its old height at a quarter of the width */
 .arenas__body {
   flex: 1;
   font-family: var(--k-font-mono);
-  font-size: 22px;
+  font-size: 14px;
   line-height: 1.4;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
   color: var(--k-body-green);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .arenas__meta {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding-top: 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding-top: 12px;
   border-top: 2px solid var(--k-line);
 }
 
@@ -79,8 +87,8 @@
 
 .arenas__difLabel {
   font-family: var(--k-font-mono);
-  font-size: 16px;
-  letter-spacing: -0.3px;
+  font-size: 12px;
+  letter-spacing: -0.2px;
   color: #7f7f7f;
   text-transform: uppercase;
 }
@@ -88,7 +96,7 @@
 .arenas__stars {
   display: inline-flex;
   gap: 2px;
-  font-size: 20px;
+  font-size: 15px;
   line-height: 1;
 }
 

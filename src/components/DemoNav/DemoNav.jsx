@@ -4,15 +4,16 @@ import { useEffect, useState } from 'react'
 import './DemoNav.css'
 
 /**
- * DemoNav — "LEVEL SELECT" strip for the ~16 400px /demo tour. Five anchors
- * (prizes / judges / format / faq / register) so the tour is never more than
- * one click from any point — the page has 17 sections and, before this, no
- * way to jump between them. Sits directly under ScrollHealth's bar and
- * follows the same show/hide-over-hero rule so the two read as one HUD.
+ * DemoNav — "LEVEL SELECT" strip for the ~16 400px /demo tour. Anchors
+ * (prizes / format / faq / register) so the tour is never more than one
+ * click from any point. Sits directly under ScrollHealth's bar and follows
+ * the same show/hide-over-hero rule so the two read as one HUD.
+ * Ordered to match the page's own section order, not alphabetically or by
+ * "importance" — a nav that jumps ahead of itself is more confusing than
+ * none. ("judges" removed while that section is hidden — see demo/page.jsx.)
  */
 const LINKS = [
   { href: '#prizes', label: 'prizes' },
-  { href: '#judges', label: 'judges' },
   { href: '#format', label: 'format' },
   { href: '#faq', label: 'faq' },
   { href: '#register', label: 'register' },

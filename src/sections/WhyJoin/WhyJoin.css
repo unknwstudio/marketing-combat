@@ -55,10 +55,6 @@
   color: var(--k-body-green);
 }
 
-.whyjoin__tag {
-  align-self: flex-start;
-}
-
 @media (max-width: 1023px) {
   .whyjoin__grid {
     grid-template-columns: repeat(2, 1fr);

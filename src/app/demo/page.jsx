@@ -22,11 +22,10 @@ import Tracks from '@/sections/Tracks/Tracks'
 import Arenas from '@/sections/Arenas/Arenas'
 import Stages from '@/sections/Stages/Stages'
 import ArcadeCabinet from '@/sections/ArcadeCabinet/ArcadeCabinet'
-import Judges from '@/sections/Judges/Judges'
-import Organizers from '@/sections/Organizers/Organizers'
-import Leaderboard from '@/sections/Leaderboard/Leaderboard'
+// Judges, Organizers, Leaderboard, Sponsors: hidden for now (not ready yet) —
+// components untouched, just unmounted from the page. Re-add the imports +
+// JSX below to bring them back.
 import Faq from '@/sections/Faq/Faq'
-import Sponsors from '@/sections/Sponsors/Sponsors'
 import FinalCta from '@/sections/FinalCta/FinalCta'
 import Footer from '@/sections/Footer/Footer'
 
@@ -41,7 +40,12 @@ import ScrollReveal from '@/components/ScrollReveal/ScrollReveal'
 import RGBSplitFilter from '@/components/RGBSplitFilter/RGBSplitFilter'
 import SelectSfx from '@/components/SelectSfx/SelectSfx'
 import GlitchTitles from '@/components/GlitchTitles/GlitchTitles'
-import RoundMoments from '@/components/RoundMoments/RoundMoments'
+// RoundMoments: a full-viewport (mix-blend-mode: screen) "STAGE 0X" placard
+// that pins over WHATEVER is on screen while its section is in the scroll
+// range — it doesn't stay confined to its own section, so it was bleeding
+// over the arcade cabinet and other neighbors, obscuring their content
+// with a giant number that isn't tied to anything the visitor can act on.
+// Unmounted; component untouched if this is worth revisiting later.
 import AttractTitle from '@/components/AttractTitle/AttractTitle'
 import AttractMode from '@/components/AttractMode/AttractMode'
 import VsSplash from '@/components/VsSplash/VsSplash'
@@ -85,11 +89,7 @@ export default function Page() {
                 <Arenas />
                 <Stages />
                 <ArcadeCabinet />
-                <Judges />
-                <Organizers />
-                <Leaderboard />
                 <Faq />
-                <Sponsors />
                 <FinalCta />
               </main>
               <Footer />
@@ -113,7 +113,6 @@ export default function Page() {
       <SelectSfx />
       <ScrollReveal />
       <GlitchTitles />
-      <RoundMoments />
       <AttractTitle />
       <AttractMode />
       {/* floating PLAY entry, same as / — the cabinet is a full scroll away,

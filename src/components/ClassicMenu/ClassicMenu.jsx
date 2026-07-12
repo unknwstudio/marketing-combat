@@ -37,10 +37,8 @@ export default function ClassicMenu() {
             How it works
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
-          <a className="c-menu__link" href="/demo#judges">
-            Judges
-          </a>
-          <span className="c-menu__rule" aria-hidden="true" />
+          {/* Judges dropped while that /demo section is hidden — see
+              src/app/demo/page.jsx */}
           <a className="c-menu__link" href="/demo#faq">
             FAQs
           </a>

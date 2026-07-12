@@ -14,12 +14,9 @@ import './Stats.css'
  * whole-digit offsets, so every mid-spin frame shows a complete glyph —
  * quantized, pixel-honest motion, never a sheared half-digit. The rightmost
  * column travels the most revolutions and runs the longest, so the score
- * ratchets to rest left-to-right like an arcade cabinet tally. Values carry
- * one column of leading-zero padding (300 -> "0300") for the score-readout
- * look while keeping "01st" legible (a uniform 4-wide pad would give
- * "0001st").
+ * ratchets to rest left-to-right like an arcade cabinet tally.
  *
- * Correctness: SSR / no-JS / reduced-motion render the FINAL padded number as
+ * Correctness: SSR / no-JS / reduced-motion render the FINAL number as
  * plain text — the odometer markup only swaps in after mount when motion is
  * allowed, and each strip's travel is computed (then pinned in onComplete) so
  * it lands EXACTLY on the real digit. Screen readers get a visually-hidden
@@ -32,8 +29,7 @@ const STATS = [
   { prefix: '$', count: 100, suffix: 'M', unit: '+', caption: 'Budget under management' },
 ]
 
-// one leading zero of arcade-score padding: 300 -> "0300", 1 -> "01"
-const pad = (n) => `0${n}`
+const pad = (n) => `${n}`
 
 // spin choreography (seconds); col = digit index from the LEFT, so the
 // rightmost digit starts last and spins longest

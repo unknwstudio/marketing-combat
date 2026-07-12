@@ -33,10 +33,17 @@ const ROUND_TIME = 60; // seconds/round; on time-over the higher-HP fighter wins
 // single mashed move can't true-loop the opponent (the old flat 340ms > the 250ms punch
 // re-hit interval was a touch-of-death infinite). The defender always regains a tick to
 // block/jump; combos come from cancels (later), not from stun outlasting recovery.
+// `cost` = STAMINA (see STAMINA_PROFILES below) — the real rate limiter. Recovery frames
+// alone let a player throw a fresh punch every ~280ms forever; stamina means that pace
+// runs out after a few hits, same as it now costs the CPU nothing (its own tempo is
+// already gated by aiTimer) — so the fix is symmetric, not a player-only nerf.
+// `jumpkick` reuses the KICK sprite frame on purpose (no new art for 6 rosters+boss) —
+// see control()'s airborne branch for how it's triggered.
 const ATTACK = {
-  punch:   { pose: POSE.punch,   startup: 55,  active: 75,  recovery: 150, dmg: 7,  reach: 60,  hy: [95, 150], hitstun: 200 },
-  kick:    { pose: POSE.kick,    startup: 85,  active: 95,  recovery: 205, dmg: 11, reach: 80,  hy: [95, 162], hitstun: 280 },
-  special: { pose: POSE.special, startup: 130, active: 170, recovery: 260, dmg: 17, reach: 104, hy: [100, 168], hitstun: 360 },
+  punch:    { pose: POSE.punch,   startup: 55,  active: 75,  recovery: 150, dmg: 7,  reach: 60,  hy: [95, 150], hitstun: 200, cost: 18 },
+  kick:     { pose: POSE.kick,    startup: 85,  active: 95,  recovery: 205, dmg: 11, reach: 80,  hy: [95, 162], hitstun: 280, cost: 26 },
+  special:  { pose: POSE.special, startup: 130, active: 170, recovery: 260, dmg: 17, reach: 104, hy: [100, 168], hitstun: 360, cost: 42 },
+  jumpkick: { pose: POSE.kick,    startup: 60,  active: 90,  recovery: 160, dmg: 9,  reach: 66,  hy: [90, 160], hitstun: 240, cost: 22 },
 };
 for (const k in ATTACK) ATTACK[k].total = ATTACK[k].startup + ATTACK[k].active + ATTACK[k].recovery;
 
@@ -51,6 +58,23 @@ export const ROSTER = [
   { key: 'fighter4', name: 'AI CREATORS',          color: 0xffcf3f, style: 'HEAVY',     hp: 124, speed: 80,  dmg: 1.32, reach: 1.08, atkSpeed: 0.80 },
   { key: 'fighter5', name: 'FUTURE LEGENDS',       color: 0xb08bff, style: 'ASSASSIN',  hp: 84,  speed: 126, dmg: 0.85, reach: 0.98, atkSpeed: 1.22 },
 ];
+// Stamina pool per archetype — same identity axis as the ROSTER stat block above,
+// just spent on ATTACK.*.cost instead of dmg/reach/speed. max/regen (stamina per
+// second) both echo the style: HEAVY carries a big tank that refills slowly (a wall
+// that can still out-mash you if you don't respect it); ASSASSIN is the opposite
+// (small pool, fast refill — hit-and-run, not sustained pressure); RUSHDOWN gets a
+// bigger pool since its whole identity is throwing a lot of hits.
+const STAMINA_PROFILES = {
+  ZONER:       { max: 100, regen: 20 },
+  RUSHDOWN:    { max: 120, regen: 24 },
+  'ALL-ROUND': { max: 100, regen: 22 },
+  HEAVY:       { max: 130, regen: 14 },
+  ASSASSIN:    { max: 80,  regen: 30 },
+};
+const BOSS_STAMINA = { max: 150, regen: 26 }; // THE ALGORITHM doesn't get winded like the fighters do
+function staminaProfileFor(style) {
+  return STAMINA_PROFILES[style] || STAMINA_PROFILES['ALL-ROUND'];
+}
 // The four BATTLE ARENAS from the landing's ROUND 04 section (same art,
 // downscaled to the game's 480x270) — you fight IN the case tracks the site
 // promises, not in generic fantasy sets. Keys mirror the landing image names.
@@ -339,12 +363,14 @@ function drawStats(scene, idx) {
 function makeFighter(scene, key, x, faceRight, isPlayer) {
   const st = ROSTER.find((r) => r.key === key);
   const spr = scene.add.sprite(x, FLOOR_Y, key, POSE.idle).setOrigin(0.5, 1).setDepth(10);
+  const stam = staminaProfileFor(st.style);
   return {
     spr, isPlayer, key, stats: st, startX: x, startFace: faceRight,
     kin: { x, y: FLOOR_Y, vx: 0, vy: 0, grounded: true },
     dir: faceRight ? 1 : -1,
     action: null, hp: st.hp, hpMax: st.hp, ghostHp: st.hp, ghostDelay: 0, tookDamage: false,
     hitstun: 0, blockstun: 0, wakeBlock: 0, blocking: false, koed: false, dazed: false, pose: POSE.idle, flash: 0,
+    stamina: stam.max, staminaMax: stam.max, staminaRegen: stam.regen, denyFlash: 0,
   };
 }
 function resetFighter(f) {
@@ -352,6 +378,7 @@ function resetFighter(f) {
   f.dir = f.startFace ? 1 : -1;
   f.action = null; f.hp = f.hpMax; f.ghostHp = f.hpMax; f.ghostDelay = 0; f.tookDamage = false;
   f.hitstun = 0; f.blockstun = 0; f.wakeBlock = 0; f.blocking = false; f.koed = false; f.dazed = false; f.pose = POSE.idle; f.flash = 0;
+  f.stamina = f.staminaMax; f.denyFlash = 0; // full stamina every round, same as a fresh HP bar
   // restore render state — a fatality (e.g. UNSUBSCRIBED fades the sprite to alpha 0) must not
   // bleed into the next round, since rematch/restart reuse the same sprite (never scene.start).
   if (f.spr) { f.spr.setAlpha(1); f.spr.clearTint(); f.spr.setScale(1); }
@@ -396,6 +423,7 @@ function fightCreate() {
   if (this.boss) { // THE ALGORITHM: buffed stats over the base atlas
     this.o.stats = { key: BOSS.atlas, name: BOSS.name, color: BOSS.color, style: 'HEAVY', hp: BOSS.hp, speed: BOSS.speed, dmg: BOSS.dmg, reach: BOSS.reach, atkSpeed: BOSS.atkSpeed };
     this.o.hp = this.o.hpMax = BOSS.hp;
+    this.o.stamina = this.o.staminaMax = BOSS_STAMINA.max; this.o.staminaRegen = BOSS_STAMINA.regen;
   }
 
   this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,A,D,W,SPACE,J,K,L,S,DOWN,R,ESC,ENTER,F,G,H');
@@ -417,7 +445,7 @@ function fightCreate() {
   this.animClock = 0;
   // aiProfile is set by startRound (round 1, always true on a fresh create) — its single source of
   // truth; nothing reads it before then, so don't compute a second one here.
-  this.aiTimer = 700; this.aiBlock = 0;
+  this.aiTimer = 700; this.aiBlock = 0; this.aiJumpTimer = 900;
   this.pWins = 0; this.oWins = 0; this.round = 1;
   this.playerDmgMult = 1; this.shadowbanT = this.boss ? 9000 : 0; this.shadowbanActive = 0;
   this.combo = { owner: null, n: 0, t: 0 };
@@ -486,7 +514,7 @@ function startRound(scene) {
   // fresh match (round 1, incl. after a rematch) -> restore the baseline CPU difficulty
   // the per-round rubber band adapts away from.
   if (scene.round === 1) scene.aiProfile = baseAiProfile(scene); // fresh match -> baseline archetype/boss behaviour
-  scene.aiTimer = 700; scene.aiBlock = 0; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
+  scene.aiTimer = 700; scene.aiBlock = 0; scene.aiJumpTimer = 900; scene.hitstop = 0; scene.slowmoT = 0; scene._frozenDef = null;
   scene.playerDmgMult = 1; scene.shadowbanActive = 0; scene.shadowbanT = scene.boss ? 9000 : 0;
   scene.hideLoserBar = null;
   scene.roundClock = ROUND_TIME * 1000;
@@ -571,6 +599,11 @@ function separate(a, b) {
 
 function control(f, intent, dtMs) {
   f.blocking = false;
+  // stamina regen pauses only while an attack is actually playing out — mid-swing you're
+  // spending the pool you already committed, not refilling it. Runs even in hitstun/blockstun
+  // (getting hit doesn't tire you out further) so a defensive beat is also a recovery beat.
+  if (!f.action) f.stamina = Math.min(f.staminaMax, f.stamina + f.staminaRegen * dtMs / 1000);
+  if (f.denyFlash > 0) f.denyFlash -= dtMs;
   if (f.koed) { f.pose = POSE.ko; f.kin.vx *= 0.90; return; } // decay (not zero) so the KO launch arc plays out
   if (f.dazed) { f.pose = POSE.hit; f.kin.vx = 0; return; }    // finish-him: standing but defenceless
   if (f.hitstun > 0) { f.hitstun -= dtMs; if (f.hitstun <= 0 && !f.isPlayer) f.wakeBlock = 200; f.kin.vx *= 0.82; f.pose = POSE.hit; return; } // wakeBlock is read only by aiIntent (the CPU), so seed it only there
@@ -583,7 +616,25 @@ function control(f, intent, dtMs) {
     return;
   }
   if (f.blockstun > 0) { f.blockstun -= dtMs; f.kin.vx *= 0.82; f.pose = POSE.block; f.blocking = true; return; }
-  if (f.kin.grounded && intent.atk) { f.action = { type: intent.atk, e: 0, hasHit: false, windup: intent.telegraph || 0 }; f.kin.vx = 0; f.pose = ATTACK[intent.atk].pose; return; }
+  if (f.kin.grounded && intent.atk) {
+    const a = ATTACK[intent.atk];
+    if (f.stamina >= a.cost) {
+      f.stamina -= a.cost;
+      f.action = { type: intent.atk, e: 0, hasHit: false, windup: intent.telegraph || 0 };
+      f.kin.vx = 0; f.pose = a.pose;
+      return;
+    }
+    f.denyFlash = 220; // gassed — no swing this tick, falls through to block/movement below
+  } else if (!f.kin.grounded && intent.atk) {
+    const a = ATTACK.jumpkick; // reuses the KICK sprite frame — no new art for 6 rosters + boss
+    if (f.stamina >= a.cost) {
+      f.stamina -= a.cost;
+      f.action = { type: 'jumpkick', e: 0, hasHit: false, windup: 0 };
+      f.pose = a.pose; // vx untouched: a jump attack keeps the jump's own horizontal drift
+      return;
+    }
+    f.denyFlash = 220;
+  }
   if (intent.block && f.kin.grounded) { f.blocking = true; f.kin.vx = 0; f.pose = POSE.block; return; }
   f.kin.vx = (intent.right ? f.stats.speed : 0) - (intent.left ? f.stats.speed : 0);
   if (intent.jump && f.kin.grounded) { f.kin.vy = JUMP_V; f.kin.grounded = false; }
@@ -620,13 +671,17 @@ function intentFrom(scene, inp) {
 // per-fight CLONE of these (see endRound), reset to baseline each match in startRound.
 //   wantDist>0 = a spacer that retreats to that gap; tell>0 = special has a visible
 //   charge-up (gold blink + pause) you can react to / punish.
+// Moderate difficulty pass over every profile (tighter timers, better blocking, a
+// touch more aggression) plus a new jumpChance — how often the CPU throws in a
+// forward hop while approaching (see aiIntent's maybeJump). HEAVY barely leaves the
+// ground on purpose; ASSASSIN/RUSHDOWN use it as their mobility identity.
 const AI_PROFILES = {
-  //           block  wake  minDly maxDly aggr  wantDist retreat specialBias tell
-  ZONER:       { blockChance: 0.28, wake: 0.20, minDelay: 440, maxDelay: 980,  aggression: 0.55, wantDist: 132, retreat: 0.6,  specialBias: 0.7,  tell: 0 },   // keeps range, pokes special; corner it to win
-  RUSHDOWN:    { blockChance: 0.12, wake: 0.15, minDelay: 320, maxDelay: 700,  aggression: 0.95, wantDist: 0,   retreat: 0.0,  specialBias: 0.12, tell: 0 },   // never retreats, barely blocks; block + punish its over-commit
-  'ALL-ROUND': { blockChance: 0.26, wake: 0.22, minDelay: 520, maxDelay: 1080, aggression: 0.66, wantDist: 0,   retreat: 0.05, specialBias: 0.40, tell: 0 },   // the fair fight
-  HEAVY:       { blockChance: 0.44, wake: 0.28, minDelay: 620, maxDelay: 1240, aggression: 0.60, wantDist: 0,   retreat: 0.0,  specialBias: 0.50, tell: 260 }, // tanky wall + telegraphed big special; bait it, punish recovery
-  ASSASSIN:    { blockChance: 0.18, wake: 0.16, minDelay: 300, maxDelay: 640,  aggression: 0.90, wantDist: 70,  retreat: 0.4,  specialBias: 0.28, tell: 0 },   // fast hit-and-run, 84hp; one counter melts it
+  //           block  wake  minDly maxDly aggr  wantDist retreat specialBias tell  jump
+  ZONER:       { blockChance: 0.33, wake: 0.24, minDelay: 380, maxDelay: 860,  aggression: 0.61, wantDist: 132, retreat: 0.6,  specialBias: 0.7,  tell: 0,   jumpChance: 0.07 },   // keeps range, pokes special; corner it to win
+  RUSHDOWN:    { blockChance: 0.17, wake: 0.18, minDelay: 270, maxDelay: 600,  aggression: 0.98, wantDist: 0,   retreat: 0.0,  specialBias: 0.12, tell: 0,   jumpChance: 0.16 },   // never retreats, barely blocks; block + punish its over-commit
+  'ALL-ROUND': { blockChance: 0.32, wake: 0.26, minDelay: 450, maxDelay: 940,  aggression: 0.72, wantDist: 0,   retreat: 0.05, specialBias: 0.40, tell: 0,   jumpChance: 0.11 },   // the fair fight
+  HEAVY:       { blockChance: 0.50, wake: 0.32, minDelay: 540, maxDelay: 1080, aggression: 0.66, wantDist: 0,   retreat: 0.0,  specialBias: 0.50, tell: 260, jumpChance: 0.04 },   // tanky wall + telegraphed big special; bait it, punish recovery
+  ASSASSIN:    { blockChance: 0.23, wake: 0.20, minDelay: 240, maxDelay: 550,  aggression: 0.95, wantDist: 70,  retreat: 0.4,  specialBias: 0.28, tell: 0,   jumpChance: 0.18 },   // fast hit-and-run, 84hp; one counter melts it
 };
 function aiProfileFor(key) {
   const st = ROSTER.find((r) => r.key === key);
@@ -635,12 +690,13 @@ function aiProfileFor(key) {
 // The base CPU profile for a fight: boss brain for THE ALGORITHM, else the archetype
 // profile bumped a little per gauntlet rung so the ladder escalates.
 function baseAiProfile(scene) {
-  if (scene.boss) return { blockChance: 0.5, wake: 0.32, minDelay: 360, maxDelay: 760, aggression: 0.95, wantDist: 0, retreat: 0.0, specialBias: 0.5, tell: 240 };
+  if (scene.boss) return { blockChance: 0.5, wake: 0.32, minDelay: 360, maxDelay: 760, aggression: 0.95, wantDist: 0, retreat: 0.0, specialBias: 0.5, tell: 240, jumpChance: 0.14 };
   const p = aiProfileFor(scene.oppKey);
   if (scene.mode === 'gauntlet') {
     p.aggression = Math.min(1, p.aggression + scene.rung * 0.05);
     p.blockChance = Math.min(0.6, p.blockChance + scene.rung * 0.03);
     p.minDelay = Math.max(280, p.minDelay - scene.rung * 25);
+    p.jumpChance = Math.min(0.3, p.jumpChance + scene.rung * 0.02);
   }
   return p;
 }
@@ -649,6 +705,12 @@ function aiIntent(scene, o, p, dtMs) {
   if (o.koed || o.hitstun > 0 || o.action) return intent;
   const P = scene.aiProfile, dist = Math.abs(p.kin.x - o.kin.x);
   const toward = p.kin.x < o.kin.x ? 'left' : 'right', away = toward === 'left' ? 'right' : 'left';
+  const punchR = 44 + ATTACK.punch.reach * o.stats.reach;      // ~103-113px
+  const specR = 44 + ATTACK.special.reach * o.stats.reach;     // ~146-164px
+  const setAtk = (t) => {
+    scene.aiTimer = P.minDelay + Math.random() * (P.maxDelay - P.minDelay);
+    intent.atk = t; if (t === 'special' && P.tell) intent.telegraph = P.tell;
+  };
 
   // wake-up guard: briefly defend right after eating a hit so point-blank / corner
   // loops aren't a free, skill-less win against the CPU.
@@ -662,14 +724,26 @@ function aiIntent(scene, o, p, dtMs) {
     p.action.aiSaw = true;
     if (Math.random() < P.blockChance) { scene.aiBlock = 240; intent.block = true; return intent; }
   }
+  // whiff-punish: the player's move already missed its window (blocked, or simply never
+  // reached anyone) and is just sitting in recovery, still in range — a free counter, the
+  // same lesson a human opponent would teach. Bypasses the normal aiTimer cooldown (this
+  // is a reaction, not a scheduled decision); stamina still gates it same as any attack.
+  if (p.action && !p.action.aiPunished && dist <= punchR && phase(ATTACK[p.action.type], p.action.e) === 'recovery') {
+    p.action.aiPunished = true;
+    if (Math.random() < P.aggression) { setAtk(Math.random() < 0.6 ? 'punch' : 'kick'); return intent; }
+  }
 
-  const punchR = 44 + ATTACK.punch.reach * o.stats.reach;      // ~103-113px
-  const specR = 44 + ATTACK.special.reach * o.stats.reach;     // ~146-164px
   scene.aiTimer -= dtMs;
+  scene.aiJumpTimer -= dtMs;
   const ready = scene.aiTimer <= 0;
-  const setAtk = (t) => {
-    scene.aiTimer = P.minDelay + Math.random() * (P.maxDelay - P.minDelay);
-    intent.atk = t; if (t === 'special' && P.tell) intent.telegraph = P.tell;
+  // forward hop while approaching: gated by its own cooldown (900-1800ms between hops)
+  // so a low jumpChance reads as "rare", not a per-tick coin flip. On a miss the retry is
+  // quick (150ms) rather than instant, so it still resolves within roughly one cooldown
+  // window on average instead of firing the very instant the cooldown clears.
+  const maybeJump = () => {
+    if (scene.aiJumpTimer > 0) return;
+    if (Math.random() < P.jumpChance) { intent.jump = true; scene.aiJumpTimer = 900 + Math.random() * 900; }
+    else scene.aiJumpTimer = 150;
   };
 
   // spacer: if the player is inside my comfort gap and I'm not cornered, back off
@@ -691,9 +765,11 @@ function aiIntent(scene, o, p, dtMs) {
   if (dist <= specR) {                                           // mid: poke special or close in
     if (ready && Math.random() < P.specialBias) { setAtk('special'); return intent; }
     intent[toward] = true;
+    maybeJump();
     return intent;
   }
   intent[toward] = true;                                         // far: approach
+  maybeJump();
   return intent;
 }
 
@@ -1255,8 +1331,28 @@ function drawUI(scene) {
       g.fillStyle(i < wins ? 0x8bffa0 : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
     }
   };
+  // stamina strip: a slim second bar sitting just under the name-label row (44px down —
+  // clear of the round pips at 26-31 and, narrower than the HP bar, clear of the centred
+  // GAUNTLET-rung label at 40-48 too). Flush with the HP bar's OUTER edge, shorter on the
+  // inner side, so it still reads as belonging to that fighter's corner.
+  const sw = 150, sh = 4, sy = 44;
+  const staminaBar = (f, outerX, leftAnchor) => {
+    const x = leftAnchor ? outerX : outerX + bw - sw;
+    const frac = Math.max(0, Math.min(1, f.stamina / f.staminaMax));
+    const fw = Math.round(sw * frac);
+    // hard on/off blink (never a fade) on a failed swing — same "strike, don't ease" rule as
+    // every other flash cue in this file (juiceHit, the wind-up tint, the fighters bolt).
+    const denied = f.denyFlash > 0 && Math.floor(scene.animClock / 60) % 2 === 0;
+    g.fillStyle(0x000000, 0.5); g.fillRect(x - 1, sy - 1, sw + 2, sh + 2);
+    g.fillStyle(0x0a2430, 1); g.fillRect(x, sy, sw, sh);
+    g.fillStyle(denied ? 0xff3b30 : 0x3fe0ff, 1);
+    g.fillRect(leftAnchor ? x : x + sw - fw, sy, fw, sh);
+    g.lineStyle(1, denied ? 0xff3b30 : 0x1a6b80, 0.9); g.strokeRect(x, sy, sw, sh);
+  };
   if (scene.hideLoserBar !== 'p') bar(scene.p, 12, true, scene.pWins);            // hidden while a BUDGET CUT bar is falling
   if (scene.hideLoserBar !== 'o') bar(scene.o, GAME_W - 12 - bw, false, scene.oWins);
+  if (scene.hideLoserBar !== 'p') staminaBar(scene.p, 12, true);
+  if (scene.hideLoserBar !== 'o') staminaBar(scene.o, GAME_W - 12 - bw, false);
 }
 
 function fightUpdate(time, delta) {

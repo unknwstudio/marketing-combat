@@ -45,6 +45,7 @@
    specificity → source order decides). */
 .play-link--under-hud { top: 52px; }
 @media (max-width: 520px) {
-  /* the strip shrinks to ~26px on phones (6px padding ×2 + 14px bar) */
-  .play-link--under-hud { top: 40px; }
+  /* also clears DemoNav's "level select" pill, which on phones is centered
+     but wide enough to reach this corner (measured bottom ~68px) */
+  .play-link--under-hud { top: 82px; }
 }

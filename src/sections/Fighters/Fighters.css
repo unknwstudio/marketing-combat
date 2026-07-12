@@ -114,6 +114,43 @@
   }
 }
 
+/* strikes down onto the hovered card from the gap above the row. Measured
+   (not guessed): title bottom ~222px, row top ~363px -> ~141px of real
+   headroom. 110px keeps clearance on both ends instead of slicing through
+   "choose your fighter" above it (a first pass at 280px did exactly that). */
+.fighters__bolt {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 110px;
+  overflow: visible;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px rgba(63, 224, 255, 0.85)) drop-shadow(0 0 14px rgba(63, 224, 255, 0.5));
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .fighters__card:hover .fighters__bolt {
+    animation: fighters-bolt-flicker 0.5s steps(1) both;
+  }
+}
+
+/* hard on/off strikes, never a fade — a bolt doesn't ease in */
+@keyframes fighters-bolt-flicker {
+  0%, 100% { opacity: 1; }
+  8%, 22%, 40% { opacity: 0; }
+  14%, 30%, 55% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fighters__card:hover .fighters__bolt {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* portrait frame: clips the hover zoom + sweep to the portrait's own bounds */
 .fighters__frame {
   position: relative;
@@ -147,26 +184,6 @@
   opacity: 0;
 }
 
-.fighters__select {
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  transform: translate(-50%, 6px) scale(0.9);
-  padding: 6px 8px 8px;
-  background: #000;
-  border: 1px solid var(--k-cyan);
-  font-family: var(--k-font-mono);
-  font-size: 15px;
-  line-height: 1;
-  letter-spacing: -0.45px;
-  text-transform: lowercase;
-  white-space: nowrap;
-  color: var(--k-cyan);
-  opacity: 0;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  pointer-events: none;
-}
-
 @media (hover: hover) {
   .fighters__card:hover .fighters__portrait {
     transform: scale(1.06);
@@ -176,11 +193,6 @@
   .fighters__card:hover .fighters__sweep {
     opacity: 1;
     animation: fighters-sweep 0.6s ease-out;
-  }
-
-  .fighters__card:hover .fighters__select {
-    opacity: 1;
-    transform: translate(-50%, 0) scale(1);
   }
 }
 

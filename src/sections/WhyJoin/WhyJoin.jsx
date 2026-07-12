@@ -2,8 +2,7 @@ import './WhyJoin.css'
 
 /**
  * WHY JOIN THE HACKATHON? — six numbered reasons.
- * Copy verbatim from the original site (glyphs, titles, body, and the
- * one-word arcade tag on each card).
+ * Copy verbatim from the original site (glyphs, titles, body).
  */
 const REASONS = [
   {
@@ -11,42 +10,36 @@ const REASONS = [
     icon: 'icon-challenge.webp',
     title: 'CHALLENGE',
     body: 'Compare yourself with other market leaders in real-world conditions.',
-    tag: 'POWER',
   },
   {
     n: '02',
     icon: 'icon-community.webp',
     title: 'COMMUNITY',
     body: 'Get into a closed, professional community of senior practitioners.',
-    tag: 'UNITY',
   },
   {
     n: '03',
     icon: 'icon-networking.webp',
     title: 'NETWORKING',
     body: 'Networking with the jury, sponsors, and market colleagues.',
-    tag: 'REACH',
   },
   {
     n: '04',
     icon: 'icon-opportunity.webp',
     title: 'OPPORTUNITY',
     body: 'The best solutions on GitHub. Offers from sponsoring companies.',
-    tag: 'LUCK',
   },
   {
     n: '05',
     icon: 'icon-portfolio.webp',
     title: 'PORTFOLIO CASE',
     body: 'A real AI marketing case study — with numbers — in your portfolio.',
-    tag: 'PROOF',
   },
   {
     n: '06',
     icon: 'icon-prize.webp',
     title: 'PRIZE VAULT',
     body: 'Annual subscriptions to AI services and individual sessions with experts.',
-    tag: 'LOOT',
   },
 ]
 
@@ -78,7 +71,6 @@ export default function WhyJoin() {
             </div>
             <h3 className="whyjoin__title">{r.title}</h3>
             <p className="whyjoin__body">{r.body}</p>
-            <span className="dpill whyjoin__tag">{r.tag}</span>
           </li>
         ))}
       </ul>
