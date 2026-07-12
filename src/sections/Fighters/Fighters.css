@@ -119,20 +119,25 @@
 
 /* strikes down onto the hovered card from OFF THE TOP of the section, straight
    through the title's gap. Measured (not guessed): section top is the bolt's
-   own 0, row top ~363px -> 350px of run leaves a 13px margin so the tallest
+   own 0, row top ~363px -> 380px of run leaves a margin so the tallest
    flicker frame still clips cleanly at the section's own overflow:hidden
    instead of poking into the section above. It deliberately overlaps
    "choose your fighter" (title bottom ~222px) now -- unlike the original
    110px version, which stayed clear of the title because nothing gave the
    title priority in the stacking order. `.fighters__title` now carries
-   z-index:2 so it still reads clean on top of the bolt passing behind it. */
+   z-index:2 so it still reads clean on top of the bolt passing behind it.
+   Each card's own path (see FIGHTERS[].bolt in Fighters.jsx) leans its top
+   end toward one shared point above the row -- roughly where fighters__bg's
+   real trunk sits -- so outer cards' paths swing well past this element's
+   own 90px width. `overflow: visible` is load-bearing: without it those
+   leaning tops would get clipped to the narrow box instead of fanning out. */
 .fighters__bolt {
   position: absolute;
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   width: 90px;
-  height: 350px;
+  height: 380px;
   overflow: visible;
   opacity: 0;
   z-index: 1;
