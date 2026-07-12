@@ -45,20 +45,24 @@ export default function Fighters() {
                  CTAs and make screen readers announce whole cards as
                  actionable. The marching ants stay a hover flourish. */
             >
-              {/* strikes down from the section's arena glow into whichever
+              {/* strikes down from off the top of the section into whichever
                   card is hovered — hidden by default, flashed in on hover
-                  (see .fighters__bolt in Fighters.css). A fresh layer, not
-                  a crop of fighters__bg: that background is one flat
-                  composite image with its own bolt painted into it once,
-                  aimed at nothing in particular. */}
+                  (see .fighters__bolt in Fighters.css). Tall enough to run
+                  behind "choose your fighter" itself (the title's z-index
+                  keeps it legible on top); two short forks break off the
+                  main stem partway down so it reads as lightning, not a
+                  single ruled line. A fresh layer, not a crop of
+                  fighters__bg: that background is one flat composite image
+                  with its own bolt painted into it once, aimed at nothing
+                  in particular. */}
               <svg
                 className="fighters__bolt"
                 aria-hidden="true"
-                viewBox="0 0 40 200"
+                viewBox="0 0 100 370"
                 preserveAspectRatio="none"
               >
                 <path
-                  d="M22 0 L14 62 L24 66 L10 132 L18 136 L4 200 L20 118 L11 113 L26 54 L16 50 Z"
+                  d="M54,0 L42,58 L60,64 L38,126 L56,132 L34,196 L52,202 L40,264 L58,270 L46,370 L34,366 L46,270 L28,264 L40,202 L22,196 L44,132 L26,126 L48,64 L30,58 Z M56,130 L80,150 L94,178 L82,168 L68,150 L58,136 Z M42,256 L20,278 L8,300 L18,288 L30,278 L44,264 Z"
                   fill="#eaffff"
                   stroke="#3fe0ff"
                   strokeWidth="2"

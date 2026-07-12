@@ -177,7 +177,7 @@ export default function GameChrome() {
         <>
           <button className="gc-corner gc-exit" onClick={requestExit} aria-label="Exit to site" title="Exit to site" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}><PixelIcon name="cross" size="0.9em" /></button>
           <div className="gc-topright">
-            <button className="gc-corner" onClick={() => setHowto(true)} aria-label="How to play" title="How to play" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}>?</button>
+            <button className="gc-corner" onClick={() => setHowto(true)} aria-label="How to play" title="How to play" aria-hidden={overlayOpen || undefined} tabIndex={overlayOpen ? -1 : 0}><PixelIcon name="question" size="0.9em" /></button>
             {scene === 'fight' && !paused && !result && (
               <button className="gc-corner" onClick={openPause} aria-label="Pause" title="Pause" tabIndex={overlayOpen ? -1 : 0}><PixelIcon name="pause" size="0.8em" /></button>
             )}

@@ -144,6 +144,17 @@ const GRIDS = {
     'XX.XX',
     'XX.XX',
   ],
+  // ? question mark (8x8) — classic bitmap-font shape (hook + separated dot)
+  question: [
+    '.XXXXX..',
+    'XX..XXX.',
+    '....XXX.',
+    '...XXX..',
+    '..XXX...',
+    '........',
+    '..XXX...',
+    '..XXX...',
+  ],
   // ◆ diamond (9x9)
   diamond: [
     '....X....',
