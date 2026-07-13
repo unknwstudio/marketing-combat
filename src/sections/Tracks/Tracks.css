@@ -48,7 +48,11 @@
 
 .tracks__top {
   display: flex;
-  align-items: center;
+  /* baseline, NOT center: the index (.dindex, 40px) and the name (44px) are two
+     different type sizes. Centering their line boxes left the "02" sitting ~1px
+     above the word's baseline — subtle at 1:1, but a visible step once zoomed and
+     jagged under the CRT scanlines. Baseline-align sits them on one true line. */
+  align-items: baseline;
   gap: 18px;
   padding-bottom: 18px;
   border-bottom: 2px solid var(--k-line);
