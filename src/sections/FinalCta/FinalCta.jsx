@@ -201,7 +201,7 @@ export default function FinalCta() {
         >
           <Cabinet3DMount
             screenVariant="youwin"
-            screenPower={0.75}
+            screenPower={0.95}
             restYaw={0}
             parallaxYaw={0.09}
             parallaxPitch={0.045}
