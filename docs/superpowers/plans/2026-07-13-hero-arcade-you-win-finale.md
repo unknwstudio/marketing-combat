@@ -15,7 +15,7 @@
 - **Every 3D piece keeps its three fallbacks:** a no-WebGL `<img>`/flat fallback, a `prefers-reduced-motion` path, and an off-screen `IntersectionObserver` frameloop pause. Do not regress any of these.
 - **`/` and `/classic` stay visually identical.** `Hero.jsx` is shared with `/`; any hero addition is gated behind a prop that only `HeroStage` (`/demo`) sets.
 - **Static-export safe:** nothing touches `window`/`document` at module top level or during SSR; client-only `three`/`phaser` stay behind `next/dynamic({ ssr:false })` or in-effect dynamic `import()`, matching existing files.
-- **Gate for every task** (the project has no unit-test runner): `npm run build && npm run lint && npm run lint:css && npm run typecheck` must all pass, plus the task's observable check.
+- **Gate for every task** (the project has no unit-test runner): `npm run build && npm run lint && npm run lint:css` must all pass, plus the task's observable check. (NOTE: `npm run typecheck` is a broken no-op in this repo — it runs `tsc --noEmit` but the project is JS-with-`jsconfig.json` and ships no `tsconfig.json`, so tsc has no inputs and just prints help. Do NOT add a `tsconfig.json` to "fix" it — Next.js would then treat this JS project as TypeScript. The three checks above are the real gate.)
 
 ---
 
@@ -106,7 +106,7 @@ In `src/styles/index.css`, add one line to the `--z-*` ledger (just below `--z-c
 
 - [ ] **Step 3: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass (new module is unreferenced yet — this only proves it compiles and the token is valid CSS).
 
 - [ ] **Step 4: Commit**
@@ -147,7 +147,7 @@ Change `exitToSite` (currently `const exitToSite = () => { window.location.href 
 
 - [ ] **Step 2: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass.
 
 - [ ] **Step 3: Verify `/play` unchanged (observable)**
@@ -282,7 +282,7 @@ and mount it among the fixed overlays that live OUTSIDE `JuiceProvider`/`ScaleCa
 
 - [ ] **Step 4: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass.
 
 - [ ] **Step 5: Verify open/close (observable)**
@@ -377,7 +377,7 @@ Inside the `setTimeout` callback, replace the `pageswap` opt-out + `window.locat
 
 - [ ] **Step 4: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass.
 
 - [ ] **Step 5: Verify both surfaces (observable)**
@@ -483,7 +483,7 @@ Add a mobile rule inside the existing `@media` block that restyles the hero for 
 
 - [ ] **Step 4: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass. (If stylelint flags a raw value, swap it for the nearest `--k-*` token.)
 
 - [ ] **Step 5: Verify flat + mobile (observable)**
@@ -648,7 +648,7 @@ In the effect cleanup, dispose all three textures and remove the PLAY listeners 
 
 - [ ] **Step 4: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass.
 
 - [ ] **Step 5: Verify desktop CRT (observable)**
@@ -746,7 +746,7 @@ with:
 
 - [ ] **Step 3: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass. (Behavioral check deferred to Task 8, where the cabinet is mounted in the finale — `Cabinet3D` has no independent mount after `ArcadeCabinet` retires.)
 
 - [ ] **Step 4: Commit**
@@ -844,7 +844,7 @@ git rm src/sections/ArcadeCabinet/ArcadeCabinet.jsx src/sections/ArcadeCabinet/A
 
 - [ ] **Step 5: Gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all pass, with no unresolved `ArcadeCabinet` import.
 
 - [ ] **Step 6: Verify the finale (observable)**
@@ -872,7 +872,7 @@ git commit -m "feat(finale): YOU WIN! trophy cabinet + victory retheme; retire A
 
 - [ ] **Step 1: Full gate**
 
-Run: `npm run build && npm run lint && npm run lint:css && npm run typecheck`
+Run: `npm run build && npm run lint && npm run lint:css`
 Expected: all green.
 
 - [ ] **Step 2: Reduced-motion pass**
