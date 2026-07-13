@@ -4,7 +4,6 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
-import { GAME_COPY } from '@/lib/game'
 import './HeroDisplay3D.css'
 
 /**
@@ -51,9 +50,10 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
  * focus indicator, which the opaque canvas would otherwise hide (WCAG 2.4.7).
  * The lit element reads *through* the CRT, warp and all.
  *
- * `active` names which interactive element is lit: 'badge' | 'play' | null.
- * Each pre-baked texture shows exactly one lit element (or none), matching the
- * DOM :hover/:focus-visible of the real <a> the canvas covers.
+ * `active` names which interactive element is lit: 'badge' | 'playbig' |
+ * 'tag0'..'tag3' | null. Each pre-baked texture shows exactly one lit element
+ * (or none), matching the DOM :hover/:focus-visible of the real element the
+ * canvas covers.
  */
 async function buildHeroTexture(bgImg, logoImg, active = null) {
   const S = TEX_SCALE
@@ -118,27 +118,64 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
     x.drawImage(logoImg, (HERO_W - lw) / 2, 530, lw, lh)
   }
 
-  // PLAY prompt — centered under the wordmark; its DOM hit-area (an <a>) is
-  // warped to sit under these pixels (see warpElToScreen in CRTPlane).
-  const playText = `${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`
-  x.font = `28px ${MONO}`
-  const pTextW = x.measureText(playText).width
-  const pPadX = 22
-  const pw = pTextW + pPadX * 2
-  const ph = 52
-  const px0 = (HERO_W - pw) / 2
-  const py0 = 680
-  x.fillStyle = active === 'play' ? '#fff' : '#ffd23f' // rest = --k-gold value
-  x.fillRect(px0, py0, pw, ph)
-  x.strokeStyle = '#fff'
-  x.lineWidth = 1
-  x.strokeRect(px0 + 0.5, py0 + 0.5, pw - 1, ph - 1)
-  x.fillStyle = '#000'
-  x.textBaseline = 'middle'
-  x.textAlign = 'center'
-  x.fillText(playText, HERO_W / 2, py0 + ph / 2 + 1)
-  x.textAlign = 'left' // restore defaults for any later draws (tag pills below)
-  x.textBaseline = 'alphabetic'
+  // big pixel PLAY button — mirrors .hero__playbig (centerPlay) on /demo. Its
+  // DOM hit-area (the <a>) is warped to sit under these pixels (warpElToScreen).
+  // Chunky 8-bit look: a notched black border (4 axis-only slabs leave the
+  // corners cut), an inset bevel (light top-left / dark bottom-right), a hard
+  // pixel drop-shadow, and a black stepped triangle + "PLAY". active==='playbig'
+  // is the hover state (lighter gold face, = the CSS color-mix). Box math mirrors
+  // the DOM button (top:300, padding --k-2/--k-4, gap --k-2) so the warped
+  // hit-area lands exactly under the drawing.
+  {
+    const U = 5 // --u pixel unit (notch + bevel thickness)
+    const bPadX = 32 // --k-4
+    const bPadY = 16 // --k-2
+    const bGap = 16 // --k-2
+    const triW = 26
+    const triH = 36
+    const lit = active === 'playbig'
+    x.font = `34px "Press Start 2P", ${MONO}`
+    x.textBaseline = 'alphabetic'
+    // lowercase to match the DOM button (.hero sets text-transform: lowercase);
+    // PS2P is monospace so the box width is identical either way (hit-area safe)
+    const label = 'play'
+    const labelW = x.measureText(label).width
+    const bw = triW + bGap + labelW + bPadX * 2
+    const bh = Math.max(triH, 34) + bPadY * 2
+    const bx = (HERO_W - bw) / 2
+    const by = 300
+    // hard pixel drop-shadow (offset 7,9), behind everything
+    x.fillStyle = 'rgba(0,0,0,0.45)'
+    x.fillRect(bx - U + 7, by - U + 9, bw + U * 2, bh + U * 2)
+    // notched black border — 4 axis-only slabs, corners left open
+    x.fillStyle = '#000'
+    x.fillRect(bx - U, by, U, bh)
+    x.fillRect(bx + bw, by, U, bh)
+    x.fillRect(bx, by - U, bw, U)
+    x.fillRect(bx, by + bh, bw, U)
+    // gold face (lighter when lit)
+    x.fillStyle = lit ? '#ffda62' : '#ffd23f'
+    x.fillRect(bx, by, bw, bh)
+    // inset bevel: light top-left, dark bottom-right
+    x.fillStyle = 'rgba(255,255,255,0.5)'
+    x.fillRect(bx, by, bw, U)
+    x.fillRect(bx, by, U, bh)
+    x.fillStyle = 'rgba(0,0,0,0.28)'
+    x.fillRect(bx, by + bh - U, bw, U)
+    x.fillRect(bx + bw - U, by, U, bh)
+    // content — stepped pixel triangle + label, black, vertically centered
+    const cy = by + bh / 2
+    const cX = bx + bPadX
+    const uW = triW / 6
+    const uH = triH / 10
+    x.fillStyle = '#000'
+    for (let k = 0; k < 5; k++) {
+      x.fillRect(cX + k * uW, cy - triH / 2 + k * uH, uW, triH - 2 * k * uH)
+    }
+    x.textBaseline = 'middle'
+    x.fillText(label, cX + triW + bGap, cy + 2)
+    x.textBaseline = 'alphabetic'
+  }
 
   // bottom tag pills, space-between across x:347..1093
   x.font = '24px ' + MONO
@@ -151,9 +188,10 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
   const ty = 765
   tags.forEach((t, i) => {
     const w = widths[i]
-    x.fillStyle = 'rgba(0,0,0,0.6)'
+    const lit = active === `tag${i}` // hover: gold fill + black type (= the CSS)
+    x.fillStyle = lit ? '#ffd23f' : 'rgba(0,0,0,0.6)'
     x.fillRect(tx, ty, w, 40)
-    x.strokeStyle = '#fff'
+    x.strokeStyle = lit ? '#ffd23f' : '#fff'
     x.lineWidth = 1
     x.beginPath()
     x.moveTo(tx, ty + 0.5)
@@ -161,7 +199,7 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
     x.moveTo(tx, ty + 39.5)
     x.lineTo(tx + w, ty + 39.5)
     x.stroke()
-    x.fillStyle = '#3ad76f'
+    x.fillStyle = lit ? '#000' : '#3ad76f'
     x.fillText(t, tx + pad, ty + 27)
     tx += w + gap
   })
@@ -378,136 +416,128 @@ function CRTPlane() {
 
   useEffect(() => {
     let cancelled = false
-    // Three states are pre-baked (normal + lit badge + lit PLAY) and kept
-    // alive; the pointer/focus just swaps uTex between them — no per-hover
-    // canvas redraw.
-    let texNormal = null
-    let texBadge = null
-    let texPlay = null
     // The canvas is pointer-events:none, so hover/focus land on the REAL DOM
-    // elements underneath (the <a>s in Hero.jsx) — we mirror their state onto
-    // the shader. KEYBOARD focus is mirrored the same way: the opaque canvas
-    // also hides the DOM :focus-visible ring, so without this Tab lands on the
-    // badge or PLAY with no visible indicator anywhere on screen (WCAG 2.4.7).
-    // One flag each — the matching inverted texture shows while its element is
-    // hovered OR :focus-visible, mirroring Hero.css's :hover / :focus-visible.
-    let badgeEl = null
-    let playEl = null
+    // elements underneath (Hero.jsx's flat layer) — we mirror their state onto
+    // the shader by swapping uTex to a pre-baked "lit" texture for that element.
+    // KEYBOARD focus is mirrored the same way: the opaque canvas hides the DOM
+    // :focus-visible ring, so without this Tab lands with no visible indicator
+    // (WCAG 2.4.7). Prominent elements (badge, playbig) are baked eagerly and
+    // warmed to the GPU; the four tag pills bake LAZILY on first hover to cap
+    // GPU memory (each texture is a full-res hero frame).
+    const textures = {} // key -> THREE.Texture: 'normal'|'badge'|'playbig'|'tag0..3'
+    let activeKey = null
+    let bgImg = null
+    let logoImg = null
+    const wired = [] // { el, handlers }
     let ro = null // ResizeObserver keeping the warped hit-areas registered
-    let badgeState = false // hover||focus on the badge
-    let playState = false // hover||focus on PLAY
+
     const sync = () => {
-      if (!texNormal) return
-      uniforms.uTex.value = badgeState ? texBadge : playState ? texPlay : texNormal
+      const t = (activeKey && textures[activeKey]) || textures.normal
+      if (t) uniforms.uTex.value = t
     }
-    const onEnter = () => {
-      badgeState = true
-      sync()
+    const buildTex = async (key) => {
+      const t = await buildHeroTexture(bgImg, logoImg, key === 'normal' ? null : key)
+      if (cancelled) {
+        t.dispose()
+        return null
+      }
+      gl.initTexture(t) // upload now so the first swap isn't a texImage2D hitch
+      textures[key] = t
+      return t
     }
-    const onLeave = () => {
-      badgeState = false
-      sync()
-    }
-    // :focus-visible only — a mouse click also focuses the badge, but must not
-    // latch the invert after pointerleave (the CSS styles :focus-visible too)
-    const onFocus = () => {
-      badgeState = matchesSafe(badgeEl, ':focus-visible')
-      sync()
-    }
-    const onBlur = () => {
-      badgeState = false
-      sync()
+    const ensure = (key) => (textures[key] ? Promise.resolve(textures[key]) : buildTex(key))
+    const isLit = (el) =>
+      el.matches(':hover') ||
+      (document.activeElement === el && matchesSafe(el, ':focus-visible'))
+
+    // wire one interactive element: warp its hit-area under the shader pixels,
+    // and light its texture while hovered / :focus-visible (mirroring the CSS).
+    const wire = (key, el) => {
+      if (!el) return
+      const enter = () => {
+        ensure(key).then(() => {
+          if (!cancelled && isLit(el)) {
+            activeKey = key
+            sync()
+          }
+        })
+      }
+      const leave = () => {
+        if (activeKey === key) {
+          activeKey = null
+          sync()
+        }
+      }
+      // :focus-visible only — a click also focuses, but must not latch the lit
+      // texture after pointerleave (the CSS styles :focus-visible too)
+      const focus = () => {
+        if (matchesSafe(el, ':focus-visible'))
+          ensure(key).then(() => {
+            if (!cancelled) {
+              activeKey = key
+              sync()
+            }
+          })
+      }
+      const blur = () => {
+        if (activeKey === key) {
+          activeKey = null
+          sync()
+        }
+      }
+      el.addEventListener('pointerenter', enter)
+      el.addEventListener('pointerleave', leave)
+      el.addEventListener('focusin', focus)
+      el.addEventListener('focusout', blur)
+      wired.push({ el, key, handlers: { enter, leave, focus, blur } })
+      warpElToScreen(el, gl.domElement)
     }
 
     async function build() {
-      const [bgImg, logoImg] = await Promise.all([
+      const imgs = await Promise.all([
         loadImage('/assets/hero/hero-bg.webp'),
         loadImage('/assets/hero/logo.webp'),
       ])
+      bgImg = imgs[0]
+      logoImg = imgs[1]
       if (document.fonts && document.fonts.ready) {
         try {
           await document.fonts.ready
         } catch {}
       }
       if (cancelled) return
-      texNormal = await buildHeroTexture(bgImg, logoImg, null)
-      texBadge = await buildHeroTexture(bgImg, logoImg, 'badge')
-      texPlay = await buildHeroTexture(bgImg, logoImg, 'play')
-      if (cancelled) {
-        // cleanup already ran (it saw all three as null) — dispose here instead
-        texNormal.dispose()
-        texBadge.dispose()
-        texPlay.dispose()
-        return
-      }
-      // Upload ALL three textures to the GPU now, while we're still in the
-      // async build phase. three uploads a texture lazily the first time it's
-      // used — for the lit textures that used to be the first pointerenter,
-      // stalling that frame on a full-res texImage2D (~10-40ms on integrated
-      // GPUs): a hitch on exactly the interaction the pre-bake exists to make
-      // instant. Warmed here, every hover/focus swap is a pure uniform change.
-      gl.initTexture(texNormal)
-      gl.initTexture(texBadge)
-      gl.initTexture(texPlay)
-      uniforms.uTex.value = texNormal
-      setTexture(texNormal)
+      // eager: the normal frame + the two prominent lit states, warmed to GPU
+      await buildTex('normal')
+      await buildTex('badge')
+      await buildTex('playbig')
+      if (cancelled) return
+      uniforms.uTex.value = textures.normal
+      setTexture(textures.normal)
 
       // guard: flat-only mode unmounts this component, but query defensively —
-      // if the badge is ever missing the CRT simply shows the normal texture.
-      badgeEl = document.querySelector('.herostage__flat .hero__badge')
-      if (badgeEl) {
-        badgeEl.addEventListener('pointerenter', onEnter)
-        badgeEl.addEventListener('pointerleave', onLeave)
-        badgeEl.addEventListener('focusin', onFocus)
-        badgeEl.addEventListener('focusout', onBlur)
-        // pointer or focus may already be resting on the badge when textures
-        // finish loading — sync once so the first frame isn't stale
-        if (badgeEl.matches(':hover')) badgeState = true
-        if (document.activeElement === badgeEl && matchesSafe(badgeEl, ':focus-visible'))
-          badgeState = true
-        sync()
+      // any missing element simply never lights.
+      wire('badge', document.querySelector('.herostage__flat .hero__badge'))
+      wire('playbig', document.querySelector('.herostage__flat .hero__playbig'))
+      document
+        .querySelectorAll('.herostage__flat .hero__tags .hero__pill')
+        .forEach((el, i) => wire(`tag${i}`, el))
 
-        // slide the DOM hit-area under the barrel-warped badge pixels (see
-        // warpElToScreen). Re-derived on resize below: the fractions are
-        // zoom-invariant, but a reflow can move the badge inside the stage.
-        warpElToScreen(badgeEl, gl.domElement)
-      }
+      // pointer or focus may already be resting on an element when textures
+      // finish loading — sync once so the first frame isn't stale
+      const resting = wired.find(({ el }) => isLit(el))
+      if (resting)
+        ensure(resting.key).then(() => {
+          if (!cancelled) {
+            activeKey = resting.key
+            sync()
+          }
+        })
 
-      // PLAY anchor (Task 5) — same mechanism as the badge, mirrored onto its
-      // own texture/flag. Queried defensively: if it's ever missing the CRT
-      // simply never shows the lit-PLAY texture.
-      playEl = document.querySelector('.herostage__flat .hero__play')
-      if (playEl) {
-        const onPEnter = () => {
-          playState = true
-          sync()
-        }
-        const onPLeave = () => {
-          playState = false
-          sync()
-        }
-        const onPFocus = () => {
-          playState = matchesSafe(playEl, ':focus-visible')
-          sync()
-        }
-        const onPBlur = () => {
-          playState = false
-          sync()
-        }
-        playEl.addEventListener('pointerenter', onPEnter)
-        playEl.addEventListener('pointerleave', onPLeave)
-        playEl.addEventListener('focusin', onPFocus)
-        playEl.addEventListener('focusout', onPBlur)
-        playEl._amkHandlers = { onPEnter, onPLeave, onPFocus, onPBlur } // for cleanup
-        warpElToScreen(playEl, gl.domElement)
-      }
-
-      // re-derive both warps on resize — hoisted out of the badge branch so
-      // PLAY still re-warps even on a page where the badge hit-area is absent
-      if (badgeEl || playEl) {
+      // re-derive every warp on resize — the normalized fractions are
+      // zoom-invariant, but a reflow can move an element inside the stage
+      if (wired.length) {
         ro = new ResizeObserver(() => {
-          if (badgeEl) warpElToScreen(badgeEl, gl.domElement)
-          if (playEl) warpElToScreen(playEl, gl.domElement)
+          wired.forEach(({ el }) => warpElToScreen(el, gl.domElement))
         })
         ro.observe(gl.domElement)
       }
@@ -516,27 +546,16 @@ function CRTPlane() {
     return () => {
       cancelled = true
       if (ro) ro.disconnect()
-      if (badgeEl) {
-        badgeEl.removeEventListener('pointerenter', onEnter)
-        badgeEl.removeEventListener('pointerleave', onLeave)
-        badgeEl.removeEventListener('focusin', onFocus)
-        badgeEl.removeEventListener('focusout', onBlur)
+      wired.forEach(({ el, handlers }) => {
+        el.removeEventListener('pointerenter', handlers.enter)
+        el.removeEventListener('pointerleave', handlers.leave)
+        el.removeEventListener('focusin', handlers.focus)
+        el.removeEventListener('focusout', handlers.blur)
         // hand the flat fallback its untouched layout back
-        badgeEl.style.transform = ''
-        badgeEl.style.transformOrigin = ''
-      }
-      if (playEl && playEl._amkHandlers) {
-        const h = playEl._amkHandlers
-        playEl.removeEventListener('pointerenter', h.onPEnter)
-        playEl.removeEventListener('pointerleave', h.onPLeave)
-        playEl.removeEventListener('focusin', h.onPFocus)
-        playEl.removeEventListener('focusout', h.onPBlur)
-        playEl.style.transform = ''
-        playEl.style.transformOrigin = ''
-      }
-      if (texNormal) texNormal.dispose()
-      if (texBadge) texBadge.dispose()
-      if (texPlay) texPlay.dispose()
+        el.style.transform = ''
+        el.style.transformOrigin = ''
+      })
+      Object.keys(textures).forEach((k) => textures[k] && textures[k].dispose())
     }
   }, [uniforms, gl])
 

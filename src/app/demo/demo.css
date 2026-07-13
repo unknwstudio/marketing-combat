@@ -15,7 +15,10 @@
   background: var(--k-bg);
   color: var(--k-ink);
   font-family: var(--k-font-mono);
-  padding: var(--k-12) var(--k-10);
+  /* exposed so a full-bleed child (e.g. FinalCta's victory band) can cancel the
+     side padding responsively without hardcoding the value */
+  --dsec-pad-x: var(--k-10);
+  padding: var(--k-12) var(--dsec-pad-x);
   overflow: hidden;
 }
 
@@ -344,7 +347,8 @@
 @media (max-width: 1023px) {
   .dsec {
     width: 100%;
-    padding: 56px 20px;
+    --dsec-pad-x: 20px;
+    padding: 56px var(--dsec-pad-x);
   }
 
   .dsec__head {
@@ -387,7 +391,8 @@
 
 @media (max-width: 639px) {
   .dsec {
-    padding: 44px 14px;
+    --dsec-pad-x: 14px;
+    padding: 44px var(--dsec-pad-x);
   }
 
   .dsec__sub {

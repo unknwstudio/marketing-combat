@@ -31,6 +31,19 @@
   font-display: swap;
 }
 
+/* Self-hosted Press Start 2P (latin subset). next/font also provides it as
+   --font-ps, but it loads lazily and shows its metric-matched fallback until
+   then (a flash of non-pixel glyphs on the hero PLAY button). Self-hosting +
+   preloading (see layout.jsx) renders the real pixel glyphs from first paint,
+   exactly as Platform / GT Pressura already do. */
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('/fonts/PressStart2P-Latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* the arcade experience (/, /demo, /play) is permanently dark — tell the UA
      so form controls, scrollbars and the default canvas render dark (no white
@@ -139,6 +152,10 @@
 
   /* --- type --- */
   --k-font: var(--font-ps), 'Press Start 2P', 'Courier New', monospace;
+  /* deterministic pixel font: the SELF-HOSTED Press Start 2P first (renders real
+     pixel glyphs from first paint), then next/font's --font-ps, then fallbacks.
+     Use this where the pixel look must be right immediately (e.g. hero PLAY). */
+  --k-font-pixel: 'Press Start 2P', var(--font-ps), 'Courier New', monospace;
   /* accent / display font (Figma "Platform"); falls back to the pixel font */
   --k-font-accent: 'Platform', var(--font-ps), 'Press Start 2P', sans-serif;
   /* body / label mono font (Figma "GT Pressura Mono") */

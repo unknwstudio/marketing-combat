@@ -81,7 +81,10 @@ export default function Hero({ withPlay = false, centerPlay = false }) {
           data-burst
           aria-label="Play AI Marketing Kombat"
         >
-          <span className="hero__playbig-tri" aria-hidden="true" />
+          <svg className="hero__playbig-tri" viewBox="0 0 6 10" aria-hidden="true">
+            <path d="M0 0h1v10H0zM1 1h1v8H1zM2 2h1v6H2zM3 3h1v4H3zM4 4h1v2H4z" />
+          </svg>
+          PLAY
         </a>
       )}
 

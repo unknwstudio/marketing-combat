@@ -68,9 +68,7 @@ export default function Arenas() {
   return (
     <section className="dsec dsec--alt arenas" aria-label="Battle arenas">
       <div className="dsec__head">
-        <span className="dsec__round" data-announce="STAGE 04" data-sound="round2">
-          Stage 04 — select your arena
-        </span>
+        <span className="dsec__round">Stage 04 — select your arena</span>
         <h2 className="dsec__title">battle arenas</h2>
         <p className="dsec__sub">
           Example case directions — real client briefs across industries. Win, and the prize

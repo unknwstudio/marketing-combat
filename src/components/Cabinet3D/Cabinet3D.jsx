@@ -152,7 +152,7 @@ const NEON_COLOR = new THREE.Color('#ff2e4d') // our --k-red neon
 
 const _pressScale = new THREE.Vector3() // scratch for button world-scale reads
 
-function CabinetModel({ progressRef, screenVariant, onPlay }) {
+function CabinetModel({ progressRef, screenVariant, onPlay, screenPower }) {
   const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const { gl } = useThree()
   const uniformsRef = useRef(null)
@@ -331,7 +331,9 @@ function CabinetModel({ progressRef, screenVariant, onPlay }) {
     if (!u) return
     u.uTime.value += dt
     // brighten the CRT from dim standby to full-on as the cabinet centers
-    const target = 0.3 + 0.7 * (progressRef?.current ?? 1)
+    // fixed level when a mount pins it (the static finale); otherwise ramp from
+    // dim standby to full-on with scroll progress
+    const target = screenPower != null ? screenPower : 0.3 + 0.7 * (progressRef?.current ?? 1)
     u.uPower.value += (target - u.uPower.value) * Math.min(1, dt * 3)
   })
 
@@ -362,6 +364,7 @@ function Cabinet({
   progressRef,
   screenVariant,
   onPlay,
+  screenPower,
   restYaw,
   parallaxYaw,
   parallaxPitch,
@@ -382,7 +385,12 @@ function Cabinet({
   })
   return (
     <group ref={group} rotation={[0, restYaw, 0]}>
-      <CabinetModel progressRef={progressRef} screenVariant={screenVariant} onPlay={onPlay} />
+      <CabinetModel
+        progressRef={progressRef}
+        screenVariant={screenVariant}
+        onPlay={onPlay}
+        screenPower={screenPower}
+      />
     </group>
   )
 }
@@ -459,6 +467,9 @@ useGLTF.preload(MODEL_URL, DRACO_PATH)
  *   PRESS START) or `'youwin'` (the finale's YOU WIN! screen).
  * - `onPlay()`: called when the START button or CRT screen is clicked —
  *   defaults to opening the in-page game takeover.
+ * - `screenPower`: fixes the CRT brightness (0..1) for a static mount. Default
+ *   `null` keeps the scroll-driven ramp (0.3 standby → 1.0 full). The finale is
+ *   static, so its progress never advances — it pins this instead.
  * - `restYaw`: resting Y rotation of the cabinet group, in radians. Defaults
  *   to `0.12` (today's slight angle, showing a side panel). Pass `0` for a
  *   straight-on, screen-facing rest pose (the finale does).
@@ -474,6 +485,7 @@ export default function Cabinet3D({
   onSupported,
   screenVariant = 'play',
   onPlay = openGameTakeover,
+  screenPower = null,
   restYaw = 0.12,
   parallaxYaw = 0.1,
   parallaxPitch = 0.05,
@@ -539,10 +551,16 @@ export default function Cabinet3D({
         camera={{ position: [0, camY, camFar], fov }}
         gl={{ antialias: true, alpha: true }}
       >
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[2.5, 4, 5]} intensity={1.5} />
-        <pointLight position={[-4, 1, 3]} color="#ff2e4d" intensity={55} distance={22} />
-        <pointLight position={[4, 1, 3]} color="#3fe0ff" intensity={40} distance={22} />
+        <ambientLight intensity={0.55} />
+        {/* Key light lifted overhead and pulled off the front (z 5→1.5): the
+            camera faces the CRT glass head-on, so a front-heavy light reflected
+            straight back into the lens and washed out the screen. From above,
+            that specular hotspot drops below the screen instead. */}
+        <directionalLight position={[2.5, 6, 1.5]} intensity={1.3} />
+        {/* Neon rims moved to the sides and slightly BEHIND (z 3→-0.5) so they
+            graze the side panels as accents without glaring on the front glass. */}
+        <pointLight position={[-5.5, 2, -0.5]} color="#ff2e4d" intensity={48} distance={22} />
+        <pointLight position={[5.5, 2, -0.5]} color="#3fe0ff" intensity={36} distance={22} />
         <CameraRig
           progressRef={progressRef}
           camFar={camFar}
@@ -556,6 +574,7 @@ export default function Cabinet3D({
             progressRef={progressRef}
             screenVariant={screenVariant}
             onPlay={onPlay}
+            screenPower={screenPower}
             restYaw={restYaw}
             parallaxYaw={parallaxYaw}
             parallaxPitch={parallaxPitch}

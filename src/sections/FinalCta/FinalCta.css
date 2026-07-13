@@ -19,16 +19,106 @@
   align-items: center;
   text-align: center;
   gap: var(--k-3);
-  padding-top: var(--k-15);
+  padding-top: 0; /* the victory band caps the section flush to its top edge */
   padding-bottom: var(--k-15);
 }
 
+/* Running LED victory band (replaces the old static caption). Neon-red rails +
+   gold chase-lights with Press Start pixel type crawling on a seamless -50% loop
+   (same technique as Marquee.css). The crawling copy is aria-hidden; the wrapper's
+   role=img/aria-label name it once for AT, and data-announce/data-sound
+   (FinalCta.jsx) still drive Announcer.jsx. Reds derive from --k-red via
+   color-mix so nothing hardcodes the channel. */
 .finalcta__finish {
-  font-family: var(--k-font-mono);
-  font-size: var(--k-text-md);
-  letter-spacing: 1px;
+  --finish-dot: 22px; /* chase-light pitch — one local knob, reused below */
+  /* full-bleed: cancel the section's side padding so the ribbon spans edge to
+     edge (centered by .finalcta's align-items, then overflows symmetrically).
+     --dsec-pad-x is exposed by .dsec (demo.css) and tracks the responsive pad. */
+  width: calc(100% + 2 * var(--dsec-pad-x));
+  margin-bottom: var(--k-6); /* breathing room down to the cabinet */
+  position: relative;
+  overflow: hidden;
+  background: var(--k-panel);
+  border-top: 3px solid var(--k-red);
+  border-bottom: 3px solid var(--k-red);
+  box-shadow:
+    0 0 var(--k-3) color-mix(in srgb, var(--k-red) 40%, transparent),
+    inset 0 0 var(--k-3) color-mix(in srgb, var(--k-red) 14%, transparent);
+}
+
+/* gold chase-lights sliding along both rails (PixelIcon-free: a dotted gradient) */
+.finalcta__finish::before,
+.finalcta__finish::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: radial-gradient(circle, var(--k-gold) 0 40%, transparent 45%) 0 0 /
+    var(--finish-dot) 4px repeat-x;
+  animation: finalcta-chase 0.6s linear infinite;
+}
+.finalcta__finish::before {
+  top: 3px;
+}
+.finalcta__finish::after {
+  bottom: 3px;
+}
+
+.finalcta__finish-track {
+  display: flex;
+  width: max-content;
+  animation: finalcta-crawl 20s linear infinite;
+}
+
+.finalcta__finish-item {
+  display: inline-flex;
+  align-items: center; /* centers the SVG star against the pixel text */
+  gap: var(--k-3);
+  padding: var(--k-2) var(--k-3);
+  font-family: var(--k-font); /* Press Start 2P */
+  font-size: var(--k-text-sm);
+  line-height: 1;
   color: var(--k-red);
+  white-space: nowrap;
   text-transform: uppercase;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--k-red) 70%, transparent);
+}
+
+.finalcta__finish-star {
+  display: inline-flex;
+  align-items: center;
+  color: var(--k-gold); /* PixelIcon fills via currentColor */
+}
+
+@keyframes finalcta-crawl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes finalcta-chase {
+  to {
+    background-position-x: var(--finish-dot);
+  }
+}
+
+/* WCAG 2.2.2 — a mechanism to pause the auto-scroll (matches Marquee). */
+.finalcta__finish:hover .finalcta__finish-track,
+.finalcta__finish:focus-within .finalcta__finish-track,
+.finalcta__finish:hover::before,
+.finalcta__finish:hover::after {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .finalcta__finish-track,
+  .finalcta__finish::before,
+  .finalcta__finish::after {
+    animation: none;
+  }
 }
 
 /* trophy cabinet — the 3D mount (see Cabinet3D.jsx) fills this box; `.cab3d`
@@ -233,13 +323,15 @@
 
 @media (max-width: 1023px) {
   .finalcta {
-    padding-top: var(--k-8);
+    padding-top: 0;
     padding-bottom: var(--k-8);
     gap: var(--k-2);
   }
 
-  .finalcta__finish {
-    font-size: 12px;
+  .finalcta__finish-item {
+    font-size: var(--k-text-xs);
+    gap: var(--k-2);
+    padding: var(--k-1) var(--k-2);
   }
 
   .finalcta__title {

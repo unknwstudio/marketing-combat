@@ -36,9 +36,7 @@ export default function Tracks() {
   return (
     <section className="dsec tracks" aria-label="Hackathon tracks">
       <div className="dsec__head">
-        <span className="dsec__round" data-announce="STAGE 03" data-sound="round1">
-          Stage 03 — choose your fighting style
-        </span>
+        <span className="dsec__round">Stage 03 — choose your fighting style</span>
         <h2 className="dsec__title">hackathon tracks</h2>
       </div>
 

@@ -181,8 +181,10 @@
 
 /* hover flourish — the pill fills gold with black type, lifts, scales and
    glows: unmistakable arcade feedback. Purely decorative (the pills aren't
-   links) — the cursor stays default. */
-.hero__pill:hover {
+   links) — the cursor stays default. Scoped to /demo (.herostage wraps the
+   hero only there); on desktop /demo the CRT bakes an equivalent lit texture
+   and this drives the flat/mobile fallback. */
+.herostage .hero__pill:hover {
   background: var(--k-gold);
   border-color: var(--k-gold);
   color: var(--k-black);
@@ -259,53 +261,67 @@
    pixel offset + glow follow the arrow itself, not its bounding box. A gentle
    scale pulse on the arrow draws the eye; :hover scales/brightens the whole
    anchor — its transform keeps translateX(-50%) so centering survives. */
+/* Pixel arcade PLAY button — chunky 8-bit look: Press Start 2P, notched pixel
+   corners (the 4 axis-only box-shadows leave the corners cut), an inset bevel
+   (light top-left / dark bottom-right), a hard pixel drop-shadow, and a real
+   depress on :active. */
 .hero__playbig {
+  --u: 5px;
   position: absolute;
   left: 50%;
-  top: 255px;
+  top: 300px;
   transform: translateX(-50%);
   z-index: 4;
   display: inline-flex;
+  align-items: center;
+  gap: var(--k-2);
+  padding: var(--k-2) var(--k-4);
+  font-family: var(--k-font-pixel);
+  font-size: 34px;
+  line-height: 1;
+  color: var(--k-black);
+  background: var(--k-gold);
+  text-decoration: none;
   cursor: pointer;
-  filter: drop-shadow(5px 7px 0 rgba(0, 0, 0, 0.45))
-    drop-shadow(0 0 20px rgba(255, 176, 0, 0.55));
-  transition: transform 0.14s ease, filter 0.14s ease;
+  image-rendering: pixelated;
+  box-shadow:
+    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
+    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
+    inset var(--u) var(--u) 0 rgba(255, 255, 255, 0.5),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(0, 0, 0, 0.28);
+  filter: drop-shadow(7px 9px 0 rgba(0, 0, 0, 0.45));
+  transition: transform 0.05s steps(2), filter 0.05s steps(2), background 0.1s;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* the play arrow itself — a CSS-border triangle in the wordmark amber */
+/* the play arrow — a crisp stepped pixel triangle in the button ink */
 .hero__playbig-tri {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 58px 0 58px 96px;
-  border-color: transparent transparent transparent var(--k-wordmark-gold);
-  animation: hero-playbig-pulse 1.8s ease-in-out infinite;
+  flex: none;
+  width: 26px;
+  height: 36px;
+  fill: currentColor;
+}
+.hero__playbig-tri path {
+  shape-rendering: crispEdges;
 }
 
 .hero__playbig:hover {
-  transform: translateX(-50%) scale(1.08);
-  filter: drop-shadow(6px 9px 0 rgba(0, 0, 0, 0.5))
-    drop-shadow(0 0 34px rgba(255, 176, 0, 0.9));
-}
-
-/* brighten the arrow toward the lighter play-gold on hover */
-.hero__playbig:hover .hero__playbig-tri {
-  border-left-color: var(--k-gold);
+  background: color-mix(in srgb, var(--k-gold) 82%, white);
 }
 
 .hero__playbig:active {
-  transform: translateX(-50%) scale(0.97);
+  transform: translateX(-50%) translate(4px, 4px);
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.45));
+  box-shadow:
+    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
+    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
+    inset var(--u) var(--u) 0 rgba(0, 0, 0, 0.28),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(255, 255, 255, 0.5);
 }
 
 .hero__playbig:focus-visible {
-  outline: none;
-}
-
-/* focus ring hugs the triangle's border box (the element is 0×0 + borders) */
-.hero__playbig:focus-visible .hero__playbig-tri {
   outline: 3px solid var(--k-focus-ring);
-  outline-offset: 10px;
+  outline-offset: 8px;
 }
 
 @keyframes hero-playbig-pulse {
@@ -483,11 +499,16 @@
      (not translate(-50%,-50%)) so the :hover/:active scale rules above don't
      drop the vertical centering and make the arrow jump on tap. */
   .hero__playbig {
-    top: 36%;
+    top: 40%;
+    --u: 4px;
+    font-size: 20px;
+    padding: var(--k-2) var(--k-3);
+    gap: var(--k-1);
   }
 
   .hero__playbig-tri {
-    border-width: 42px 0 42px 70px;
+    width: 17px;
+    height: 23px;
   }
 }
 

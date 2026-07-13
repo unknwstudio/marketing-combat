@@ -5,8 +5,28 @@ import { useJuice } from '@/effects/juice/useJuice'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import Cabinet3DMount from '@/components/Cabinet3D/Cabinet3DMount'
 import Error3DBoundary from '@/components/Error3DBoundary/Error3DBoundary'
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import { GAME_COPY } from '@/lib/game'
 import './FinalCta.css'
+
+// Running-band victory callout. FINISH_LABEL rides in data-announce (Announcer.jsx
+// flashes it + plays the KO cue on scroll-in) AND as the wrapper's aria-label, so
+// assistive tech hears it once — the crawling copy below is decorative/aria-hidden.
+const FINISH_LABEL = GAME_COPY.youFinished
+const FINISH_REPEAT = 5 // items per run; the run is duplicated for a seamless -50% loop
+
+// One run of the ticker; rendered twice (tags 'a'/'b') for the loop. Keys are
+// tag-scoped so the two runs don't collide as siblings of the track.
+function FinishRun({ tag }) {
+  return Array.from({ length: FINISH_REPEAT }, (_, i) => (
+    <span className="finalcta__finish-item" key={`${tag}-${i}`}>
+      <span className="finalcta__finish-star">
+        <PixelIcon name="star" />
+      </span>
+      {FINISH_LABEL}
+    </span>
+  ))
+}
 
 /**
  * JOIN THE BATTLE — closing call to action, staged as an arcade
@@ -154,9 +174,18 @@ export default function FinalCta() {
       aria-label="Join the battle"
       ref={sectionRef}
     >
-      <span className="finalcta__finish" data-announce="YOU FINISHED THEM" data-sound="ko">
-        ★ YOU FINISHED THEM ★
-      </span>
+      <div
+        className="finalcta__finish"
+        data-announce={FINISH_LABEL}
+        data-sound="ko"
+        role="img"
+        aria-label="You finished them"
+      >
+        <div className="finalcta__finish-track" aria-hidden="true">
+          <FinishRun tag="a" />
+          <FinishRun tag="b" />
+        </div>
+      </div>
 
       <div className="finalcta__cabinet">
         <Error3DBoundary
@@ -172,6 +201,7 @@ export default function FinalCta() {
         >
           <Cabinet3DMount
             screenVariant="youwin"
+            screenPower={0.75}
             restYaw={0}
             parallaxYaw={0.09}
             parallaxPitch={0.045}

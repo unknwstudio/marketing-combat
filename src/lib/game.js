@@ -15,6 +15,7 @@ export const GAME_COPY = {
   playGlyph: '▶',
   pressStart: 'PRESS START',
   youWin: 'YOU WIN!',
+  youFinished: 'YOU FINISHED THEM', // finale running-band callout (FinalCta)
   // the two lines of RotateHint's big prompt (rendered with a <br /> between)
   rotateTitle: ['ROTATE YOUR', 'PHONE'],
   rotateSub: 'the arena needs landscape',

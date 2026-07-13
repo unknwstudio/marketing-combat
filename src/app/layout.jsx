@@ -79,6 +79,15 @@ export default function RootLayout({ children }) {
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* self-hosted Press Start 2P (hero PLAY button) — preloaded so the
+            real pixel glyphs paint immediately, no next/font-fallback flash */}
+        <link
+          rel="preload"
+          href="/fonts/PressStart2P-Latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>{children}</body>
     </html>
