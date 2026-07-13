@@ -175,10 +175,10 @@ export default function FinalCta() {
             restYaw={0}
             parallaxYaw={0.05}
             parallaxPitch={0}
-            camFar={4.0}
-            camNear={3.4}
-            camY={0.85}
-            fov={24}
+            camFar={4.8}
+            camNear={4.2}
+            camY={0.78}
+            fov={26}
           />
         </Error3DBoundary>
       </div>
