@@ -1,0 +1,99 @@
+/* ============================================================
+   HACKATHON TRACKS — two tall color-blocked poster cards.
+   ============================================================ */
+
+.c-tracks__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+  max-width: 760px;
+  margin-bottom: var(--k-8);
+}
+
+.c-tracks__intro {
+  margin-top: var(--k-1);
+  max-width: 520px;
+}
+
+.c-tracks__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--k-3);
+}
+
+.c-track {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+  min-height: 560px;
+  padding: var(--k-5);
+  border-radius: 12px;
+  color: var(--k-white);
+}
+
+.c-track--dark {
+  background: var(--k-black);
+}
+
+.c-track--blue {
+  background: var(--c-blue);
+}
+
+.c-track__kicker {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.c-track__title {
+  font-size: var(--k-text-xl);
+  font-weight: 400;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.c-track__body {
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 42ch;
+  opacity: 0.9;
+}
+
+/* arrow row pinned to the bottom */
+.c-track__go {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-2);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.c-track__arrow {
+  font-size: 24px;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.c-track:hover .c-track__arrow,
+.c-track:focus-within .c-track__arrow {
+  transform: translateX(8px);
+}
+
+@media (max-width: 1023px) {
+  .c-tracks__head {
+    margin-bottom: var(--k-6);
+  }
+
+  .c-tracks__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .c-track {
+    min-height: 0;
+    padding: var(--k-4);
+  }
+}

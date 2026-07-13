@@ -67,6 +67,7 @@
   border: 0;
   border-radius: 99px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .c-menu__apply:hover {

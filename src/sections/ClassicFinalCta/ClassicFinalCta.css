@@ -1,0 +1,109 @@
+/* ============================================================
+   FINAL CTA — full-bleed yellow band, marquee ribbon, black pill.
+   ============================================================ */
+
+.c-cta {
+  background: var(--c-yellow);
+  color: var(--k-black);
+  overflow: hidden;
+}
+
+/* --- marquee ribbon --------------------------------------------------- */
+
+.c-cta__ribbon {
+  margin-bottom: var(--k-10);
+  overflow: hidden;
+  border-block: 1px solid var(--k-black);
+  padding-block: var(--k-2);
+}
+
+.c-cta__ribbon-track {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: c-cta-marquee 32s linear infinite;
+  font-size: var(--k-text-lg);
+  text-transform: uppercase;
+}
+
+.c-cta__ribbon-track span {
+  padding-right: var(--k-4);
+}
+
+@keyframes c-cta-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-cta__ribbon-track {
+    animation: none;
+  }
+}
+
+/* --- body ------------------------------------------------------------- */
+
+.c-cta__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--k-3);
+  text-align: center;
+}
+
+.c-cta__kicker {
+  color: var(--k-black);
+}
+
+.c-cta__h2 {
+  font-size: var(--k-text-3xl);
+}
+
+.c-cta__lede {
+  max-width: 46ch;
+}
+
+.c-cta__pill {
+  margin-top: var(--k-3);
+  min-width: 260px;
+  height: 56px;
+  padding-inline: var(--k-5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--k-black);
+  color: var(--k-white);
+  font-family: inherit;
+  font-size: 16px;
+  border: 0;
+  border-radius: 99px;
+  cursor: pointer;
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease;
+}
+
+.c-cta__pill:hover {
+  background: var(--k-classic-panel);
+}
+
+.c-cta__fine {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--k-classic-panel);
+}
+
+@media (max-width: 1023px) {
+  .c-cta__ribbon {
+    margin-bottom: var(--k-7);
+  }
+
+  .c-cta__h2 {
+    font-size: var(--k-text-2xl);
+  }
+}

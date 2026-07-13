@@ -1,0 +1,144 @@
+/* ============================================================
+   THE BATTLE — lede + 4 giant figures + sponsor strip.
+   Grid built on the 8px scale / classic tokens only.
+   ============================================================ */
+
+.c-battle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-12);
+}
+
+.c-battle__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+  max-width: 760px;
+}
+
+.c-battle__lede {
+  margin-top: var(--k-1);
+  max-width: 620px;
+}
+
+/* --- four figures, hairline-divided row ------------------------------- */
+
+.c-battle__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--k-black);
+}
+
+.c-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-2);
+  padding: var(--k-4) var(--k-3) 0 0;
+  border-left: 1px solid var(--k-black);
+}
+
+.c-stat:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.c-stat__num {
+  font-size: clamp(56px, 6.6vw, 96px);
+  font-weight: 400;
+  line-height: 0.9;
+  color: var(--k-black);
+  font-variant-numeric: tabular-nums;
+}
+
+.c-stat__num--accent {
+  color: var(--c-accent);
+}
+
+.c-stat__label {
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--k-classic-panel);
+  max-width: 22ch;
+}
+
+/* --- sponsor strip ---------------------------------------------------- */
+
+.c-battle__sponsors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+  padding-top: var(--k-6);
+  border-top: 1px solid var(--k-black);
+}
+
+.c-battle__sponsors-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--k-classic-panel);
+}
+
+.c-battle__logos {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--k-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-battle__logos img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  /* unify the mixed-brand logos to a single ink tone */
+  filter: grayscale(1) brightness(0);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.c-battle__logos li:hover img {
+  opacity: 1;
+}
+
+/* --- fluid < 1024 ----------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .c-battle {
+    gap: var(--k-8);
+  }
+
+  .c-battle__stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .c-stat {
+    /* let the giant numeral column shrink below its intrinsic width so the
+       2-up grid can't push past the viewport */
+    min-width: 0;
+    padding: var(--k-3) var(--k-2) var(--k-3) var(--k-2);
+    border-top: 1px solid var(--k-black);
+  }
+
+  .c-stat__num {
+    font-size: clamp(28px, 8.5vw, 48px);
+  }
+
+  /* first row: kill the top border doubling with the row's own top border */
+  .c-stat:nth-child(1),
+  .c-stat:nth-child(2) {
+    border-top: 0;
+  }
+
+  .c-stat:nth-child(odd) {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .c-battle__logos {
+    gap: var(--k-4);
+  }
+}

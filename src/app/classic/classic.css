@@ -34,3 +34,162 @@
 .classic .cap-trim {
   text-box: trim-both cap alphabetic;
 }
+
+/* ============================================================
+   SHARED SECTION SPINE (new build-out sections)
+   The ported hero/champion sections are absolute Figma coords;
+   the sections below have no Figma source, so they use a plain
+   editorial grid built on the 8px scale. Fixed 1440 design block,
+   1200 content column (120 side margins), fluid < 1024.
+   ============================================================ */
+
+.classic {
+  /* per-section accent: one color leads each section, rotated across
+     the page. Sections opt in via .acc-* ; blue is the resting default. */
+  --c-accent: var(--c-blue);
+  /* content column + rhythm, all multiples of 8 */
+  --c-margin: var(--k-15); /* 120px side margin -> 1200 content col */
+  --c-pad-major: var(--k-15); /* 120px vertical rhythm, major sections */
+  --c-pad-minor: var(--k-12); /* 96px, minor sections */
+}
+
+.acc-yellow {
+  --c-accent: var(--c-yellow);
+}
+.acc-blue {
+  --c-accent: var(--c-blue);
+}
+.acc-green {
+  --c-accent: var(--c-green);
+}
+.acc-black {
+  --c-accent: var(--k-black);
+}
+
+/* section block — fills the 1440 canvas; children constrain to the column */
+.c-sec {
+  position: relative;
+  width: 1440px;
+  padding-block: var(--c-pad-major);
+  background: var(--k-white);
+  color: var(--k-black);
+}
+
+.c-sec--minor {
+  padding-block: var(--c-pad-minor);
+}
+
+/* centered 1200 content column */
+.c-wrap {
+  width: calc(1440px - 2 * var(--c-margin));
+  margin-inline: auto;
+}
+
+/* section eyebrow + heading + lede — the repeated editorial header */
+.c-kicker {
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.c-h2 {
+  font-size: var(--k-text-2xl);
+  font-weight: 400;
+  line-height: 0.942;
+  text-transform: uppercase;
+  color: var(--k-black);
+}
+
+.c-lede {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--k-black);
+}
+
+/* 1px structural hairline */
+.c-rule {
+  border: 0;
+  border-top: 1px solid var(--k-black);
+}
+
+/* ============================================================
+   CLASSIC REVEAL — calm editorial fade+rise + line-mask.
+   Behaviour lives in components/classic-motion/ClassicReveal;
+   the hidden state is ARMED only after JS adds .classic-reveal-on
+   to <html> (so no-JS / SSR shows everything), and ClassicReveal
+   bails entirely under prefers-reduced-motion (class never added).
+   Stagger is declarative: elements set --i inline.
+   ============================================================ */
+
+.c-reveal {
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+.classic-reveal-on .c-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.classic-reveal-on .c-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* line-mask heading: each line span clips inside its own overflow box and
+   rises into place. Wrap lines in .c-line inside a .c-mask-head. */
+.c-mask-head .c-line {
+  display: inline-block;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+.c-mask-head .c-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.classic-reveal-on .c-mask-head .c-line {
+  transform: translateY(110%);
+}
+
+.classic-reveal-on .c-mask-head.is-in .c-line {
+  transform: none;
+}
+
+/* Safety: honor reduced motion even if the JS guard is bypassed, and never
+   leave revealable content hidden. */
+@media (prefers-reduced-motion: reduce) {
+  .classic .c-reveal,
+  .classic .c-mask-head .c-line {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* fluid < 1024: sections drop to full width, the column gets a small gutter
+   and the vertical rhythm compresses to the 8px scale. */
+@media (max-width: 1023px) {
+  .classic {
+    --c-margin: var(--k-2); /* 16px gutter */
+    --c-pad-major: var(--k-9); /* 72px */
+    --c-pad-minor: var(--k-7); /* 56px */
+  }
+
+  .c-sec {
+    width: 100%;
+  }
+
+  .c-wrap {
+    width: 100%;
+    padding-inline: var(--c-margin);
+  }
+
+  .c-h2 {
+    font-size: clamp(32px, 8.5vw, 64px);
+  }
+}

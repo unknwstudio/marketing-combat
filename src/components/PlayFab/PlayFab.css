@@ -61,13 +61,16 @@
   outline-offset: 5px;
 }
 
-/* phones: shrink a touch + clear the bottom-center ModeSwitcher pill by lifting
-   above it (SoundToggle escapes to top-left; this one just rises a little). */
+/* phones: shrink a touch + escape the corner-crowding bottom-center
+   ModeSwitcher pill by rising to the TOP-right — level with SoundToggle
+   (top-left, top:80px), so the two arcade controls mirror each other and
+   both clear the DemoNav strip + the bottom switcher. */
 @media (max-width: 639px) {
   .playfab {
     --u: 2px;
     right: 10px;
-    bottom: 62px;
+    top: 80px;
+    bottom: auto;
     padding: 8px 11px;
     font-size: 13px;
   }

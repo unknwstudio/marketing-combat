@@ -1,0 +1,111 @@
+/* ============================================================
+   FROM THE FLOOR — asymmetric photo bento, unified duotone.
+   3-col grid; item 1 is a 2x2 hero; 5 singles tile the rest.
+   ============================================================ */
+
+.c-floor__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+  max-width: 760px;
+  margin-bottom: var(--k-8);
+}
+
+.c-floor__intro {
+  margin-top: var(--k-1);
+  max-width: 520px;
+}
+
+.c-floor__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 260px;
+  gap: var(--k-2);
+}
+
+.c-floor__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-1);
+  min-width: 0;
+}
+
+/* the hero occupies a 2x2 block; five singles fill the remaining cells */
+.c-floor__item:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.c-floor__frame {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--k-classic-panel);
+}
+
+.c-floor__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* unified cool duotone grade, tuned centrally */
+  filter: grayscale(1) contrast(1.03);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.c-floor__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--c-blue);
+  mix-blend-mode: color;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.c-floor__item:hover .c-floor__frame img {
+  transform: scale(1.04);
+}
+
+.c-floor__cap {
+  display: flex;
+  align-items: baseline;
+  gap: var(--k-1);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--k-black);
+  transition: color 0.2s ease;
+}
+
+.c-floor__cap-s {
+  color: var(--k-classic-panel);
+}
+
+.c-floor__item:hover .c-floor__cap {
+  color: var(--c-accent);
+}
+
+@media (max-width: 1023px) {
+  .c-floor__head {
+    margin-bottom: var(--k-6);
+  }
+
+  .c-floor__grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 200px;
+  }
+}
+
+@media (max-width: 599px) {
+  .c-floor__grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 240px;
+  }
+
+  /* hero returns to a single cell when there's only one column */
+  .c-floor__item:first-child {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}

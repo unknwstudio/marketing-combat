@@ -20,7 +20,6 @@ export default function HeroStage() {
   const [use3D, setUse3D] = useState(false)
 
   useEffect(() => {
-    const desktop = window.matchMedia('(min-width: 1024px)').matches
     const reduced = prefersReducedMotion()
     let webgl = false
     try {
@@ -32,7 +31,17 @@ export default function HeroStage() {
     } catch {
       webgl = false
     }
-    setUse3D(desktop && webgl && !reduced)
+    // Re-evaluate on every viewport crossing of the 1024px line — NOT just on
+    // mount. The 3D DISPLAY is a fixed 1440px-wide canvas; if it stays mounted
+    // when the viewport drops below the breakpoint (phone rotation, resize),
+    // it forces ~1440px of horizontal overflow and the whole page — hero
+    // included — stops fitting. Listening to the media query unmounts it the
+    // moment we go narrow (and remounts it going wide again).
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const evaluate = () => setUse3D(mq.matches && webgl && !reduced)
+    evaluate()
+    mq.addEventListener('change', evaluate)
+    return () => mq.removeEventListener('change', evaluate)
   }, [])
 
   return (

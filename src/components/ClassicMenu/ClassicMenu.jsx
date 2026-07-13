@@ -30,23 +30,25 @@ export default function ClassicMenu() {
     <div className="c-menu" ref={ref}>
       <nav className="c-menu__card" aria-label="Page menu">
         <div className="c-menu__links">
-          {/* /classic doesn't carry these sections itself — they live on the
-              full home tour, so these are cross-page anchors (same pattern
-              as the hero's registration badge). */}
-          <a className="c-menu__link" href="/#format">
+          {/* /classic now carries these sections itself, so the menu anchors
+              to the local section ids (was cross-page /#… while the page only
+              had the hero). */}
+          <a className="c-menu__link" href="#c-how">
             How it works
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
-          {/* Judges dropped while that home section is hidden — see
-              src/app/page.jsx */}
-          <a className="c-menu__link" href="/#faq">
+          <a className="c-menu__link" href="#c-judges">
+            Judges
+          </a>
+          <span className="c-menu__rule" aria-hidden="true" />
+          <a className="c-menu__link" href="#c-faq">
             FAQs
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
         </div>
-        <button className="c-menu__apply" type="button">
+        <a className="c-menu__apply" href="#cta">
           Apply
-        </button>
+        </a>
       </nav>
     </div>
   )
