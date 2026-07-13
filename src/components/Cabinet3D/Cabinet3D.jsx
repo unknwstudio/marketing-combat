@@ -233,7 +233,7 @@ function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, o
     box = new THREE.Box3().setFromObject(root)
     root.position.sub(box.getCenter(new THREE.Vector3()))
     return { root, created, screenMesh }
-  }, [scene])
+  }, [scene, screenVariant])
 
   // publish the CRT mesh for the camera rig (phase-B punch-in target)
   useEffect(() => {
