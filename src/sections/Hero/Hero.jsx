@@ -1,12 +1,13 @@
 import './Hero.css'
 import CRTOverlay from '@/effects/crt/CRTOverlay'
+import { GAME_COPY } from '@/lib/game'
 
 /**
  * HERO section — pixel-faithful port of Figma "Frame 29" (node 33:4045).
  * Fixed 1440x804 stage. Graphics are exported PNGs (public/assets/hero),
  * all text/layout is live code using the global pixel font + tokens.
  */
-export default function Hero() {
+export default function Hero({ withPlay = false }) {
   return (
     <section className="hero" aria-label="AI Marketing Kombat">
       {/* the real, styled title is the logo image below — this is the page's
@@ -67,6 +68,19 @@ export default function Hero() {
         <span className="hero__pill">300+ FIGHTERS</span>
         <span className="hero__pill">FINAL · BARCELONA</span>
       </div>
+
+      {withPlay && (
+        <a
+          className="hero__play"
+          href="/play"
+          data-sfx="confirm"
+          data-burst
+          aria-label="Play AI Marketing Kombat"
+        >
+          <span aria-hidden="true">{GAME_COPY.playGlyph} </span>
+          {GAME_COPY.playLabel}
+        </a>
+      )}
 
       {/* CRT screen effect scoped to this section only (not global) */}
       <CRTOverlay scoped intensity={0.34} flicker powerOn={false} />

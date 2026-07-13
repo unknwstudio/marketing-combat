@@ -38,7 +38,7 @@ export default function HeroStage() {
   return (
     <div className="herostage">
       <div className="herostage__flat">
-        <Hero />
+        <Hero withPlay />
       </div>
       {/* the flat Hero above already renders everything — this is a purely
           additive 3D overlay, so a crash here just falls back to nothing

@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import { GAME_COPY } from '@/lib/game'
 import './HeroDisplay3D.css'
 
 /**
@@ -43,14 +44,18 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
 }
 
 /**
- * `hover` — draw the registration badge INVERTED (white fill, black text,
- * white border stays), mirroring the DOM badge's :hover style. The canvas
- * covers the DOM hero, so the CSS hover is invisible; instead we pre-bake a
- * second texture and swap uniforms on pointerenter/leave — and on keyboard
- * focusin/focusout, where the invert doubles as the focus indicator — of the
- * real badge (see CRTPlane): the state reads *through* the CRT, warp and all.
+ * Draw the hero content into a canvas2D texture. The canvas covers the DOM
+ * hero, so its CSS :hover/:focus-visible are invisible; instead we pre-bake one
+ * texture per interactive state and swap uniforms on the real elements'
+ * pointer/focus events (see CRTPlane) — the invert also doubles as the keyboard
+ * focus indicator, which the opaque canvas would otherwise hide (WCAG 2.4.7).
+ * The lit element reads *through* the CRT, warp and all.
+ *
+ * `active` names which interactive element is lit: 'badge' | 'play' | null.
+ * Each pre-baked texture shows exactly one lit element (or none), matching the
+ * DOM :hover/:focus-visible of the real <a> the canvas covers.
  */
-async function buildHeroTexture(bgImg, logoImg, hover = false) {
+async function buildHeroTexture(bgImg, logoImg, active = null) {
   const S = TEX_SCALE
   const c = document.createElement('canvas')
   c.width = HERO_W * S
@@ -68,12 +73,12 @@ async function buildHeroTexture(bgImg, logoImg, hover = false) {
   const badgeText = '>>> registration <<<'
   const bw = x.measureText(badgeText).width + 16
   const bh = 24 + 18
-  x.fillStyle = hover ? '#fff' : '#000'
+  x.fillStyle = active === 'badge' ? '#fff' : '#000'
   x.fillRect(19, 23, bw, bh)
   x.strokeStyle = '#fff'
   x.lineWidth = 1
   x.strokeRect(19.5, 23.5, bw - 1, bh - 1)
-  x.fillStyle = hover ? '#000' : '#fff'
+  x.fillStyle = active === 'badge' ? '#000' : '#fff'
   x.fillText(badgeText, 27, 23 + bh - 14)
 
   // lede (below badge)
@@ -112,6 +117,28 @@ async function buildHeroTexture(bgImg, logoImg, hover = false) {
     const lh = lw * (logoImg.height / logoImg.width)
     x.drawImage(logoImg, (HERO_W - lw) / 2, 530, lw, lh)
   }
+
+  // PLAY prompt — centered under the wordmark; its DOM hit-area (an <a>) is
+  // warped to sit under these pixels (see warpElToScreen in CRTPlane).
+  const playText = `${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`
+  x.font = `28px ${MONO}`
+  const pTextW = x.measureText(playText).width
+  const pPadX = 22
+  const pw = pTextW + pPadX * 2
+  const ph = 52
+  const px0 = (HERO_W - pw) / 2
+  const py0 = 680
+  x.fillStyle = active === 'play' ? '#fff' : '#ffd23f' // rest = --k-gold value
+  x.fillRect(px0, py0, pw, ph)
+  x.strokeStyle = '#fff'
+  x.lineWidth = 1
+  x.strokeRect(px0 + 0.5, py0 + 0.5, pw - 1, ph - 1)
+  x.fillStyle = '#000'
+  x.textBaseline = 'middle'
+  x.textAlign = 'center'
+  x.fillText(playText, HERO_W / 2, py0 + ph / 2 + 1)
+  x.textAlign = 'left' // restore defaults for any later draws (tag pills below)
+  x.textBaseline = 'alphabetic'
 
   // bottom tag pills, space-between across x:347..1093
   x.font = '24px ' + MONO
@@ -194,16 +221,17 @@ function unwarpPoint(fx, fy) {
   return [(cx * s + 1) / 2, (cy * s + 1) / 2]
 }
 
-/** compute + apply the badge transform; returns a cleanup that restores it.
+/** compute + apply an element's warp transform; slides its (invisible)
+    hit-area under the barrel-warped pixels the shader draws for it.
     All rects are measured live so ScaleCanvas zoom / relayout can't drift us:
     normalized fractions are zoom-invariant, and the px offset is converted to
-    the badge's LOCAL units via the measured zoom (rect ÷ offsetWidth). */
-function warpBadgeToScreen(badgeEl, canvasEl) {
-  badgeEl.style.transform = '' // measure the untransformed layout box
+    the element's LOCAL units via the measured zoom (rect ÷ offsetWidth). */
+function warpElToScreen(el, canvasEl) {
+  el.style.transform = '' // measure the untransformed layout box
   const stage = canvasEl.getBoundingClientRect()
-  const rect = badgeEl.getBoundingClientRect()
-  if (!stage.width || !rect.width || !badgeEl.offsetWidth) return
-  const zoom = rect.width / badgeEl.offsetWidth
+  const rect = el.getBoundingClientRect()
+  if (!stage.width || !rect.width || !el.offsetWidth) return
+  const zoom = rect.width / el.offsetWidth
 
   // warp all 4 corners, take the bounding box (the true shape is a hair
   // trapezoidal; at k=0.05 the difference is sub-pixel — fine for a hit-area)
@@ -222,8 +250,8 @@ function warpBadgeToScreen(badgeEl, canvasEl) {
   const w = Math.max(...xs) - left
   const h = Math.max(...ys) - top
 
-  badgeEl.style.transformOrigin = '0 0'
-  badgeEl.style.transform =
+  el.style.transformOrigin = '0 0'
+  el.style.transform =
     `translate(${(left - rect.left) / zoom}px, ${(top - rect.top) / zoom}px) ` +
     `scale(${w / rect.width}, ${h / rect.height})`
 }
@@ -350,41 +378,44 @@ function CRTPlane() {
 
   useEffect(() => {
     let cancelled = false
-    // Both states are pre-baked (normal + hovered badge) and kept alive; the
-    // pointer just swaps uTex between them — no per-hover canvas redraw.
+    // Three states are pre-baked (normal + lit badge + lit PLAY) and kept
+    // alive; the pointer/focus just swaps uTex between them — no per-hover
+    // canvas redraw.
     let texNormal = null
-    let texHover = null
-    // The canvas is pointer-events:none, so hover lands on the REAL DOM badge
-    // underneath (the <a> in Hero.jsx) — we mirror its state onto the shader.
-    // KEYBOARD focus is mirrored the same way: the opaque canvas also hides
-    // the DOM :focus-visible ring, so without this Tab lands on the badge
-    // (/demo's first tab stop) with no visible indicator anywhere on screen
-    // (WCAG 2.4.7). One flag each — the inverted texture shows while EITHER
-    // holds, matching Hero.css's .hero__badge:hover / :focus-visible pair.
+    let texBadge = null
+    let texPlay = null
+    // The canvas is pointer-events:none, so hover/focus land on the REAL DOM
+    // elements underneath (the <a>s in Hero.jsx) — we mirror their state onto
+    // the shader. KEYBOARD focus is mirrored the same way: the opaque canvas
+    // also hides the DOM :focus-visible ring, so without this Tab lands on the
+    // badge or PLAY with no visible indicator anywhere on screen (WCAG 2.4.7).
+    // One flag each — the matching inverted texture shows while its element is
+    // hovered OR :focus-visible, mirroring Hero.css's :hover / :focus-visible.
     let badgeEl = null
-    let ro = null // ResizeObserver keeping the warped hit-area registered
-    let hovered = false
-    let focused = false
+    let playEl = null
+    let ro = null // ResizeObserver keeping the warped hit-areas registered
+    let badgeState = false // hover||focus on the badge
+    let playState = false // hover||focus on PLAY
     const sync = () => {
-      if (!texNormal || !texHover) return
-      uniforms.uTex.value = hovered || focused ? texHover : texNormal
+      if (!texNormal) return
+      uniforms.uTex.value = badgeState ? texBadge : playState ? texPlay : texNormal
     }
     const onEnter = () => {
-      hovered = true
+      badgeState = true
       sync()
     }
     const onLeave = () => {
-      hovered = false
+      badgeState = false
       sync()
     }
     // :focus-visible only — a mouse click also focuses the badge, but must not
     // latch the invert after pointerleave (the CSS styles :focus-visible too)
     const onFocus = () => {
-      focused = matchesSafe(badgeEl, ':focus-visible')
+      badgeState = matchesSafe(badgeEl, ':focus-visible')
       sync()
     }
     const onBlur = () => {
-      focused = false
+      badgeState = false
       sync()
     }
 
@@ -399,22 +430,25 @@ function CRTPlane() {
         } catch {}
       }
       if (cancelled) return
-      texNormal = await buildHeroTexture(bgImg, logoImg, false)
-      texHover = await buildHeroTexture(bgImg, logoImg, true)
+      texNormal = await buildHeroTexture(bgImg, logoImg, null)
+      texBadge = await buildHeroTexture(bgImg, logoImg, 'badge')
+      texPlay = await buildHeroTexture(bgImg, logoImg, 'play')
       if (cancelled) {
-        // cleanup already ran (it saw both as null) — dispose here instead
+        // cleanup already ran (it saw all three as null) — dispose here instead
         texNormal.dispose()
-        texHover.dispose()
+        texBadge.dispose()
+        texPlay.dispose()
         return
       }
-      // Upload BOTH textures to the GPU now, while we're still in the async
-      // build phase. three uploads a texture lazily the first time it's used —
-      // for texHover that used to be the first pointerenter, stalling that
-      // frame on a full-res texImage2D (~10-40ms on integrated GPUs): a hitch
-      // on exactly the interaction the pre-bake exists to make instant. Warmed
-      // here, the hover/focus swap is a pure uniform pointer change.
+      // Upload ALL three textures to the GPU now, while we're still in the
+      // async build phase. three uploads a texture lazily the first time it's
+      // used — for the lit textures that used to be the first pointerenter,
+      // stalling that frame on a full-res texImage2D (~10-40ms on integrated
+      // GPUs): a hitch on exactly the interaction the pre-bake exists to make
+      // instant. Warmed here, every hover/focus swap is a pure uniform change.
       gl.initTexture(texNormal)
-      gl.initTexture(texHover)
+      gl.initTexture(texBadge)
+      gl.initTexture(texPlay)
       uniforms.uTex.value = texNormal
       setTexture(texNormal)
 
@@ -428,18 +462,49 @@ function CRTPlane() {
         badgeEl.addEventListener('focusout', onBlur)
         // pointer or focus may already be resting on the badge when textures
         // finish loading — sync once so the first frame isn't stale
-        if (badgeEl.matches(':hover')) hovered = true
-        if (document.activeElement === badgeEl) focused = matchesSafe(badgeEl, ':focus-visible')
+        if (badgeEl.matches(':hover')) badgeState = true
+        if (document.activeElement === badgeEl && matchesSafe(badgeEl, ':focus-visible'))
+          badgeState = true
         sync()
 
         // slide the DOM hit-area under the barrel-warped badge pixels (see
-        // warpBadgeToScreen). Re-derived on resize: the fractions are
+        // warpElToScreen). Re-derived on resize: the fractions are
         // zoom-invariant, but a reflow can move the badge inside the stage.
-        warpBadgeToScreen(badgeEl, gl.domElement)
+        warpElToScreen(badgeEl, gl.domElement)
         ro = new ResizeObserver(() => {
-          if (badgeEl) warpBadgeToScreen(badgeEl, gl.domElement)
+          if (badgeEl) warpElToScreen(badgeEl, gl.domElement)
+          if (playEl) warpElToScreen(playEl, gl.domElement)
         })
         ro.observe(gl.domElement)
+      }
+
+      // PLAY anchor (Task 5) — same mechanism as the badge, mirrored onto its
+      // own texture/flag. Queried defensively: if it's ever missing the CRT
+      // simply never shows the lit-PLAY texture.
+      playEl = document.querySelector('.herostage__flat .hero__play')
+      if (playEl) {
+        const onPEnter = () => {
+          playState = true
+          sync()
+        }
+        const onPLeave = () => {
+          playState = false
+          sync()
+        }
+        const onPFocus = () => {
+          playState = matchesSafe(playEl, ':focus-visible')
+          sync()
+        }
+        const onPBlur = () => {
+          playState = false
+          sync()
+        }
+        playEl.addEventListener('pointerenter', onPEnter)
+        playEl.addEventListener('pointerleave', onPLeave)
+        playEl.addEventListener('focusin', onPFocus)
+        playEl.addEventListener('focusout', onPBlur)
+        playEl._amkHandlers = { onPEnter, onPLeave, onPFocus, onPBlur } // for cleanup
+        warpElToScreen(playEl, gl.domElement)
       }
     }
     build()
@@ -455,8 +520,18 @@ function CRTPlane() {
         badgeEl.style.transform = ''
         badgeEl.style.transformOrigin = ''
       }
+      if (playEl && playEl._amkHandlers) {
+        const h = playEl._amkHandlers
+        playEl.removeEventListener('pointerenter', h.onPEnter)
+        playEl.removeEventListener('pointerleave', h.onPLeave)
+        playEl.removeEventListener('focusin', h.onPFocus)
+        playEl.removeEventListener('focusout', h.onPBlur)
+        playEl.style.transform = ''
+        playEl.style.transformOrigin = ''
+      }
       if (texNormal) texNormal.dispose()
-      if (texHover) texHover.dispose()
+      if (texBadge) texBadge.dispose()
+      if (texPlay) texPlay.dispose()
     }
   }, [uniforms, gl])
 

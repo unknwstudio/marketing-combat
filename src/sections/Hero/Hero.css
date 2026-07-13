@@ -202,6 +202,43 @@
   left: 1120px;
 }
 
+/* --- PLAY affordance (prop-gated, rendered only via HeroStage/withPlay) --- */
+/* Centered with auto side-margins, NOT transform:translateX(-50%): on desktop
+   /demo the CRT's warpElToScreen writes the hit-area onto el.style.transform,
+   and an inline transform REPLACES (never composes with) a stylesheet transform
+   — so translateX(-50%) centering was silently dropped the moment the warp ran,
+   shoving the clickable box ~half its width right of the drawn button (a dead
+   click on the wordmark). Auto-margins leave `transform` free for the warp. */
+.hero__play {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 680px;
+  width: max-content;
+  margin-inline: auto;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-2);
+  padding: var(--k-2) var(--k-5);
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-lg);
+  letter-spacing: 0.08em;
+  color: var(--k-black);
+  background: var(--k-gold);
+  border: 1px solid var(--k-white);
+  text-decoration: none;
+}
+
+.hero__play:hover {
+  background: var(--k-white);
+}
+
+.hero__play:focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 2px;
+}
+
 /* ============================================================
    RESPONSIVE — tablet & phone. The fixed 1440x804 desktop stage
    above (>=1024px) is untouched. Below 1024px the hero keeps the
@@ -345,6 +382,16 @@
   .hero__pill {
     font-size: 10px;
     letter-spacing: -0.3px;
+  }
+
+  /* mobile has no CRT/warp (3D is desktop-only), so plain absolute placement is
+     safe here. `position:static` demoted it below every absolute sibling and
+     hid it; keep it absolute, centered (base left/right/margin-inline:auto),
+     lifted off the bottom above the tag pills. */
+  .hero__play {
+    top: auto;
+    bottom: 34px;
+    z-index: 4;
   }
 }
 
