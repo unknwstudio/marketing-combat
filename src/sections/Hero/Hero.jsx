@@ -31,13 +31,13 @@ export default function Hero({ withPlay = false, centerPlay = false }) {
       <img className="hero__logo" src={`/assets/hero/logo.webp`} alt="AI Marketing Kombat" />
 
       {/* top-left: registration badge + lede. The badge is a REAL link to the
-          FinalCta section (#register on /demo): on /demo it's a same-page
-          fragment scroll (smooth via the motion-gated rule in FinalCta.css);
-          from / it's a cross-page nav that rides the site's @view-transition.
-          data-sfx follows the MagneticCTA contract (see MagneticCTA.jsx) so a
-          click SFX attaches if the badge is ever tagged data-magnetic. */}
+          FinalCta section (#register): the hero and FinalCta share the home
+          page, so it's a same-page fragment scroll (smooth via the
+          motion-gated rule in FinalCta.css). data-sfx follows the MagneticCTA
+          contract (see MagneticCTA.jsx) so a click SFX attaches if the badge
+          is ever tagged data-magnetic. */}
       <div className="hero__intro">
-        <a href="/demo#register" className="hero__badge" data-sfx="confirm" data-burst>
+        <a href="/#register" className="hero__badge" data-sfx="confirm" data-burst>
           {'>>> registration <<<'}
         </a>
         <p className="hero__lede">

@@ -8,7 +8,6 @@ const LAST_MODIFIED = '2026-07-12'
 export default function sitemap() {
   return [
     { url: `${SITE_URL}/`, lastModified: LAST_MODIFIED, changeFrequency: 'weekly', priority: 1 },
-    { url: `${SITE_URL}/demo`, lastModified: LAST_MODIFIED, changeFrequency: 'weekly', priority: 1 },
     { url: `${SITE_URL}/classic`, lastModified: LAST_MODIFIED, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/mcp`, lastModified: LAST_MODIFIED, changeFrequency: 'monthly', priority: 0.3 },
     // /play intentionally excluded — noindex'd (WIP battle prototype)
