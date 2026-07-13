@@ -33,7 +33,7 @@ const BRAG = {
 };
 const bragKey = (r) => (r.action === 'victory' ? 'victory' : r.action === 'advance' ? 'advance' : r.won ? 'won' : 'lost');
 
-export default function GameChrome() {
+export default function GameChrome({ onExit } = {}) {
   const [scene, setScene] = useState('boot');     // boot | select | fight
   const [started, setStarted] = useState(false);  // dismissed the title / press-start?
   const [paused, setPaused] = useState(false);
@@ -99,7 +99,9 @@ export default function GameChrome() {
   const resume = () => { setPaused(false); emit(MK.RESUME); };
   const restart = () => { setPaused(false); emit(MK.RESTART); };
   const toMenu = () => { setPaused(false); emit(MK.MENU); };
-  const exitToSite = () => { window.location.href = '/'; };
+  // /play passes no onExit → hard-nav to the site home, as before. The /demo
+  // takeover passes onExit → close the overlay in place (no navigation).
+  const exitToSite = () => { if (onExit) onExit(); else window.location.href = '/'; };
   const requestExit = () => { if (result || scene !== 'fight') exitToSite(); else setConfirmExit(true); };  // match over or in a menu -> no confirm needed
   // setSiteMuted() triggers the subscribeMuted callback above, which updates
   // `muted` and emits MK.MUTE to the game — no need to duplicate either here.
