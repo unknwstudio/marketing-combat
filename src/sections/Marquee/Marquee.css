@@ -29,8 +29,11 @@
 .marquee__item {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 28px;
+  /* the star is a separator, so it must sit EQUIDISTANT from the text before
+     and after it: star->text gap (--k-4) === padding-right + padding-left of
+     two adjacent items (--k-2 + --k-2). Keep the two in lockstep. */
+  gap: var(--k-4);
+  padding: 14px var(--k-2);
   font-family: var(--k-font);
   font-size: 20px;
   line-height: 1;
@@ -76,7 +79,8 @@
 
   .marquee__item {
     font-size: 12px;
-    padding: 10px 16px;
-    gap: var(--k-1);
+    /* keep the equidistant-star rule: gap (--k-2) === 2× padding-x (--k-1) */
+    padding: 10px var(--k-1);
+    gap: var(--k-2);
   }
 }

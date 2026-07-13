@@ -9,36 +9,25 @@
   list-style: none;
 }
 
-/* diamond badge (rotated square, matches the PixelIcon "diamond" motif) so
-   it reads instantly even if the section head has scrolled out of view.
-   align-self overrides the grid's default row-stretch so it doesn't stretch
-   to the cards' full height; the two cards keep stretching to match each
-   other, same as before this column was added. */
+/* pixel-art "VS" badge between the two tracks so "pick one" reads instantly
+   even if the section head has scrolled out of view. align-self overrides the
+   grid's default row-stretch so it doesn't stretch to the cards' full height;
+   the two cards keep stretching to match each other. */
 .tracks__vs {
   display: flex;
   align-items: center;
   justify-content: center;
   align-self: center;
-  width: 64px;
-  height: 64px;
   flex-shrink: 0;
-  background: var(--k-panel);
-  border: 2px solid var(--k-orange);
-  transform: rotate(45deg);
 }
 
-.tracks__vs span {
+.tracks__vsImg {
   display: block;
-  transform: rotate(-45deg);
-  font-family: var(--k-font-accent);
-  font-size: var(--k-text-md);
-  font-weight: 500;
-  letter-spacing: -1px;
-  text-transform: uppercase;
-  color: var(--k-red);
-  -webkit-text-stroke: 0.05em var(--k-orange);
-  paint-order: stroke fill;
-  text-shadow: 0 0 0.12em rgba(255, 80, 0, 0.6);
+  width: 92px;
+  height: auto;
+  /* a soft orange glow so the badge lives in the arcade world rather than
+     reading as a pasted-on sticker */
+  filter: drop-shadow(0 0 10px rgba(255, 80, 0, 0.4));
 }
 
 .tracks__card {
@@ -192,14 +181,12 @@
   /* stacked layout: the badge becomes its own centered row between the
      two cards instead of a column between them */
   .tracks__vs {
-    width: 40px;
-    height: 40px;
     justify-self: center;
     margin: -6px 0;
   }
 
-  .tracks__vs span {
-    font-size: 14px;
+  .tracks__vsImg {
+    width: 64px;
   }
 
   .tracks__card {

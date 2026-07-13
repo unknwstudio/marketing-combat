@@ -33,7 +33,7 @@ function Track() {
               platforms and broke the pixel look (see PixelIcon) */}
           <span className="marquee__star">
             <PixelIcon name="star" size="0.95em" />
-          </span>{' '}
+          </span>
           {t}
         </span>
       ))}
