@@ -1,0 +1,67 @@
+/* ============================================================
+   WHY JOIN — two-up numbered contents list.
+   ============================================================ */
+
+.c-why__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+  max-width: 760px;
+  margin-bottom: var(--k-8);
+}
+
+.c-why__intro {
+  margin-top: var(--k-1);
+  max-width: 520px;
+}
+
+.c-why__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--k-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--k-black);
+}
+
+.c-why__item {
+  display: flex;
+  gap: var(--k-3);
+  padding: var(--k-4) 0;
+  border-bottom: 1px solid var(--k-black);
+}
+
+.c-why__n {
+  flex: none;
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 400;
+  line-height: 0.9;
+  color: var(--c-accent);
+}
+
+.c-why__title {
+  font-size: var(--k-text-md);
+  font-weight: 400;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--k-black);
+  margin-bottom: var(--k-1);
+}
+
+.c-why__body {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--k-classic-panel);
+  max-width: 38ch;
+}
+
+@media (max-width: 1023px) {
+  .c-why__head {
+    margin-bottom: var(--k-6);
+  }
+
+  .c-why__list {
+    grid-template-columns: 1fr;
+  }
+}

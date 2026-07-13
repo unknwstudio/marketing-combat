@@ -1,0 +1,90 @@
+/* ============================================================
+   FOOTER — dark sitemap close.
+   ============================================================ */
+
+.c-foot {
+  width: 1440px;
+  background: var(--k-black);
+  color: var(--k-white);
+  padding-block: var(--k-12) var(--k-5);
+}
+
+.c-foot__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--k-6);
+  padding-bottom: var(--k-8);
+  border-bottom: 1px solid var(--k-classic-panel);
+}
+
+.c-foot__wordmark {
+  font-size: var(--k-text-lg);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.c-foot__tag {
+  margin-top: var(--k-2);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--k-hud-steel);
+  max-width: 32ch;
+}
+
+.c-foot__col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-1);
+}
+
+.c-foot__col-h {
+  margin-bottom: var(--k-2);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--k-hud-slate);
+}
+
+.c-foot__link {
+  font-size: 14px;
+  color: var(--k-white);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.c-foot__link:hover,
+.c-foot__link:focus-visible {
+  color: var(--c-green);
+}
+
+.c-foot__legal {
+  font-size: 14px;
+  color: var(--k-hud-steel);
+}
+
+.c-foot__base {
+  padding-top: var(--k-4);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--k-hud-slate);
+}
+
+@media (max-width: 1023px) {
+  .c-foot {
+    width: 100%;
+  }
+
+  .c-foot__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--k-5);
+  }
+
+  .c-foot__brand {
+    grid-column: 1 / -1;
+  }
+}

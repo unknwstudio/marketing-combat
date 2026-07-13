@@ -1,0 +1,100 @@
+/* ============================================================
+   THE JURY — native scroll-snap portrait rail.
+   The rail bleeds full-width; its inline padding aligns the first
+   card with the content column and lets the last peek off-edge.
+   ============================================================ */
+
+.c-jury__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+  max-width: 760px;
+  margin-bottom: var(--k-6);
+}
+
+.c-jury__intro {
+  margin-top: var(--k-1);
+  max-width: 560px;
+}
+
+.c-jury__rail {
+  display: flex;
+  gap: var(--k-2);
+  margin: 0;
+  padding: var(--k-1) var(--c-margin);
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.c-jury__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.c-judge {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-1);
+  padding-bottom: var(--k-2);
+}
+
+.c-judge__photo {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  margin-bottom: var(--k-2);
+  border-radius: 12px;
+  background: linear-gradient(160deg, var(--k-hud-steel), var(--k-classic-panel));
+}
+
+.c-judge__glyph {
+  width: 44%;
+  height: 44%;
+  fill: rgba(255, 255, 255, 0.45);
+}
+
+.c-judge__name {
+  font-size: var(--k-text-md);
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--k-black);
+}
+
+.c-judge__role {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.c-judge__bio {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--k-classic-panel);
+  max-width: 34ch;
+}
+
+/* the secret tile — absence as the design */
+.c-judge--secret .c-judge__q {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  margin-bottom: var(--k-2);
+  border-radius: 12px;
+  background: var(--k-black);
+  color: var(--k-white);
+  font-size: clamp(64px, 8vw, 112px);
+  font-weight: 400;
+  line-height: 1;
+}
+
+@media (max-width: 1023px) {
+  .c-judge {
+    flex-basis: 260px;
+  }
+}

@@ -1,0 +1,121 @@
+/* ============================================================
+   FAQ — sticky heading + hairline accordion.
+   ============================================================ */
+
+.c-faq {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: var(--k-8);
+  align-items: start;
+}
+
+.c-faq__aside {
+  position: sticky;
+  top: var(--k-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-3);
+}
+
+.c-faq__note {
+  margin-top: var(--k-1);
+  max-width: 30ch;
+}
+
+.c-faq__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--k-black);
+}
+
+.c-faq__item {
+  border-bottom: 1px solid var(--k-black);
+}
+
+.c-faq__q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-3);
+  padding: var(--k-3) 0;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  font-size: var(--k-text-base);
+  line-height: 1.3;
+  text-align: left;
+  color: var(--k-black);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.c-faq__item.is-open .c-faq__q,
+.c-faq__q:hover {
+  color: var(--c-accent);
+}
+
+/* +/× toggle drawn from two bars; the vertical one rotates away when open */
+.c-faq__toggle {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.c-faq__toggle::before,
+.c-faq__toggle::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 2px;
+  background: currentColor;
+  transition: transform 0.25s ease;
+}
+
+.c-faq__toggle::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.c-faq__item.is-open .c-faq__toggle::after {
+  transform: translateY(-50%) rotate(0deg);
+}
+
+/* answer: 0fr -> 1fr height animation, no measuring */
+.c-faq__answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.c-faq__item.is-open .c-faq__answer {
+  grid-template-rows: 1fr;
+}
+
+.c-faq__answer-inner {
+  overflow: hidden;
+  min-height: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--k-classic-panel);
+  max-width: 60ch;
+  /* pad only appears when open so the collapsed row has zero height */
+  padding-bottom: 0;
+  transition: padding-bottom 0.3s ease;
+}
+
+.c-faq__item.is-open .c-faq__answer-inner {
+  padding-bottom: var(--k-3);
+}
+
+@media (max-width: 1023px) {
+  .c-faq {
+    grid-template-columns: 1fr;
+    gap: var(--k-6);
+  }
+
+  .c-faq__aside {
+    position: static;
+  }
+}
