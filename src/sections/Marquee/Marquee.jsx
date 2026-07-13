@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './Marquee.css'
 
 /**
@@ -48,7 +49,7 @@ export default function Marquee() {
   const viewportRef = useRef(null)
 
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduce = prefersReducedMotion()
     const track = viewportRef.current
     if (reduce || !track) return
 

@@ -11,7 +11,7 @@
 .judges__card {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--k-2);
   align-items: flex-start;
 }
 
@@ -98,7 +98,7 @@
   font-size: 22px;
   line-height: 1.15;
   letter-spacing: -0.5px;
-  color: #fff;
+  color: var(--k-white);
   text-transform: uppercase;
 }
 
@@ -107,7 +107,7 @@
   font-size: 18px;
   line-height: 1.35;
   letter-spacing: -0.5px;
-  color: #7f7f7f;
+  color: var(--k-muted);
 }
 
 @media (max-width: 1023px) {

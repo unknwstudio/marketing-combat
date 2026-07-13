@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 
 const SparksContext = createContext(null)
 
@@ -23,10 +24,6 @@ export function useSparks() {
   return useContext(SparksContext) ?? { burst: NOOP }
 }
 
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-
 const GRAVITY = 0.18
 const FRICTION = 0.86
 
@@ -35,7 +32,7 @@ const FRICTION = 0.86
 const readPalette = () => {
   if (typeof window === 'undefined') return ['#ffffff', '#ffd23f', '#3fe0ff']
   const s = getComputedStyle(document.documentElement)
-  const y = s.getPropertyValue('--k-yellow').trim() || '#ffd23f'
+  const y = s.getPropertyValue('--k-gold').trim() || '#ffd23f'
   const c = s.getPropertyValue('--k-cyan').trim() || '#3fe0ff'
   return ['#ffffff', y, c]
 }

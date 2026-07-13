@@ -8,14 +8,14 @@
 
 .mcp {
   min-height: 100svh;
-  background: #fff;
+  background: var(--k-white);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  color: #000;
-  padding: 24px 16px;
+  color: var(--k-black);
+  padding: var(--k-3) var(--k-2);
 }
 
 .mcp__center {
@@ -38,25 +38,25 @@
 
 .mcp__card {
   width: 100%;
-  background: #ffb000;
+  background: var(--k-amber);
   border-radius: 17px;
   padding: 4px;
 }
 
 .mcp__card-border {
-  background: #cd6d00;
+  background: var(--k-amber-deep);
   border-radius: 13px;
   padding: 1px;
 }
 
 .mcp__card-inner {
-  background: #ffb000;
+  background: var(--k-amber);
   border-radius: 12px;
-  padding: 16px 8px 8px;
+  padding: var(--k-2) var(--k-1) var(--k-1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--k-3);
 }
 
 /* --- prompt preview: lowercase mono, clamped to 9 lines --------------- */
@@ -70,8 +70,8 @@
   letter-spacing: -0.48px;
   line-height: normal;
   text-transform: lowercase;
-  /* #6b3800 on #ffb000: ~5.2:1, clears WCAG AA (was #cd6d00 at ~1.98:1) */
-  color: #6b3800;
+  /* var(--k-amber-dark) on var(--k-amber): ~5.2:1, clears WCAG AA (was var(--k-amber-deep) at ~1.98:1) */
+  color: var(--k-amber-dark);
   white-space: pre-line;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -93,8 +93,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #000;
-  color: #fff;
+  background: var(--k-black);
+  color: var(--k-white);
   font-family: inherit;
   font-size: 16px;
   line-height: 1.2;
@@ -104,5 +104,5 @@
 }
 
 .mcp__copy:hover {
-  background: #222;
+  background: var(--k-classic-panel);
 }

@@ -6,13 +6,13 @@
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: var(--k-1);
+  padding: var(--k-1) 12px;
   background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #fff;
+  border: 1px solid var(--k-white);
   color: var(--k-accent-green);
   font-family: var(--k-font-mono);
-  font-size: 14px;
+  font-size: var(--k-text-xs);
   letter-spacing: -0.3px;
   text-transform: uppercase;
   cursor: pointer;
@@ -21,18 +21,18 @@
 
 .sndtoggle:hover {
   background: var(--k-accent-green);
-  color: #000;
+  color: var(--k-black);
   border-color: var(--k-accent-green);
 }
 
 .sndtoggle--off {
-  color: #7f7f7f;
+  color: var(--k-muted);
 }
 
 .sndtoggle--off:hover {
-  background: #7f7f7f;
-  color: #000;
-  border-color: #7f7f7f;
+  background: var(--k-muted);
+  color: var(--k-black);
+  border-color: var(--k-muted);
 }
 
 /* animated equalizer bars (on) */

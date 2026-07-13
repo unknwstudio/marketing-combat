@@ -2,12 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { JuiceContext } from './useJuice'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './juice.css'
-
-// Read once per call so a runtime toggle of the OS setting is respected.
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 /**
  * Wraps the app in a shake/freeze target and exposes { shake, hitstop, impact }

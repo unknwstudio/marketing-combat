@@ -1,3 +1,4 @@
+// @ts-check
 'use client'
 
 import './crt.css'
@@ -21,6 +22,15 @@ import './crt.css'
  *
  * Motion (flicker, rolling band, power-on) is disabled under
  * prefers-reduced-motion; static scanlines and vignette are kept.
+ */
+/**
+ * @param {object} props
+ * @param {number} [props.scanlineGap]  px period of the scanline gradient (default 3)
+ * @param {boolean} [props.flicker]  constant flicker + slow rolling band (default true)
+ * @param {boolean} [props.vignette]  soft radial edge-darkening (default true)
+ * @param {boolean} [props.powerOn]  collapse-to-line → bloom flash on mount (default true)
+ * @param {number} [props.intensity]  overall strength 0–1 (default 0.25)
+ * @param {boolean} [props.scoped]  cover only the nearest positioned ancestor (default false)
  */
 export default function CRTOverlay({
   scanlineGap = 3,

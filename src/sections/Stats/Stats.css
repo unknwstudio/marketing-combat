@@ -1,7 +1,7 @@
 /* Four big arcade counters, divided by thin vertical rules. */
 .stats {
-  padding-top: 72px;
-  padding-bottom: 72px;
+  padding-top: var(--k-9);
+  padding-bottom: var(--k-9);
 }
 
 .stats__row {
@@ -17,7 +17,7 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 8px 24px;
+  padding: var(--k-1) var(--k-3);
   text-align: center;
 }
 
@@ -100,8 +100,8 @@
 
 @media (max-width: 1023px) {
   .stats {
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding-top: var(--k-5);
+    padding-bottom: var(--k-5);
   }
 
   .stats__row {

@@ -58,7 +58,7 @@ export default function Fighters() {
 
       <div className="fighters__content">
         <div className="fighters__caption">
-          <span>Choose your fighter • who it&rsquo;s for</span>
+          <span>Choose your fighter · who it&rsquo;s for</span>
           <span>For senior marketers of the AI era.</span>
         </div>
 

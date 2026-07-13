@@ -15,12 +15,12 @@
   background: var(--k-bg);
   color: var(--k-ink);
   font-family: var(--k-font-mono);
-  padding: 96px 80px;
+  padding: var(--k-12) var(--k-10);
   overflow: hidden;
 }
 
 .dsec--alt {
-  background: #08010f;
+  background: var(--k-bg-deep);
 }
 
 /* --- centered header block: round label + title + sub -------------- */
@@ -28,14 +28,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: var(--k-2);
   text-align: center;
-  margin-bottom: 56px;
+  margin-bottom: var(--k-7);
 }
 
 .dsec__round {
   font-family: var(--k-font-mono);
-  font-size: 24px;
+  font-size: var(--k-text-lg);
   line-height: 1;
   letter-spacing: -0.72px;
   color: var(--k-accent-green);
@@ -45,7 +45,7 @@
 .dsec__title {
   margin: 0;
   font-family: var(--k-font-accent);
-  font-size: 64px;
+  font-size: var(--k-text-2xl);
   font-weight: 500;
   line-height: 1;
   text-transform: lowercase;
@@ -60,7 +60,7 @@
 
 .dsec__sub {
   max-width: 900px;
-  font-size: 22px;
+  font-size: var(--k-text-md);
   line-height: 1.4;
   letter-spacing: -0.5px;
   color: var(--k-body-green);
@@ -70,12 +70,12 @@
 .dpill {
   display: inline-flex;
   align-items: center;
-  padding: 8px 8px;
+  padding: var(--k-1) var(--k-1);
   background: rgba(0, 0, 0, 0.6);
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #fff;
+  border-top: 1px solid var(--k-white);
+  border-bottom: 1px solid var(--k-white);
   color: var(--k-accent-green);
-  font-size: 18px;
+  font-size: var(--k-text-base);
   line-height: 1;
   letter-spacing: -0.5px;
   text-transform: uppercase;
@@ -85,9 +85,9 @@
 /* --- panel / card: dark box with a colored 2px frame --------------- */
 .dcard {
   position: relative;
-  background: #050109;
+  background: var(--k-panel);
   border: 2px solid var(--k-line);
-  padding: 28px;
+  padding: var(--k-3);
 }
 
 /* --- shared CTA: matches the hero registration badge exactly -------- */
@@ -96,11 +96,11 @@
   align-items: center;
   justify-content: center;
   padding: 8px 10px 10px;
-  background: #000;
-  border: 1px solid #fff;
-  color: #fff;
+  background: var(--k-black);
+  border: 1px solid var(--k-white);
+  color: var(--k-white);
   font-family: var(--k-font-mono);
-  font-size: 24px;
+  font-size: var(--k-text-lg);
   line-height: 1;
   letter-spacing: -0.72px;
   text-transform: lowercase;
@@ -110,12 +110,12 @@
 }
 
 .d-btn:hover {
-  background: #fff;
-  color: #000;
+  background: var(--k-white);
+  color: var(--k-black);
 }
 
 .d-btn:focus-visible {
-  outline: 3px solid var(--k-title-yellow);
+  outline: 3px solid var(--k-focus-ring);
   outline-offset: 3px;
 }
 
@@ -127,36 +127,18 @@
 
 .d-btn--red:hover {
   background: var(--k-red);
-  color: #000;
+  color: var(--k-black);
   border-color: var(--k-red);
 }
 
-/* --- CTA button (legacy champion/hero idiom) ----------------------- */
-.dcta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 20px;
-  background: #000;
-  border: 1px solid #fff;
-  color: #fff;
-  font-family: var(--k-font-mono);
-  font-size: 22px;
-  letter-spacing: -0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s;
-}
-
-.dcta:hover {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
-}
-
-.dcta:focus-visible {
-  outline: 3px solid var(--k-title-yellow);
-  outline-offset: 3px;
+/* forced-colors (Windows High Contrast) — .d-btn's affordance is purely
+   background-color (black box, invert on hover), which forced-colors mode
+   would otherwise flatten to indistinguishable text (2026-07-12 audit: the
+   only forced-colors accommodation anywhere in the app was the cursor). */
+@media (forced-colors: active) {
+  .d-btn {
+    border: 1px solid ButtonText;
+  }
 }
 
 /* magnetic CTAs ease back to rest when the cursor leaves */
@@ -199,8 +181,8 @@
 .reveal-on .stats__cell:not(.revealed),
 .reveal-on .faq__item:not(.revealed) {
   --k-pxr: 0px;
-  -webkit-mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
-  mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  -webkit-mask-image: radial-gradient(circle at center, var(--k-black) var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  mask-image: radial-gradient(circle at center, var(--k-black) var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
   -webkit-mask-size: 9px 9px;
   mask-size: 9px 9px;
   -webkit-mask-repeat: repeat;
@@ -210,8 +192,8 @@
 .reveal-on .dcard.revealed,
 .reveal-on .stats__cell.revealed,
 .reveal-on .faq__item.revealed {
-  -webkit-mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
-  mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  -webkit-mask-image: radial-gradient(circle at center, var(--k-black) var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+  mask-image: radial-gradient(circle at center, var(--k-black) var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
   -webkit-mask-size: 9px 9px;
   mask-size: 9px 9px;
   -webkit-mask-repeat: repeat;
@@ -281,7 +263,7 @@
 /* small numeric index used across cards ("01".."06") */
 .dindex {
   font-family: var(--k-font-accent);
-  font-size: 40px;
+  font-size: var(--k-text-xl);
   line-height: 1;
   color: var(--k-orange);
 }
@@ -317,7 +299,7 @@
 @media (hover: hover) {
   .judges__card:hover,
   .organizers__card:hover {
-    border-color: #3fe0ff;
+    border-color: var(--k-cyan);
     box-shadow: 0 0 26px rgba(63, 224, 255, 0.3);
   }
 
@@ -366,7 +348,7 @@
   }
 
   .dsec__head {
-    margin-bottom: 32px;
+    margin-bottom: var(--k-4);
     gap: 12px;
   }
 
@@ -392,14 +374,10 @@
     padding: 18px;
   }
 
-  .dcta {
-    font-size: 13px;
-    padding: 11px 14px;
-  }
-
   .d-btn {
     font-size: 15px;
     padding: 6px 8px 8px;
+    min-height: 44px; /* comfortable touch target (already inline-flex/centered) */
   }
 
   .dindex {

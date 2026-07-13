@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './Faq.css'
 
 /**
@@ -63,7 +64,7 @@ export default function Faq() {
     const list = listRef.current
     if (!list) return
     // Reduced-motion: attach nothing — native <details> shows answers instantly.
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    if (prefersReducedMotion()) return
 
     let cancelled = false
     const tweens = []

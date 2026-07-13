@@ -1,7 +1,14 @@
+// @ts-check
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import './ScaleCanvas.css'
+
+// useLayoutEffect measures + applies the zoom BEFORE the browser paints the
+// post-hydration frame, so the viewer never sees the intermediate zoom:1 state
+// snap to the real scale. It warns during SSR (no layout), so fall back to
+// useEffect on the server where effects don't run anyway.
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 /**
  * Fits a fixed design-width canvas (default 1440px) to the viewport.
@@ -23,6 +30,13 @@ import './ScaleCanvas.css'
  *   position:sticky stay correct at any scale, and no height reservation is
  *   needed. Use this for pages with sticky/pinned scroll elements (classic).
  */
+/**
+ * @param {object} props
+ * @param {number} [props.width]  fixed design width in px (default 1440)
+ * @param {number} [props.breakpoint]  below this viewport width, reflow fluidly (default 1024)
+ * @param {'transform' | 'zoom'} [props.mode]  scaling engine (see doc above)
+ * @param {import('react').ReactNode} [props.children]
+ */
 export default function ScaleCanvas({
   width = 1440,
   breakpoint = 1024,
@@ -35,13 +49,19 @@ export default function ScaleCanvas({
   const [height, setHeight] = useState(0)
   const [fluid, setFluid] = useState(false)
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const outer = outerRef.current
     const inner = innerRef.current
     if (!outer || !inner) return
 
+    // Touch tablets (iPad landscape/Surface etc.) sit in the 1024–1439px band
+    // and would otherwise get a zoom-fitted DESKTOP layout with shrunk targets
+    // and no hover equivalents. Opt any coarse-pointer device into the fluid
+    // mobile reflow regardless of width (the /play game already reads coarse).
+    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+
     const measure = () => {
-      if (window.innerWidth < breakpoint) {
+      if (window.innerWidth < breakpoint || coarse) {
         setFluid(true)
         setScale(1)
         setHeight(0)

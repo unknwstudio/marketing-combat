@@ -15,10 +15,10 @@
   min-height: 132px;
   background: repeating-linear-gradient(
     45deg,
-    #0a0316 0,
-    #0a0316 10px,
-    #06010f 10px,
-    #06010f 20px
+    var(--k-scrim) 0,
+    var(--k-scrim) 10px,
+    var(--k-shadow) 10px,
+    var(--k-shadow) 20px
   );
 }
 
@@ -26,9 +26,9 @@
   font-family: var(--k-font-mono);
   font-size: 22px;
   letter-spacing: 2px;
-  /* #7a7aa8 on this striped near-black bg: ~5:1, clears WCAG AA
+  /* var(--k-ink-cool) on this striped near-black bg: ~5:1, clears WCAG AA
      (was #3a3358 at ~1.76:1 — unreadable) */
-  color: #7a7aa8;
+  color: var(--k-ink-cool);
   text-transform: uppercase;
 }
 

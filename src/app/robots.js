@@ -1,4 +1,4 @@
-const SITE = 'https://marketing-combat.vercel.app'
+import { SITE_URL } from '@/lib/site'
 
 export default function robots() {
   return {
@@ -9,6 +9,6 @@ export default function robots() {
       // (see src/app/play/page.jsx); keeping it out of robots too is belt-and-braces.
       disallow: '/play',
     },
-    sitemap: `${SITE}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   }
 }

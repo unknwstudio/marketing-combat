@@ -4,14 +4,14 @@
 .gc-root {
   position: fixed;
   inset: 0;
-  z-index: 55;
+  z-index: var(--z-play-chrome);
   pointer-events: none;
   font-family: var(--font-ps, ui-monospace, "Courier New", monospace);
-  color: #eaf4ff;
-  --gc-gold: #ffd23f;
-  --gc-red: #ff4d6d;
-  --gc-green: #8bffa0;
-  --gc-blue: #8fe8ff;
+  color: var(--k-hud-ink);
+  --gc-gold: var(--k-gold);
+  --gc-red: var(--k-hud-red);
+  --gc-green: var(--k-hud-green);
+  --gc-blue: var(--k-hud-cyan);
 }
 .gc-root button:not(.gc-corner) { font-family: inherit; } /* menus use the pixel font; corner icons set their own (below) */
 
@@ -28,7 +28,7 @@
   border-radius: 9px;
   background: rgba(8, 4, 20, 0.6);
   border: 2px solid rgba(255, 255, 255, 0.28);
-  color: #eaf4ff;
+  color: var(--k-hud-ink);
   /* utility icons in a clean system font, NOT the pixel HUD font: Press Start 2P lacks ✕/❚❚ (they
      fall back) and sits ? high, so the pixel font made the three glyphs mismatch. One font + one
      size + line-height:1 + flex-center => all three identically centered. */
@@ -47,8 +47,8 @@
   .gc-corner { opacity: 1; width: 44px; height: 44px; border-color: rgba(255, 255, 255, 0.5); }
 }
 .gc-exit { left: 10px; }
-.gc-exit:hover { border-color: var(--gc-red); color: #ffd7de; }
-.gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: 8px; pointer-events: none; }
+.gc-exit:hover { border-color: var(--gc-red); color: var(--k-hud-red-tint); }
+.gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: var(--k-1); pointer-events: none; }
 .gc-topright .gc-corner { position: static; }
 
 /* ---- shared full-screen overlay ---- */
@@ -60,7 +60,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--k-2);
   padding: 28px;
   text-align: center;
   background: rgba(5, 1, 12, 0.9);
@@ -93,7 +93,7 @@
   justify-content: center;
   font-size: 8px;
   letter-spacing: 1px;
-  color: #9fb6c8;
+  color: var(--k-hud-steel);
 }
 .gc-legend span { white-space: nowrap; }
 /* touch devices get on-screen buttons (MobileControls) — a WASD/JKL legend
@@ -104,7 +104,7 @@
 .gc-start {
   font-size: clamp(11px, 2.4vw, 15px);
   letter-spacing: 2px;
-  color: #fff;
+  color: var(--k-white);
   animation: gc-blink 1.05s steps(1, end) infinite;
 }
 .gc-howtolink {
@@ -117,13 +117,13 @@
   cursor: pointer;
   padding: 6px 10px;
 }
-.gc-howtolink:hover { color: #fff; text-decoration: underline; }
-.gc-hint { font-size: 8px; letter-spacing: 1px; color: #9fb6c8; } /* >=4.5:1 on the dark overlay (was #5f7686, ~4.36:1) */
+.gc-howtolink:hover { color: var(--k-white); text-decoration: underline; }
+.gc-hint { font-size: 8px; letter-spacing: 1px; color: var(--k-hud-steel); } /* >=4.5:1 on the dark overlay (was var(--k-hud-shadow), ~4.36:1) */
 
 /* ---- menus (pause / how-to / confirm) ---- */
 .gc-menu { gap: 12px; }
 .gc-menu-title {
-  font-size: clamp(15px, 3.4vw, 22px);
+  font-size: var(--k-text-md);
   letter-spacing: 2px;
   color: var(--gc-gold);
   text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
@@ -136,23 +136,23 @@
   padding: 13px 16px;
   background: rgba(255, 255, 255, 0.055);
   border: 2px solid rgba(255, 255, 255, 0.26);
-  color: #eaf4ff;
-  font-size: 11px;
+  color: var(--k-hud-ink);
+  font-size: var(--k-text-xs);
   letter-spacing: 1.5px;
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s, transform 0.06s;
 }
-.gc-item:hover { background: rgba(255, 210, 63, 0.14); border-color: var(--gc-gold); color: #fff; }
+.gc-item:hover { background: rgba(255, 210, 63, 0.14); border-color: var(--gc-gold); color: var(--k-white); }
 .gc-item:active { transform: scale(0.98); }
 .gc-item:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; }
-.gc-danger { border-color: rgba(255, 77, 109, 0.55); color: #ffc4cf; }
-.gc-danger:hover { background: rgba(255, 77, 109, 0.16); border-color: var(--gc-red); color: #fff; }
+.gc-danger { border-color: rgba(255, 77, 109, 0.55); color: var(--k-hud-red-soft); }
+.gc-danger:hover { background: rgba(255, 77, 109, 0.16); border-color: var(--gc-red); color: var(--k-white); }
 .gc-toggle { border-color: rgba(143, 232, 255, 0.4); color: var(--gc-blue); }
 .gc-toggle:hover { background: rgba(143, 232, 255, 0.12); border-color: var(--gc-blue); }
 
 /* ---- how-to card ---- */
 .gc-howto { gap: 14px; }
-.gc-lead { margin: 0; font-family: ui-monospace, "Courier New", monospace; font-size: 12px; color: #cfe6f2; }
+.gc-lead { margin: 0; font-family: ui-monospace, "Courier New", monospace; font-size: 12px; color: var(--k-hud-frost); }
 .gc-keys {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -161,14 +161,14 @@
 }
 .gc-keys > div { display: flex; justify-content: space-between; gap: 18px; min-width: 190px; font-size: 9px; }
 .gc-keys b { color: var(--gc-green); font-weight: normal; letter-spacing: 1px; }
-.gc-keys span { color: #dbe7f0; }
+.gc-keys span { color: var(--k-hud-mist); }
 .gc-note {
   margin: 0;
   max-width: 380px;
   font-family: ui-monospace, "Courier New", monospace;
   font-size: 10.5px;
   line-height: 1.7;
-  color: #8fa6b6;
+  color: var(--k-hud-slate);
 }
 
 /* ---- result action bar (matchend) — a row under the Phaser result text ---- */
@@ -178,12 +178,12 @@
   left: 0;
   right: 0;
   bottom: 15%;
-  z-index: 56;
+  z-index: var(--z-play-resultbar);
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
-  padding: 0 16px;
+  padding: 0 var(--k-2);
 }
 .gc-resultbar .gc-item {
   pointer-events: auto;
@@ -195,16 +195,16 @@
   background: rgba(5, 1, 12, 0.82);
 }
 .gc-result-primary { border-color: var(--gc-gold); color: var(--gc-gold); }
-.gc-result-primary:hover { background: rgba(255, 210, 63, 0.18); border-color: var(--gc-gold); color: #fff; }
+.gc-result-primary:hover { background: rgba(255, 210, 63, 0.18); border-color: var(--gc-gold); color: var(--k-white); }
 .gc-share-btn { border-color: rgba(143, 232, 255, 0.5); color: var(--gc-blue); }
-.gc-share-btn:hover { background: rgba(143, 232, 255, 0.16); border-color: var(--gc-blue); color: #fff; }
+.gc-share-btn:hover { background: rgba(143, 232, 255, 0.16); border-color: var(--gc-blue); color: var(--k-white); }
 
 /* ---- share / brag card ---- */
 .gc-bragcard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--k-1);
   padding: 22px 34px;
   margin: 4px 0 2px;
   background: linear-gradient(160deg, rgba(20, 12, 40, 0.9), rgba(8, 4, 20, 0.9));
@@ -218,11 +218,11 @@
   color: var(--gc-gold);
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
-.gc-brag-fighter { font-size: 9px; letter-spacing: 1.5px; color: #eaf4ff; }
-.gc-brag-score { font-size: 11px; letter-spacing: 2px; color: var(--gc-green); } /* the gauntlet board line: initials · score */
+.gc-brag-fighter { font-size: 9px; letter-spacing: 1.5px; color: var(--k-hud-ink); }
+.gc-brag-score { font-size: var(--k-text-xs); letter-spacing: 2px; color: var(--gc-green); } /* the gauntlet board line: initials · score */
 /* manual-copy fallback when the clipboard API is blocked (embedded webviews) */
 .gc-copyfield { pointer-events: auto; width: min(320px, 82vw); padding: 9px 11px; font-family: ui-monospace, monospace;
-  font-size: 11px; color: #eaf4ff; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--gc-blue); border-radius: 6px; text-align: center; }
+  font-size: var(--k-text-xs); color: var(--k-hud-ink); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--gc-blue); border-radius: 6px; text-align: center; }
 .gc-brag-game { font-size: 7px; letter-spacing: 2px; color: var(--gc-blue); opacity: 0.85; margin-top: 2px; }
 
 @keyframes gc-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.12; } }

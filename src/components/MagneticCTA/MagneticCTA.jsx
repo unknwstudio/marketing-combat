@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { playSfx } from '@/effects/audio/arcadeAudio'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 
 /**
  * MagneticCTA — behaviour-only (renders nothing). Enhances every element tagged
@@ -10,7 +11,7 @@ import { playSfx } from '@/effects/audio/arcadeAudio'
  */
 export default function MagneticCTA() {
   useEffect(() => {
-    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const reduced = prefersReducedMotion()
     const canHover = window.matchMedia?.('(hover: hover)').matches
     const cleanups = []
 

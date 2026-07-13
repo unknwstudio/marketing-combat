@@ -6,10 +6,10 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 40px;
-  padding-top: 80px;
-  padding-bottom: 72px;
-  background: #000;
+  gap: var(--k-5);
+  padding-top: var(--k-10);
+  padding-bottom: var(--k-9);
+  background: var(--k-black);
   border-top: 2px solid var(--k-line);
 }
 
@@ -24,7 +24,7 @@
   font-family: var(--k-font-mono);
   font-size: 15px;
   letter-spacing: 0;
-  color: #6f6f7a;
+  color: var(--k-ink-dim);
   text-transform: uppercase;
 }
 
@@ -36,7 +36,7 @@
   font-family: var(--k-font-mono);
   font-size: 14px;
   letter-spacing: -0.2px;
-  color: #565660;
+  color: var(--k-ink-dim-2);
 }
 
 .footer__links {
@@ -49,18 +49,18 @@
 
 .footer__links a,
 .footer__linkPending {
-  color: #6f6f7a;
+  color: var(--k-ink-dim);
 }
 
 .footer__links a:hover {
-  color: #fff;
+  color: var(--k-white);
   text-decoration: underline;
 }
 
 @media (max-width: 1023px) {
   .footer {
     gap: 28px;
-    padding-top: 48px;
+    padding-top: var(--k-6);
     /* the fixed ModeSwitcher pill (~46px tall + 16px offset + safe-area) sits
        on top of the page everywhere, footer included — extra clearance here
        so "Legal information / Code of conduct / Privacy" isn't hidden under it */

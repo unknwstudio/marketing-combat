@@ -37,11 +37,11 @@
   opacity: 0.7;
 }
 .announce__text::before {
-  color: #3fe0ff;
+  color: var(--k-cyan);
   transform: translate(-3px, 2px);
 }
 .announce__text::after {
-  color: #ff2e4d;
+  color: var(--k-red);
   transform: translate(3px, -2px);
 }
 

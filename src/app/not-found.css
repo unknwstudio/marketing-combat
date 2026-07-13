@@ -1,0 +1,69 @@
+/* /not-found — in-world "GAME OVER -> CONTINUE?" 404 screen. Reuses the same
+   accent-font/red-glow treatment as FinalCta's own GAME OVER slam so a lost
+   visitor still reads the pixel-arcade brand instead of a generic 404 page. */
+.notfound {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--k-bg);
+  padding: var(--k-4);
+  text-align: center;
+}
+
+.notfound__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--k-2);
+  max-width: 480px;
+}
+
+.notfound__kicker {
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-sm);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--k-red-dark);
+}
+
+.notfound__title {
+  font-family: var(--k-font-accent);
+  font-size: var(--k-text-2xl);
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+  color: var(--k-red);
+  text-shadow: 0 0 0.16em rgba(255, 46, 77, 0.75);
+}
+
+.notfound__sub {
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-base);
+  color: var(--k-ink);
+  margin: 0;
+}
+
+.notfound__link {
+  margin-top: var(--k-2);
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-sm);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--k-gold);
+  text-decoration: none;
+  border: 1px solid var(--k-gold);
+  border-radius: 999px;
+  padding: 12px 28px;
+}
+
+.notfound__link:hover,
+.notfound__link:focus-visible {
+  background: var(--k-gold);
+  color: var(--k-bg-deep);
+}
+
+.notfound__link:focus-visible {
+  outline: 2px solid var(--k-focus-ring);
+  outline-offset: 2px;
+}

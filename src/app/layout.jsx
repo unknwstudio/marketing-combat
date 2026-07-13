@@ -1,6 +1,7 @@
 import '@/styles/index.css'
 import '@/styles/App.css'
 import { Press_Start_2P } from 'next/font/google'
+import { SITE_URL } from '@/lib/site'
 
 const pressStart = Press_Start_2P({
   weight: '400',
@@ -9,12 +10,11 @@ const pressStart = Press_Start_2P({
   display: 'swap',
 })
 
-const SITE = 'https://marketing-combat.vercel.app'
 const DESCRIPTION =
   'The first international hackathon for senior marketers of the AI era. Two days, real cases — use AI or get finished. Round 01 · July 2026 · Final in Barcelona.'
 
 export const metadata = {
-  metadataBase: new URL(SITE),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'AI Marketing Kombat — hackathon for senior AI marketers',
     template: '%s · AI Marketing Kombat',
@@ -34,7 +34,7 @@ export const metadata = {
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    url: SITE,
+    url: SITE_URL,
     siteName: 'AI Marketing Kombat',
     title: 'AI Marketing Kombat — use AI or get finished',
     description: DESCRIPTION,
@@ -57,6 +57,12 @@ export const metadata = {
   icons: { icon: '/favicon.svg' },
 }
 
+// mobile browser-chrome color. Dark to match the permanently-dark arcade
+// (/, /demo, /play); the white /classic & /mcp pages override this to light.
+export const viewport = {
+  themeColor: '#0b0221',
+}
+
 const eventJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Event',
@@ -72,9 +78,9 @@ const eventJsonLd = {
     name: 'Barcelona',
     address: { '@type': 'PostalAddress', addressLocality: 'Barcelona', addressCountry: 'ES' },
   },
-  organizer: { '@type': 'Organization', name: 'AI Marketing Kombat', url: SITE },
-  image: [`${SITE}/assets/hero/hero-bg.png`],
-  url: SITE,
+  organizer: { '@type': 'Organization', name: 'AI Marketing Kombat', url: SITE_URL },
+  image: [`${SITE_URL}/assets/hero/hero-bg.png`],
+  url: SITE_URL,
   // exact day, ticket price/availability and an endDate aren't settled yet
   // (the hero copy says "two days", the /mcp prompt says "45 min + 2 hours" —
   // those two accounts of the format actively disagree) — Rich Results wants

@@ -5,7 +5,7 @@
 .roundmoment-root {
   position: fixed;
   inset: 0;
-  z-index: 24;
+  z-index: var(--z-play-round);
   pointer-events: none;
 }
 
@@ -51,7 +51,7 @@
 
 .roundmoment__tag {
   font-family: var(--k-font-mono);
-  font-size: clamp(13px, 2vw, 24px);
+  font-size: var(--k-text-lg);
   line-height: 1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -67,7 +67,7 @@
 .roundmoment__pip {
   width: 14px;
   height: 14px;
-  background: #ffd23f;
+  background: var(--k-gold);
   box-shadow: 0 0 12px rgba(255, 210, 63, 0.85);
 }
 

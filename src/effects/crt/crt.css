@@ -22,7 +22,7 @@
 /* scoped: cover only the nearest positioned ancestor (a section), not the viewport */
 .crt--scoped {
   position: absolute;
-  z-index: 60;
+  z-index: var(--z-play-crt);
 }
 
 /* every layer fills the overlay */

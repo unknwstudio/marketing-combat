@@ -7,6 +7,9 @@ export const metadata = {
   alternates: { canonical: '/classic' },
 }
 
+// this page is white — override the root's dark browser-chrome color
+export const viewport = { themeColor: '#ffffff' }
+
 /**
  * /classic — the "for normal people" mode: same content as the pixel-art
  * landing, laid out as a simple readable page (Figma Frame 53, node 38:4331).

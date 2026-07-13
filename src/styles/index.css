@@ -27,12 +27,16 @@
 }
 
 :root {
+  /* the arcade experience (/, /demo, /play) is permanently dark — tell the UA
+     so form controls, scrollbars and the default canvas render dark (no white
+     flash). The white /classic & /mcp pages opt back to light below. */
+  color-scheme: dark;
+
   /* --- palette: the hero/landing arcade set --- */
   --k-bg: #0b0221;
   --k-bg-2: #1a0938;
   --k-ink: #f4f4f8;
   --k-red: #ff2e4d;
-  --k-yellow: #ffd23f;
   --k-cyan: #3fe0ff;
   --k-magenta: #ff3fd2;
   --k-green: #3fff87;
@@ -41,17 +45,86 @@
   /* --- palette: the /demo tour ("dsec") arcade set --------------------
      A second, de-facto palette grew alongside the one above as /demo's
      ~20 sections shipped — same world, a warmer/greener variant. Both are
-     real, in active use (--k-yellow above is the mode-switcher/PLAY-button
-     gold; --k-title-yellow below is the section-title glow) — canonizing
-     them as named tokens (rather than 88 raw-hex repeats across 13 files)
-     is the fix; picking one over the other is a design call for later. */
+     real, in active use. Roles (2026-07-12 audit): --k-title-yellow is the
+     decorative-only title-glow; --k-gold is the ONE interactive-gold role
+     (buttons/pills/cursor/health-bar). The deprecated --k-yellow alias was
+     fully migrated to --k-gold and removed (2026-07-13 audit). */
   --k-title-yellow: #ffd000;
+  --k-gold: #ffd23f;
   --k-orange: #ff5000;
   --k-accent-green: #3ad76f;
   --k-body-green: #7fd39a;
   --k-line: #2a2140;
   --k-panel: #050109;
   --k-bg-deep: #08010f;
+  /* one sanctioned darker-red step, derived from --k-red (audit: 3 unrelated
+     "danger red" hexes existed with no shared token — ScrollHealth's raw
+     #a00 gradient endpoint and GameChrome's separate --gc-red) */
+  --k-red-dark: color-mix(in srgb, var(--k-red) 70%, black);
+  /* single focus-ring token — audit found the same CTA idiom hand-copied
+     into Hero/Champion/demo.css with 3 different focus-visible treatments */
+  --k-focus-ring: var(--k-title-yellow);
+
+  /* neutral + structural tokens (2026-07-13 audit): these roles were spelled as
+     raw literals across ~40 files. Values are the exact ones already in use, so
+     migrating call sites to them is a zero-visual-change adoption win.
+     --k-white / --k-black: structural fills the palette never named.
+     --k-muted: the de-facto "muted / secondary text" grey (the most-used #7f7f7f;
+       the 3 tinted variants #8f8f9a/#7a7aa8/#84808f are left raw — collapsing them
+       would be a visual change for the owner to sign off, not a safe migration).
+     --k-amber + --k-amber-dark: the MCP/pill amber that had no token (#ffb000),
+     with its WCAG-checked dark text pair. */
+  --k-white: #ffffff;
+  --k-black: #000000;
+  --k-muted: #7f7f7f;
+  --k-amber: #ffb000;
+  --k-amber-dark: #6b3800;
+
+  /* Scoped sub-palettes folded into the one ledger (2026-07-13 audit: these
+     had grown as independent raw-hex sub-systems in classic.css / GameChrome.css
+     / ScrollHealth.css). Values are unchanged — call sites (incl. the local
+     --c-* / --gc-* aliases) now source from here so the whole system is auditable
+     and `color-no-hex` can be enforced everywhere outside this file. */
+
+  /* classic (white editorial) mode */
+  --k-classic-ink: #070707;
+  --k-classic-panel: #222222;
+  --k-classic-yellow: #fff600;
+  --k-classic-blue: #0052da;
+  --k-classic-green: #00da95;
+
+  /* /play game-HUD blue-white readout ramp (light → dark) + status accents */
+  --k-hud-ink: #eaf4ff;
+  --k-hud-mist: #dbe7f0;
+  --k-hud-frost: #cfe6f2;
+  --k-hud-steel: #9fb6c8;
+  --k-hud-slate: #8fa6b6;
+  --k-hud-shadow: #5f7686;
+  --k-hud-cyan: #8fe8ff;
+  --k-hud-red: #ff4d6d;
+  --k-hud-red-tint: #ffd7de;
+  --k-hud-red-soft: #ffc4cf;
+  --k-hud-green: #8bffa0;
+
+  /* scroll-health bar gradient ramp */
+  --k-health-full: #6dff8f;
+  --k-health-full-deep: #2fbf5a;
+  --k-health-low: #ff6d6d;
+  --k-health-low-deep: #bf2f2f;
+  --k-health-mid-deep: #d99a1f;
+  --k-health-track: #1a0c22;
+
+  /* scoped stragglers (each was a lone raw hex) */
+  --k-stage: #05010c; /* /play fixed stage backdrop */
+  --k-play-ink: #1a1206; /* PlayLink dark text/border */
+  --k-ink-dim: #8f8f9a; /* footer muted text */
+  --k-ink-dim-2: #84808f; /* footer muted text (2nd tint) */
+  --k-ink-cool: #7a7aa8; /* sponsors muted text — WCAG-tuned for the striped bg */
+  --k-scrim: #0a0316; /* sponsors stripe near-black */
+  --k-amber-deep: #cd6d00; /* mcp card deep-amber accent */
+  --k-tracks-border: #3a2a10; /* tracks card warm border */
+  --k-champion-mauve: #af8dad; /* champion decorative */
+  --k-champion-sage: #789a8c; /* champion decorative */
 
   /* --- type --- */
   --k-font: var(--font-ps), 'Press Start 2P', 'Courier New', monospace;
@@ -60,13 +133,43 @@
   /* body / label mono font (Figma "GT Pressura Mono") */
   --k-font-mono: 'GT Pressura Mono', 'Courier New', monospace;
 
+  /* --- type scale (2026-07-12 audit: 176 font-size declarations across
+     ~30 raw px values + 18 one-off clamp() tuples, no shared scale at all —
+     this replaces that drift with 8 named, reusable steps). Migrate every
+     section's font-size to the nearest step; delete bespoke clamp tuples
+     that only existed because no shared step was available. */
+  --k-text-xs: clamp(11px, 2.4vw, 14px);
+  --k-text-sm: clamp(13px, 2.6vw, 16px);
+  --k-text-base: clamp(14px, 2.6vw, 18px);
+  --k-text-md: clamp(16px, 3vw, 22px);
+  --k-text-lg: clamp(20px, 4.5vw, 24px);
+  --k-text-xl: clamp(28px, 7vw, 40px);
+  --k-text-2xl: clamp(40px, 10.5vw, 64px);
+  /* display step between 2xl and hero (2026-07-13 audit): the loud Stats/section
+     numbers (~88px) had no scale step and used bespoke clamp() tuples. */
+  --k-text-3xl: clamp(48px, 12vw, 88px);
+  --k-text-hero: clamp(48px, 14vw, 220px);
+
   /* --- spacing scale (8px arcade grid) --- */
   --k-1: 8px;
   --k-2: 16px;
   --k-3: 24px;
   --k-4: 32px;
+  /* filled scale holes (2026-07-13 audit): even on-8px-grid values (40/56/72/88)
+     had no step to reach for, forcing them off-token. Named value/8 like the rest. */
+  --k-5: 40px;
   --k-6: 48px;
+  --k-7: 56px;
   --k-8: 64px;
+  --k-9: 72px;
+  /* extended 2026-07-12: the most load-bearing spacing value on the page —
+     .dsec's own 96px/80px section padding — had no token to reach for,
+     nor did FinalCta's 120px close or Footer's 80px. All clean 8px
+     multiples. */
+  --k-10: 80px;
+  --k-11: 88px;
+  --k-12: 96px;
+  --k-15: 120px;
 
   /* --- z-index scale for the page-level HUD/overlay layers (fixed or
      portaled-to-body components that stack against EACH OTHER — not the
@@ -85,6 +188,18 @@
   --z-crt: 9000; /* page-wide CRT scanline overlay */
   --z-cursor: 9999; /* pixel cursor layer */
   --z-skiplink: 10000; /* keyboard skip-to-content link */
+
+  /* --- /play's fixed HUD stack (2026-07-12 audit: these ran a second,
+     undocumented set of raw z-index values with an actual collision —
+     .crt--scoped and .play-link were BOTH hardcoded to 60). Folded into
+     this one auditable ledger; --z-play-crt moved off the collision. */
+  --z-play-pad: 20;
+  --z-play-round: 24;
+  --z-play-rotate-hint: 50;
+  --z-play-chrome: 55;
+  --z-play-resultbar: 56;
+  --z-play-crt: 58;
+  --z-play-link: 60;
 }
 
 *,
@@ -109,6 +224,10 @@ body,
    scrollbars either way. */
 html {
   scrollbar-gutter: stable;
+  /* in-page anchor jumps (DemoNav / ClassicMenu #format/#prizes/#faq) must clear
+     the fixed top HUD (ScrollHealth strip + DemoNav pill ≈ 72px) instead of
+     landing under it. One rule replaces per-section scroll-margin. */
+  scroll-padding-top: 72px;
 }
 
 body {
@@ -131,6 +250,24 @@ body {
 body:has(> .classic),
 body:has(> .mcp) {
   background: #fff;
+  color-scheme: light; /* these pages are white — keep their controls/scrollbars light */
+}
+
+/* Orphan/widow control (2026-07-13 audit: text-wrap balance/pretty were absent
+   everywhere). balance evens multi-line headings; pretty stops single-word last
+   lines in body copy. Progressive — unsupported browsers just ignore it. */
+h1,
+h2,
+h3,
+h4,
+.dsec__title,
+.dsec__round {
+  text-wrap: balance;
+}
+p,
+.dsec__sub,
+.hero__lede {
+  text-wrap: pretty;
 }
 
 /* every pixel asset must render crisp */
@@ -144,6 +281,16 @@ canvas,
 a {
   color: var(--k-cyan);
   text-decoration: none;
+}
+
+/* --k-cyan (#3fe0ff) is 12.75:1 on the dark --k-bg but only 1.58:1 on white
+   (2026-07-12 audit) — a latent WCAG AA failure for any future bare <a> on
+   the white-background /classic and /mcp pages. Scoped override alongside
+   the existing white-background swap above, so any new plain link there
+   inherits a readable color instead of the dark-mode default. */
+body:has(> .classic) a,
+body:has(> .mcp) a {
+  color: #0a5fa8;
 }
 
 /* visually hidden but announced by AT / crawled by search — for content

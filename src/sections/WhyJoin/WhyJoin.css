@@ -18,7 +18,7 @@
 
 @media (hover: hover) {
   .whyjoin__card:hover {
-    border-color: #3fe0ff;
+    border-color: var(--k-cyan);
     transform: translateY(-4px);
   }
 }
@@ -42,7 +42,7 @@
   font-size: 30px;
   line-height: 1;
   letter-spacing: -0.5px;
-  color: #fff;
+  color: var(--k-white);
   text-transform: uppercase;
 }
 

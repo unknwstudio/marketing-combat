@@ -30,7 +30,7 @@
   color: var(--k-accent-green);
   text-transform: uppercase;
   text-align: left;
-  padding: 0 16px 16px;
+  padding: 0 var(--k-2) var(--k-2);
   border-bottom: 2px solid var(--k-line);
 }
 
@@ -44,7 +44,7 @@
 }
 
 .leaderboard__name {
-  color: #fff;
+  color: var(--k-white);
   letter-spacing: 0.15em;
 }
 
@@ -52,7 +52,7 @@
 th.leaderboard__score,
 td.leaderboard__score {
   text-align: right;
-  color: var(--k-yellow);
+  color: var(--k-gold);
 }
 
 th.leaderboard__score {
@@ -92,20 +92,20 @@ th.leaderboard__score {
 .leaderboard__row--enter .leaderboard__rank,
 .leaderboard__row--enter .leaderboard__name,
 .leaderboard__row--enter td.leaderboard__score {
-  color: #7f7f7f;
+  color: var(--k-muted);
 }
 
 /* the open slot blinks like a free-play prompt: steps(1) square wave —
    an arcade lamp, not a fade */
 .leaderboard__enter {
-  color: #fff;
+  color: var(--k-white);
   animation: lb-blink 1.06s steps(1, end) infinite;
 }
 
 /* hover parks the blink so the click target holds still */
 .leaderboard__enter:hover,
 .leaderboard__enter:focus-visible {
-  color: var(--k-yellow);
+  color: var(--k-gold);
   animation: none;
 }
 
@@ -128,7 +128,7 @@ th.leaderboard__score {
 
 @media (max-width: 1023px) {
   .leaderboard__board {
-    padding: 16px;
+    padding: var(--k-2);
   }
 
   .leaderboard__table {

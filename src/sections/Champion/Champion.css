@@ -9,7 +9,7 @@
   z-index: 2; /* stack above fighters so the seam-straddling CTA shows over it */
   width: 1440px;
   height: 924px;
-  background: #000; /* Figma: black behind the panel (no blue --k-bg strip) */
+  background: var(--k-black); /* Figma: black behind the panel (no blue --k-bg strip) */
   overflow: visible; /* let the registration button straddle the bottom seam */
   font-family: var(--k-font);
 }
@@ -45,13 +45,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--k-1);
   padding: 20px;
-  background: #000;
-  border: 1px solid #7f7f7f;
+  background: var(--k-black);
+  border: 1px solid var(--k-muted);
   overflow: hidden; /* clip the full-bleed ticker to the black box */
   text-transform: lowercase;
-  color: #000;
+  color: var(--k-black);
 }
 
 /* Marquee ticker row */
@@ -63,7 +63,7 @@
   width: calc(100% + 40px);
   padding: 4px 0;
   overflow: hidden;
-  background: #af8dad;
+  background: var(--k-champion-mauve);
 }
 
 /* Animated marquee track: every item has a uniform pitch (24px margin-right),
@@ -90,22 +90,22 @@
 
 .champion__tickerItem {
   flex: none;
-  margin-right: 24px; /* uniform pitch for the seamless loop */
+  margin-right: var(--k-3); /* uniform pitch for the seamless loop */
   /* Figma 35:4131 etc: GT Pressura Mono Regular, 24px, -0.72px, black, lowercase */
   font-family: var(--k-font-mono);
-  font-size: 24px;
+  font-size: var(--k-text-lg);
   line-height: 1;
   letter-spacing: -0.72px;
 }
 
 .champion__dot {
-  margin-left: 24px;
+  margin-left: var(--k-3);
 }
 
 /* Stats row: four equal cells */
 .champion__stats {
   display: flex;
-  gap: 8px;
+  gap: var(--k-1);
   width: 100%;
 }
 
@@ -117,9 +117,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Figma 19px is between cap-trimmed boxes; untrimmed line boxes add slack */
+  gap: var(--k-1); /* Figma 19px is between cap-trimmed boxes; untrimmed line boxes add slack */
   padding: 17px 30px;
-  background: #789a8c;
+  background: var(--k-champion-sage);
   text-align: center;
 }
 
@@ -127,9 +127,9 @@
 .champion__value {
   font-family: var(--k-font-accent);
   font-weight: 500;
-  font-size: 64px;
+  font-size: var(--k-text-2xl);
   line-height: 1;
-  color: #000;
+  color: var(--k-black);
 }
 
 /* Figma 33:3982 etc: Input Mono Condensed Light 24px / -0.72px / black.
@@ -137,7 +137,7 @@
    closest licensed family we ship. */
 .champion__caption {
   font-family: var(--k-font-mono);
-  font-size: 24px;
+  font-size: var(--k-text-lg);
   line-height: 1.15;
   letter-spacing: -0.72px;
   max-width: 235px;
@@ -164,11 +164,11 @@
   margin-inline: auto;
   z-index: 5;
   padding: 8px 8px 10px;
-  background: #000;
-  border: 1px solid #fff;
-  color: #fff;
+  background: var(--k-black);
+  border: 1px solid var(--k-white);
+  color: var(--k-white);
   font-family: var(--k-font-mono);
-  font-size: 24px;
+  font-size: var(--k-text-lg);
   line-height: 1;
   letter-spacing: -0.72px;
   text-transform: lowercase;
@@ -177,12 +177,12 @@
 }
 
 .champion__cta:hover {
-  background: #fff;
-  color: #000;
+  background: var(--k-white);
+  color: var(--k-black);
 }
 
 .champion__cta:focus-visible {
-  outline: 2px solid var(--k-yellow);
+  outline: 2px solid var(--k-focus-ring);
   outline-offset: 2px;
 }
 
@@ -201,8 +201,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 24px 16px;
+    gap: var(--k-2);
+    padding: var(--k-3) var(--k-2);
     background: var(--k-bg);
   }
 
@@ -236,7 +236,7 @@
     order: 3;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: var(--k-1);
     width: 100%;
   }
 

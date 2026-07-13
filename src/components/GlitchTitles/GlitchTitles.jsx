@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 // variant) — this is how the otherwise-unused GlitchText effect gets "wired onto"
 // the /demo section titles.
 import '@/components/GlitchText/GlitchText.css'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './GlitchTitles.css'
 
 /**
@@ -19,7 +20,7 @@ import './GlitchTitles.css'
  */
 export default function GlitchTitles() {
   useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    if (prefersReducedMotion()) return
     if (typeof IntersectionObserver === 'undefined') return
 
     const titles = Array.from(document.querySelectorAll('.dsec__title'))
@@ -34,11 +35,15 @@ export default function GlitchTitles() {
           io.unobserve(el)
           // GlitchText's pseudo-elements duplicate the text via data-text; the
           // ::before/::after read it. Set it just for the burst, then clean up.
+          // aria-hidden rides along so that duplicate (some AT expose CSS
+          // generated content) is never announced — restored once the burst ends.
           el.setAttribute('data-text', el.textContent)
+          el.setAttribute('aria-hidden', 'true')
           el.classList.add('k-glitch', 'k-glitch--burst')
           const t = window.setTimeout(() => {
             el.classList.remove('k-glitch', 'k-glitch--burst')
             el.removeAttribute('data-text')
+            el.removeAttribute('aria-hidden')
             timers.delete(t)
           }, 700)
           timers.add(t)

@@ -1,10 +1,12 @@
+import { SITE_URL } from '@/lib/site'
+
 export const metadata = {
   title: 'Demo — the full arcade tour',
   description:
     'The complete AI Marketing Kombat tour: prizes, judges, tracks, arenas, stages, FAQ and the playable arcade cabinet. Round 01 · July 2026 · Final in Barcelona.',
   alternates: { canonical: '/demo' },
   openGraph: {
-    url: 'https://marketing-combat.vercel.app/demo',
+    url: `${SITE_URL}/demo`,
     title: 'AI Marketing Kombat — the full arcade tour',
     description:
       'The complete AI Marketing Kombat tour: prizes, judges, tracks, arenas, stages, FAQ and the playable arcade cabinet.',

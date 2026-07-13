@@ -57,8 +57,8 @@
   /* the mosaic mask itself, applied to both snapshots (10px cells) */
   ::view-transition-new(root),
   ::view-transition-old(root) {
-    -webkit-mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
-    mask-image: radial-gradient(circle at center, #000 var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+    -webkit-mask-image: radial-gradient(circle at center, var(--k-black) var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
+    mask-image: radial-gradient(circle at center, var(--k-black) var(--k-pxr), transparent calc(var(--k-pxr) + 0.5px));
     -webkit-mask-size: 10px 10px;
     mask-size: 10px 10px;
     -webkit-mask-repeat: repeat;
