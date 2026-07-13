@@ -1,0 +1,10 @@
+.game-takeover {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-takeover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--k-stage);
+  overflow: hidden;
+}
