@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import { takeoverAvailable, openGameTakeover } from '@/lib/game'
 import './VsSplash.css'
 
 /**
@@ -85,9 +86,14 @@ export default function VsSplash() {
         return
       }
 
-      // repeat visit this session, or reduced-motion: native nav, zero delay
+      // repeat visit this session, or reduced-motion: skip the flash. On /demo
+      // open the overlay in place; elsewhere fall through to native /play nav.
       if (seen() || prefersReducedMotion()) {
         markSeen()
+        if (takeoverAvailable()) {
+          e.preventDefault()
+          openGameTakeover()
+        }
         return
       }
 
@@ -96,21 +102,20 @@ export default function VsSplash() {
       liveRef.current = true
       setLive(true)
       timerRef.current = window.setTimeout(() => {
-        // The splash replaces the @view-transition dissolve for THIS nav
-        // (see doc comment) — skip it via the spec's per-navigation hook.
-        // Registered here, synchronously before the location assignment, so
-        // it can only catch our own navigation; {once} + the imminent
-        // document teardown keep it from leaking. No-op outside Chromium
-        // (no pageswap event) and when the dissolve didn't arm
-        // (viewTransition == null, e.g. reduced-motion).
+        setLive(false)
+        liveRef.current = false
+        if (takeoverAvailable()) {
+          // /demo: the flash was the ceremony; open the game in place.
+          openGameTakeover()
+          return
+        }
+        // /: no overlay mounted — hard-nav to /play, opting out of the
+        // @view-transition dissolve exactly as before.
         window.addEventListener(
           'pageswap',
           (ev) => {
             const vt = ev.viewTransition
             if (!vt) return
-            // observe the skip's AbortError rejections BEFORE skipping —
-            // an unhandled "Transition was skipped" rejection would be the
-            // very console error this opt-out exists to remove
             vt.ready?.catch?.(() => {})
             vt.finished?.catch?.(() => {})
             vt.updateCallbackDone?.catch?.(() => {})
