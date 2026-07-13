@@ -2,7 +2,6 @@
 
 import ScaleCanvas from '@/components/ScaleCanvas/ScaleCanvas'
 import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
-import PlayLink from '@/components/PlayLink/PlayLink'
 import JuiceProvider from '@/effects/juice/JuiceProvider'
 import HitSparks from '@/effects/particles/HitSparks'
 import PixelCursor from '@/effects/cursor/PixelCursor'
@@ -122,10 +121,6 @@ export default function Page() {
       <GlitchTitles />
       <AttractTitle />
       <AttractMode />
-      {/* floating PLAY entry, same as / — the cabinet is a full scroll away,
-          this keeps the game one click from anywhere. underHud drops it below
-          the ScrollHealth strip; VsSplash intercepts it for the VS flash. */}
-      <PlayLink underHud />
       <VsSplash />
       <GameTakeover />
       <ModeSwitcher active="ai" />
