@@ -4,6 +4,7 @@
   "buildCommand": "next build",
   "outputDirectory": "out",
   "cleanUrls": true,
+  "redirects": [{ "source": "/demo", "destination": "/", "permanent": true }],
   "headers": [
     {
       "source": "/(.*)",

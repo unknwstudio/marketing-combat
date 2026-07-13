@@ -21,7 +21,7 @@ import './Leaderboard.css'
  * effect (client-only) so the SSR/static HTML and first client render agree.
  *
  * Last row is the hook: a blinking "YOUR NAME HERE" linking to the
- * registration CTA (/demo#register). data-magnetic + data-sfx follow the
+ * registration CTA (/#register). data-magnetic + data-sfx follow the
  * MagneticCTA contract (confirm blip on click), same as the FinalCta button.
  *
  * No images, no motion beyond the steps(1) blink (static under
@@ -123,7 +123,7 @@ export default function Leaderboard() {
               <td className="leaderboard__title">
                 <a
                   className="leaderboard__enter"
-                  href="/demo#register"
+                  href="/#register"
                   data-magnetic
                   data-sfx="confirm"
                 >
