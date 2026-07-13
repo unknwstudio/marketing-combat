@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import { takeoverAvailable, openGameTakeover } from '@/lib/game'
 import './VsSplash.css'
 
 /**
@@ -9,8 +10,9 @@ import './VsSplash.css'
  * ONE delegated click listener on document intercepts activations of any
  * a[href="/play"] (PlayLink, the cabinet's "insert coin — press start"
  * enter link…), flashes a 500ms full-screen "YOU vs THE ALGORITHM" card —
- * the two names slam in from opposite sides on steps() motion — then hard
- * navigates to /play.
+ * the two names slam in from opposite sides on steps() motion — then either
+ * opens the game in-place as an overlay (on /demo where takeover is available)
+ * or hard navigates to /play (on / where no overlay is mounted).
  *
  * WHY delegated (not per-link): same reasoning as ClickBurst — one listener
  * covers every /play link on the page, including ones that mount late, with
@@ -85,9 +87,14 @@ export default function VsSplash() {
         return
       }
 
-      // repeat visit this session, or reduced-motion: native nav, zero delay
+      // repeat visit this session, or reduced-motion: skip the flash. On /demo
+      // open the overlay in place; elsewhere fall through to native /play nav.
       if (seen() || prefersReducedMotion()) {
         markSeen()
+        if (takeoverAvailable()) {
+          e.preventDefault()
+          openGameTakeover()
+        }
         return
       }
 
@@ -96,21 +103,22 @@ export default function VsSplash() {
       liveRef.current = true
       setLive(true)
       timerRef.current = window.setTimeout(() => {
-        // The splash replaces the @view-transition dissolve for THIS nav
-        // (see doc comment) — skip it via the spec's per-navigation hook.
-        // Registered here, synchronously before the location assignment, so
-        // it can only catch our own navigation; {once} + the imminent
-        // document teardown keep it from leaking. No-op outside Chromium
-        // (no pageswap event) and when the dissolve didn't arm
-        // (viewTransition == null, e.g. reduced-motion).
+        if (takeoverAvailable()) {
+          // /demo: the flash was the ceremony; open the game in place and tear
+          // down the card as the game overlay mounts on top.
+          setLive(false)
+          liveRef.current = false
+          openGameTakeover()
+          return
+        }
+        // /: no overlay mounted — hard-nav to /play, opting out of the
+        // @view-transition dissolve exactly as before. `live` stays true so the
+        // black VS card holds through the page swap, unchanged from before.
         window.addEventListener(
           'pageswap',
           (ev) => {
             const vt = ev.viewTransition
             if (!vt) return
-            // observe the skip's AbortError rejections BEFORE skipping —
-            // an unhandled "Transition was skipped" rejection would be the
-            // very console error this opt-out exists to remove
             vt.ready?.catch?.(() => {})
             vt.finished?.catch?.(() => {})
             vt.updateCallbackDone?.catch?.(() => {})
@@ -118,8 +126,6 @@ export default function VsSplash() {
           },
           { once: true }
         )
-        // hard swap, same as the anchor would have done — /play owns its own
-        // full-screen layout, so a full document load is the robust path
         window.location.href = a.href
       }, SPLASH_MS)
     }

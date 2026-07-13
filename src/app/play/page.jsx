@@ -1,3 +1,4 @@
+import '@/styles/game-surface.css';
 import './play.css';
 import FightGame from '../../components/FightGame/FightGame';
 import MobileControls from '../../components/MobileControls/MobileControls';

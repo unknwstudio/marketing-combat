@@ -33,7 +33,7 @@ const BRAG = {
 };
 const bragKey = (r) => (r.action === 'victory' ? 'victory' : r.action === 'advance' ? 'advance' : r.won ? 'won' : 'lost');
 
-export default function GameChrome() {
+export default function GameChrome({ onExit } = {}) {
   const [scene, setScene] = useState('boot');     // boot | select | fight
   const [started, setStarted] = useState(false);  // dismissed the title / press-start?
   const [paused, setPaused] = useState(false);
@@ -99,7 +99,9 @@ export default function GameChrome() {
   const resume = () => { setPaused(false); emit(MK.RESUME); };
   const restart = () => { setPaused(false); emit(MK.RESTART); };
   const toMenu = () => { setPaused(false); emit(MK.MENU); };
-  const exitToSite = () => { window.location.href = '/'; };
+  // /play passes no onExit → hard-nav to the site home, as before. The /demo
+  // takeover passes onExit → close the overlay in place (no navigation).
+  const exitToSite = () => { if (onExit) onExit(); else window.location.href = '/'; };
   const requestExit = () => { if (result || scene !== 'fight') exitToSite(); else setConfirmExit(true); };  // match over or in a menu -> no confirm needed
   // setSiteMuted() triggers the subscribeMuted callback above, which updates
   // `muted` and emits MK.MUTE to the game — no need to duplicate either here.
@@ -126,15 +128,21 @@ export default function GameChrome() {
   };
 
   // ESC = pause toggle in a fight (and a universal "close this overlay"); ENTER/SPACE
-  // dismiss the title. Owned entirely here — the game no longer binds ESC.
+  // dismiss the title. Owned entirely here — the game no longer binds ESC. Every branch
+  // that CONSUMES Escape calls e.preventDefault() so that GameTakeover (the /demo
+  // in-page overlay this chrome can be mounted inside) knows not to also close the
+  // whole takeover on the same keypress — see GameTakeover.jsx for the other half of
+  // this contract. On the title screen (!started, no sub-modal) nothing here consumes
+  // it, so GameTakeover's own Esc-to-close can act; on /play there's no takeover
+  // listening, so the extra preventDefault() calls are inert.
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') {
-        if (share) { setShare(false); setCopyMsg(''); return; }
-        if (confirmExit) { setConfirmExit(false); return; }
-        if (howto) { setHowto(false); return; }
+        if (share) { e.preventDefault(); setShare(false); setCopyMsg(''); return; }
+        if (confirmExit) { e.preventDefault(); setConfirmExit(false); return; }
+        if (howto) { e.preventDefault(); setHowto(false); return; }
         if (!started) return;
-        if (paused) { resume(); return; }
+        if (paused) { e.preventDefault(); resume(); return; }
         if (scene === 'fight' && !result) { e.preventDefault(); openPause(); } // not over the result screen (matches the ⏸ button's guard)
         return;
       }
@@ -143,8 +151,14 @@ export default function GameChrome() {
       // browser shortcuts (Ctrl/Cmd/Alt combos) — those must stay cancelable and not boot the game.
       if (!started && !howto && !(e.ctrlKey || e.metaKey || e.altKey) && !['Tab', 'Escape', 'Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) { e.preventDefault(); doStart(); }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    // CAPTURE phase on `window`, the outermost target — this deterministically runs
+    // before GameTakeover's own `document`-capture listener regardless of which
+    // effect (re)registered its listener most recently (capture flows outside-in:
+    // window before document), which plain registration-order (bubble on the same
+    // target) could not guarantee since this effect tears down and rebuilds on
+    // nearly every state change above.
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [started, scene, paused, howto, confirmExit, share, result]);
 
   // a11y: treat pause/how-to/confirm/share as modal dialogs — focus the topmost one on open,

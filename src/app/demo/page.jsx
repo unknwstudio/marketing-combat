@@ -50,6 +50,7 @@ import AttractTitle from '@/components/AttractTitle/AttractTitle'
 import AttractMode from '@/components/AttractMode/AttractMode'
 import VsSplash from '@/components/VsSplash/VsSplash'
 import ClickBurst from '@/components/ClickBurst/ClickBurst'
+import GameTakeover from '@/components/GameTakeover/GameTakeover'
 
 /**
  * AI Marketing Kombat — /demo.
@@ -125,6 +126,7 @@ export default function Page() {
           the ScrollHealth strip; VsSplash intercepts it for the VS flash. */}
       <PlayLink underHud />
       <VsSplash />
+      <GameTakeover />
       <ModeSwitcher active="ai" />
     </div>
   )
