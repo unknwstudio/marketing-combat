@@ -10,8 +10,9 @@ import './VsSplash.css'
  * ONE delegated click listener on document intercepts activations of any
  * a[href="/play"] (PlayLink, the cabinet's "insert coin — press start"
  * enter link…), flashes a 500ms full-screen "YOU vs THE ALGORITHM" card —
- * the two names slam in from opposite sides on steps() motion — then hard
- * navigates to /play.
+ * the two names slam in from opposite sides on steps() motion — then either
+ * opens the game in-place as an overlay (on /demo where takeover is available)
+ * or hard navigates to /play (on / where no overlay is mounted).
  *
  * WHY delegated (not per-link): same reasoning as ClickBurst — one listener
  * covers every /play link on the page, including ones that mount late, with
@@ -102,15 +103,17 @@ export default function VsSplash() {
       liveRef.current = true
       setLive(true)
       timerRef.current = window.setTimeout(() => {
-        setLive(false)
-        liveRef.current = false
         if (takeoverAvailable()) {
-          // /demo: the flash was the ceremony; open the game in place.
+          // /demo: the flash was the ceremony; open the game in place and tear
+          // down the card as the game overlay mounts on top.
+          setLive(false)
+          liveRef.current = false
           openGameTakeover()
           return
         }
         // /: no overlay mounted — hard-nav to /play, opting out of the
-        // @view-transition dissolve exactly as before.
+        // @view-transition dissolve exactly as before. `live` stays true so the
+        // black VS card holds through the page swap, unchanged from before.
         window.addEventListener(
           'pageswap',
           (ev) => {
@@ -123,8 +126,6 @@ export default function VsSplash() {
           },
           { once: true }
         )
-        // hard swap, same as the anchor would have done — /play owns its own
-        // full-screen layout, so a full document load is the robust path
         window.location.href = a.href
       }, SPLASH_MS)
     }
