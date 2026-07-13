@@ -6,9 +6,10 @@ import dynamic from 'next/dynamic'
 const Cabinet3D = dynamic(() => import('./Cabinet3D'), { ssr: false })
 
 /**
- * Thin pass-through so ArcadeCabinet can hand the scroll-act wiring
- * (`armed` / `pinned` / `actProgressRef` / `onSupported`) straight to the lazy
- * scene — the mount exists only to keep three out of the server bundle.
+ * Thin pass-through that keeps three/R3F out of the server bundle — forwards
+ * props straight to the lazy-loaded scene. FinalCta mounts this statically
+ * (no scroll-act wiring); props like `onSupported` and `screenVariant` ride
+ * straight through untouched.
  */
 export default function Cabinet3DMount(props) {
   return <Cabinet3D {...props} />
