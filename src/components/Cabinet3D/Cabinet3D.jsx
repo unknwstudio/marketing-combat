@@ -6,6 +6,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { playSfx } from '@/effects/audio/arcadeAudio'
+import { GAME_COPY, openGameTakeover } from '@/lib/game'
 import './Cabinet3D.css'
 
 const MODEL_URL = '/assets/demo/arcade-machine.glb'
@@ -32,7 +33,7 @@ const smooth01 = (t) => {
 
 /* ---------- CRT attract screen (our game + PLAY) ---------- */
 
-function makeAttractTexture() {
+function makeAttractTexture(variant = 'play') {
   const c = document.createElement('canvas')
   c.width = 512
   c.height = 384
@@ -50,16 +51,29 @@ function makeAttractTexture() {
   x.fillRect(0, 0, 512, 384)
   x.textAlign = 'center'
   x.textBaseline = 'middle'
-  x.font = '700 96px Arial, sans-serif'
-  x.lineJoin = 'round'
-  x.lineWidth = 9
-  x.strokeStyle = '#ff5000'
-  x.strokeText('▶ PLAY', 256, 168)
-  x.fillStyle = '#ffd000'
-  x.fillText('▶ PLAY', 256, 168)
-  x.font = '28px "GT Pressura Mono", monospace'
-  x.fillStyle = '#3ad76f'
-  x.fillText('PRESS START', 256, 246)
+  if (variant === 'youwin') {
+    x.font = '700 84px Arial, sans-serif'
+    x.lineJoin = 'round'
+    x.lineWidth = 9
+    x.strokeStyle = '#ff5000' // matches --k-orange
+    x.strokeText(GAME_COPY.youWin, 256, 168)
+    x.fillStyle = '#ffd000' // matches --k-title-yellow
+    x.fillText(GAME_COPY.youWin, 256, 168)
+    x.font = '24px "GT Pressura Mono", monospace'
+    x.fillStyle = '#3ad76f' // matches --k-accent-green
+    x.fillText('FLAWLESS', 256, 246)
+  } else {
+    x.font = '700 96px Arial, sans-serif'
+    x.lineJoin = 'round'
+    x.lineWidth = 9
+    x.strokeStyle = '#ff5000'
+    x.strokeText(`${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`, 256, 168)
+    x.fillStyle = '#ffd000'
+    x.fillText(`${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`, 256, 168)
+    x.font = '24px "GT Pressura Mono", monospace'
+    x.fillStyle = '#3ad76f'
+    x.fillText(GAME_COPY.pressStart, 256, 246)
+  }
   const t = new THREE.CanvasTexture(c)
   t.anisotropy = 8
   return t
@@ -112,7 +126,7 @@ const NEON_COLOR = new THREE.Color('#ff2e4d') // our --k-red neon
 
 const _pressScale = new THREE.Vector3() // scratch for button world-scale reads
 
-function CabinetModel({ progressRef, actProgressRef, screenRef }) {
+function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, onPlay }) {
   const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const { gl } = useThree()
   const uniformsRef = useRef(null)
@@ -147,7 +161,7 @@ function CabinetModel({ progressRef, actProgressRef, screenRef }) {
           created.push(c)
         } else if (mat.name === 'SCREEN') {
           const uniforms = {
-            uTex: { value: makeAttractTexture() },
+            uTex: { value: makeAttractTexture(screenVariant) },
             uRes: { value: new THREE.Vector2(512, 384) },
             uTime: { value: 0 },
             uPower: { value: 0.3 },
@@ -325,15 +339,14 @@ function CabinetModel({ progressRef, actProgressRef, screenRef }) {
         if (!t) return
         if (t.userData.kStart || t.userData.kScreen) {
           playSfx('confirm', 0.5)
-          // plain MPA nav — the site's View Transition CSS runs the pixel dissolve
-          window.location.href = '/play'
+          onPlay() // default openGameTakeover; the finale plays in place
         }
       }}
     />
   )
 }
 
-function Cabinet({ progressRef, actProgressRef, screenRef }) {
+function Cabinet({ progressRef, actProgressRef, screenRef, screenVariant, onPlay }) {
   const actGroup = useRef()
   const group = useRef()
   const { pointer } = useThree()
@@ -362,6 +375,8 @@ function Cabinet({ progressRef, actProgressRef, screenRef }) {
           progressRef={progressRef}
           actProgressRef={actProgressRef}
           screenRef={screenRef}
+          screenVariant={screenVariant}
+          onPlay={onPlay}
         />
       </group>
     </group>
@@ -503,12 +518,19 @@ useGLTF.preload(MODEL_URL, DRACO_PATH)
  *   would freeze the choreography. Outside the hold the IO gate rules again.
  * - `onSupported(bool)`: reports whether the WebGL path rendered, so the act
  *   only ever arms on top of a live canvas (never the static fallback image).
+ * - `screenVariant`: which CRT attract art to paint — `'play'` (today's ▶ PLAY
+ *   / PRESS START) or `'youwin'` (the finale's YOU WIN! screen).
+ * - `onPlay()`: called when the START button or CRT screen is clicked, in
+ *   place of the old hard nav to `/play` — defaults to opening the in-page
+ *   game takeover.
  */
 export default function Cabinet3D({
   armed = false,
   pinned = false,
   actProgressRef = null,
   onSupported,
+  screenVariant = 'play',
+  onPlay = openGameTakeover,
 }) {
   const supported = useMemo(() => {
     if (typeof window === 'undefined') return false
@@ -579,6 +601,8 @@ export default function Cabinet3D({
             progressRef={progressRef}
             actProgressRef={actProgressRef}
             screenRef={screenRef}
+            screenVariant={screenVariant}
+            onPlay={onPlay}
           />
           <FadingContactShadows actProgressRef={actProgressRef} />
         </Suspense>
