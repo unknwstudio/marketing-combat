@@ -202,6 +202,35 @@
   left: 1120px;
 }
 
+/* --- PLAY affordance (prop-gated, rendered only via HeroStage/withPlay) --- */
+.hero__play {
+  position: absolute;
+  left: 50%;
+  top: 680px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-2);
+  padding: var(--k-2) var(--k-5);
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-lg);
+  letter-spacing: 0.08em;
+  color: var(--k-black);
+  background: var(--k-gold);
+  border: 1px solid var(--k-white);
+  text-decoration: none;
+}
+
+.hero__play:hover {
+  background: var(--k-white);
+}
+
+.hero__play:focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 2px;
+}
+
 /* ============================================================
    RESPONSIVE — tablet & phone. The fixed 1440x804 desktop stage
    above (>=1024px) is untouched. Below 1024px the hero keeps the
@@ -345,6 +374,12 @@
   .hero__pill {
     font-size: 10px;
     letter-spacing: -0.3px;
+  }
+
+  .hero__play {
+    position: static;
+    transform: none;
+    margin: var(--k-4) auto 0;
   }
 }
 
