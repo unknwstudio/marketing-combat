@@ -32,7 +32,7 @@ export default function Page() {
           <PixelCursor enabled>
             <ScaleCanvas width={1440}>
               <main id="main">
-                <Hero />
+                <Hero centerPlay />
                 <Champion />
                 <Fighters />
               </main>

@@ -56,6 +56,7 @@
      fully migrated to --k-gold and removed (2026-07-13 audit). */
   --k-title-yellow: #ffd000;
   --k-gold: #ffd23f;
+  --k-wordmark-gold: #ffb000; /* exact ai-kombat wordmark fill (raster) — hero PLAY disc matches the title */
   --k-orange: #ff5000;
   --k-accent-green: #3ad76f;
   --k-body-green: #7fd39a;

@@ -7,7 +7,7 @@ import { GAME_COPY } from '@/lib/game'
  * Fixed 1440x804 stage. Graphics are exported PNGs (public/assets/hero),
  * all text/layout is live code using the global pixel font + tokens.
  */
-export default function Hero({ withPlay = false }) {
+export default function Hero({ withPlay = false, centerPlay = false }) {
   return (
     <section className="hero" aria-label="AI Marketing Kombat">
       {/* the real, styled title is the logo image below — this is the page's
@@ -68,6 +68,25 @@ export default function Hero({ withPlay = false }) {
         <span className="hero__pill">300+ FIGHTERS</span>
         <span className="hero__pill">FINAL · BARCELONA</span>
       </div>
+
+      {/* big central PLAY launcher (home hero) — a chunky arcade button over the
+          scene that drops the visitor straight into /play. VsSplash's delegated
+          a[href="/play"] listener catches the click for the first-visit VS
+          flash; data-burst + data-sfx match the site's other play affordances. */}
+      {centerPlay && (
+        <a
+          className="hero__playbig"
+          href="/play"
+          data-sfx="confirm"
+          data-burst
+          aria-label="Play AI Marketing Kombat"
+        >
+          <span className="hero__playbig-disc" aria-hidden="true">
+            <span className="hero__playbig-tri" />
+          </span>
+          <span className="hero__playbig-label">{GAME_COPY.playLabel}</span>
+        </a>
+      )}
 
       {withPlay && (
         <a
