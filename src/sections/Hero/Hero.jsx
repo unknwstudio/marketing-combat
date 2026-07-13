@@ -81,10 +81,7 @@ export default function Hero({ withPlay = false, centerPlay = false }) {
           data-burst
           aria-label="Play AI Marketing Kombat"
         >
-          <span className="hero__playbig-disc" aria-hidden="true">
-            <span className="hero__playbig-tri" />
-          </span>
-          <span className="hero__playbig-label">{GAME_COPY.playLabel}</span>
+          <span className="hero__playbig-tri" aria-hidden="true" />
         </a>
       )}
 
