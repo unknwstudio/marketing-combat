@@ -34,6 +34,7 @@ import DemoNav from '@/components/DemoNav/DemoNav'
 import Announcer from '@/components/Announcer/Announcer'
 import KonamiFatality from '@/components/KonamiFatality/KonamiFatality'
 import SoundToggle from '@/components/SoundToggle/SoundToggle'
+import PlayFab from '@/components/PlayFab/PlayFab'
 import MagneticCTA from '@/components/MagneticCTA/MagneticCTA'
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal'
 import RGBSplitFilter from '@/components/RGBSplitFilter/RGBSplitFilter'
@@ -113,6 +114,8 @@ export default function Page() {
       <ScrollHealth />
       <KonamiFatality />
       <SoundToggle />
+      {/* hero-styled PLAY launcher, bottom-right — mirrors SoundToggle bottom-left */}
+      <PlayFab />
       <MagneticCTA />
       <SelectSfx />
       <ScrollReveal />

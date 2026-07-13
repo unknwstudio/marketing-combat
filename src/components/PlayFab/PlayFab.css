@@ -1,0 +1,78 @@
+/* Floating PLAY launcher, bottom-right — mirrors SoundToggle (bottom-left).
+   Compact copy of the hero's .hero__playbig 8-bit look: notched black border
+   (4 axis-only box-shadows leave the corners cut), an inset bevel (light
+   top-left / dark bottom-right), a hard pixel drop-shadow, and a real depress
+   on :active. */
+.playfab {
+  --u: 3px; /* notch + bevel unit (smaller than the hero's 5px) */
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: var(--z-mode);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-1);
+  padding: 10px 14px;
+  font-family: var(--k-font-pixel);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--k-black);
+  background: var(--k-gold);
+  text-decoration: none;
+  cursor: pointer;
+  image-rendering: pixelated;
+  box-shadow:
+    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
+    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
+    inset var(--u) var(--u) 0 rgba(255, 255, 255, 0.5),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(0, 0, 0, 0.28);
+  filter: drop-shadow(4px 5px 0 rgba(0, 0, 0, 0.45));
+  transition: transform 0.05s steps(2), filter 0.05s steps(2), background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* the play arrow — a crisp stepped pixel triangle in the button ink */
+.playfab__tri {
+  flex: none;
+  width: 14px;
+  height: 18px;
+  fill: currentColor;
+}
+.playfab__tri path {
+  shape-rendering: crispEdges;
+}
+
+.playfab:hover {
+  background: color-mix(in srgb, var(--k-gold) 82%, white);
+}
+
+.playfab:active {
+  transform: translate(3px, 3px);
+  filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.45));
+  box-shadow:
+    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
+    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
+    inset var(--u) var(--u) 0 rgba(0, 0, 0, 0.28),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(255, 255, 255, 0.5);
+}
+
+.playfab:focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 5px;
+}
+
+/* phones: shrink a touch + clear the bottom-center ModeSwitcher pill by lifting
+   above it (SoundToggle escapes to top-left; this one just rises a little). */
+@media (max-width: 639px) {
+  .playfab {
+    --u: 2px;
+    right: 10px;
+    bottom: 62px;
+    padding: 8px 11px;
+    font-size: 13px;
+  }
+  .playfab__tri {
+    width: 12px;
+    height: 15px;
+  }
+}
