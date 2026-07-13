@@ -390,7 +390,7 @@
      lifted off the bottom above the tag pills. */
   .hero__play {
     top: auto;
-    bottom: 56px;
+    bottom: 34px;
     z-index: 4;
   }
 }
