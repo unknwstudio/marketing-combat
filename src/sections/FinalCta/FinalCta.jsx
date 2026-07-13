@@ -3,6 +3,9 @@
 import { useEffect, useRef } from 'react'
 import { useJuice } from '@/effects/juice/useJuice'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import Cabinet3DMount from '@/components/Cabinet3D/Cabinet3DMount'
+import Error3DBoundary from '@/components/Error3DBoundary/Error3DBoundary'
+import { GAME_COPY } from '@/lib/game'
 import './FinalCta.css'
 
 /**
@@ -151,12 +154,28 @@ export default function FinalCta() {
       aria-label="Join the battle"
       ref={sectionRef}
     >
-      <span className="finalcta__finish" data-announce="FINISH HIM" data-sound="ko">
-        ★ FINISH HIM ★
+      <span className="finalcta__finish" data-announce="FLAWLESS VICTORY" data-sound="ko">
+        ★ FLAWLESS VICTORY ★
       </span>
 
+      <div className="finalcta__cabinet">
+        <Error3DBoundary
+          fallback={
+            <img
+              className="cab3d__fallback"
+              src="/assets/demo/arcade-machine.webp"
+              alt="Arcade cabinet showing YOU WIN"
+              loading="lazy"
+              decoding="async"
+            />
+          }
+        >
+          <Cabinet3DMount screenVariant="youwin" />
+        </Error3DBoundary>
+      </div>
+
       <div className="finalcta__gameover" aria-hidden="true">
-        <span className="finalcta__gameover-text">GAME OVER</span>
+        <span className="finalcta__gameover-text">{GAME_COPY.youWin}</span>
       </div>
 
       {/* aria-label = the real string: the accessible name stays intact while
