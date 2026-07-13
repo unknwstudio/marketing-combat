@@ -154,8 +154,8 @@ export default function FinalCta() {
       aria-label="Join the battle"
       ref={sectionRef}
     >
-      <span className="finalcta__finish" data-announce="FLAWLESS VICTORY" data-sound="ko">
-        ★ FLAWLESS VICTORY ★
+      <span className="finalcta__finish" data-announce="YOU FINISHED THEM" data-sound="ko">
+        ★ YOU FINISHED THEM ★
       </span>
 
       <div className="finalcta__cabinet">
@@ -173,8 +173,8 @@ export default function FinalCta() {
           <Cabinet3DMount
             screenVariant="youwin"
             restYaw={0}
-            parallaxYaw={0.05}
-            parallaxPitch={0}
+            parallaxYaw={0.09}
+            parallaxPitch={0.045}
             camFar={4.8}
             camNear={4.2}
             camY={0.78}

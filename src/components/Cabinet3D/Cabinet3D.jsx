@@ -21,6 +21,42 @@ const PRESS_MS = 80
 
 /* ---------- CRT attract screen (our game + PLAY) ---------- */
 
+// Chunky 8-bit trophy for the "YOU WIN!" screen, drawn as fillRect pixels so it
+// reads like real CRT sprite art (not a smooth vector). One char per pixel:
+// H = highlight (left-lit face), G = gold body, S = orange shade (right face).
+// The palette matches the title's gold fill + orange stroke, so the cup reads
+// as the same trophy the "YOU WIN!" wordmark is celebrating.
+const TROPHY_ART = [
+  '.HGGGGGGGGS.',
+  'HHGGGGGGGGSS',
+  'H.HGGGGGGS.S',
+  'H..GGGGGG..S',
+  'H..HGGGGS..S',
+  '.H..GGGG..S.',
+  '...HGGGS....',
+  '....GGG.....',
+  '....HGS.....',
+  '.....G......',
+  '....HGS.....',
+  '...HGGGS....',
+  '..HGGGGGS...',
+  '.HGGGGGGGS..',
+]
+const TROPHY_PAL = { H: '#ffe98a', G: '#ffd000', S: '#ff5000' }
+
+// Draw the trophy centred on `cx`, top edge at `top`, `p` px per pixel-cell.
+function drawTrophy(ctx, cx, top, p) {
+  const originX = Math.round(cx - (TROPHY_ART[0].length * p) / 2)
+  TROPHY_ART.forEach((row, r) => {
+    for (let cIdx = 0; cIdx < row.length; cIdx++) {
+      const col = TROPHY_PAL[row[cIdx]]
+      if (!col) continue
+      ctx.fillStyle = col
+      ctx.fillRect(originX + cIdx * p, top + r * p, p, p)
+    }
+  })
+}
+
 function makeAttractTexture(variant = 'play') {
   const c = document.createElement('canvas')
   c.width = 512
@@ -40,16 +76,18 @@ function makeAttractTexture(variant = 'play') {
   x.textAlign = 'center'
   x.textBaseline = 'middle'
   if (variant === 'youwin') {
-    x.font = '700 84px Arial, sans-serif'
+    // title pulled up to make room for the trophy centred below it
+    x.font = '700 62px Arial, sans-serif'
     x.lineJoin = 'round'
-    x.lineWidth = 9
+    x.lineWidth = 8
     x.strokeStyle = '#ff5000' // matches --k-orange
-    x.strokeText(GAME_COPY.youWin, 256, 168)
+    x.strokeText(GAME_COPY.youWin, 256, 74)
     x.fillStyle = '#ffd000' // matches --k-title-yellow
-    x.fillText(GAME_COPY.youWin, 256, 168)
+    x.fillText(GAME_COPY.youWin, 256, 74)
+    drawTrophy(x, 256, 122, 10) // 12×14 cells → 120×140px, centred (~y192)
     x.font = '24px "GT Pressura Mono", monospace'
     x.fillStyle = '#3ad76f' // matches --k-accent-green
-    x.fillText('FLAWLESS', 256, 246)
+    x.fillText('CHAMPION', 256, 306)
   } else {
     x.font = '700 96px Arial, sans-serif'
     x.lineJoin = 'round'
