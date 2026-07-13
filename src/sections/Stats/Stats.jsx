@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './Stats.css'
 
 /**
@@ -55,7 +56,7 @@ export default function Stats() {
   const [armed, setArmed] = useState(false)
 
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduce = prefersReducedMotion()
     if (reduce || typeof IntersectionObserver === 'undefined') return
     setArmed(true)
   }, [])

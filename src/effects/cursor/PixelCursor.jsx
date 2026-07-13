@@ -2,16 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './cursor.css'
 
 // Only replace the OS cursor on real pointing devices (skip touch / no-hover).
 const canHover = () =>
   typeof window !== 'undefined' &&
   window.matchMedia?.('(hover: hover) and (pointer: fine)').matches
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 /**
  * Replaces the OS cursor with a pixel crosshair and emits a fading square dust

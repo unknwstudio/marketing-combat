@@ -9,7 +9,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@react-three/drei": "^9.114.3",
@@ -20,5 +22,13 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.161.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.15",
+    "stylelint": "^16.10.0",
+    "typescript": "^5.9.3"
   }
 }

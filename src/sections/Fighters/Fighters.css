@@ -36,7 +36,7 @@
   z-index: 2;
   /* Figma 35:4237 — Platform Medium 64px, fill var(--k-title-yellow), orange outline + glow */
   font-family: var(--k-font-accent);
-  font-size: 64px;
+  font-size: var(--k-text-2xl);
   font-weight: 500;
   line-height: 1;
   text-transform: lowercase;
@@ -113,7 +113,7 @@
       0 0 16px rgba(63, 224, 255, 0.55);
   }
   .fighters__card:hover .fighters__label {
-    color: #fff;
+    color: var(--k-white);
   }
 }
 
@@ -286,8 +286,8 @@
   min-height: 33px;
   padding: 4px 4px;
   background: rgba(0, 0, 0, 0.6);
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #fff;
+  border-top: 1px solid var(--k-white);
+  border-bottom: 1px solid var(--k-white);
   /* Figma 35:4171 & siblings — GT Pressura Mono 24px, tracking -0.72px, 33px strip */
   font-family: var(--k-font-mono);
   font-size: 24px;
@@ -295,12 +295,12 @@
   letter-spacing: -0.72px;
   text-align: center;
   text-transform: uppercase;
-  color: #7f7f7f;
+  color: var(--k-muted);
 }
 
 /* highlighted / "selected" fighter (Performance Lead Gen) */
 .fighters__card--selected .fighters__label {
-  color: #fff;
+  color: var(--k-white);
 }
 
 .fighters__card--selected .fighters__portrait {

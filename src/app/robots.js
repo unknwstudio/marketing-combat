@@ -1,14 +1,16 @@
-const SITE = 'https://marketing-combat.vercel.app'
+import { SITE_URL } from '@/lib/site'
 
 export default function robots() {
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      // /play is a WIP battle prototype — already noindex'd on the page itself
-      // (see src/app/play/page.jsx); keeping it out of robots too is belt-and-braces.
-      disallow: '/play',
+      // NOTE: /play is intentionally NOT disallowed here. It carries a page-level
+      // `noindex` (see src/app/play/page.jsx); a robots.txt Disallow would stop
+      // crawlers from ever FETCHING the page, so they'd never see that noindex and
+      // the URL could still surface as a bare "blocked" result. Allowing the crawl
+      // lets the noindex actually take effect.
     },
-    sitemap: `${SITE}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   }
 }

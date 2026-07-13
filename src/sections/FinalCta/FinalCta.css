@@ -18,14 +18,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 24px;
-  padding-top: 120px;
-  padding-bottom: 120px;
+  gap: var(--k-3);
+  padding-top: var(--k-15);
+  padding-bottom: var(--k-15);
 }
 
 .finalcta__finish {
   font-family: var(--k-font-mono);
-  font-size: 22px;
+  font-size: var(--k-text-md);
   letter-spacing: 1px;
   color: var(--k-red);
   text-transform: uppercase;
@@ -49,7 +49,7 @@
 .finalcta__body {
   max-width: 760px;
   font-family: var(--k-font-mono);
-  font-size: 24px;
+  font-size: var(--k-text-lg);
   line-height: 1.45;
   letter-spacing: -0.5px;
   color: var(--k-body-green);
@@ -141,7 +141,7 @@
 .finalcta--stage-countdown .finalcta__cta,
 .finalcta--stage-gameover .finalcta__press,
 .finalcta--stage-countdown .finalcta__press {
-  opacity: 0.35;
+  opacity: 0.5;
   filter: grayscale(0.6) brightness(0.7);
 }
 
@@ -174,14 +174,14 @@
 }
 
 .finalcta__cta {
-  margin-top: 8px;
+  margin-top: var(--k-1);
 }
 
 .finalcta__facts {
   font-family: var(--k-font-mono);
-  font-size: 16px;
+  font-size: var(--k-text-sm);
   letter-spacing: -0.3px;
-  color: #7f7f7f;
+  color: var(--k-muted);
   text-transform: uppercase;
 }
 
@@ -193,7 +193,7 @@
 
 .finalcta__press {
   font-family: var(--k-font);
-  font-size: 16px;
+  font-size: var(--k-text-sm);
   letter-spacing: 1px;
   color: var(--k-accent-green);
   text-transform: uppercase;
@@ -202,7 +202,7 @@
 
 @keyframes finalcta-blink {
   50% {
-    opacity: 0.25;
+    opacity: 0.55;
   }
 }
 
@@ -214,9 +214,9 @@
 
 @media (max-width: 1023px) {
   .finalcta {
-    padding-top: 64px;
-    padding-bottom: 64px;
-    gap: 16px;
+    padding-top: var(--k-8);
+    padding-bottom: var(--k-8);
+    gap: var(--k-2);
   }
 
   .finalcta__finish {
@@ -237,7 +237,7 @@
 
   .finalcta__continue {
     min-height: 40px;
-    gap: 8px;
+    gap: var(--k-1);
   }
 
   .finalcta__continue-label {

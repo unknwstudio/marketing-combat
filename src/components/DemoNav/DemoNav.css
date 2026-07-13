@@ -42,6 +42,7 @@
 }
 
 .dnav__link {
+  position: relative;
   padding: 4px 10px;
   font-size: 13px;
   letter-spacing: -0.2px;
@@ -53,7 +54,7 @@
 
 .dnav__link:hover {
   background: rgba(58, 215, 111, 0.16);
-  color: #fff;
+  color: var(--k-white);
 }
 
 .dnav__link:focus-visible {
@@ -70,7 +71,7 @@
 @media (max-width: 767px) {
   .dnav {
     top: 30px;
-    gap: 8px;
+    gap: var(--k-1);
     padding: 5px 10px;
   }
   .dnav__kicker {
@@ -79,6 +80,17 @@
   .dnav__link {
     padding: 4px 7px;
     font-size: 11px;
+  }
+  /* invisible ≥44px vertical touch target that keeps the compact pill visual —
+     clicks on the pseudo bubble up to the anchor (WCAG 2.5.8) */
+  .dnav__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 44px;
   }
 }
 

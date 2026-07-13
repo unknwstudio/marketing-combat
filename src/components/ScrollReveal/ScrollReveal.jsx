@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 
 /**
  * ScrollReveal — cards and section headers fade + rise in as they scroll into
@@ -33,8 +34,7 @@ const SOLO_MS = 55
 
 export default function ScrollReveal() {
   useEffect(() => {
-    const reduced =
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const reduced = prefersReducedMotion()
     if (reduced) return // leave everything visible, no motion
 
     const root = document.documentElement

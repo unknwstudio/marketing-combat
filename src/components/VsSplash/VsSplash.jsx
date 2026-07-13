@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './VsSplash.css'
 
 /**
@@ -85,7 +86,7 @@ export default function VsSplash() {
       }
 
       // repeat visit this session, or reduced-motion: native nav, zero delay
-      if (seen() || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      if (seen() || prefersReducedMotion()) {
         markSeen()
         return
       }

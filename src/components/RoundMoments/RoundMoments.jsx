@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './RoundMoments.css'
 
 /**
@@ -31,7 +32,7 @@ export default function RoundMoments() {
   const rootRef = useRef(null)
 
   useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    if (prefersReducedMotion()) return
     const root = rootRef.current
     if (!root) return
 

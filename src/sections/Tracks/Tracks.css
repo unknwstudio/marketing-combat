@@ -3,42 +3,31 @@
 .tracks__grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: 24px;
+  gap: var(--k-3);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* diamond badge (rotated square, matches the PixelIcon "diamond" motif) so
-   it reads instantly even if the section head has scrolled out of view.
-   align-self overrides the grid's default row-stretch so it doesn't stretch
-   to the cards' full height; the two cards keep stretching to match each
-   other, same as before this column was added. */
+/* pixel-art "VS" badge between the two tracks so "pick one" reads instantly
+   even if the section head has scrolled out of view. align-self overrides the
+   grid's default row-stretch so it doesn't stretch to the cards' full height;
+   the two cards keep stretching to match each other. */
 .tracks__vs {
   display: flex;
   align-items: center;
   justify-content: center;
   align-self: center;
-  width: 64px;
-  height: 64px;
   flex-shrink: 0;
-  background: #050109;
-  border: 2px solid var(--k-orange);
-  transform: rotate(45deg);
 }
 
-.tracks__vs span {
+.tracks__vsImg {
   display: block;
-  transform: rotate(-45deg);
-  font-family: var(--k-font-accent);
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -1px;
-  text-transform: uppercase;
-  color: var(--k-red);
-  -webkit-text-stroke: 0.05em var(--k-orange);
-  paint-order: stroke fill;
-  text-shadow: 0 0 0.12em rgba(255, 80, 0, 0.6);
+  width: 92px;
+  height: auto;
+  /* a soft orange glow so the badge lives in the arcade world rather than
+     reading as a pasted-on sticker */
+  filter: drop-shadow(0 0 10px rgba(255, 80, 0, 0.4));
 }
 
 .tracks__card {
@@ -46,7 +35,7 @@
   flex-direction: column;
   gap: 22px;
   padding: 36px;
-  border-color: #3a2a10;
+  border-color: var(--k-tracks-border);
 }
 
 .tracks__art {
@@ -81,7 +70,7 @@
   align-items: baseline;
   gap: 10px;
   font-family: var(--k-font-mono);
-  font-size: 22px;
+  font-size: var(--k-text-md);
   letter-spacing: -0.5px;
 }
 
@@ -91,7 +80,7 @@
 }
 
 .tracks__specialValue {
-  color: #fff;
+  color: var(--k-white);
   text-transform: uppercase;
 }
 
@@ -107,7 +96,7 @@
 
 .tracks__bullet {
   font-family: var(--k-font-mono);
-  font-size: 22px;
+  font-size: var(--k-text-md);
   line-height: 1.35;
   letter-spacing: -0.5px;
   color: var(--k-body-green);
@@ -122,7 +111,7 @@
 .tracks__fight {
   align-self: flex-end;
   font-family: var(--k-font);
-  font-size: 22px;
+  font-size: var(--k-text-md);
   letter-spacing: 1px;
   color: var(--k-red);
   text-transform: uppercase;
@@ -153,10 +142,10 @@
   opacity: 0;
   /* layer order everywhere below: top, bottom, left, right */
   background-image:
-    linear-gradient(90deg, var(--k-yellow) 0 6px, transparent 6px 12px),
-    linear-gradient(90deg, var(--k-yellow) 0 6px, transparent 6px 12px),
-    linear-gradient(0deg, var(--k-yellow) 0 6px, transparent 6px 12px),
-    linear-gradient(0deg, var(--k-yellow) 0 6px, transparent 6px 12px);
+    linear-gradient(90deg, var(--k-gold) 0 6px, transparent 6px 12px),
+    linear-gradient(90deg, var(--k-gold) 0 6px, transparent 6px 12px),
+    linear-gradient(0deg, var(--k-gold) 0 6px, transparent 6px 12px),
+    linear-gradient(0deg, var(--k-gold) 0 6px, transparent 6px 12px);
   background-size: 12px 2px, 12px 2px, 2px 12px, 2px 12px;
   background-position: 0 0, 0 100%, 0 0, 100% 0;
   background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
@@ -186,25 +175,23 @@
 @media (max-width: 1023px) {
   .tracks__grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--k-2);
   }
 
   /* stacked layout: the badge becomes its own centered row between the
      two cards instead of a column between them */
   .tracks__vs {
-    width: 40px;
-    height: 40px;
     justify-self: center;
     margin: -6px 0;
   }
 
-  .tracks__vs span {
-    font-size: 14px;
+  .tracks__vsImg {
+    width: 64px;
   }
 
   .tracks__card {
     padding: 20px;
-    gap: 16px;
+    gap: var(--k-2);
   }
 
   .tracks__name {

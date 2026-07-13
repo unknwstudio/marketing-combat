@@ -1,3 +1,4 @@
+// @ts-check
 import './PlayLink.css';
 import PixelIcon from '@/components/PixelIcon/PixelIcon';
 
@@ -13,6 +14,9 @@ import PixelIcon from '@/components/PixelIcon/PixelIcon';
  * `underHud`: /demo pins the ScrollHealth HP strip across the viewport top
  * (z-index 950), which would draw straight over a top:20px button once the
  * player scrolls past the hero — the flag drops PLAY just below the strip.
+ */
+/**
+ * @param {{ underHud?: boolean }} props  drop PLAY below the fixed HP strip on /demo (z-index 950)
  */
 export default function PlayLink({ underHud = false }) {
   return (

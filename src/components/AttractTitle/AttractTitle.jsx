@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 
 /**
  * AttractTitle — behaviour-only (renders nothing). Arcade "attract mode" for
@@ -20,7 +21,7 @@ const BLINK_MS = 1200
 
 export default function AttractTitle() {
   useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    if (prefersReducedMotion()) return
 
     let interval = 0
     let original = null

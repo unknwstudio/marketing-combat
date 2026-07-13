@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * PixelIcon — the site's shared inline-SVG icon set, drawn on a coarse pixel
  * grid so every icon reads as sprite art. Replaces unicode/emoji glyphs
@@ -169,6 +170,14 @@ const GRIDS = {
   ],
 }
 
+/**
+ * @param {object} props
+ * @param {string} props.name  icon id (a key of GRIDS); unknown names render nothing
+ * @param {string} [props.size]  any CSS length — defaults to 1em so it drops into text
+ * @param {string} [props.className]
+ * @param {string} [props.label]  omit for decorative icons (rendered aria-hidden); pass
+ *   ONLY when the icon carries meaning the surrounding text doesn't
+ */
 export default function PixelIcon({ name, size = '1em', className = '', label }) {
   const grid = GRIDS[name]
   if (!grid) return null

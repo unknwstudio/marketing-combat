@@ -8,6 +8,8 @@ import JuiceProvider from '@/effects/juice/JuiceProvider'
 import HitSparks from '@/effects/particles/HitSparks'
 import PixelCursor from '@/effects/cursor/PixelCursor'
 
+import EventJsonLd from '@/components/EventJsonLd/EventJsonLd'
+
 import Hero from '@/sections/Hero/Hero'
 import Champion from '@/sections/Champion/Champion'
 import Fighters from '@/sections/Fighters/Fighters'
@@ -43,6 +45,7 @@ export default function Page() {
           overlay, so it lives OUTSIDE JuiceProvider (see VsSplash doc) */}
       <VsSplash />
       <ModeSwitcher active="ai" />
+      <EventJsonLd />
     </div>
   )
 }

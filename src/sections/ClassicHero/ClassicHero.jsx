@@ -40,7 +40,7 @@ export default function ClassicHero() {
         <span className="c-hero__chip">round 01</span>
         <span className="c-hero__chip">july 2026</span>
         <span className="c-hero__chip">300+ fighters</span>
-        <span className="c-hero__chip">final • Barcelona</span>
+        <span className="c-hero__chip">final · Barcelona</span>
       </div>
     </section>
   )

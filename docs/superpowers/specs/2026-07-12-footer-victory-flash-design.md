@@ -54,7 +54,7 @@ Tag the `<footer>` element itself with:
   aria-label="Footer"
   data-announce="YOU SURVIVED"
   data-sound="win"
-  data-burst
+  data-announce-burst
 >
 ```
 
@@ -64,12 +64,12 @@ view — no new observer needed. `Footer` needs no JS of its own anymore.
 ### 2. Extend `Announcer` to support a burst
 
 Add a small, optional enhancement: when the observed element also carries
-`data-burst`, `Announcer` additionally calls
+`data-announce-burst`, `Announcer` additionally calls
 `sparks.burst(window.innerWidth / 2, window.innerHeight / 2, { count: 40, power: 2.2 })`
 via `useSparks()`, at the same moment as the shake/sound/slam. Other
 `data-announce` call-outs ("FIGHT!", "STAGE 0X", "FINISH HIM") don't set
-`data-burst`, so their behavior is unchanged — this is additive and opt-in
-per call-out.
+`data-announce-burst`, so their behavior is unchanged — this is additive and
+opt-in per call-out.
 
 `useSparks()` and `HitSparks`'s reduced-motion guard (`burst()` no-ops under
 `prefers-reduced-motion`) are reused as-is.
@@ -128,6 +128,6 @@ permanent duplicate headline text remains in the footer afterward).
   behavior unchanged from existing `Announcer` usage elsewhere.
 - Confirm `Announcer`'s existing call-outs ("FIGHT!", "STAGE 0X", "FINISH
   HIM") are unaffected (no burst fires for them, since they don't set
-  `data-burst`).
+  `data-announce-burst`).
 - Visual check that the footer, post-flash, shows only the quiet block with
   no leftover payoff text/space.

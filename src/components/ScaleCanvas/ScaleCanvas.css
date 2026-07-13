@@ -25,12 +25,16 @@
   transform: none !important;
 }
 
-@media (max-width: 1023px) {
+/* Keep in sync with ScaleCanvas.jsx: fluid below the breakpoint OR on any
+   coarse-pointer (touch) device, so touch tablets in the 1024–1439px band
+   reflow instead of getting a zoom-fitted desktop. */
+@media (max-width: 1023px), (pointer: coarse) {
   .scale-canvas {
     overflow: visible;
   }
   .scale-canvas__inner {
     width: 100% !important;
     transform: none !important;
+    zoom: 1 !important;
   }
 }

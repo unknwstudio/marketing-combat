@@ -1,9 +1,11 @@
-'use client'
-
 import './Footer.css'
 
 /**
- * Footer — the end-of-tour payoff is a full-viewport arcade call-out (see
+ * Footer — a pure static server component (no hooks/handlers of its own); the
+ * data-announce/data-sound/data-announce-burst attributes below are read by the
+ * client-side Announcer, so no 'use client' boundary is needed here.
+ *
+ * The end-of-tour payoff is a full-viewport arcade call-out (see
  * Announcer, which watches data-announce/data-sound/data-announce-burst
  * below), the same system used for "FIGHT!" / "STAGE 0X" / "FINISH HIM"
  * elsewhere on /demo. The footer itself stays deliberately quiet once the

@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import Hero from '@/sections/Hero/Hero'
 import Error3DBoundary from '@/components/Error3DBoundary/Error3DBoundary'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './HeroStage.css'
 
 // three/R3F are client-only + heavy → load on the client, out of the static build
@@ -20,7 +21,7 @@ export default function HeroStage() {
 
   useEffect(() => {
     const desktop = window.matchMedia('(min-width: 1024px)').matches
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduced = prefersReducedMotion()
     let webgl = false
     try {
       const c = document.createElement('canvas')

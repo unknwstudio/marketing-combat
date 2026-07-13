@@ -39,7 +39,7 @@ export default function ClickBurst() {
       if (!(t instanceof Element) || !t.closest('[data-burst]')) return
       // Chunkier than the default hit spark: more shards, a bit more power.
       // Shard shape / palette / quantization are HitSparks' own — square
-      // fillRect shards in white / --k-yellow / --k-cyan at integer px sizes.
+      // fillRect shards in white / --k-gold / --k-cyan at integer px sizes.
       burst(e.clientX, e.clientY, { count: 20, power: 1.25 })
     }
     document.addEventListener('pointerdown', onPointerDown)

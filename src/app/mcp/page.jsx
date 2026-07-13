@@ -7,6 +7,9 @@ export const metadata = {
   alternates: { canonical: '/mcp' },
 }
 
+// this page is white — override the root's dark browser-chrome color
+export const viewport = { themeColor: '#ffffff' }
+
 /**
  * /mcp — the agent mode (Figma Frame 29, node 90:3): a single full-height
  * screen with the centered orange prompt card. The entire site content is

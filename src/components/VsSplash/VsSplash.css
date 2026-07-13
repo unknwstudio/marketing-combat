@@ -2,7 +2,7 @@
    VsSplash — 500ms "YOU vs THE ALGORITHM" cut before /play.
    Opaque black card; the two names slam in from opposite edges on
    coarse steps() (quantized frames, like a sprite sliding in), the
-   VS stamp punches down in the middle. k-yellow = the player,
+   VS stamp punches down in the middle. k-gold = the player,
    k-red = the machine — the same corner colors the game itself uses.
    ============================================================ */
 .vs-splash {
@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: center;
   gap: clamp(16px, 4vw, 56px);
-  background: #06010f;
+  background: var(--k-shadow);
   overflow: hidden;
 }
 
@@ -26,11 +26,11 @@
   font-size: clamp(18px, 4.5vw, 56px);
   line-height: 1.2;
   white-space: nowrap;
-  text-shadow: 4px 4px 0 #000;
+  text-shadow: 4px 4px 0 var(--k-black);
 }
 
 .vs-splash__name--you {
-  color: var(--k-yellow);
+  color: var(--k-gold);
   animation: vs-slam-l 0.3s steps(4) both;
 }
 
@@ -44,10 +44,10 @@
   font-family: var(--k-font);
   font-size: clamp(14px, 2.6vw, 32px);
   line-height: 1;
-  color: #fff;
+  color: var(--k-white);
   text-shadow:
     3px 3px 0 var(--k-red),
-    -3px -3px 0 var(--k-yellow);
+    -3px -3px 0 var(--k-gold);
   animation: vs-pop 0.24s steps(3) 0.14s both;
 }
 

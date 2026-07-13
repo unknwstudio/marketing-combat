@@ -65,6 +65,11 @@ export default function Page() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+      {/* mounted here (not near ScrollHealth/KonamiFatality below) so keyboard
+          users reach its jump-links right after the skip-link, not after
+          tabbing through the whole ~16 400px page — position: fixed means
+          this move doesn't change where it renders */}
+      <DemoNav />
       <RGBSplitFilter />
       <JuiceProvider>
         <HitSparks>
@@ -107,7 +112,6 @@ export default function Page() {
           wrapper would otherwise pin position:fixed to the page, not the viewport */}
       <CRTOverlay intensity={0.09} flicker powerOn />
       <ScrollHealth />
-      <DemoNav />
       <KonamiFatality />
       <SoundToggle />
       <MagneticCTA />

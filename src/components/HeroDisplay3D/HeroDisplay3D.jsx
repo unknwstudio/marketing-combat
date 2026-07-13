@@ -3,6 +3,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './HeroDisplay3D.css'
 
 /**
@@ -335,12 +336,7 @@ function OrthoFit() {
 function CRTPlane() {
   const { size, gl } = useThree()
   const [texture, setTexture] = useState(null)
-  const reducedMotion = useMemo(
-    () =>
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    []
-  )
+  const reducedMotion = useMemo(() => prefersReducedMotion(), [])
 
   const uniforms = useMemo(
     () => ({

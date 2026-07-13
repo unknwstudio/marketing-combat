@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { useJuice } from '@/effects/juice/useJuice'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './FinalCta.css'
 
 /**
@@ -28,7 +29,7 @@ export default function FinalCta() {
   useEffect(() => {
     const el = sectionRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduce = prefersReducedMotion()
 
     if (reduce) {
       el.classList.add('finalcta--stage-ready')

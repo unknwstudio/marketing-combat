@@ -5,6 +5,7 @@ import './ArcadeCabinet.css'
 import Cabinet3DMount from '@/components/Cabinet3D/Cabinet3DMount'
 import Error3DBoundary from '@/components/Error3DBoundary/Error3DBoundary'
 import { playSfx } from '@/effects/audio/arcadeAudio'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 
 /**
  * PLAY THE GAME — an interactive 3D arcade cabinet (R3F) staged as a
@@ -78,7 +79,7 @@ export default function ArcadeCabinet() {
     if (!webglReady) return
     if (typeof window === 'undefined' || !window.matchMedia) return
     if (!window.matchMedia(ACT_GATE).matches) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (prefersReducedMotion()) return
     setArmed(true)
     return () => setArmed(false)
   }, [webglReady])

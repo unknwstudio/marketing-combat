@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './AttractMode.css'
 
 /**
@@ -49,7 +50,7 @@ export default function AttractMode() {
   const dismissRef = useRef(null)
 
   useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    if (prefersReducedMotion()) return
 
     let timer = 0
     // Mirror of `live` for the handlers — avoids re-subscribing the six

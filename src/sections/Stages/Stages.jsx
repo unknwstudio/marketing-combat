@@ -9,14 +9,14 @@ const STAGES = [
     n: '01',
     title: 'ROUND 1',
     meta: 'SOLO · OPEN QUALIFICATION',
-    body: 'Self-applied participants only. Individual solutions for standardised cases. Those who fail receive an observer subscription with full hackathon access.',
+    body: 'Self-applied participants only. Individual solutions for standardized cases. Those who fail receive an observer subscription with full hackathon access.',
     cta: '>>> registration <<<',
   },
   {
     n: '02',
     title: 'ROUND 2',
     meta: 'INVITE · LIVE MAIN TOUR',
-    body: 'Invited participants start here. Anonymised real-life case studies from startups and enterprise clients. Use of AI is mandatory, not recommended.',
+    body: 'Invited participants start here. Anonymized real-life case studies from startups and enterprise clients. Use of AI is mandatory, not recommended.',
     cta: '>>> registration <<<',
   },
   {
@@ -55,13 +55,14 @@ export default function Stages() {
             </div>
             <h3 className="stages__title">{s.heading || s.title}</h3>
             <p className="stages__body">{s.body}</p>
-            <span
+            <button
+              type="button"
               className={'d-btn stages__cta' + (s.final ? ' d-btn--red' : '')}
               data-magnetic
               data-sfx="confirm"
             >
               {s.cta}
-            </span>
+            </button>
           </li>
         ))}
       </ul>

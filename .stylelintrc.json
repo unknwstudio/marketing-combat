@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/stylelintrc.json",
+  "//": "Focused design-system gate (2026-07-13 audit): the token system exists and is now fully adopted for COLOR. `color-no-hex` is ENFORCED (error) — every raw hex was migrated to a --k-* token; index.css is the ONE place raw hexes live (that's where tokens are defined). The raw-px spacing rule stays advisory (warning): the remaining px are deliberate Figma-exact pixel-art coordinates on a pixel-perfect port + mixed shorthands, which must be tuned by hand, not force-snapped. Flip it to error once those are reviewed case-by-case.",
+  "rules": {
+    "color-no-hex": true,
+    "declaration-property-value-disallowed-list": [
+      { "/^(margin|padding|gap)/": ["/\\d+px/"] },
+      {
+        "severity": "warning",
+        "message": "Use an 8px spacing token (--k-1 … --k-15) instead of a raw px value"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/styles/index.css"],
+      "rules": { "color-no-hex": null }
+    }
+  ]
+}

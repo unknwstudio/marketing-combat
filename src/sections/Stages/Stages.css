@@ -39,7 +39,7 @@
   font-size: 28px;
   line-height: 1.1;
   letter-spacing: -0.5px;
-  color: #fff;
+  color: var(--k-white);
   text-transform: uppercase;
 }
 

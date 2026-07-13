@@ -241,7 +241,7 @@ export default function GameChrome() {
       {confirmExit && (
         <div className="gc-overlay gc-menu" role="dialog" aria-modal="true" aria-label="Leave the arena?">
           <div className="gc-menu-title">LEAVE THE ARENA?</div>
-          <p className="gc-lead">You'll go back to the site. Match progress is lost.</p>
+          <p className="gc-lead">You&apos;ll go back to the site. Match progress is lost.</p>
           <button className="gc-item gc-danger" onClick={exitToSite}>LEAVE</button>
           <button className="gc-item" onClick={() => setConfirmExit(false)}>STAY IN THE FIGHT</button>
         </div>

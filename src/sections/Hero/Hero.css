@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px; /* Figma badge->lede spacing (33:3912 bottom to 33:3903 cap) */
+  gap: var(--k-3); /* Figma badge->lede spacing (33:3912 bottom to 33:3903 cap) */
   z-index: 3;
 }
 
@@ -75,10 +75,10 @@
 .hero__badge {
   display: inline-block;
   padding: 8px 8px 10px;
-  background: #000;
-  border: 1px solid #fff;
-  color: #fff;
-  font-size: 24px; /* Figma 33:3913 */
+  background: var(--k-black);
+  border: 1px solid var(--k-white);
+  color: var(--k-white);
+  font-size: var(--k-text-lg); /* Figma 33:3913 */
   letter-spacing: -0.72px;
   white-space: nowrap;
   cursor: pointer;
@@ -87,20 +87,20 @@
 
 .hero__badge:hover,
 .hero__badge:focus-visible {
-  background: #fff;
-  color: #000;
+  background: var(--k-white);
+  color: var(--k-black);
 }
 
 /* keyboard focus gets an extra offset ring — the invert alone can read as
    "hover leftovers" when tabbing through the page */
 .hero__badge:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--k-focus-ring);
   outline-offset: 3px;
 }
 
 .hero__lede {
   color: var(--k-accent-green);
-  font-size: 24px; /* Figma 33:3903 */
+  font-size: var(--k-text-lg); /* Figma 33:3903 */
   line-height: 1.25; /* Figma normal leading -> 3-line block ~= 77px */
   letter-spacing: -0.72px;
 }
@@ -113,7 +113,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--k-1);
   z-index: 3;
 }
 
@@ -143,13 +143,13 @@
 
 .hero__meter-pct {
   color: var(--k-orange);
-  font-size: 24px; /* Figma 33:3929 (Input Mono Condensed -> mono) */
+  font-size: var(--k-text-lg); /* Figma 33:3929 (Input Mono Condensed -> mono) */
   letter-spacing: -0.72px;
 }
 
 .hero__survive {
   color: var(--k-orange);
-  font-size: 24px; /* Figma 33:3911 */
+  font-size: var(--k-text-lg); /* Figma 33:3911 */
   letter-spacing: -0.72px;
   white-space: nowrap;
 }
@@ -169,10 +169,10 @@
 .hero__pill {
   padding: 8px 4px;
   background: rgba(0, 0, 0, 0.6);
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #fff;
+  border-top: 1px solid var(--k-white);
+  border-bottom: 1px solid var(--k-white);
   color: var(--k-accent-green);
-  font-size: 24px; /* Figma 33:3894 tags: 24px, -0.72px */
+  font-size: var(--k-text-lg); /* Figma 33:3894 tags: 24px, -0.72px */
   letter-spacing: -0.72px;
   white-space: nowrap;
 }
@@ -217,6 +217,7 @@
     width: 100%;
     height: auto;
     min-height: 88vh;
+    min-height: 88dvh; /* dvh tracks the iOS URL-bar so the hero doesn't jump/clip */
     margin: 0;
     overflow: hidden;
   }
@@ -264,9 +265,13 @@
     top: 14px;
     left: 14px;
     z-index: 3;
-    display: inline-block;
+    /* inline-flex + min-height gives a ≥44px touch target while keeping the
+       pixel type size (WCAG 2.5.8 / comfortable tap) */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     font-size: 12px;
-    padding: 6px 8px 8px;
+    padding: 6px 10px 8px;
   }
 
   .hero__lede {
@@ -276,7 +281,7 @@
     right: 14px;
     z-index: 3;
     max-width: 100%;
-    font-size: 10px;
+    font-size: 12px; /* real reading copy — floored to a legible size on mobile */
     line-height: 1.5;
     letter-spacing: -0.3px;
     text-align: left;
@@ -333,7 +338,7 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: var(--k-1);
     z-index: 3;
   }
 
@@ -347,6 +352,7 @@
 @media (max-width: 639px) {
   .hero {
     min-height: 82vh;
+    min-height: 82dvh;
   }
 
   .hero__badge {
@@ -355,7 +361,7 @@
 
   .hero__lede {
     top: 74px;
-    font-size: 9px;
+    font-size: 12px; /* keep reading copy legible on phones */
     line-height: 1.55;
   }
 

@@ -45,11 +45,23 @@ export default function DemoNav() {
   }, [])
 
   return (
-    <nav className={'dnav' + (shown ? ' dnav--shown' : '')} aria-label="Jump to section">
+    <nav
+      className={'dnav' + (shown ? ' dnav--shown' : '')}
+      aria-label="Jump to section"
+      aria-hidden={shown ? undefined : true}
+    >
       <span className="dnav__kicker">level select</span>
       <span className="dnav__links">
+        {/* while opacity: 0 / pointer-events: none (before scroll) these links
+            leave the tab order — otherwise keyboard focus lands on a control
+            that is 100% invisible (WCAG 2.4.11 Focus Not Obscured) */}
         {LINKS.map((l) => (
-          <a key={l.href} className="dnav__link" href={l.href}>
+          <a
+            key={l.href}
+            className="dnav__link"
+            href={l.href}
+            tabIndex={shown ? undefined : -1}
+          >
             {l.label}
           </a>
         ))}

@@ -97,7 +97,13 @@ export default function Tracks() {
              from AT: the section aria-label + track names already say it. */
           i === 0 && (
             <li key="vs" className="tracks__vs" aria-hidden="true">
-              <span>vs</span>
+              <img
+                className="tracks__vsImg pixelated"
+                src="/assets/demo/tracks/vs.png"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
             </li>
           ),
         ])}

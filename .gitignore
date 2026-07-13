@@ -39,6 +39,12 @@ funnel-combo.png
 # committed) and one-off review screenshots; neither belongs in the repo
 .vite/
 _model-review/
+# stray review/audit screenshots dropped at the repo root (real assets live in
+# public/) — keep them out of the tree and out of `git add .`
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
 
 # secrets — never commit
 .env

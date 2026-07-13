@@ -8,15 +8,15 @@
 .classic {
   /* Figma "Helvetica: Regular" — system stack, no webfont needed */
   --c-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --c-yellow: #fff600;
-  --c-orange: #ffb000;
-  --c-blue: #0052da;
-  --c-green: #00da95;
-  --c-ink: #070707;
+  --c-yellow: var(--k-classic-yellow);
+  --c-orange: var(--k-amber);
+  --c-blue: var(--k-classic-blue);
+  --c-green: var(--k-classic-green);
+  --c-ink: var(--k-classic-ink);
 
   min-height: 100%;
-  background: #fff;
-  color: #000;
+  background: var(--k-white);
+  color: var(--k-black);
   font-family: var(--c-font);
   line-height: 1.2;
   /* the global base sets font-smoothing: none for the pixel font — undo it */

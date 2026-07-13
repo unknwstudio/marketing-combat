@@ -20,7 +20,7 @@
   top: 0;
   width: 720px;
   height: 804px;
-  padding: 16px;
+  padding: var(--k-2);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -30,22 +30,22 @@
 .c-hero__head {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: var(--k-5);
 }
 
 .c-hero__title {
-  font-size: 64px;
+  font-size: var(--k-text-2xl);
   font-weight: 400;
   line-height: 0.942;
   text-transform: uppercase;
-  color: #000;
+  color: var(--k-black);
 }
 
 .c-hero__lede {
   font-size: 16px;
   line-height: 1.2;
   max-width: 463px;
-  color: #000;
+  color: var(--k-black);
 }
 
 .c-hero__cta {
@@ -54,8 +54,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #000;
-  color: #fff;
+  background: var(--k-black);
+  color: var(--k-white);
   font-family: inherit;
   font-size: 16px;
   line-height: 1.2;
@@ -65,7 +65,7 @@
 }
 
 .c-hero__cta:hover {
-  background: #222;
+  background: var(--k-classic-panel);
 }
 
 /* --- right half: photo + chips --------------------------------------- */
@@ -100,7 +100,7 @@
   justify-content: center;
   background: rgba(0, 0, 0, 0.6);
   border-radius: 99px;
-  color: #fff;
+  color: var(--k-white);
   font-size: 16px;
   line-height: 1.2;
   white-space: nowrap;
@@ -118,7 +118,7 @@
     position: static;
     width: 100%;
     height: auto;
-    gap: 32px;
+    gap: var(--k-4);
   }
 
   .c-hero__title {
@@ -139,14 +139,14 @@
     width: 100%;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: 8px;
-    padding: 16px;
+    gap: var(--k-1);
+    padding: var(--k-2);
     background: var(--c-yellow);
   }
 
   .c-hero__chip {
     height: 40px;
-    padding: 0 16px;
+    padding: 0 var(--k-2);
     font-size: 14px;
   }
 }
