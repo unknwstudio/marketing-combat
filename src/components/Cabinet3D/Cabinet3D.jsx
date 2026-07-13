@@ -13,24 +13,11 @@ import './Cabinet3D.css'
 const MODEL_URL = '/assets/demo/arcade-machine.glb'
 const DRACO_PATH = '/draco/'
 
-/* ---------- scroll-act tuning (see ArcadeCabinet.jsx for the choreography) ----------
-   The act is driven by `actProgressRef` (0..1 over the act's sticky hold). When
-   the act is not armed (mobile / reduced-motion / no hold) the ref stays at 0
-   and every formula below collapses to today's behavior exactly. */
-const ACT_SCALE = 1.55 // phase A: the cabinet grows past its framing…
-const ACT_SINK = -0.42 // …and sinks so its legs crop out of frame
+/* ---------- cabinet tuning ---------- */
 const BASE_FOV = 30
-const PUNCH_FOV = 25 // phase B: slight fov squeeze for punch-in drama
-const PUNCH_FILL = 0.82 // CRT slightly overfills the frame at full punch
 const SHADOW_OPACITY = 0.55
 const PRESS_DEPTH = 0.012 // world units a cabinet button travels when pressed
 const PRESS_MS = 80
-
-/** clamped smoothstep — scroll phases ease without a lib on the hot path */
-const smooth01 = (t) => {
-  const c = Math.min(1, Math.max(0, t))
-  return c * c * (3 - 2 * c)
-}
 
 /* ---------- CRT attract screen (our game + PLAY) ---------- */
 
@@ -127,7 +114,7 @@ const NEON_COLOR = new THREE.Color('#ff2e4d') // our --k-red neon
 
 const _pressScale = new THREE.Vector3() // scratch for button world-scale reads
 
-function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, onPlay }) {
+function CabinetModel({ progressRef, screenVariant, onPlay }) {
   const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const { gl } = useThree()
   const uniformsRef = useRef(null)
@@ -135,7 +122,6 @@ function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, o
   const rig = useMemo(() => {
     const root = scene.clone(true)
     const created = [] // every material WE clone/create — disposed on unmount
-    let screenMesh = null
     root.traverse((o) => {
       if (!o.isMesh) return
       let interactive = false
@@ -176,9 +162,8 @@ function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, o
           })
           set(i, sm)
           created.push(sm)
-          // the CRT is both the act's phase-B camera target and a click-to-play
-          // surface (the biggest, most obvious "button" on the whole cabinet)
-          screenMesh = o
+          // the CRT is the click-to-play surface (the biggest, most obvious
+          // "button" on the whole cabinet)
           o.userData.kScreen = true
           interactive = true
         } else if (mat.name === 'GLASS') {
@@ -233,16 +218,8 @@ function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, o
     root.scale.setScalar(3.2 / (Math.max(size.x, size.y, size.z) || 1))
     box = new THREE.Box3().setFromObject(root)
     root.position.sub(box.getCenter(new THREE.Vector3()))
-    return { root, created, screenMesh }
+    return { root, created }
   }, [scene, screenVariant])
-
-  // publish the CRT mesh for the camera rig (phase-B punch-in target)
-  useEffect(() => {
-    if (screenRef) screenRef.current = rig.screenMesh
-    return () => {
-      if (screenRef) screenRef.current = null
-    }
-  }, [rig, screenRef])
 
   // our clones are NOT in useGLTF's cache → free programs/textures on unmount
   // (the attract CanvasTexture rides inside the screen shader's uniforms)
@@ -315,12 +292,8 @@ function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, o
     const u = uniformsRef.current
     if (!u) return
     u.uTime.value += dt
-    // brighten the CRT from dim standby to full-on as the cabinet centers; the
-    // scroll act slams it to full EARLY in phase A so the tube is already hot
-    // when the camera dives in (act = 0 when the act isn't armed → no change)
-    const act = actProgressRef?.current ?? 0
-    const drive = Math.max(progressRef?.current ?? 1, Math.min(1, act / 0.35))
-    const target = 0.3 + 0.7 * drive
+    // brighten the CRT from dim standby to full-on as the cabinet centers
+    const target = 0.3 + 0.7 * (progressRef?.current ?? 1)
     u.uPower.value += (target - u.uPower.value) * Math.min(1, dt * 3)
   })
 
@@ -349,8 +322,6 @@ function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, o
 
 function Cabinet({
   progressRef,
-  actProgressRef,
-  screenRef,
   screenVariant,
   onPlay,
   restYaw,
@@ -358,7 +329,6 @@ function Cabinet({
   parallaxPitch,
   reduceMotion,
 }) {
-  const actGroup = useRef()
   const group = useRef()
   const { pointer } = useThree()
   useFrame((_, dt) => {
@@ -371,52 +341,31 @@ function Cabinet({
       group.current.rotation.y += (ty - group.current.rotation.y) * k
       group.current.rotation.x += (tx - group.current.rotation.x) * k
     }
-    const o = actGroup.current
-    if (o) {
-      // act phase A (0 → .5): grow past the framing + sink so the legs crop out
-      // of frame (the section's bottom CSS mask makes the crop read intentional)
-      const a = smooth01((actProgressRef?.current ?? 0) / 0.5)
-      o.scale.setScalar(1 + (ACT_SCALE - 1) * a)
-      o.position.y = ACT_SINK * a
-    }
   })
   return (
-    <group ref={actGroup}>
-      <group ref={group} rotation={[0, restYaw, 0]}>
-        <CabinetModel
-          progressRef={progressRef}
-          actProgressRef={actProgressRef}
-          screenRef={screenRef}
-          screenVariant={screenVariant}
-          onPlay={onPlay}
-        />
-      </group>
+    <group ref={group} rotation={[0, restYaw, 0]}>
+      <CabinetModel progressRef={progressRef} screenVariant={screenVariant} onPlay={onPlay} />
     </group>
   )
 }
 
 /* dolly the camera in as the PLAY section scrolls to centre (window scroll,
-   not drei ScrollControls — that would hijack the page's own scroll). When the
-   scroll act is armed, phase B (act .5 → ~.92) blends this base pose into a
-   punch-in on the CRT until the warped screen fills the frame. */
+   not drei ScrollControls — that would hijack the page's own scroll). */
 const CAM_FAR = 8.0
 const CAM_NEAR = 6.6
 
 const _pos = new THREE.Vector3()
 const _look = new THREE.Vector3()
-const _punch = new THREE.Vector3()
-const _sBox = new THREE.Box3()
-const _sSize = new THREE.Vector3()
-const _sCenter = new THREE.Vector3()
 
-function CameraRig({ progressRef, actProgressRef, screenRef, camFar, camNear, camY, fov }) {
+function CameraRig({ progressRef, camFar, camNear, camY, fov }) {
   const { camera, gl } = useThree()
   const secRef = useRef(null)
   useFrame((_, dt) => {
-    // measure the STAGE, not the section: armed, the section grows a scroll
-    // runway below the stage, which would drag the "how centered are we"
-    // midpoint far off the visible frame (un-armed the two boxes share a
-    // center, so this is behavior-neutral everywhere else)
+    // Legacy scroll-position probe from the retired mid-page cabinet, which
+    // lived in a `.cabinet__stage`/`.cabinet` wrapper and dollied as it scrolled
+    // into view. The finale mount has neither wrapper, so secRef never resolves,
+    // progress holds at 0, and the camera simply rests at the base pose
+    // (camFar) — exactly the straight-on framing the finale wants.
     if (!secRef.current)
       secRef.current =
         gl.domElement.closest('.cabinet__stage') || gl.domElement.closest('.cabinet')
@@ -431,72 +380,18 @@ function CameraRig({ progressRef, actProgressRef, screenRef, camFar, camNear, ca
     }
     const k = Math.min(1, dt * 3)
 
-    // base pose — today's straight-on dolly (all that mobile/reduced-motion get)
+    // straight-on dolly (all this static mount ever shows)
     _pos.set(0, camY, camFar - (camFar - camNear) * progressRef.current)
     _look.set(_pos.x, _pos.y, _pos.z - 4) // straight ahead = default orientation
-    let fovT = fov
-
-    const act = actProgressRef?.current ?? 0
-    const screen = screenRef?.current
-    if (act > 0.5 && screen) {
-      // act phase B: dolly INTO the CRT. The target is measured live from the
-      // mesh (not precomputed) because phase-A growth + pointer parallax keep
-      // moving the screen in world space — one cached-bbox read per frame.
-      const b = smooth01((act - 0.5) / 0.42) // full punch by act ≈ .92
-      _sBox.setFromObject(screen)
-      _sBox.getCenter(_sCenter)
-      _sBox.getSize(_sSize)
-      fovT = fov - (fov - PUNCH_FOV) * b
-      // self-calibrating stand-off: whatever the GLB's real screen size, park
-      // the camera where the CRT slightly overfills the frame at full punch
-      const halfH = Math.max(_sSize.y, _sSize.x / camera.aspect) * 0.5
-      const dist = (halfH * PUNCH_FILL) / Math.tan((fovT * Math.PI) / 360)
-      _punch.copy(_sCenter)
-      _punch.z += dist
-      _pos.lerp(_punch, b)
-      _look.lerp(_sCenter, b)
-    }
 
     camera.position.lerp(_pos, k)
     camera.lookAt(_look)
-    if (Math.abs(camera.fov - fovT) > 0.001) {
-      camera.fov += (fovT - camera.fov) * k
+    if (Math.abs(camera.fov - fov) > 0.001) {
+      camera.fov += (fov - camera.fov) * k
       camera.updateProjectionMatrix()
     }
   })
   return null
-}
-
-/* ContactShadows whose plane fades out during act phase A — a shadow pinned at
-   floor level would give the "growing" cabinet away as a camera trick. */
-function FadingContactShadows({ actProgressRef }) {
-  const ref = useRef()
-  const matRef = useRef(null)
-  useFrame(() => {
-    const g = ref.current
-    if (!g) return
-    if (!matRef.current) {
-      // drei renders the blurred shadow as the group's single mesh child;
-      // resolved lazily + defensively in case the internals ever shift
-      g.traverse((o) => {
-        if (!matRef.current && o.isMesh && o.material) matRef.current = o.material
-      })
-    }
-    const a = smooth01((actProgressRef?.current ?? 0) / 0.5)
-    if (matRef.current) matRef.current.opacity = SHADOW_OPACITY * (1 - a)
-  })
-  return (
-    <ContactShadows
-      ref={ref}
-      position={[0, -1.62, 0]}
-      opacity={SHADOW_OPACITY}
-      scale={5.5}
-      blur={2.6}
-      far={3.2}
-      resolution={512}
-      color="#000000"
-    />
-  )
 }
 
 function StudioEnv() {
@@ -516,40 +411,28 @@ function StudioEnv() {
 useGLTF.preload(MODEL_URL, DRACO_PATH)
 
 /**
- * Cabinet3D — the R3F scene. Props (all optional, default to today's behavior):
- * - `actProgressRef`: 0..1 progress of the scroll act's sticky hold (owned by
- *   ArcadeCabinet); stays 0 when the act isn't armed.
- * - `armed`: the scroll act is wired up (desktop pointer + motion + WebGL).
- *   Arming alone must NOT hold the frameloop open — it flips true at page load
- *   and stays true, so gating on it alone kept the scene rendering at 60fps
- *   for the whole session, viewports away from the cabinet (GPU/battery drain
- *   the IntersectionObserver below exists to prevent).
- * - `pinned`: true only while the act's ScrollTrigger is actually mid-hold
- *   (its isActive, via onToggle). For exactly that span the loop stays
- *   'always' — the IO can lag a frame behind a fast scrub and a paused loop
- *   would freeze the choreography. Outside the hold the IO gate rules again.
- * - `onSupported(bool)`: reports whether the WebGL path rendered, so the act
- *   only ever arms on top of a live canvas (never the static fallback image).
- * - `screenVariant`: which CRT attract art to paint — `'play'` (today's ▶ PLAY
- *   / PRESS START) or `'youwin'` (the finale's YOU WIN! screen).
- * - `onPlay()`: called when the START button or CRT screen is clicked, in
- *   place of the old hard nav to `/play` — defaults to opening the in-page
- *   game takeover.
+ * Cabinet3D — the R3F scene behind the finale's "YOU WIN!" cabinet. Mounted
+ * statically (no scroll-driven act); the WebGL frameloop just pauses/resumes
+ * via the IntersectionObserver below, plus mouse-parallax and a click-to-play
+ * screen. Props (all optional, default to today's behavior):
+ * - `onSupported(bool)`: reports whether the WebGL path rendered, so callers
+ *   can fall back to the static image when it doesn't.
+ * - `screenVariant`: which CRT attract art to paint — `'play'` (▶ PLAY /
+ *   PRESS START) or `'youwin'` (the finale's YOU WIN! screen).
+ * - `onPlay()`: called when the START button or CRT screen is clicked —
+ *   defaults to opening the in-page game takeover.
  * - `restYaw`: resting Y rotation of the cabinet group, in radians. Defaults
  *   to `0.12` (today's slight angle, showing a side panel). Pass `0` for a
- *   straight-on, screen-facing rest pose.
+ *   straight-on, screen-facing rest pose (the finale does).
  * - `parallaxYaw` / `parallaxPitch`: how far the cabinet yaws/pitches toward
  *   the pointer, in radians of amplitude. Default to today's `0.1` / `0.05`.
  *   Both are skipped under `prefers-reduced-motion: reduce`, which pins the
  *   cabinet to `restYaw` with zero pointer reaction.
- * - `camFar` / `camNear` / `camY` / `fov`: the base (un-armed) camera pose —
- *   the dolly range, height, and vertical field of view. Default to today's
- *   framing (`8.0` / `6.6` / `0.15` / `30`), which frames the whole cabinet.
+ * - `camFar` / `camNear` / `camY` / `fov`: the camera pose — the dolly range,
+ *   height, and vertical field of view. Default to today's framing (`8.0` /
+ *   `6.6` / `0.15` / `30`), which frames the whole cabinet.
  */
 export default function Cabinet3D({
-  armed = false,
-  pinned = false,
-  actProgressRef = null,
   onSupported,
   screenVariant = 'play',
   onPlay = openGameTakeover,
@@ -580,7 +463,6 @@ export default function Cabinet3D({
 
   const wrapRef = useRef(null)
   const progressRef = useRef(0)
-  const screenRef = useRef(null)
   const [active, setActive] = useState(true)
 
   useEffect(() => {
@@ -604,7 +486,7 @@ export default function Cabinet3D({
       <img
         className="cab3d__fallback"
         src="/assets/demo/arcade-machine.webp"
-        alt="Arcade cabinet — play AI Marketing Kombat"
+        alt="Arcade cabinet showing YOU WIN"
         loading="lazy"
         decoding="async"
       />
@@ -614,7 +496,7 @@ export default function Cabinet3D({
   return (
     <div className="cab3d" ref={wrapRef}>
       <Canvas
-        frameloop={(armed && pinned) || active ? 'always' : 'never'}
+        frameloop={active ? 'always' : 'never'}
         dpr={[1, 1.8]}
         camera={{ position: [0, camY, camFar], fov }}
         gl={{ antialias: true, alpha: true }}
@@ -625,8 +507,6 @@ export default function Cabinet3D({
         <pointLight position={[4, 1, 3]} color="#3fe0ff" intensity={40} distance={22} />
         <CameraRig
           progressRef={progressRef}
-          actProgressRef={actProgressRef}
-          screenRef={screenRef}
           camFar={camFar}
           camNear={camNear}
           camY={camY}
@@ -636,8 +516,6 @@ export default function Cabinet3D({
           <StudioEnv />
           <Cabinet
             progressRef={progressRef}
-            actProgressRef={actProgressRef}
-            screenRef={screenRef}
             screenVariant={screenVariant}
             onPlay={onPlay}
             restYaw={restYaw}
@@ -645,7 +523,15 @@ export default function Cabinet3D({
             parallaxPitch={parallaxPitch}
             reduceMotion={reduceMotion}
           />
-          <FadingContactShadows actProgressRef={actProgressRef} />
+          <ContactShadows
+            position={[0, -1.62, 0]}
+            opacity={SHADOW_OPACITY}
+            scale={5.5}
+            blur={2.6}
+            far={3.2}
+            resolution={512}
+            color="#000000"
+          />
         </Suspense>
       </Canvas>
     </div>
