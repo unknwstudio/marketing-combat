@@ -5,9 +5,10 @@ import './ScrollHealth.css'
 
 /**
  * ScrollHealth — a Mortal-Kombat health bar pinned to the top that doubles as
- * the page scroll indicator. P1 (you) drains as you scroll deeper; the CPU bar
- * fills. Hidden over the hero (which has its own energy meter) and fades in
- * once you start scrolling. Decorative → aria-hidden.
+ * the page scroll indicator. P1 (you) charges up as you scroll deeper toward the
+ * win, reaching 100% at the bottom; the CPU bar drains to 0%. Hidden over the
+ * hero (which has its own energy meter) and fades in once you start scrolling.
+ * Decorative → aria-hidden.
  */
 export default function ScrollHealth() {
   const [p, setP] = useState(0) // 0..1 scroll progress
@@ -33,7 +34,7 @@ export default function ScrollHealth() {
     }
   }, [])
 
-  const hp = Math.max(0, Math.round((1 - p) * 100)) // P1 health left
+  const hp = Math.max(0, Math.min(100, Math.round(p * 100))) // P1 charges up as you scroll to the win
   const cpu = 100 - hp
   const state = hp <= 25 ? ' sh--low' : hp <= 55 ? ' sh--mid' : ''
   const shown = p > 0.03 ? ' sh--shown' : ''

@@ -6,6 +6,8 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { playSfx } from '@/effects/audio/arcadeAudio'
+import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import { GAME_COPY, openGameTakeover } from '@/lib/game'
 import './Cabinet3D.css'
 
 const MODEL_URL = '/assets/demo/arcade-machine.glb'
@@ -32,7 +34,7 @@ const smooth01 = (t) => {
 
 /* ---------- CRT attract screen (our game + PLAY) ---------- */
 
-function makeAttractTexture() {
+function makeAttractTexture(variant = 'play') {
   const c = document.createElement('canvas')
   c.width = 512
   c.height = 384
@@ -50,16 +52,29 @@ function makeAttractTexture() {
   x.fillRect(0, 0, 512, 384)
   x.textAlign = 'center'
   x.textBaseline = 'middle'
-  x.font = '700 96px Arial, sans-serif'
-  x.lineJoin = 'round'
-  x.lineWidth = 9
-  x.strokeStyle = '#ff5000'
-  x.strokeText('▶ PLAY', 256, 168)
-  x.fillStyle = '#ffd000'
-  x.fillText('▶ PLAY', 256, 168)
-  x.font = '28px "GT Pressura Mono", monospace'
-  x.fillStyle = '#3ad76f'
-  x.fillText('PRESS START', 256, 246)
+  if (variant === 'youwin') {
+    x.font = '700 84px Arial, sans-serif'
+    x.lineJoin = 'round'
+    x.lineWidth = 9
+    x.strokeStyle = '#ff5000' // matches --k-orange
+    x.strokeText(GAME_COPY.youWin, 256, 168)
+    x.fillStyle = '#ffd000' // matches --k-title-yellow
+    x.fillText(GAME_COPY.youWin, 256, 168)
+    x.font = '24px "GT Pressura Mono", monospace'
+    x.fillStyle = '#3ad76f' // matches --k-accent-green
+    x.fillText('FLAWLESS', 256, 246)
+  } else {
+    x.font = '700 96px Arial, sans-serif'
+    x.lineJoin = 'round'
+    x.lineWidth = 9
+    x.strokeStyle = '#ff5000'
+    x.strokeText(`${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`, 256, 168)
+    x.fillStyle = '#ffd000'
+    x.fillText(`${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`, 256, 168)
+    x.font = '24px "GT Pressura Mono", monospace'
+    x.fillStyle = '#3ad76f'
+    x.fillText(GAME_COPY.pressStart, 256, 246)
+  }
   const t = new THREE.CanvasTexture(c)
   t.anisotropy = 8
   return t
@@ -112,7 +127,7 @@ const NEON_COLOR = new THREE.Color('#ff2e4d') // our --k-red neon
 
 const _pressScale = new THREE.Vector3() // scratch for button world-scale reads
 
-function CabinetModel({ progressRef, actProgressRef, screenRef }) {
+function CabinetModel({ progressRef, actProgressRef, screenRef, screenVariant, onPlay }) {
   const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const { gl } = useThree()
   const uniformsRef = useRef(null)
@@ -147,7 +162,7 @@ function CabinetModel({ progressRef, actProgressRef, screenRef }) {
           created.push(c)
         } else if (mat.name === 'SCREEN') {
           const uniforms = {
-            uTex: { value: makeAttractTexture() },
+            uTex: { value: makeAttractTexture(screenVariant) },
             uRes: { value: new THREE.Vector2(512, 384) },
             uTime: { value: 0 },
             uPower: { value: 0.3 },
@@ -219,7 +234,7 @@ function CabinetModel({ progressRef, actProgressRef, screenRef }) {
     box = new THREE.Box3().setFromObject(root)
     root.position.sub(box.getCenter(new THREE.Vector3()))
     return { root, created, screenMesh }
-  }, [scene])
+  }, [scene, screenVariant])
 
   // publish the CRT mesh for the camera rig (phase-B punch-in target)
   useEffect(() => {
@@ -325,24 +340,34 @@ function CabinetModel({ progressRef, actProgressRef, screenRef }) {
         if (!t) return
         if (t.userData.kStart || t.userData.kScreen) {
           playSfx('confirm', 0.5)
-          // plain MPA nav — the site's View Transition CSS runs the pixel dissolve
-          window.location.href = '/play'
+          onPlay() // default openGameTakeover; the finale plays in place
         }
       }}
     />
   )
 }
 
-function Cabinet({ progressRef, actProgressRef, screenRef }) {
+function Cabinet({
+  progressRef,
+  actProgressRef,
+  screenRef,
+  screenVariant,
+  onPlay,
+  restYaw,
+  parallaxYaw,
+  parallaxPitch,
+  reduceMotion,
+}) {
   const actGroup = useRef()
   const group = useRef()
   const { pointer } = useThree()
   useFrame((_, dt) => {
     const k = Math.min(1, dt * 4)
     if (group.current) {
-      // near-front so the CRT screen reads clearly; gentle parallax only
-      const ty = 0.12 + pointer.x * 0.1
-      const tx = -pointer.y * 0.05
+      // resting pose + a little mouse parallax only (skipped entirely under
+      // prefers-reduced-motion: reduce → static straight-on framing)
+      const ty = restYaw + (reduceMotion ? 0 : pointer.x * parallaxYaw)
+      const tx = reduceMotion ? 0 : -pointer.y * parallaxPitch
       group.current.rotation.y += (ty - group.current.rotation.y) * k
       group.current.rotation.x += (tx - group.current.rotation.x) * k
     }
@@ -357,11 +382,13 @@ function Cabinet({ progressRef, actProgressRef, screenRef }) {
   })
   return (
     <group ref={actGroup}>
-      <group ref={group} rotation={[0, 0.12, 0]}>
+      <group ref={group} rotation={[0, restYaw, 0]}>
         <CabinetModel
           progressRef={progressRef}
           actProgressRef={actProgressRef}
           screenRef={screenRef}
+          screenVariant={screenVariant}
+          onPlay={onPlay}
         />
       </group>
     </group>
@@ -382,7 +409,7 @@ const _sBox = new THREE.Box3()
 const _sSize = new THREE.Vector3()
 const _sCenter = new THREE.Vector3()
 
-function CameraRig({ progressRef, actProgressRef, screenRef }) {
+function CameraRig({ progressRef, actProgressRef, screenRef, camFar, camNear, camY, fov }) {
   const { camera, gl } = useThree()
   const secRef = useRef(null)
   useFrame((_, dt) => {
@@ -405,9 +432,9 @@ function CameraRig({ progressRef, actProgressRef, screenRef }) {
     const k = Math.min(1, dt * 3)
 
     // base pose — today's straight-on dolly (all that mobile/reduced-motion get)
-    _pos.set(0, 0.15, CAM_FAR - (CAM_FAR - CAM_NEAR) * progressRef.current)
+    _pos.set(0, camY, camFar - (camFar - camNear) * progressRef.current)
     _look.set(_pos.x, _pos.y, _pos.z - 4) // straight ahead = default orientation
-    let fovT = BASE_FOV
+    let fovT = fov
 
     const act = actProgressRef?.current ?? 0
     const screen = screenRef?.current
@@ -419,7 +446,7 @@ function CameraRig({ progressRef, actProgressRef, screenRef }) {
       _sBox.setFromObject(screen)
       _sBox.getCenter(_sCenter)
       _sBox.getSize(_sSize)
-      fovT = BASE_FOV - (BASE_FOV - PUNCH_FOV) * b
+      fovT = fov - (fov - PUNCH_FOV) * b
       // self-calibrating stand-off: whatever the GLB's real screen size, park
       // the camera where the CRT slightly overfills the frame at full punch
       const halfH = Math.max(_sSize.y, _sSize.x / camera.aspect) * 0.5
@@ -503,12 +530,36 @@ useGLTF.preload(MODEL_URL, DRACO_PATH)
  *   would freeze the choreography. Outside the hold the IO gate rules again.
  * - `onSupported(bool)`: reports whether the WebGL path rendered, so the act
  *   only ever arms on top of a live canvas (never the static fallback image).
+ * - `screenVariant`: which CRT attract art to paint — `'play'` (today's ▶ PLAY
+ *   / PRESS START) or `'youwin'` (the finale's YOU WIN! screen).
+ * - `onPlay()`: called when the START button or CRT screen is clicked, in
+ *   place of the old hard nav to `/play` — defaults to opening the in-page
+ *   game takeover.
+ * - `restYaw`: resting Y rotation of the cabinet group, in radians. Defaults
+ *   to `0.12` (today's slight angle, showing a side panel). Pass `0` for a
+ *   straight-on, screen-facing rest pose.
+ * - `parallaxYaw` / `parallaxPitch`: how far the cabinet yaws/pitches toward
+ *   the pointer, in radians of amplitude. Default to today's `0.1` / `0.05`.
+ *   Both are skipped under `prefers-reduced-motion: reduce`, which pins the
+ *   cabinet to `restYaw` with zero pointer reaction.
+ * - `camFar` / `camNear` / `camY` / `fov`: the base (un-armed) camera pose —
+ *   the dolly range, height, and vertical field of view. Default to today's
+ *   framing (`8.0` / `6.6` / `0.15` / `30`), which frames the whole cabinet.
  */
 export default function Cabinet3D({
   armed = false,
   pinned = false,
   actProgressRef = null,
   onSupported,
+  screenVariant = 'play',
+  onPlay = openGameTakeover,
+  restYaw = 0.12,
+  parallaxYaw = 0.1,
+  parallaxPitch = 0.05,
+  camFar = CAM_FAR,
+  camNear = CAM_NEAR,
+  camY = 0.15,
+  fov = BASE_FOV,
 }) {
   const supported = useMemo(() => {
     if (typeof window === 'undefined') return false
@@ -522,6 +573,10 @@ export default function Cabinet3D({
       return false
     }
   }, [])
+
+  // read once — a live media-query listener isn't worth it for a settings
+  // check made at mount; matches the `supported` WebGL probe just above
+  const reduceMotion = useMemo(() => prefersReducedMotion(), [])
 
   const wrapRef = useRef(null)
   const progressRef = useRef(0)
@@ -561,7 +616,7 @@ export default function Cabinet3D({
       <Canvas
         frameloop={(armed && pinned) || active ? 'always' : 'never'}
         dpr={[1, 1.8]}
-        camera={{ position: [0, 0.15, CAM_FAR], fov: BASE_FOV }}
+        camera={{ position: [0, camY, camFar], fov }}
         gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.4} />
@@ -572,6 +627,10 @@ export default function Cabinet3D({
           progressRef={progressRef}
           actProgressRef={actProgressRef}
           screenRef={screenRef}
+          camFar={camFar}
+          camNear={camNear}
+          camY={camY}
+          fov={fov}
         />
         <Suspense fallback={null}>
           <StudioEnv />
@@ -579,6 +638,12 @@ export default function Cabinet3D({
             progressRef={progressRef}
             actProgressRef={actProgressRef}
             screenRef={screenRef}
+            screenVariant={screenVariant}
+            onPlay={onPlay}
+            restYaw={restYaw}
+            parallaxYaw={parallaxYaw}
+            parallaxPitch={parallaxPitch}
+            reduceMotion={reduceMotion}
           />
           <FadingContactShadows actProgressRef={actProgressRef} />
         </Suspense>
