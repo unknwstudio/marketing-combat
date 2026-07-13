@@ -203,11 +203,19 @@
 }
 
 /* --- PLAY affordance (prop-gated, rendered only via HeroStage/withPlay) --- */
+/* Centered with auto side-margins, NOT transform:translateX(-50%): on desktop
+   /demo the CRT's warpElToScreen writes the hit-area onto el.style.transform,
+   and an inline transform REPLACES (never composes with) a stylesheet transform
+   — so translateX(-50%) centering was silently dropped the moment the warp ran,
+   shoving the clickable box ~half its width right of the drawn button (a dead
+   click on the wordmark). Auto-margins leave `transform` free for the warp. */
 .hero__play {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   top: 680px;
-  transform: translateX(-50%);
+  width: max-content;
+  margin-inline: auto;
   z-index: 3;
   display: inline-flex;
   align-items: center;
@@ -376,10 +384,14 @@
     letter-spacing: -0.3px;
   }
 
+  /* mobile has no CRT/warp (3D is desktop-only), so plain absolute placement is
+     safe here. `position:static` demoted it below every absolute sibling and
+     hid it; keep it absolute, centered (base left/right/margin-inline:auto),
+     lifted off the bottom above the tag pills. */
   .hero__play {
-    position: static;
-    transform: none;
-    margin: var(--k-4) auto 0;
+    top: auto;
+    bottom: 56px;
+    z-index: 4;
   }
 }
 
