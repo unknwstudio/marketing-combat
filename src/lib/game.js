@@ -15,6 +15,9 @@ export const GAME_COPY = {
   playGlyph: '▶',
   pressStart: 'PRESS START',
   youWin: 'YOU WIN!',
+  // the two lines of RotateHint's big prompt (rendered with a <br /> between)
+  rotateTitle: ['ROTATE YOUR', 'PHONE'],
+  rotateSub: 'the arena needs landscape',
 }
 
 // The overlay sets this true while mounted (only on /demo). VsSplash reads it to

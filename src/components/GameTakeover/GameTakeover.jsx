@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import FightGame from '@/components/FightGame/FightGame'
 import MobileControls from '@/components/MobileControls/MobileControls'
 import GameChrome from '@/components/GameChrome/GameChrome'
+import RotateHint from '@/components/RotateHint/RotateHint'
 import { TAKEOVER_OPEN, setTakeoverAvailable } from '@/lib/game'
 import '@/styles/game-surface.css'
 import './GameTakeover.css'
@@ -115,11 +116,7 @@ export default function GameTakeover() {
       <MobileControls />
       {/* onExit closes in place instead of navigating away from /demo */}
       <GameChrome onExit={close} />
-      <div className="rotate-hint" aria-hidden="true">
-        <div className="rot-phone" />
-        <div className="rot-big">ROTATE YOUR<br />PHONE</div>
-        <div className="rot-sm">the arena needs landscape</div>
-      </div>
+      <RotateHint />
     </div>
   )
 }

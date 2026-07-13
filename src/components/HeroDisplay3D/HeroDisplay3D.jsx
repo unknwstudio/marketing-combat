@@ -468,14 +468,9 @@ function CRTPlane() {
         sync()
 
         // slide the DOM hit-area under the barrel-warped badge pixels (see
-        // warpElToScreen). Re-derived on resize: the fractions are
+        // warpElToScreen). Re-derived on resize below: the fractions are
         // zoom-invariant, but a reflow can move the badge inside the stage.
         warpElToScreen(badgeEl, gl.domElement)
-        ro = new ResizeObserver(() => {
-          if (badgeEl) warpElToScreen(badgeEl, gl.domElement)
-          if (playEl) warpElToScreen(playEl, gl.domElement)
-        })
-        ro.observe(gl.domElement)
       }
 
       // PLAY anchor (Task 5) — same mechanism as the badge, mirrored onto its
@@ -505,6 +500,16 @@ function CRTPlane() {
         playEl.addEventListener('focusout', onPBlur)
         playEl._amkHandlers = { onPEnter, onPLeave, onPFocus, onPBlur } // for cleanup
         warpElToScreen(playEl, gl.domElement)
+      }
+
+      // re-derive both warps on resize — hoisted out of the badge branch so
+      // PLAY still re-warps even on a page where the badge hit-area is absent
+      if (badgeEl || playEl) {
+        ro = new ResizeObserver(() => {
+          if (badgeEl) warpElToScreen(badgeEl, gl.domElement)
+          if (playEl) warpElToScreen(playEl, gl.domElement)
+        })
+        ro.observe(gl.domElement)
       }
     }
     build()
