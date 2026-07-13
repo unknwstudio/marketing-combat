@@ -2,7 +2,9 @@ import './not-found.css'
 
 export const metadata = {
   title: 'Game Over',
-  robots: { index: false, follow: false },
+  // Next.js already emits <meta name="robots" content="noindex"> for not-found
+  // routes automatically — declaring robots here too produced a SECOND,
+  // conflicting robots tag (2026-07-13 audit). Let Next's automatic one stand.
 }
 
 /**

@@ -1,4 +1,5 @@
 import ClassicApp from './ClassicApp'
+import EventJsonLd from '@/components/EventJsonLd/EventJsonLd'
 
 export const metadata = {
   title: 'Classic',
@@ -16,5 +17,10 @@ export const viewport = { themeColor: '#ffffff' }
  * Server component for metadata; all UI lives in the client ClassicApp.
  */
 export default function ClassicPage() {
-  return <ClassicApp />
+  return (
+    <>
+      <ClassicApp />
+      <EventJsonLd />
+    </>
+  )
 }

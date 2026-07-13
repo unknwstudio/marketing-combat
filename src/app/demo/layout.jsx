@@ -1,4 +1,5 @@
 import { SITE_URL } from '@/lib/site'
+import EventJsonLd from '@/components/EventJsonLd/EventJsonLd'
 
 export const metadata = {
   title: 'Demo — the full arcade tour',
@@ -22,5 +23,10 @@ export const metadata = {
  * file exists ONLY for that; it renders nothing of its own.
  */
 export default function DemoLayout({ children }) {
-  return children
+  return (
+    <>
+      {children}
+      <EventJsonLd />
+    </>
+  )
 }

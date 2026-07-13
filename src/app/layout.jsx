@@ -1,7 +1,7 @@
 import '@/styles/index.css'
 import '@/styles/App.css'
 import { Press_Start_2P } from 'next/font/google'
-import { SITE_URL } from '@/lib/site'
+import { SITE_URL, EVENT_DESCRIPTION } from '@/lib/site'
 
 const pressStart = Press_Start_2P({
   weight: '400',
@@ -10,8 +10,7 @@ const pressStart = Press_Start_2P({
   display: 'swap',
 })
 
-const DESCRIPTION =
-  'The first international hackathon for senior marketers of the AI era. Two days, real cases — use AI or get finished. Round 01 · July 2026 · Final in Barcelona.'
+const DESCRIPTION = EVENT_DESCRIPTION
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -53,7 +52,9 @@ export const metadata = {
     description: DESCRIPTION,
     images: ['/assets/hero/hero-bg.png'],
   },
-  robots: { index: true, follow: true },
+  // index+follow is the default; declaring it here would also emit a positive
+  // robots tag that competes with not-found.jsx's `noindex` on the 404 route.
+  // Pages that must NOT be indexed (/play, 404) opt out with their own robots.
   icons: { icon: '/favicon.svg' },
 }
 
@@ -63,31 +64,6 @@ export const viewport = {
   themeColor: '#0b0221',
 }
 
-const eventJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Event',
-  name: 'AI Marketing Kombat — Round 01',
-  description: DESCRIPTION,
-  startDate: '2026-07',
-  eventStatus: 'https://schema.org/EventScheduled',
-  // the final is in-person in Barcelona, but qualifying + the main tour run
-  // online (see Faq.jsx) — Mixed is the honest attendance mode, not Offline
-  eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode',
-  location: {
-    '@type': 'Place',
-    name: 'Barcelona',
-    address: { '@type': 'PostalAddress', addressLocality: 'Barcelona', addressCountry: 'ES' },
-  },
-  organizer: { '@type': 'Organization', name: 'AI Marketing Kombat', url: SITE_URL },
-  image: [`${SITE_URL}/assets/hero/hero-bg.png`],
-  url: SITE_URL,
-  // exact day, ticket price/availability and an endDate aren't settled yet
-  // (the hero copy says "two days", the /mcp prompt says "45 min + 2 hours" —
-  // those two accounts of the format actively disagree) — Rich Results wants
-  // real values for `offers`/`endDate`, and a guessed one would be worse than
-  // omitting the field, so both stay out until the format is locked.
-}
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={pressStart.variable}>
@@ -95,7 +71,7 @@ export default function RootLayout({ children }) {
         {/* both are used on the very first paint (Platform in section
             titles, GT Pressura Mono as the body/UI font) — preloading
             avoids a flash of fallback-font text on slow connections */}
-        <link rel="preload" href="/fonts/Platform-Medium.otf" as="font" type="font/otf" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/Platform-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link
           rel="preload"
           href="/fonts/GT-Pressura-Mono-Regular.woff2"
@@ -104,16 +80,7 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
         />
       </head>
-      <body>
-        {children}
-        <script
-          type="application/ld+json"
-          // belt-and-braces: the object above is a static literal today (no
-          // exploitable path), but escaping '<' means a future dynamic field
-          // can never accidentally close the <script> tag early.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd).replace(/</g, '\\u003c') }}
-        />
-      </body>
+      <body>{children}</body>
     </html>
   )
 }

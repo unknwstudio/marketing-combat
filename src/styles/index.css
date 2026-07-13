@@ -9,7 +9,12 @@
 /* Accent / display font from the Figma design (self-hosted, licensed file). */
 @font-face {
   font-family: 'Platform';
-  src: url('/fonts/Platform-Medium.otf') format('opentype');
+  /* woff2 first (42KB, brotli — all glyphs, visually identical to the OTF); the
+     119KB OTF stays only as a fallback for engines without woff2 (2026-07-13 audit:
+     the uncompressed OTF was preloaded on every route's critical path). */
+  src:
+    url('/fonts/Platform-Medium.woff2') format('woff2'),
+    url('/fonts/Platform-Medium.otf') format('opentype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -57,6 +62,11 @@
   --k-line: #2a2140;
   --k-panel: #050109;
   --k-bg-deep: #08010f;
+  /* alternating-section band (2026-07-13 audit: .dsec--alt used --k-bg-deep, a
+     DARKER near-black that was imperceptible against --k-bg at 1.02:1, so the
+     ~13-section tour read as one flat wall). A gentle LIFT of the same purple
+     gives a real ABAB tonal rhythm without breaking the dark mood. */
+  --k-bg-alt: #1a0d3e;
   /* one sanctioned darker-red step, derived from --k-red (audit: 3 unrelated
      "danger red" hexes existed with no shared token — ScrollHealth's raw
      #a00 gradient endpoint and GameChrome's separate --gc-red) */
