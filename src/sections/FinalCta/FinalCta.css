@@ -37,8 +37,8 @@
 .finalcta__cabinet {
   position: relative;
   width: 100%;
-  max-width: 520px;
-  aspect-ratio: 4 / 5;
+  max-width: 640px;
+  aspect-ratio: 1 / 1;
   margin: 0 auto var(--k-6);
 }
 .finalcta__cabinet .cab3d,

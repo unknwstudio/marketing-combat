@@ -170,7 +170,16 @@ export default function FinalCta() {
             />
           }
         >
-          <Cabinet3DMount screenVariant="youwin" />
+          <Cabinet3DMount
+            screenVariant="youwin"
+            restYaw={0}
+            parallaxYaw={0.05}
+            parallaxPitch={0}
+            camFar={4.0}
+            camNear={3.4}
+            camY={0.85}
+            fov={24}
+          />
         </Error3DBoundary>
       </div>
 
