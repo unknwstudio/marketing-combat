@@ -1,0 +1,271 @@
+/* Registration modal — shared structure + two skins (AI / classic). Themed by
+   the root variant class; every color is a design token or color-mix (stylelint
+   color-no-hex is an error). Some raw px remain for fine control (advisory). */
+
+.reg {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--k-2);
+}
+
+.reg__backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--k-shadow) 78%, transparent);
+}
+
+.reg__dialog {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: calc(100dvh - var(--k-4, 32px));
+  overflow-y: auto;
+  padding: var(--k-3);
+  animation: reg-in 0.16s ease-out;
+}
+
+.reg__close {
+  position: absolute;
+  top: var(--k-1);
+  right: var(--k-1);
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 0;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.reg__title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.reg__sub {
+  margin: 0 0 var(--k-2);
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.reg__field {
+  margin-bottom: 14px;
+}
+
+.reg__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reg__input-wrap {
+  position: relative;
+  display: flex;
+}
+
+.reg__input {
+  flex: 1;
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 15px;
+}
+
+.reg__pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.reg__error {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--k-red);
+}
+
+.reg__consent {
+  margin-bottom: 10px;
+}
+
+.reg__check {
+  display: flex;
+  gap: var(--k-1);
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.reg__check input {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.reg__check a {
+  text-decoration: underline;
+}
+
+.reg__submit {
+  width: 100%;
+  margin-top: var(--k-2);
+  padding: 12px;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.reg__demo {
+  margin: 12px 0 0;
+  font-size: 11px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.reg__success {
+  padding: var(--k-2) 0;
+  text-align: center;
+}
+
+.reg :focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 2px;
+}
+
+@keyframes reg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reg__dialog {
+    animation: none;
+  }
+}
+
+/* ---------------- AI / demo skin ---------------- */
+.reg--ai {
+  font-family: var(--k-font-mono);
+  color: var(--k-ink);
+}
+
+.reg--ai .reg__dialog {
+  background: var(--k-panel);
+  border: 2px solid var(--k-cyan);
+}
+
+.reg--ai .reg__title {
+  color: var(--k-cyan);
+  text-transform: lowercase;
+}
+
+.reg--ai .reg__close {
+  color: var(--k-ink);
+}
+
+.reg--ai .reg__label,
+.reg--ai .reg__pw-toggle {
+  color: var(--k-accent-green);
+}
+
+.reg--ai .reg__input {
+  background: var(--k-bg-deep);
+  border: 1px solid var(--k-line);
+  color: var(--k-ink);
+}
+
+.reg--ai .reg__input:focus {
+  border-color: var(--k-cyan);
+  outline: none;
+}
+
+.reg--ai .reg__submit {
+  background: var(--k-black);
+  border: 1px solid var(--k-white);
+  color: var(--k-white);
+  text-transform: lowercase;
+  transition: background 0.12s, color 0.12s;
+}
+
+.reg--ai .reg__submit:hover {
+  background: var(--k-white);
+  color: var(--k-black);
+}
+
+.reg--ai .reg__check a {
+  color: var(--k-cyan);
+}
+
+/* ---------------- Classic skin ---------------- */
+.reg--classic {
+  font-family: var(--c-font, 'Helvetica Neue', Helvetica, Arial, sans-serif);
+  color: var(--k-classic-ink);
+}
+
+.reg--classic .reg__dialog {
+  background: var(--k-white);
+  border: 3px solid var(--k-black);
+}
+
+.reg--classic .reg__title {
+  color: var(--k-classic-ink);
+  font-weight: 800;
+}
+
+.reg--classic .reg__close {
+  color: var(--k-black);
+}
+
+.reg--classic .reg__label {
+  color: var(--k-classic-ink);
+  font-weight: 700;
+}
+
+.reg--classic .reg__pw-toggle {
+  color: var(--k-classic-blue);
+}
+
+.reg--classic .reg__input {
+  background: var(--k-white);
+  border: 2px solid var(--k-classic-ink);
+  color: var(--k-classic-ink);
+}
+
+.reg--classic .reg__input:focus {
+  border-color: var(--k-classic-blue);
+  outline: none;
+}
+
+.reg--classic .reg__submit {
+  border: 0;
+  border-radius: 999px;
+  background: var(--k-black);
+  color: var(--k-white);
+  font-weight: 700;
+  transition: opacity 0.12s;
+}
+
+.reg--classic .reg__submit:hover {
+  opacity: 0.85;
+}
+
+.reg--classic .reg__check a {
+  color: var(--k-classic-blue);
+}
