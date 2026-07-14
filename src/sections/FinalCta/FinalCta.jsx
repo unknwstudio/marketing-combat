@@ -242,6 +242,7 @@ export default function FinalCta() {
         data-magnetic
         data-sfx="confirm"
         data-burst
+        data-register
       >
         &gt;&gt;&gt; registration &lt;&lt;&lt;
       </button>

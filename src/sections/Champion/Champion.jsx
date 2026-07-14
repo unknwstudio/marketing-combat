@@ -53,7 +53,7 @@ export default function Champion() {
         </div>
       </div>
 
-      <button type="button" className="champion__cta" data-magnetic data-sfx="confirm">
+      <button type="button" className="champion__cta" data-magnetic data-sfx="confirm" data-register>
         &gt;&gt;&gt; registration &lt;&lt;&lt;
       </button>
     </section>

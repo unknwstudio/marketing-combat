@@ -37,7 +37,7 @@ export default function Hero({ withPlay = false, centerPlay = false }) {
           contract (see MagneticCTA.jsx) so a click SFX attaches if the badge
           is ever tagged data-magnetic. */}
       <div className="hero__intro">
-        <a href="/#register" className="hero__badge" data-sfx="confirm" data-burst>
+        <a href="/#register" className="hero__badge" data-sfx="confirm" data-burst data-register>
           {'>>> registration <<<'}
         </a>
         <p className="hero__lede">

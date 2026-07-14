@@ -54,6 +54,7 @@ export default function ClassicFinalCta() {
           ref={pillRef}
           onMouseMove={onMove}
           onMouseLeave={onLeave}
+          data-register
         >
           Registration →
         </button>

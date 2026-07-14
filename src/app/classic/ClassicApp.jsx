@@ -4,6 +4,7 @@ import ScaleCanvas from '@/components/ScaleCanvas/ScaleCanvas'
 import ClassicMenu from '@/components/ClassicMenu/ClassicMenu'
 import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
 import ClassicReveal from '@/components/classic-motion/ClassicReveal'
+import RegisterModal from '@/components/RegisterModal/RegisterModal'
 import ClassicHero from '@/sections/ClassicHero/ClassicHero'
 import ClassicBattle from '@/sections/ClassicBattle/ClassicBattle'
 import ClassicHow from '@/sections/ClassicHow/ClassicHow'
@@ -53,6 +54,7 @@ export default function ClassicApp() {
           <ClassicFooter />
         </main>
       </ScaleCanvas>
+      <RegisterModal variant="classic" />
       <ClassicReveal />
       <ClassicMenu />
       <ModeSwitcher active="classic" />

@@ -6,6 +6,7 @@ import JuiceProvider from '@/effects/juice/JuiceProvider'
 import HitSparks from '@/effects/particles/HitSparks'
 import PixelCursor from '@/effects/cursor/PixelCursor'
 import CRTOverlay from '@/effects/crt/CRTOverlay'
+import RegisterModal from '@/components/RegisterModal/RegisterModal'
 
 import './demo.css'
 
@@ -113,6 +114,7 @@ export default function Page() {
       {/* fixed overlays live OUTSIDE JuiceProvider — its `will-change: transform`
           wrapper would otherwise pin position:fixed to the page, not the viewport */}
       <CRTOverlay intensity={0.09} flicker powerOn />
+      <RegisterModal variant="ai" />
       <ScrollHealth />
       <KonamiFatality />
       <SoundToggle />
