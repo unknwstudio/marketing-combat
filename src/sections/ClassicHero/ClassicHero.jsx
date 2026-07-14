@@ -20,7 +20,7 @@ export default function ClassicHero() {
             cases. Use AI — compare your skills.
           </p>
         </div>
-        <button className="c-hero__cta" type="button">
+        <button className="c-hero__cta" type="button" data-register>
           Registration
         </button>
       </div>

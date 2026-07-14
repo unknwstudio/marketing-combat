@@ -58,6 +58,7 @@ export default function Stages() {
               className={'d-btn stages__cta' + (s.final ? ' d-btn--red' : '')}
               data-magnetic
               data-sfx="confirm"
+              data-register
             >
               {s.cta}
             </button>

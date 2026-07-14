@@ -46,7 +46,7 @@ export default function ClassicMenu() {
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
         </div>
-        <a className="c-menu__apply" href="#cta">
+        <a className="c-menu__apply" href="#cta" data-register>
           Apply
         </a>
       </nav>
