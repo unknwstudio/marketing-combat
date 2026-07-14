@@ -115,8 +115,9 @@ export default function RegisterModal({ variant = 'ai' }) {
     if (!consents.terms) next.terms = COPY.termsError
     setErrors(next)
     if (Object.keys(next).length) {
-      const firstBad = FIELDS.find((f) => next[f.id])
-      const el = firstBad && dialogRef.current && dialogRef.current.querySelector(`#reg-${firstBad.id}`)
+      const order = [...FIELDS.map((f) => f.id), ...CONSENTS.map((c) => c.id)]
+      const firstBadId = order.find((id) => next[id])
+      const el = firstBadId && dialogRef.current && dialogRef.current.querySelector(`#reg-${firstBadId}`)
       if (el) el.focus()
       return
     }
@@ -194,7 +195,7 @@ export default function RegisterModal({ variant = 'ai' }) {
                         aria-label={showPw ? COPY.hidePassword : COPY.showPassword}
                         onClick={() => setShowPw((s) => !s)}
                       >
-                        {showPw ? 'hide' : 'show'}
+                        {showPw ? COPY.pwHide : COPY.pwShow}
                       </button>
                     )}
                   </div>
@@ -213,8 +214,10 @@ export default function RegisterModal({ variant = 'ai' }) {
                 <div className="reg__consent" key={c.id}>
                   <label className="reg__check">
                     <input
+                      id={`reg-${c.id}`}
                       type="checkbox"
                       checked={consents[c.id]}
+                      aria-invalid={errors[c.id] ? 'true' : undefined}
                       aria-describedby={errors[c.id] ? errId : undefined}
                       onChange={(e) => setConsent(c.id, e.target.checked)}
                     />

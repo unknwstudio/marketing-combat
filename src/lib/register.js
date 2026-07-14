@@ -72,6 +72,8 @@ export const COPY = {
   close: 'Close',
   showPassword: 'Show password',
   hidePassword: 'Hide password',
+  pwShow: 'show',
+  pwHide: 'hide',
   demoNotice: 'Demo mode — nothing leaves your browser.',
   successTitle: 'Player 1 — ready',
   successBody: 'Your account is set. Check your email to confirm (demo).',
