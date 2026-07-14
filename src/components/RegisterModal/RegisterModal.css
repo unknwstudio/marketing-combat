@@ -77,18 +77,6 @@
   font-size: 15px;
 }
 
-.reg__pw-toggle {
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
-  background: transparent;
-  border: 0;
-  font-size: 12px;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
 .reg__error {
   margin: 6px 0 0;
   font-size: 12px;
@@ -180,8 +168,7 @@
   color: var(--k-ink);
 }
 
-.reg--ai .reg__label,
-.reg--ai .reg__pw-toggle {
+.reg--ai .reg__label {
   color: var(--k-accent-green);
 }
 
@@ -236,10 +223,6 @@
 .reg--classic .reg__label {
   color: var(--k-classic-ink);
   font-weight: 700;
-}
-
-.reg--classic .reg__pw-toggle {
-  color: var(--k-classic-blue);
 }
 
 .reg--classic .reg__input {

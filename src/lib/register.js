@@ -1,8 +1,9 @@
-// Single source of truth for the demo registration modal: field spec, consent
-// spec, user-facing copy, the open-event bus, and the demo persistence helper.
-// Pure module — window/localStorage access is guarded and only happens at call
-// time, so it is safe under the SSR / static-export pass. The open-event mirrors
-// the openGameTakeover() pattern in src/lib/game.js.
+// Single source of truth for the demo EVENT-registration modal: field spec,
+// consent spec, user-facing copy, the open-event bus, and the demo persistence
+// helper. This registers a marketer for the tournament — it is NOT an account
+// sign-up, so there is no password. Pure module — window/localStorage access is
+// guarded and only happens at call time, so it is safe under the SSR /
+// static-export pass. The open-event mirrors openGameTakeover() in src/lib/game.js.
 
 // CustomEvent that opens the registration modal. The sole listener is RegisterModal.
 export const REGISTER_OPEN = 'amk:register-open'
@@ -33,14 +34,6 @@ export const FIELDS = [
     required: true,
     validate: (v) => (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.trim()) ? '' : 'Enter a valid email'),
   },
-  {
-    id: 'password',
-    type: 'password',
-    label: 'Password',
-    autoComplete: 'new-password',
-    required: true,
-    validate: (v) => (v.length >= 8 ? '' : 'At least 8 characters'),
-  },
 ]
 
 // Consent spec. `terms` gates submit; `marketing` is optional, unticked, and a
@@ -66,17 +59,13 @@ export const CONSENTS = [
 // Theme-neutral copy. Casing (lowercase on AI, sentence-case on classic) is a
 // CSS concern (text-transform), so the same strings serve both skins.
 export const COPY = {
-  title: 'Create account',
-  sub: 'One account. One leaderboard. Enter the arena.',
-  submit: 'Create account',
+  title: 'Register for the battle',
+  sub: 'One marketer. One leaderboard. Claim your spot in the arena.',
+  submit: 'Register',
   close: 'Close',
-  showPassword: 'Show password',
-  hidePassword: 'Hide password',
-  pwShow: 'show',
-  pwHide: 'hide',
   demoNotice: 'Demo mode — nothing leaves your browser.',
   successTitle: 'Player 1 — ready',
-  successBody: 'Your account is set. Check your email to confirm (demo).',
+  successBody: "You're on the roster. We'll email you what happens next (demo).",
   termsError: 'Please accept the Terms & Privacy Policy',
 }
 

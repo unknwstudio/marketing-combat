@@ -22,7 +22,6 @@ export default function RegisterModal({ variant = 'ai' }) {
   const [values, setValues] = useState(emptyValues)
   const [consents, setConsents] = useState(emptyConsents)
   const [errors, setErrors] = useState({})
-  const [showPw, setShowPw] = useState(false)
 
   const dialogRef = useRef(null)
   const firstFieldRef = useRef(null)
@@ -36,7 +35,6 @@ export default function RegisterModal({ variant = 'ai' }) {
       setValues(emptyValues())
       setConsents(emptyConsents())
       setErrors({})
-      setShowPw(false)
       setOpen(true)
     }
     const onDocClick = (e) => {
@@ -166,8 +164,6 @@ export default function RegisterModal({ variant = 'ai' }) {
 
             {FIELDS.map((f, i) => {
               const errId = `reg-${f.id}-err`
-              const isPw = f.type === 'password'
-              const inputType = isPw && showPw ? 'text' : f.type
               return (
                 <div className="reg__field" key={f.id}>
                   <label className="reg__label" htmlFor={`reg-${f.id}`}>
@@ -177,7 +173,7 @@ export default function RegisterModal({ variant = 'ai' }) {
                     <input
                       id={`reg-${f.id}`}
                       className="reg__input"
-                      type={inputType}
+                      type={f.type}
                       autoComplete={f.autoComplete}
                       required={f.required}
                       value={values[f.id]}
@@ -187,17 +183,6 @@ export default function RegisterModal({ variant = 'ai' }) {
                       onChange={(e) => setValue(f.id, e.target.value)}
                       onBlur={() => setErrors((s) => ({ ...s, [f.id]: fieldError(f, values[f.id]) }))}
                     />
-                    {isPw && (
-                      <button
-                        type="button"
-                        className="reg__pw-toggle"
-                        aria-pressed={showPw}
-                        aria-label={showPw ? COPY.hidePassword : COPY.showPassword}
-                        onClick={() => setShowPw((s) => !s)}
-                      >
-                        {showPw ? COPY.pwHide : COPY.pwShow}
-                      </button>
-                    )}
                   </div>
                   {errors[f.id] && (
                     <p className="reg__error" id={errId}>
