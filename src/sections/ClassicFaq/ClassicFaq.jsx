@@ -29,8 +29,7 @@ export default function ClassicFaq() {
     <section className="c-sec acc-green" id="c-faq" aria-label="Frequently asked questions">
       <div className="c-wrap c-faq">
         <aside className="c-faq__aside">
-          <p className="c-kicker">FAQ</p>
-          <MaskHead lines={['Frequently', 'asked questions']} />
+          <MaskHead lines={['Frequently', 'asked', 'questions']} />
           <p className="c-lede c-reveal c-faq__note">Still have questions? Everything below.</p>
         </aside>
 

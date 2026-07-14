@@ -10,13 +10,12 @@ export default function ClassicMission() {
   return (
     <section className="c-sec acc-blue c-mission" id="c-mission" aria-label="Mission">
       <div className="c-wrap c-mission__wrap">
-        <p className="c-kicker">Mission</p>
         <MaskHead
           className="c-mission__stmt"
           lines={[
             'Bring together the people',
             <>
-              reshaping <span className="c-mission__hl">marketing.</span>
+              reshaping <span className="c-mission__hl">marketing</span>
             </>,
           ]}
         />

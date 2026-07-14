@@ -27,8 +27,7 @@ export default function ClassicTracks() {
     <section className="c-sec acc-blue" id="c-tracks" aria-label="Hackathon tracks">
       <div className="c-wrap">
         <header className="c-tracks__head">
-          <p className="c-kicker">Hackathon tracks</p>
-          <MaskHead lines={['Choose your', 'fighting style.']} />
+          <MaskHead lines={['Choose your', 'fighting style']} />
           <p className="c-lede c-reveal c-tracks__intro">
             Two directions to compete in — pick the one that plays to your strengths.
           </p>

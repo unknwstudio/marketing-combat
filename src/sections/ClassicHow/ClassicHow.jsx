@@ -33,8 +33,7 @@ export default function ClassicHow() {
     <section className="c-sec acc-blue" id="c-how" aria-label="How it works">
       <div className="c-wrap">
         <header className="c-how__head">
-          <p className="c-kicker">How it works</p>
-          <MaskHead lines={['Registration.', 'Qualifying round. Final.']} />
+          <MaskHead lines={['Registration.', 'Qualifying round. Final']} />
           <p className="c-lede c-reveal c-how__intro">
             A real task — a brief, a data room, Google / Meta / TikTok, a creative block, AI tools,
             and limited time.

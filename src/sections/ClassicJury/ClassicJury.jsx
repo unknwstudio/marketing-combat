@@ -28,8 +28,7 @@ export default function ClassicJury() {
     <section className="c-sec acc-blue" id="c-judges" aria-label="The jury">
       <div className="c-wrap">
         <header className="c-jury__head">
-          <p className="c-kicker">The jury</p>
-          <MaskHead lines={['Judges.']} />
+          <MaskHead lines={['Judges']} />
           <p className="c-lede c-reveal c-jury__intro">
             The jury evaluates the case solutions — but the final word is up to the client. Full
             roster revealed before the main tour.

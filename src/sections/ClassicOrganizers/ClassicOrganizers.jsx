@@ -27,8 +27,7 @@ export default function ClassicOrganizers() {
     <section className="c-sec acc-blue" id="c-organizers" aria-label="Organizers">
       <div className="c-wrap">
         <header className="c-org__head">
-          <p className="c-kicker">The team</p>
-          <MaskHead lines={['Organizers.']} />
+          <MaskHead lines={['Organizers']} />
           <p className="c-lede c-reveal c-org__intro">
             Operators across practice and many countries, building the point of contact.
           </p>

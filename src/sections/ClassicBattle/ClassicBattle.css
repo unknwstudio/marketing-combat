@@ -21,12 +21,11 @@
   max-width: 620px;
 }
 
-/* --- four figures, hairline-divided row ------------------------------- */
+/* --- four figures, open row (no dividers) ----------------------------- */
 
 .c-battle__stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--k-black);
 }
 
 .c-stat {
@@ -34,12 +33,6 @@
   flex-direction: column;
   gap: var(--k-2);
   padding: var(--k-4) var(--k-3) 0 0;
-  border-left: 1px solid var(--k-black);
-}
-
-.c-stat:first-child {
-  border-left: 0;
-  padding-left: 0;
 }
 
 .c-stat__num {
@@ -47,7 +40,6 @@
   font-weight: 400;
   line-height: 0.9;
   color: var(--k-black);
-  font-variant-numeric: tabular-nums;
 }
 
 .c-stat__num--accent {
@@ -119,23 +111,11 @@
     /* let the giant numeral column shrink below its intrinsic width so the
        2-up grid can't push past the viewport */
     min-width: 0;
-    padding: var(--k-3) var(--k-2) var(--k-3) var(--k-2);
-    border-top: 1px solid var(--k-black);
+    padding: var(--k-3) var(--k-2) var(--k-3) 0;
   }
 
   .c-stat__num {
     font-size: clamp(28px, 8.5vw, 48px);
-  }
-
-  /* first row: kill the top border doubling with the row's own top border */
-  .c-stat:nth-child(1),
-  .c-stat:nth-child(2) {
-    border-top: 0;
-  }
-
-  .c-stat:nth-child(odd) {
-    border-left: 0;
-    padding-left: 0;
   }
 
   .c-battle__logos {

@@ -20,7 +20,6 @@ export default function ClassicWhy() {
     <section className="c-sec acc-blue" id="c-why" aria-label="Why join">
       <div className="c-wrap">
         <header className="c-why__head">
-          <p className="c-kicker">Why join</p>
           <MaskHead lines={['Why join the', 'hackathon?']} />
           <p className="c-lede c-reveal c-why__intro">
             Find out your real level of mastering AI tools for marketing alongside your peers.

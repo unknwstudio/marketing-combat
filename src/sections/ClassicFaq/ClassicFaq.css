@@ -4,7 +4,7 @@
 
 .c-faq {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 420px 1fr;
   gap: var(--k-8);
   align-items: start;
 }
@@ -15,6 +15,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--k-3);
+}
+
+/* the aside column is narrower than the full content width, so cap the heading
+   at a size whose longest word ("Frequently") fits without the mask clipping it */
+.c-faq__aside .c-mask-head {
+  font-size: clamp(32px, 4vw, 52px);
 }
 
 .c-faq__note {
