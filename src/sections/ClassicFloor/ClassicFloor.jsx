@@ -23,8 +23,7 @@ export default function ClassicFloor() {
     <section className="c-sec acc-blue" id="c-floor" aria-label="From the floor">
       <div className="c-wrap">
         <header className="c-floor__head">
-          <p className="c-kicker">From the floor</p>
-          <MaskHead lines={['Inside the arena.']} />
+          <MaskHead lines={['Inside the arena']} />
           <p className="c-lede c-reveal c-floor__intro">
             Moments from the battle — strategy under pressure, AI in the hands of the best.
           </p>

@@ -12,7 +12,7 @@ import './ClassicFinalCta.css'
  * registration link is intentionally dead for now (see project note).
  */
 
-const RIBBON = 'AI Marketing Kombat · July 2026 · Barcelona · Apply ↗ · '
+const RIBBON = 'AI Marketing Kombat · July 2026 · Barcelona · '
 const MAX_PULL = 8
 
 export default function ClassicFinalCta() {
@@ -43,8 +43,7 @@ export default function ClassicFinalCta() {
       </div>
 
       <div className="c-wrap c-cta__body">
-        <p className="c-kicker c-cta__kicker">Registration open</p>
-        <MaskHead lines={['Join the battle.']} className="c-cta__h2" />
+        <MaskHead lines={['Join the battle']} className="c-cta__h2" />
         <p className="c-lede c-reveal c-cta__lede">
           Apply for the first round and put yourself on the map of the best AI marketers on the
           planet.

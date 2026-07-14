@@ -13,8 +13,8 @@ import ClassicChampionFor from '@/sections/ClassicChampionFor/ClassicChampionFor
 import ClassicFloor from '@/sections/ClassicFloor/ClassicFloor'
 import ClassicWhy from '@/sections/ClassicWhy/ClassicWhy'
 import ClassicMission from '@/sections/ClassicMission/ClassicMission'
-import ClassicJury from '@/sections/ClassicJury/ClassicJury'
-import ClassicOrganizers from '@/sections/ClassicOrganizers/ClassicOrganizers'
+// import ClassicJury from '@/sections/ClassicJury/ClassicJury'
+// import ClassicOrganizers from '@/sections/ClassicOrganizers/ClassicOrganizers'
 import ClassicFaq from '@/sections/ClassicFaq/ClassicFaq'
 import ClassicFinalCta from '@/sections/ClassicFinalCta/ClassicFinalCta'
 import ClassicFooter from '@/sections/ClassicFooter/ClassicFooter'
@@ -45,8 +45,9 @@ export default function ClassicApp() {
           <ClassicFloor />
           <ClassicWhy />
           <ClassicMission />
-          <ClassicJury />
-          <ClassicOrganizers />
+          {/* Judges & Organizers temporarily hidden */}
+          {/* <ClassicJury /> */}
+          {/* <ClassicOrganizers /> */}
           <ClassicFaq />
           <ClassicFinalCta />
           <ClassicFooter />

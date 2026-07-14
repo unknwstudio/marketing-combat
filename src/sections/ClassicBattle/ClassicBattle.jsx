@@ -45,7 +45,6 @@ export default function ClassicBattle() {
     <section className="c-sec acc-blue" id="c-battle" aria-label="The battle">
       <div className="c-wrap c-battle">
         <div className="c-battle__intro">
-          <p className="c-kicker">The battle</p>
           <MaskHead lines={['Who can use AI', 'without limits?']} className="c-battle__h2" />
           <p className="c-lede c-reveal c-battle__lede">
             The time has come to settle the legendary battle and find out who the best marketer in

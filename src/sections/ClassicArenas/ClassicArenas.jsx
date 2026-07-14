@@ -39,8 +39,7 @@ export default function ClassicArenas() {
     <section className="c-sec acc-blue" id="c-arenas" aria-label="Battle arenas">
       <div className="c-wrap">
         <header className="c-arenas__head">
-          <p className="c-kicker">Battle arenas</p>
-          <MaskHead lines={['Case tracks.']} />
+          <MaskHead lines={['Case tracks']} />
           <p className="c-lede c-reveal c-arenas__intro">
             Real client briefs across industries. Win and the client pays the prize.
           </p>

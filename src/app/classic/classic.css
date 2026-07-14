@@ -48,7 +48,9 @@
      the page. Sections opt in via .acc-* ; blue is the resting default. */
   --c-accent: var(--c-blue);
   /* content column + rhythm, all multiples of 8 */
-  --c-margin: var(--k-15); /* 120px side margin -> 1200 content col */
+  /* edge-hugging margin so every c-wrap section shares the hero / "who it's
+     for" left edge (20px), instead of the old 120px inset */
+  --c-margin: 20px; /* -> 1400 content col, aligned to the hero edge */
   --c-pad-major: var(--k-15); /* 120px vertical rhythm, major sections */
   --c-pad-minor: var(--k-12); /* 96px, minor sections */
 }
@@ -144,6 +146,9 @@
    rises into place. Wrap lines in .c-line inside a .c-mask-head. */
 .c-mask-head .c-line {
   display: inline-block;
+  /* breathing room so round-cap overshoot (G, O, C) isn't clipped by the
+     mask's overflow:hidden; the neighbouring negative margin keeps layout put */
+  padding-block: 0.14em;
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: calc(var(--i, 0) * 90ms);
 }
@@ -151,6 +156,7 @@
 .c-mask-head .c-mask {
   display: block;
   overflow: hidden;
+  margin-block: -0.14em;
 }
 
 .classic-reveal-on .c-mask-head .c-line {
