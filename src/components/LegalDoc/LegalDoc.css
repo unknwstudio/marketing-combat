@@ -1,0 +1,92 @@
+/* Themed legal pages — shared structure + two skins (ai / classic). These
+   routes don't load demo.css/classic.css, so both skins reference only GLOBAL
+   tokens from index.css. Every color is a token (stylelint color-no-hex). */
+
+.legal {
+  min-height: 100vh;
+  padding: var(--k-8, 64px) var(--k-3);
+}
+
+.legal__doc {
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.legal__title {
+  margin: 0 0 var(--k-2);
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.legal__intro {
+  margin: 0 0 var(--k-3);
+}
+
+.legal__section {
+  margin-bottom: var(--k-2);
+}
+
+.legal__h {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.legal__p {
+  margin: 0;
+}
+
+.legal__back {
+  margin-top: var(--k-4, 32px);
+}
+
+.legal__back a {
+  text-decoration: underline;
+}
+
+.legal :focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---------------- AI / demo skin ---------------- */
+.legal--ai {
+  background: var(--k-bg);
+  color: var(--k-ink);
+  font-family: var(--k-font-mono);
+}
+
+.legal--ai .legal__title {
+  color: var(--k-cyan);
+  text-transform: lowercase;
+}
+
+.legal--ai .legal__h {
+  color: var(--k-accent-green);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.legal--ai .legal__back a,
+.legal--ai .legal__intro strong {
+  color: var(--k-cyan);
+}
+
+/* ---------------- Classic skin ---------------- */
+.legal--classic {
+  background: var(--k-white);
+  color: var(--k-classic-ink);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.legal--classic .legal__title {
+  font-weight: 800;
+}
+
+.legal--classic .legal__h {
+  font-weight: 700;
+}
+
+.legal--classic .legal__back a {
+  color: var(--k-classic-blue);
+}

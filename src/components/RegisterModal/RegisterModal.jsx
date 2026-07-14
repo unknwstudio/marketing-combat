@@ -219,7 +219,17 @@ export default function RegisterModal({ variant = 'ai' }) {
                       {c.links.map((l, li) => (
                         <span key={l.href}>
                           {' '}
-                          <a href={l.href} target="_blank" rel="noopener noreferrer">
+                          {/* classic modal -> classic-skin legal route so the
+                              page matches the site version it opened from */}
+                          <a
+                            href={
+                              variant === 'classic'
+                                ? l.href.replace('/legal/', '/legal/classic/')
+                                : l.href
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {l.label}
                           </a>
                           {li < c.links.length - 1 ? ' &' : ''}
