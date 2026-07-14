@@ -150,3 +150,19 @@ attributes (`data-burst`, `data-sfx`, `data-magnetic`, magnetic pull):
 - Manual (Playwright): open modal from a CTA on `/` → AI skin; from `/classic`
   → classic skin. Validation blocks empty/invalid; T&C gate; success screen;
   `localStorage` written without password; Esc/backdrop/focus-return work.
+
+---
+
+## Amendment — 2026-07-14: event registration, not account sign-up
+
+Product correction after implementation: this modal **registers a marketer for
+the tournament**, it is not an account sign-up. Changes from the body above:
+
+- **No password field** and no show/hide toggle. Fields are now **Fighter name +
+  Email** only, plus the two consents (Terms required, marketing optional).
+- Copy reframed: title "Register for the battle", submit "Register", success
+  "You're on the roster…".
+- The demo `localStorage` record was already password-free, so the store is
+  unchanged (`{ name, email, marketing, ts }`).
+- Everything else stands: modal, two themed skins (per site version), delegated
+  `[data-register]` wiring, GDPR-unbundled consent, legal stubs, a11y.

@@ -1009,3 +1009,15 @@ Expected: all clean (0 stylelint errors; advisory px warnings acceptable).
 **Placeholder scan:** No TBD/TODO in code steps; all code is complete. The legal pages are intentionally labelled "Demo placeholder" content (that is the deliverable), not a plan placeholder.
 
 **Type/name consistency:** `openRegister`, `REGISTER_OPEN`, `FIELDS`, `CONSENTS`, `COPY`, `STORAGE_KEY`, `saveRegistrationDemo`, `data-register`, `reg--{variant}`, and all `.reg__*` classes are used identically across the config module (T1), component (T2), CSS (T3), and wiring (T4). Consent link hrefs `/legal/terms` + `/legal/privacy` match the routes created in T5.
+
+---
+
+## Amendment — 2026-07-14: event registration, not account sign-up (post-implementation)
+
+Product correction applied after Task 6 verification (commit `0d3d407`): removed
+the `password` field from `FIELDS`, deleted the show/hide toggle from
+`RegisterModal.jsx` and its now-dead `.reg__pw-toggle` CSS + `showPassword/
+hidePassword/pwShow/pwHide` COPY keys, and reframed COPY (title "Register for the
+battle", submit "Register", event-oriented success). Fields are now name + email
++ consents. Re-verified: eslint/stylelint/build clean; both skins show two fields
+and register correctly; localStorage holds no password.
