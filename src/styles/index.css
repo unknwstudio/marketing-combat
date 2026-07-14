@@ -215,6 +215,7 @@
   --z-splash: 8500; /* first-visit VS splash */
   --z-crt: 9000; /* page-wide CRT scanline overlay */
   --z-takeover: 9200; /* fullscreen in-page game overlay (over CRT + splash) */
+  --z-register: 9300; /* registration modal — above the game takeover so the dialog is never occluded */
   --z-cursor: 9999; /* pixel cursor layer */
   --z-skiplink: 10000; /* keyboard skip-to-content link */
 
