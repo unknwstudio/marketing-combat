@@ -88,13 +88,13 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 12px;
-  padding: 20px;
+  gap: var(--k-space-sm);
+  padding: var(--k-space-lg);
 }
 
 .c-hero__chip {
   height: 48px;
-  padding: 0 20px;
+  padding: 0 var(--k-space-lg);
   display: inline-flex;
   align-items: center;
   justify-content: center;

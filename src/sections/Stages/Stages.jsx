@@ -1,3 +1,4 @@
+import CtaLabel from '@/components/CtaLabel/CtaLabel'
 import './Stages.css'
 
 /**
@@ -10,14 +11,14 @@ const STAGES = [
     title: 'ROUND 1',
     meta: 'SOLO · OPEN QUALIFICATION',
     body: 'Self-applied participants only. Individual solutions for standardized cases. Those who fail receive an observer subscription with full hackathon access.',
-    cta: '>>> registration <<<',
+    cta: 'registration',
   },
   {
     n: '02',
     title: 'ROUND 2',
     meta: 'INVITE · LIVE MAIN TOUR',
     body: 'Invited participants start here. Anonymized real-life case studies from startups and enterprise clients. Use of AI is mandatory, not recommended.',
-    cta: '>>> registration <<<',
+    cta: 'registration',
   },
   {
     n: '03',
@@ -25,7 +26,7 @@ const STAGES = [
     meta: 'OFFLINE · BARCELONA',
     heading: 'BARCELONA FINAL',
     body: 'Individual case solutions and jury presentation. The jury evaluates — but the final word belongs to the client.',
-    cta: '>>> finish him <<<',
+    cta: 'finish him',
     final: true,
   },
 ]
@@ -60,7 +61,7 @@ export default function Stages() {
               data-sfx="confirm"
               data-register
             >
-              {s.cta}
+              <CtaLabel>{s.cta}</CtaLabel>
             </button>
           </li>
         ))}

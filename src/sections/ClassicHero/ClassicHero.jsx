@@ -1,3 +1,4 @@
+import ClassicHeroMedia from './ClassicHeroMedia'
 import './ClassicHero.css'
 
 /**
@@ -25,16 +26,7 @@ export default function ClassicHero() {
         </button>
       </div>
 
-      <video
-        className="c-hero__photo"
-        src="/assets/classic/hero-video.mp4"
-        poster="/assets/classic/hero-photo.jpg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        aria-label="Winners holding trophies at the award ceremony"
-      />
+      <ClassicHeroMedia />
 
       <div className="c-hero__chips">
         <span className="c-hero__chip">round 01</span>

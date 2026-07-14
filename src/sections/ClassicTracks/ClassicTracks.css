@@ -73,9 +73,14 @@
 }
 
 .c-track__arrow {
-  font-size: 24px;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.c-track__arrow .c-arrow {
+  width: 34px;
+  height: auto;
 }
 
 .c-track:hover .c-track__arrow,

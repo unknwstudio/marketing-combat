@@ -11,8 +11,8 @@ import { GAME_COPY } from '@/lib/game'
 export default function RotateHint() {
   const [line1, line2] = GAME_COPY.rotateTitle
   return (
-    <div className="rotate-hint" aria-hidden="true">
-      <div className="rot-phone" />
+    <div className="rotate-hint" role="status">
+      <div className="rot-phone" aria-hidden="true" />
       <div className="rot-big">
         {line1}
         <br />

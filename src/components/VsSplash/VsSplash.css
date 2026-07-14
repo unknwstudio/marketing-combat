@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(16px, 4vw, 56px);
+  gap: clamp(var(--k-2), 4vw, var(--k-7));
   background: var(--k-shadow);
   overflow: hidden;
 }

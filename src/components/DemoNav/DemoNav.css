@@ -8,7 +8,7 @@
   z-index: var(--z-nav);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--k-space-sm);
   padding: 6px 14px;
   background: rgba(6, 1, 15, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -38,12 +38,16 @@
 .dnav__links {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--k-space-2xs);
 }
 
 .dnav__link {
   position: relative;
-  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  /* >=24px min target (WCAG 2.5.8) — was ~21px */
+  min-height: 24px;
+  padding: var(--k-space-xs) 10px;
   font-size: 13px;
   letter-spacing: -0.2px;
   text-transform: uppercase;
@@ -78,7 +82,7 @@
     display: none;
   }
   .dnav__link {
-    padding: 4px 7px;
+    padding: var(--k-space-xs) 7px;
     font-size: 11px;
   }
   /* invisible ≥44px vertical touch target that keeps the compact pill visual —

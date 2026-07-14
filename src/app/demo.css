@@ -98,7 +98,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 10px 10px;
+  padding: var(--k-1) 10px 10px;
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);
@@ -348,12 +348,12 @@
   .dsec {
     width: 100%;
     --dsec-pad-x: 20px;
-    padding: 56px var(--dsec-pad-x);
+    padding: var(--k-7) var(--dsec-pad-x);
   }
 
   .dsec__head {
     margin-bottom: var(--k-4);
-    gap: 12px;
+    gap: var(--k-space-sm);
   }
 
   .dsec__round {
@@ -380,7 +380,7 @@
 
   .d-btn {
     font-size: 15px;
-    padding: 6px 8px 8px;
+    padding: 6px var(--k-1) var(--k-1);
     min-height: 44px; /* comfortable touch target (already inline-flex/centered) */
   }
 

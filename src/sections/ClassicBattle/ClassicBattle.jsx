@@ -18,12 +18,15 @@ const STATS = [
   { target: 30, label: 'Finalists in Barcelona' },
 ]
 
-const SPONSORS = [
-  { src: '/assets/classic/sponsors/plurio.webp', alt: 'Plurio' },
-  { src: '/assets/classic/sponsors/meta.svg', alt: 'Meta' },
-  { src: '/assets/classic/sponsors/google.svg', alt: 'Google' },
-  { src: '/assets/classic/sponsors/tiktok.svg', alt: 'TikTok' },
-]
+// Sponsors hidden for now (not ready yet) — parity with the modern skin.
+// The monochrome SVG logos + `.c-battle__sponsors` styles stay in the tree;
+// re-enable this const together with the strip below when sponsors are confirmed.
+// const SPONSORS = [
+//   { src: '/assets/classic/sponsors/plurio.svg', alt: 'Plurio' },
+//   { src: '/assets/classic/sponsors/meta.svg', alt: 'Meta' },
+//   { src: '/assets/classic/sponsors/google.svg', alt: 'Google' },
+//   { src: '/assets/classic/sponsors/tiktok.svg', alt: 'TikTok' },
+// ]
 
 function Stat({ prefix, target, suffix, label, accent, index }) {
   const [ref, text] = useCountUp({ target, prefix, suffix })
@@ -59,6 +62,7 @@ export default function ClassicBattle() {
           ))}
         </div>
 
+        {/* Sponsors hidden for now (not ready yet) — see note by SPONSORS above.
         <div className="c-battle__sponsors c-reveal">
           <p className="c-battle__sponsors-label cap-trim">Powered by leading platforms</p>
           <ul className="c-battle__logos">
@@ -69,6 +73,7 @@ export default function ClassicBattle() {
             ))}
           </ul>
         </div>
+        */}
       </div>
     </section>
   )

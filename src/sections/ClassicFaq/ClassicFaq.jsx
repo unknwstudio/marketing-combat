@@ -41,13 +41,15 @@ export default function ClassicFaq() {
                 <button
                   className="c-faq__q"
                   type="button"
+                  id={`c-faq-q-${i}`}
                   aria-expanded={isOpen}
+                  aria-controls={`c-faq-a-${i}`}
                   onClick={() => setOpen(isOpen ? -1 : i)}
                 >
                   <span className="c-faq__q-text cap-trim">{item.q}</span>
                   <span className="c-faq__toggle" aria-hidden="true" />
                 </button>
-                <div className="c-faq__answer">
+                <div className="c-faq__answer" id={`c-faq-a-${i}`} role="region" aria-labelledby={`c-faq-q-${i}`}>
                   <p className="c-faq__answer-inner">{item.a}</p>
                 </div>
               </li>

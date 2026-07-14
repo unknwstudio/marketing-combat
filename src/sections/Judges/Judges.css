@@ -2,7 +2,7 @@
 .judges__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: var(--k-space-lg);
   margin: 0;
   padding: 0;
   list-style: none;

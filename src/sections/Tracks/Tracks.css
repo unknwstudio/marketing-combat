@@ -91,7 +91,7 @@
 .tracks__bullets {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--k-space-sm);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -194,7 +194,7 @@
   }
 
   .tracks__card {
-    padding: 20px;
+    padding: var(--k-space-lg);
     gap: var(--k-2);
   }
 

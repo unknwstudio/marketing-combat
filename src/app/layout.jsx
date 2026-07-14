@@ -1,14 +1,11 @@
 import '@/styles/index.css'
 import '@/styles/App.css'
-import { Press_Start_2P } from 'next/font/google'
 import { SITE_URL, EVENT_DESCRIPTION } from '@/lib/site'
 
-const pressStart = Press_Start_2P({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-ps',
-  display: 'swap',
-})
+// Press Start 2P is self-hosted (index.css @font-face, preloaded below) — the
+// old next/font/google import shipped a SECOND copy of the same face plus a
+// redundant high-priority preload (2026-07-14 perf audit). Dropped; --k-font
+// now points straight at the self-hosted 'Press Start 2P'.
 
 const DESCRIPTION = EVENT_DESCRIPTION
 
@@ -39,7 +36,7 @@ export const metadata = {
     description: DESCRIPTION,
     images: [
       {
-        url: '/assets/hero/hero-bg.png',
+        url: '/assets/hero/hero-bg.jpg',
         width: 1440,
         height: 804,
         alt: 'Two pixel-art fighters facing off — AI Marketing Kombat',
@@ -50,7 +47,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'AI Marketing Kombat — use AI or get finished',
     description: DESCRIPTION,
-    images: ['/assets/hero/hero-bg.png'],
+    images: ['/assets/hero/hero-bg.jpg'],
   },
   // index+follow is the default; declaring it here would also emit a positive
   // robots tag that competes with not-found.jsx's `noindex` on the 404 route.
@@ -66,7 +63,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={pressStart.variable}>
+    <html lang="en">
       <head>
         {/* both are used on the very first paint (Platform in section
             titles, GT Pressura Mono as the body/UI font) — preloading

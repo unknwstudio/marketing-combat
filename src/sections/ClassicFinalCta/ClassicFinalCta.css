@@ -76,6 +76,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--k-1);
   background: var(--k-black);
   color: var(--k-white);
   font-family: inherit;
@@ -90,6 +91,17 @@
 
 .c-cta__pill:hover {
   background: var(--k-classic-panel);
+}
+
+.c-cta__pill-arrow {
+  width: 22px;
+  height: auto;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.c-cta__pill:hover .c-cta__pill-arrow,
+.c-cta__pill:focus-visible .c-cta__pill-arrow {
+  transform: translateX(4px);
 }
 
 .c-cta__fine {

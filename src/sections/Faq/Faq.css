@@ -13,8 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 26px 8px;
+  gap: var(--k-space-lg);
+  padding: 26px var(--k-1);
   cursor: pointer;
   list-style: none;
   transition: background 0.12s;
@@ -59,7 +59,7 @@
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--k-space-xs);
   font-family: var(--k-font-mono);
   font-size: 22px;
   color: var(--k-orange);
@@ -74,7 +74,7 @@
 }
 
 .faq__a {
-  padding: 0 8px 26px 36px;
+  padding: 0 var(--k-1) 26px 36px;
   font-family: var(--k-font-mono);
   font-size: 22px;
   line-height: 1.5;
@@ -100,8 +100,8 @@
 
 @media (max-width: 1023px) {
   .faq__summary {
-    padding: 18px 4px;
-    gap: 12px;
+    padding: 18px var(--k-space-xs);
+    gap: var(--k-space-sm);
   }
 
   .faq__q {
@@ -114,7 +114,7 @@
   }
 
   .faq__a {
-    padding: 0 4px 18px 26px;
+    padding: 0 var(--k-space-xs) 18px 26px;
     font-size: 13px;
   }
 }

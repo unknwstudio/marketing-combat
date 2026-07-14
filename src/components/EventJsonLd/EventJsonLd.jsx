@@ -26,7 +26,7 @@ const eventJsonLd = {
     address: { '@type': 'PostalAddress', addressLocality: 'Barcelona', addressCountry: 'ES' },
   },
   organizer: { '@type': 'Organization', name: 'AI Marketing Kombat', url: SITE_URL },
-  image: [`${SITE_URL}/assets/hero/hero-bg.png`],
+  image: [`${SITE_URL}/assets/hero/hero-bg.jpg`],
   url: SITE_URL,
 }
 
