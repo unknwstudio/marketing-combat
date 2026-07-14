@@ -12,7 +12,12 @@ import './ClassicFinalCta.css'
  * registration link is intentionally dead for now (see project note).
  */
 
-const RIBBON = 'AI Marketing Kombat · July 2026 · Barcelona · '
+// Trailing separator uses a non-breaking space on purpose: the two ribbon
+// copies are flex items, and flex items trim their trailing whitespace — a
+// plain space would collapse at the seam, gluing "Barcelona ·" to the next
+// "AI Marketing". The nbsp survives the trim so the seam spaces like every
+// internal "· " join.
+const RIBBON = 'AI Marketing Kombat · July 2026 · Barcelona · '
 const MAX_PULL = 8
 
 export default function ClassicFinalCta() {

@@ -26,9 +26,10 @@
   text-transform: uppercase;
 }
 
-.c-cta__ribbon-track span {
-  padding-right: var(--k-4);
-}
+/* No padding here on purpose: RIBBON already ends with a "· " separator, so
+   each span flows into the next with the same spacing as the internal repeats.
+   Adding padding-right re-introduced a 32px gap only at the two span seams —
+   the visible "hole" that scrolls past every loop. */
 
 @keyframes c-cta-marquee {
   from {
