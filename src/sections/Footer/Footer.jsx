@@ -24,16 +24,13 @@ export default function Footer() {
         <span className="footer__title">AI MARKETING KOMBAT · JULY 2026 · BARCELONA</span>
         <div className="footer__legal">
           <span>© 2026 AI Marketing Kombat. All rights reserved.</span>
-          {/* No live legal pages yet — a span with the destination text (not
-              href="#") avoids the classic "link that teleports to the top of
-              a 16 000px page" trap. Swap these for real <a> once /legal,
-              /conduct and /privacy exist. */}
+          {/* Legal routes live under /legal/* (AI skin) — see src/lib/legal.js. */}
           <span className="footer__links">
-            <span className="footer__linkPending">Legal information</span>
+            <a href="/legal/notice">Legal information</a>
             <span aria-hidden="true">·</span>
-            <span className="footer__linkPending">Code of conduct</span>
+            <a href="/legal/conduct">Code of conduct</a>
             <span aria-hidden="true">·</span>
-            <span className="footer__linkPending">Privacy</span>
+            <a href="/legal/privacy">Privacy</a>
           </span>
         </div>
       </div>

@@ -2,8 +2,8 @@ import './ClassicFooter.css'
 
 /**
  * FOOTER — dark sitemap close. Brand + tagline, one column of real in-page
- * nav anchors, and legal placeholders (no destinations yet, rendered as muted
- * non-interactive text so nothing pretends to be a working link). Green
+ * nav anchors, and the legal column. Legal links point at the classic-skin
+ * legal routes so the pages match the site version they open from. Green
  * link-hover is the single accent.
  */
 
@@ -14,7 +14,11 @@ const NAV = [
   { label: 'FAQ', href: '#c-faq' },
 ]
 
-const LEGAL = ['Legal information', 'Code of conduct', 'Privacy']
+const LEGAL = [
+  { label: 'Legal information', href: '/legal/classic/notice' },
+  { label: 'Code of conduct', href: '/legal/classic/conduct' },
+  { label: 'Privacy', href: '/legal/classic/privacy' },
+]
 
 export default function ClassicFooter() {
   return (
@@ -42,8 +46,10 @@ export default function ClassicFooter() {
           <p className="c-foot__col-h cap-trim">Legal</p>
           <ul>
             {LEGAL.map((l) => (
-              <li key={l}>
-                <span className="c-foot__legal">{l}</span>
+              <li key={l.href}>
+                <a className="c-foot__link" href={l.href}>
+                  {l.label}
+                </a>
               </li>
             ))}
           </ul>

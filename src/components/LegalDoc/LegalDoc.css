@@ -33,7 +33,24 @@
 }
 
 .legal__p {
-  margin: 0;
+  margin: 0 0 8px;
+}
+
+.legal__p:last-child {
+  margin-bottom: 0;
+}
+
+.legal__list {
+  margin: 0 0 8px;
+  padding-left: 1.25em;
+}
+
+.legal__list:last-child {
+  margin-bottom: 0;
+}
+
+.legal__list li {
+  margin-bottom: 4px;
 }
 
 .legal__back {

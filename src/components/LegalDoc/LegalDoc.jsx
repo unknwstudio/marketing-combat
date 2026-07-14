@@ -22,7 +22,19 @@ export default function LegalDoc({ kind, variant = 'ai' }) {
         {doc.sections.map((s) => (
           <section className="legal__section" key={s.h}>
             <h2 className="legal__h">{s.h}</h2>
-            <p className="legal__p">{s.p}</p>
+            {s.body.map((block, i) =>
+              typeof block === 'string' ? (
+                <p className="legal__p" key={i}>
+                  {block}
+                </p>
+              ) : (
+                <ul className="legal__list" key={i}>
+                  {block.list.map((item, j) => (
+                    <li key={j}>{item}</li>
+                  ))}
+                </ul>
+              )
+            )}
           </section>
         ))}
         <p className="legal__back">
