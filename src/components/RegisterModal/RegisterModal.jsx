@@ -26,6 +26,7 @@ export default function RegisterModal({ variant = 'ai' }) {
   const dialogRef = useRef(null)
   const firstFieldRef = useRef(null)
   const triggerRef = useRef(null) // element focused before opening, for focus return
+  const successRef = useRef(null) // success panel — focused on submit so focus stays trapped
 
   // Open sources: the REGISTER_OPEN event and delegated [data-register] clicks.
   useEffect(() => {
@@ -99,6 +100,13 @@ export default function RegisterModal({ variant = 'ai' }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
+  // On success the form unmounts, taking the focused submit button with it —
+  // move focus into the success panel so it stays inside the trap and screen
+  // readers land on (and announce) the confirmation.
+  useEffect(() => {
+    if (done) successRef.current?.focus()
+  }, [done])
+
   const setValue = (id, v) => setValues((s) => ({ ...s, [id]: v }))
   const setConsent = (id, v) => setConsents((s) => ({ ...s, [id]: v }))
   const fieldError = (f, v) => (f.required || v ? f.validate(v) : '')
@@ -148,7 +156,7 @@ export default function RegisterModal({ variant = 'ai' }) {
         </button>
 
         {done ? (
-          <div className="reg__success">
+          <div className="reg__success" role="status" aria-live="polite" ref={successRef} tabIndex={-1}>
             <h2 className="reg__title" id={titleId}>
               {COPY.successTitle}
             </h2>
