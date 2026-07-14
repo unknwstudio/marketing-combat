@@ -15,7 +15,7 @@
 
 .c-menu__card {
   pointer-events: auto;
-  margin: var(--k-2) 20px 0 0;
+  margin: var(--k-2) var(--k-space-lg) 0 0;
   width: 133px;
   background: var(--c-orange, var(--k-amber));
   border-radius: 12px;
@@ -78,7 +78,7 @@
 
 @media (max-width: 1023px) {
   .c-menu__card {
-    margin: 12px 12px 0 0;
+    margin: var(--k-space-sm) var(--k-space-sm) 0 0;
     width: auto;
     padding: 6px;
     gap: 0;
@@ -91,6 +91,6 @@
   .c-menu__apply {
     width: auto;
     min-width: 92px;
-    padding: 0 20px;
+    padding: 0 var(--k-space-lg);
   }
 }

@@ -84,7 +84,7 @@
 /* row of 5 fighter cards (35:4184) */
 .fighters__row {
   display: flex;
-  gap: 12px;
+  gap: var(--k-space-sm);
   align-items: stretch;
   width: 100%;
   margin: 0;
@@ -284,7 +284,7 @@
   align-items: center;
   justify-content: center;
   min-height: 33px;
-  padding: 4px 4px;
+  padding: var(--k-space-xs) var(--k-space-xs);
   background: rgba(0, 0, 0, 0.6);
   border-top: 1px solid var(--k-white);
   border-bottom: 1px solid var(--k-white);
@@ -409,6 +409,6 @@
   /* shrink long labels (e.g. "PERFORMANCE LEAD GEN") so 2 cols fit at 360px */
   .fighters__label {
     font-size: 8px;
-    padding: 8px 2px;
+    padding: var(--k-1) var(--k-space-2xs);
   }
 }

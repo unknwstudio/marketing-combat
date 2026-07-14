@@ -46,7 +46,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--k-1);
-  padding: 20px;
+  padding: var(--k-space-lg);
   background: var(--k-black);
   border: 1px solid var(--k-muted);
   overflow: hidden; /* clip the full-bleed ticker to the black box */
@@ -61,7 +61,7 @@
      w=1499 in a 1359 box). Overflow 20px each side to reach the border, then
      the topbox clips it. Mobile overrides width back to 100%. */
   width: calc(100% + 40px);
-  padding: 4px 0;
+  padding: var(--k-space-xs) 0;
   overflow: hidden;
   background: var(--k-champion-mauve);
 }
@@ -163,7 +163,7 @@
   width: max-content;
   margin-inline: auto;
   z-index: 5;
-  padding: 8px 8px 10px;
+  padding: var(--k-1) var(--k-1) 10px;
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);

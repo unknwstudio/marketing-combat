@@ -20,8 +20,8 @@
   z-index: var(--z-mode);
   display: flex;
   align-items: stretch;
-  gap: 4px;
-  padding: 4px;
+  gap: var(--k-space-xs);
+  padding: var(--k-space-xs);
   background: rgba(7, 7, 7, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 99px;
@@ -53,7 +53,7 @@
     max-width: calc(100vw - 20px);
   }
   .mode-switch__opt {
-    padding: 0 12px;
+    padding: 0 var(--k-space-sm);
   }
 }
 

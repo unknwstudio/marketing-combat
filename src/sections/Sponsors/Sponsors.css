@@ -2,7 +2,7 @@
 .sponsors__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: var(--k-space-lg);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -35,7 +35,7 @@
 @media (max-width: 1023px) {
   .sponsors__grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: var(--k-space-sm);
   }
 
   .sponsors__slot {

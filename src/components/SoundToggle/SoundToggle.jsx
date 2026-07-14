@@ -34,7 +34,8 @@ export default function SoundToggle() {
       className={'sndtoggle' + (muted ? ' sndtoggle--off' : '')}
       type="button"
       aria-pressed={muted}
-      aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+      /* No aria-label: the visible "SOUND ON/OFF" span is the accessible name
+         (WCAG 2.5.3 Label in Name); aria-pressed carries the toggle state. */
       onClick={() => {
         toggleMuted()
         if (!isMuted()) playSfx('confirm', 0.5)

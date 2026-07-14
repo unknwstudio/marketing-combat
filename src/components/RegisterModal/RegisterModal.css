@@ -52,6 +52,12 @@
   opacity: 0.8;
 }
 
+.reg__legend {
+  margin: 0 0 var(--k-2);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
 .reg__field {
   margin-bottom: 14px;
 }
@@ -72,9 +78,14 @@
 .reg__input {
   flex: 1;
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px var(--k-space-sm);
   font: inherit;
-  font-size: 15px;
+  /* >=16px so iOS Safari does not auto-zoom the form on focus (a11y/UX) */
+  font-size: 16px;
+}
+
+.reg__req {
+  color: var(--k-red);
 }
 
 .reg__error {
@@ -98,7 +109,10 @@
 
 .reg__check input {
   flex: 0 0 auto;
-  margin-top: 2px;
+  /* larger hit target than the ~13px native control (WCAG 2.5.8) */
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
 }
 
 .reg__check a {
@@ -108,14 +122,14 @@
 .reg__submit {
   width: 100%;
   margin-top: var(--k-2);
-  padding: 12px;
+  padding: var(--k-space-sm);
   font: inherit;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
 }
 
 .reg__demo {
-  margin: 12px 0 0;
+  margin: var(--k-space-sm) 0 0;
   font-size: 11px;
   text-align: center;
   opacity: 0.6;
@@ -251,4 +265,11 @@
 
 .reg--classic .reg__check a {
   color: var(--k-classic-blue);
+}
+
+/* --k-red (#ff2e4d) is only 3.65:1 on the classic white dialog — use the
+   darker on-light red so validation errors clear 4.5:1 (WCAG 1.4.3). */
+.reg--classic .reg__error,
+.reg--classic .reg__req {
+  color: var(--k-red-onlight);
 }

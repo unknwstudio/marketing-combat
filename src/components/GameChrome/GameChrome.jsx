@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { MK } from '../../game/fight/events';
+import { openRegister } from '@/lib/register';
 import PixelIcon from '@/components/PixelIcon/PixelIcon';
 import { initAudio, isMuted as isSiteMuted, setMuted as setSiteMuted, subscribeMuted } from '@/effects/audio/arcadeAudio';
 import './GameChrome.css';
@@ -264,14 +265,25 @@ export default function GameChrome({ onExit } = {}) {
       {/* RESULT ACTION BAR — real buttons under the Phaser result text (touch + desktop) */}
       {result && !share && (
         <div className="gc-resultbar">
-          <button className="gc-item gc-result-primary" onClick={() => { setResult(null); emit(MK.CONFIRM); }}>
-            {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).primary}
-          </button>
-          <button className="gc-item gc-share-btn" onClick={() => setShare(true)}>SHARE</button>
-          {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).changeFighter && (
-            <button className="gc-item" onClick={() => { setResult(null); emit(MK.MENU); }}>CHANGE FIGHTER</button>
-          )}
-          <button className="gc-item gc-danger" onClick={exitToSite}>EXIT</button>
+          {/* the funnel hook: caught the player at peak engagement (just won/lost a
+              match), send them to the REAL event. Opens the registration modal
+              (mounted on /play and on the /demo takeover's host page). */}
+          <div className="gc-result-cta">
+            <span className="gc-result-tagline">Survived the demo?</span>
+            <button className="gc-item gc-register" onClick={openRegister}>
+              REGISTER FOR THE REAL ARENA <PixelIcon name="play" size="0.7em" />
+            </button>
+          </div>
+          <div className="gc-resultbar-row">
+            <button className="gc-item gc-result-primary" onClick={() => { setResult(null); emit(MK.CONFIRM); }}>
+              {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).primary}
+            </button>
+            <button className="gc-item gc-share-btn" onClick={() => setShare(true)}>SHARE</button>
+            {(RESULT_ACTIONS[result.action] || RESULT_ACTIONS.rematch).changeFighter && (
+              <button className="gc-item" onClick={() => { setResult(null); emit(MK.MENU); }}>CHANGE FIGHTER</button>
+            )}
+            <button className="gc-item gc-danger" onClick={exitToSite}>EXIT</button>
+          </div>
         </div>
       )}
 

@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import MaskHead from '@/components/classic-motion/MaskHead'
+import CArrow from '@/components/classic-motion/CArrow'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import './ClassicFinalCta.css'
 
@@ -61,7 +62,8 @@ export default function ClassicFinalCta() {
           onMouseLeave={onLeave}
           data-register
         >
-          Registration →
+          <span className="c-cta__pill-label">Registration</span>
+          <CArrow className="c-cta__pill-arrow" />
         </button>
         <p className="c-cta__fine cap-trim">5 min to apply · 3 questions · AI review · 48 hr response</p>
       </div>

@@ -69,7 +69,7 @@
      fully migrated to --k-gold and removed (2026-07-13 audit). */
   --k-title-yellow: #ffd000;
   --k-gold: #ffd23f;
-  --k-wordmark-gold: #ffb000; /* exact ai-kombat wordmark fill (raster) — hero PLAY disc matches the title */
+  --k-wordmark-gold: var(--k-amber); /* ai-kombat wordmark fill; was a 2nd #ffb000 literal — aliased to --k-amber (2026-07-14 audit) so the two can't drift */
   --k-orange: #ff5000;
   --k-accent-green: #3ad76f;
   --k-body-green: #7fd39a;
@@ -93,16 +93,19 @@
      raw literals across ~40 files. Values are the exact ones already in use, so
      migrating call sites to them is a zero-visual-change adoption win.
      --k-white / --k-black: structural fills the palette never named.
-     --k-muted: the de-facto "muted / secondary text" grey (the most-used #7f7f7f;
-       the 3 tinted variants #8f8f9a/#7a7aa8/#84808f are left raw — collapsing them
-       would be a visual change for the owner to sign off, not a safe migration).
+     --k-muted: the de-facto "muted / secondary text" grey (2026-07-14 a11y audit:
+       nudged #7f7f7f -> #868686 so it clears 4.5:1 on the alternating band
+       --k-bg-alt too, where the old value sat at 4.48:1; still ~5:1 on --k-bg).
      --k-amber + --k-amber-dark: the MCP/pill amber that had no token (#ffb000),
-     with its WCAG-checked dark text pair. */
+     with its WCAG-checked dark text pair.
+     --k-red-onlight: a darker red for red text on WHITE (classic skin). --k-red
+       #ff2e4d is only 3.65:1 on white; this is ~5.9:1 (2026-07-14 a11y audit). */
   --k-white: #ffffff;
   --k-black: #000000;
-  --k-muted: #7f7f7f;
+  --k-muted: #868686;
   --k-amber: #ffb000;
   --k-amber-dark: #6b3800;
+  --k-red-onlight: #c40d29;
 
   /* Scoped sub-palettes folded into the one ledger (2026-07-13 audit: these
      had grown as independent raw-hex sub-systems in classic.css / GameChrome.css
@@ -150,14 +153,18 @@
   --k-champion-mauve: #af8dad; /* champion decorative */
   --k-champion-sage: #789a8c; /* champion decorative */
 
-  /* --- type --- */
-  --k-font: var(--font-ps), 'Press Start 2P', 'Courier New', monospace;
-  /* deterministic pixel font: the SELF-HOSTED Press Start 2P first (renders real
-     pixel glyphs from first paint), then next/font's --font-ps, then fallbacks.
-     Use this where the pixel look must be right immediately (e.g. hero PLAY). */
-  --k-font-pixel: 'Press Start 2P', var(--font-ps), 'Courier New', monospace;
+  /* --- type ---
+     Press Start 2P is self-hosted + preloaded (see @font-face above & layout.jsx),
+     so it renders real pixel glyphs from first paint. The next/font --font-ps copy
+     was removed (2026-07-14 perf audit: duplicate face + wasted preload). --font-ps
+     used to be next/font's hashed family name; it's kept here pointing at the
+     self-hosted face so the Phaser game (FightGame.jsx / createFight.js resolve it
+     for canvas text) and the game-chrome CSS `var(--font-ps, …)` still work. */
+  --font-ps: 'Press Start 2P';
+  --k-font: 'Press Start 2P', 'Courier New', monospace;
+  --k-font-pixel: 'Press Start 2P', 'Courier New', monospace;
   /* accent / display font (Figma "Platform"); falls back to the pixel font */
-  --k-font-accent: 'Platform', var(--font-ps), 'Press Start 2P', sans-serif;
+  --k-font-accent: 'Platform', 'Press Start 2P', sans-serif;
   /* body / label mono font (Figma "GT Pressura Mono") */
   --k-font-mono: 'GT Pressura Mono', 'Courier New', monospace;
 
@@ -177,8 +184,23 @@
      numbers (~88px) had no scale step and used bespoke clamp() tuples. */
   --k-text-3xl: clamp(48px, 12vw, 88px);
   --k-text-hero: clamp(48px, 14vw, 220px);
+  /* FIXED pixel-chrome micro-ramp (2026-07-14 audit): the sub-12px HUD/label
+     text set in Press Start 2P must stay INTEGER — clamp()/vw fractional sizes
+     break the pixel grid ("no sub-pixel blur"). Use these (not --k-text-xs) for
+     Press Start 2P sizes. Collapses raw 7/8/9 -> 8, 10/10.5 -> 10, 12(HUD) -> 12. */
+  --k-text-hud-2xs: 8px;
+  --k-text-hud-xs: 10px;
+  --k-text-hud-sm: 12px;
 
   /* --- spacing scale (8px arcade grid) --- */
+  /* fine sub-grid steps (2026-07-14 audit): the 8px grid had no step below 8 and
+     skipped 20, so all component-internal spacing (2/4/10/12/20px, the single
+     biggest source of raw-px sprawl) went off-token. These four close ~85% of it.
+     10px call sites snap case-by-case to --k-1 (8) or --k-space-sm (12). */
+  --k-space-2xs: 2px;
+  --k-space-xs: 4px;
+  --k-space-sm: 12px;
+  --k-space-lg: 20px;
   --k-1: 8px;
   --k-2: 16px;
   --k-3: 24px;
@@ -198,6 +220,27 @@
   --k-11: 88px;
   --k-12: 96px;
   --k-15: 120px;
+
+  /* --- border-radius (2026-07-14 audit: 9 distinct raw radii, no tokens; the
+     12px card radius was hand-copied ~12x). Snap 4/7/9/13 -> 6/12, 17 -> lg. --- */
+  --k-radius-sm: 6px;
+  --k-radius-md: 12px;
+  --k-radius-lg: 17px;
+  --k-radius-pill: 999px;
+
+  /* --- line-height (2026-07-14 audit: 20 distinct values -> 5 named steps) --- */
+  --k-lh-flat: 1; /* pixel display, marquees, wordmarks */
+  --k-lh-tight: 1.15; /* display headings */
+  --k-lh-snug: 1.3; /* sub-heads */
+  --k-lh-normal: 1.45; /* dense body */
+  --k-lh-loose: 1.6; /* body default */
+
+  /* --- letter-spacing (2026-07-14 audit: 18 distinct values -> 5 named steps) --- */
+  --k-ls-display: -0.72px; /* Platform / GT Pressura display tracking */
+  --k-ls-tight: -0.3px;
+  --k-ls-normal: 0;
+  --k-ls-wide: 0.08em; /* uppercase mono labels */
+  --k-ls-pixel: 2px; /* Press Start 2P spacing */
 
   /* --- z-index scale for the page-level HUD/overlay layers (fixed or
      portaled-to-body components that stack against EACH OTHER — not the

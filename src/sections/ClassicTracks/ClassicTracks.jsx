@@ -1,4 +1,5 @@
 import MaskHead from '@/components/classic-motion/MaskHead'
+import CArrow from '@/components/classic-motion/CArrow'
 import './ClassicTracks.css'
 
 /**
@@ -45,7 +46,9 @@ export default function ClassicTracks() {
               <p className="c-track__body">{t.body}</p>
               <span className="c-track__go" aria-hidden="true">
                 <span className="c-track__go-label">Special move</span>
-                <span className="c-track__arrow">→</span>
+                <span className="c-track__arrow">
+                  <CArrow />
+                </span>
               </span>
             </article>
           ))}

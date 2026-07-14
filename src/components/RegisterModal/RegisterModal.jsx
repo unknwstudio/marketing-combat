@@ -158,7 +158,7 @@ export default function RegisterModal({ variant = 'ai' }) {
         {done ? (
           <div className="reg__success" role="status" aria-live="polite" ref={successRef} tabIndex={-1}>
             <h2 className="reg__title" id={titleId}>
-              {COPY.successTitle}
+              {values.name.trim() ? `${values.name.trim()} — ready` : COPY.successTitle}
             </h2>
             <p className="reg__sub">{COPY.successBody}</p>
             <p className="reg__demo">{COPY.demoNotice}</p>
@@ -169,6 +169,12 @@ export default function RegisterModal({ variant = 'ai' }) {
               {COPY.title}
             </h2>
             <p className="reg__sub">{COPY.sub}</p>
+            <p className="reg__legend">
+              <span className="reg__req" aria-hidden="true">
+                *
+              </span>{' '}
+              Required
+            </p>
 
             {FIELDS.map((f, i) => {
               const errId = `reg-${f.id}-err`
@@ -176,6 +182,12 @@ export default function RegisterModal({ variant = 'ai' }) {
                 <div className="reg__field" key={f.id}>
                   <label className="reg__label" htmlFor={`reg-${f.id}`}>
                     {f.label}
+                    {f.required && (
+                      <span className="reg__req" aria-hidden="true">
+                        {' '}
+                        *
+                      </span>
+                    )}
                   </label>
                   <div className="reg__input-wrap">
                     <input
@@ -235,6 +247,12 @@ export default function RegisterModal({ variant = 'ai' }) {
                           {li < c.links.length - 1 ? ' &' : ''}
                         </span>
                       ))}
+                      {c.required && (
+                        <span className="reg__req" aria-hidden="true">
+                          {' '}
+                          *
+                        </span>
+                      )}
                     </span>
                   </label>
                   {errors[c.id] && (

@@ -24,11 +24,24 @@ export default function DemoNav() {
 
   useEffect(() => {
     let raf = 0
+    let lastY = document.documentElement.scrollTop
     const measure = () => {
       const el = document.documentElement
+      const y = el.scrollTop
       const max = el.scrollHeight - el.clientHeight
-      const p = max > 0 ? el.scrollTop / max : 0
-      setShown(p > 0.03)
+      const pastHero = (max > 0 ? y / max : 0) > 0.03
+      const dir = y - lastY
+      lastY = y
+      // Past the hero the strip is a fixed, centered pill — while scrolling DOWN
+      // (reading) it would sit on top of each section heading as it passes, so
+      // hide it then and re-show on any upward scroll (when the nav is actually
+      // wanted). 2026-07-14 UX audit M4. Tiny jitter (|dir|<=4) keeps the state.
+      setShown((prev) => {
+        if (!pastHero) return false
+        if (dir > 4) return false
+        if (dir < -4) return true
+        return prev
+      })
     }
     const onScroll = () => {
       cancelAnimationFrame(raf)

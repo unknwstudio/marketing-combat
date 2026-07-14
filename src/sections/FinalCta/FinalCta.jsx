@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import CtaLabel from '@/components/CtaLabel/CtaLabel'
 import { useJuice } from '@/effects/juice/useJuice'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
-import Cabinet3DMount from '@/components/Cabinet3D/Cabinet3DMount'
-import Error3DBoundary from '@/components/Error3DBoundary/Error3DBoundary'
+import Cabinet3DGate from '@/components/Cabinet3D/Cabinet3DGate'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import { GAME_COPY } from '@/lib/game'
 import './FinalCta.css'
@@ -187,31 +187,17 @@ export default function FinalCta() {
         </div>
       </div>
 
-      <div className="finalcta__cabinet">
-        <Error3DBoundary
-          fallback={
-            <img
-              className="cab3d__fallback"
-              src="/assets/demo/arcade-machine.webp"
-              alt="Arcade cabinet showing YOU WIN"
-              loading="lazy"
-              decoding="async"
-            />
-          }
-        >
-          <Cabinet3DMount
-            screenVariant="youwin"
-            screenPower={0.95}
-            restYaw={0}
-            parallaxYaw={0.09}
-            parallaxPitch={0.045}
-            camFar={4.8}
-            camNear={4.2}
-            camY={0.78}
-            fov={26}
-          />
-        </Error3DBoundary>
-      </div>
+      <Cabinet3DGate
+        screenVariant="youwin"
+        screenPower={0.95}
+        restYaw={0}
+        parallaxYaw={0.09}
+        parallaxPitch={0.045}
+        camFar={4.8}
+        camNear={4.2}
+        camY={0.78}
+        fov={26}
+      />
 
       <div className="finalcta__gameover" aria-hidden="true">
         <span className="finalcta__gameover-text">{GAME_COPY.youWin}</span>
@@ -244,7 +230,7 @@ export default function FinalCta() {
         data-burst
         data-register
       >
-        &gt;&gt;&gt; registration &lt;&lt;&lt;
+        <CtaLabel>registration</CtaLabel>
       </button>
       {/* same fact line as /classic (ClassicChampionFor.jsx) and the /mcp
           prompt — surfacing it here too so the / and /demo CTA isn't a leap

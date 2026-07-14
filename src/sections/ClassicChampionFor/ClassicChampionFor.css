@@ -64,13 +64,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr auto;
-  gap: 4px;
+  gap: var(--k-space-xs);
 }
 
 .cfw__card {
   background: var(--c-blue);
   border-radius: 12px;
-  padding: 20px;
+  padding: var(--k-space-lg);
   color: var(--k-white);
   display: flex;
   flex-direction: column;
@@ -93,7 +93,7 @@
   grid-column: 1 / -1;
   background: var(--c-green);
   border-radius: 12px;
-  padding: 12px 20px;
+  padding: var(--k-space-sm) var(--k-space-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,7 +115,7 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--k-space-lg);
 }
 
 /* The ► arrow is the ACTIVE-item marker (Figma Frame 55): at rest it sits

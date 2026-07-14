@@ -74,7 +74,7 @@
    the site answers the pointer identically. */
 .hero__badge {
   display: inline-block;
-  padding: 8px 8px 10px;
+  padding: var(--k-1) var(--k-1) 10px;
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);
@@ -103,6 +103,9 @@
   font-size: var(--k-text-lg); /* Figma 33:3903 */
   line-height: 1.25; /* Figma normal leading -> 3-line block ~= 77px */
   letter-spacing: -0.72px;
+  /* lift the green terminal copy off the busy CRT scene behind it (2026-07-14
+     UX audit M3) — a soft dark halo + hard pixel offset, no layout change */
+  text-shadow: 0 0 8px var(--k-shadow), 1px 2px 0 var(--k-shadow);
 }
 
 /* --- top-right: energy meter --- */
@@ -123,7 +126,7 @@
   justify-content: space-between;
   width: 213px;
   height: 43px;
-  padding: 4px 8px 4px 4px;
+  padding: var(--k-space-xs) var(--k-1) var(--k-space-xs) var(--k-space-xs);
   background: rgba(0, 0, 0, 0.6);
   border: 2px solid var(--k-orange);
 }
@@ -131,7 +134,7 @@
 .hero__bars {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--k-space-2xs);
   height: 100%;
 }
 
@@ -167,7 +170,7 @@
 }
 
 .hero__pill {
-  padding: 8px 4px;
+  padding: var(--k-1) var(--k-space-xs);
   background: rgba(0, 0, 0, 0.6);
   border-top: 1px solid var(--k-white);
   border-bottom: 1px solid var(--k-white);
@@ -409,7 +412,7 @@
     align-items: center;
     min-height: 44px;
     font-size: 12px;
-    padding: 6px 10px 8px;
+    padding: 6px 10px var(--k-1);
   }
 
   .hero__lede {

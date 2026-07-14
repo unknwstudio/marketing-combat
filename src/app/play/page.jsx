@@ -4,6 +4,7 @@ import FightGame from '../../components/FightGame/FightGame';
 import MobileControls from '../../components/MobileControls/MobileControls';
 import GameChrome from '../../components/GameChrome/GameChrome';
 import RotateHint from '../../components/RotateHint/RotateHint';
+import RegisterModal from '../../components/RegisterModal/RegisterModal';
 
 export const metadata = {
   title: 'Play — AI Marketing Kombat',
@@ -23,6 +24,10 @@ export default function PlayPage() {
       <MobileControls />
       <GameChrome />
       <RotateHint />
+      {/* funnel target for the result screen's "REGISTER FOR THE REAL ARENA"
+          CTA — /play is standalone, so it needs its own modal (the /demo
+          takeover reuses the home page's). */}
+      <RegisterModal variant="ai" />
     </main>
   );
 }

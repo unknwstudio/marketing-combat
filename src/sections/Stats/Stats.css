@@ -106,7 +106,7 @@
 
   .stats__row {
     grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
+    gap: var(--k-space-xs);
   }
 
   .stats__cell {

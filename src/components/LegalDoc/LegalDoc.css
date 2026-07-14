@@ -4,7 +4,7 @@
 
 .legal {
   min-height: 100vh;
-  padding: var(--k-8, 64px) var(--k-3);
+  padding: var(--k-8, var(--k-8)) var(--k-3);
 }
 
 .legal__doc {
@@ -33,7 +33,7 @@
 }
 
 .legal__p {
-  margin: 0 0 8px;
+  margin: 0 0 var(--k-1);
 }
 
 .legal__p:last-child {
@@ -41,7 +41,7 @@
 }
 
 .legal__list {
-  margin: 0 0 8px;
+  margin: 0 0 var(--k-1);
   padding-left: 1.25em;
 }
 
@@ -50,11 +50,11 @@
 }
 
 .legal__list li {
-  margin-bottom: 4px;
+  margin-bottom: var(--k-space-xs);
 }
 
 .legal__back {
-  margin-top: var(--k-4, 32px);
+  margin-top: var(--k-4, var(--k-4));
 }
 
 .legal__back a {

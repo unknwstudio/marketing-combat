@@ -1,3 +1,4 @@
+import CtaLabel from '@/components/CtaLabel/CtaLabel';
 import './Champion.css';
 
 // Ported pixel-faithfully from Figma "Frame 33" (node 35:4163), 1440x924.
@@ -54,7 +55,7 @@ export default function Champion() {
       </div>
 
       <button type="button" className="champion__cta" data-magnetic data-sfx="confirm" data-register>
-        &gt;&gt;&gt; registration &lt;&lt;&lt;
+        <CtaLabel>registration</CtaLabel>
       </button>
     </section>
   );

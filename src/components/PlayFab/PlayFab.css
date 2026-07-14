@@ -61,17 +61,16 @@
   outline-offset: 5px;
 }
 
-/* phones: shrink a touch + escape the corner-crowding bottom-center
-   ModeSwitcher pill by rising to the TOP-right — level with SoundToggle
-   (top-left, top:80px), so the two arcade controls mirror each other and
-   both clear the DemoNav strip + the bottom switcher. */
+/* phones: shrink a touch + sit just ABOVE the bottom-center ModeSwitcher pill
+   (bottom-right), mirroring SoundToggle at bottom-left. Was top:80px, which
+   parked it over the hero header copy — moved down off the hero content. */
 @media (max-width: 639px) {
   .playfab {
     --u: 2px;
     right: 10px;
-    top: 80px;
-    bottom: auto;
-    padding: 8px 11px;
+    top: auto;
+    bottom: 68px;
+    padding: var(--k-1) 11px;
     font-size: 13px;
   }
   .playfab__tri {

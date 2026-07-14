@@ -1,3 +1,4 @@
+import CtaLabel from '@/components/CtaLabel/CtaLabel'
 import './Hero.css'
 import CRTOverlay from '@/effects/crt/CRTOverlay'
 import { GAME_COPY } from '@/lib/game'
@@ -38,7 +39,7 @@ export default function Hero({ withPlay = false, centerPlay = false }) {
           is ever tagged data-magnetic. */}
       <div className="hero__intro">
         <a href="/#register" className="hero__badge" data-sfx="confirm" data-burst data-register>
-          {'>>> registration <<<'}
+          <CtaLabel>registration</CtaLabel>
         </a>
         <p className="hero__lede">
           The first international hackathon for senior marketers of the AI era.

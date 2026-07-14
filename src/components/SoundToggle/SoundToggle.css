@@ -6,8 +6,11 @@
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
+  /* >=24px min target (WCAG 2.5.8) — the mobile rule below trims padding to
+     ~23px, so pin a floor here that both breakpoints inherit */
+  min-height: 32px;
   gap: var(--k-1);
-  padding: var(--k-1) 12px;
+  padding: var(--k-1) var(--k-space-sm);
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid var(--k-white);
   color: var(--k-accent-green);
@@ -39,7 +42,7 @@
 .sndtoggle__bars {
   display: inline-flex;
   align-items: flex-end;
-  gap: 2px;
+  gap: var(--k-space-2xs);
   height: 14px;
 }
 
@@ -77,15 +80,14 @@
 
 @media (max-width: 639px) {
   .sndtoggle {
-    /* was bottom-left, same as desktop — on narrow screens the
-       ModeSwitcher pill (bottom, centered, no responsive layout of its
-       own) is wide enough to sit directly on top of this corner. Moving
-       to top-left clears it instead of shrinking either control.
-       top:80px clears /demo's DemoNav strip too (measured 30-67.6px on a
-       390px viewport, centered but wide enough to reach this corner). */
+    /* the centered ModeSwitcher pill owns the bottom-center on narrow
+       screens, so the old bottom-left corner collided with it. It was parked
+       at top:80px — but that sat right on the hero lede. Stack it just ABOVE
+       the ModeSwitcher instead (bottom-left, over the dark scene, clear of
+       both the hero copy up top and the switcher below). */
     left: 10px;
-    bottom: auto;
-    top: 80px;
+    top: auto;
+    bottom: 68px;
     padding: 6px 9px;
     font-size: 11px;
   }
