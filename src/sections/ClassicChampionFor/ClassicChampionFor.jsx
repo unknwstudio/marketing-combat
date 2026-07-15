@@ -92,7 +92,13 @@ export default function ClassicChampionFor() {
       {/* right lane — Champion gets pins (native sticky) until it lands at y=589 */}
       <div className="cfw__champ-lane">
         <div className="cfw__col cfw__champ">
-          <h2 className="cfw__h2 cap-trim">Champion gets</h2>
+          {/* two lines so the heading clears the fixed menu card at top-right
+              (a one-line "Champion gets" runs under it at every width) */}
+          <h2 className="cfw__h2 cfw__h2--champ cap-trim">
+            Champion
+            <br />
+            gets
+          </h2>
           <div className="cfw__grid">
             <div className="cfw__card">
               <p className="cfw__card-t cap-trim">$30K+</p>

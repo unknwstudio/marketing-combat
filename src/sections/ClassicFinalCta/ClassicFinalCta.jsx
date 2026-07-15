@@ -1,7 +1,6 @@
 'use client'
 
 import MaskHead from '@/components/classic-motion/MaskHead'
-import CArrow from '@/components/classic-motion/CArrow'
 import { typeset } from '@/lib/typeset'
 import './ClassicFinalCta.css'
 
@@ -36,7 +35,6 @@ export default function ClassicFinalCta() {
         </p>
         <button className="c-cta__pill" type="button" data-register>
           <span className="c-cta__pill-label">Registration</span>
-          <CArrow className="c-cta__pill-arrow" />
         </button>
         <p className="c-cta__fine cap-trim">5 min to apply · 3 questions · AI review · 48 hr response</p>
       </div>

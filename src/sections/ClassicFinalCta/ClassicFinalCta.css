@@ -93,17 +93,6 @@
   background: var(--k-classic-panel);
 }
 
-.c-cta__pill-arrow {
-  width: 22px;
-  height: auto;
-  transition: transform var(--k-t-slow) cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.c-cta__pill:hover .c-cta__pill-arrow,
-.c-cta__pill:focus-visible .c-cta__pill-arrow {
-  transform: translateX(4px);
-}
-
 .c-cta__fine {
   font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-wide-sm);
