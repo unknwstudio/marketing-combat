@@ -5,38 +5,39 @@
   z-index: var(--z-play-link);
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  padding: 11px 17px;
+  gap: var(--k-space-8);
+  padding: var(--k-space-12) var(--k-space-16);
   font-family: var(--font-ps, ui-monospace, "Courier New", monospace);
-  font-size: 12px;
-  letter-spacing: 2px;
+  font-size: var(--k-text-hud-sm);
+  letter-spacing: var(--k-ls-pixel);
   text-decoration: none;
   color: var(--k-play-ink);
   background: var(--k-gold);
   border: 2px solid var(--k-play-ink);
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.55), 0 0 22px rgba(255, 210, 63, 0.5);
+  box-shadow: var(--k-shadow-hard), 0 0 22px color-mix(in srgb, var(--k-gold) 50%, transparent);
   cursor: pointer;
   animation: play-link-pulse 1.9s ease-in-out infinite;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform var(--k-t-fast) ease, box-shadow var(--k-t-fast) ease;
 }
 .play-link:hover {
   transform: translate(-1px, -1px);
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 210, 63, 0.75);
+  box-shadow: var(--k-shadow-hard-lg), 0 0 30px color-mix(in srgb, var(--k-gold) 75%, transparent);
 }
-.play-link:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.55); }
+.play-link:active { transform: translate(2px, 2px); box-shadow: var(--k-shadow-hard-sm); }
 .play-link:focus-visible { outline: 3px solid var(--k-hud-red); outline-offset: 3px; }
-.play-link__icon { font-size: var(--k-text-xs); line-height: 1; }
-.play-link__label { line-height: 1; }
+.play-link__icon { font-size: var(--k-text-hud-sm); line-height: var(--k-lh-flat); }
+.play-link__label { line-height: var(--k-lh-flat); }
 
 @keyframes play-link-pulse {
-  0%, 100% { box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 210, 63, 0.4); }
-  50% { box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.55), 0 0 30px rgba(255, 210, 63, 0.85); }
+  0%, 100% { box-shadow: var(--k-shadow-hard), 0 0 18px color-mix(in srgb, var(--k-gold) 40%, transparent); }
+  50% { box-shadow: var(--k-shadow-hard), 0 0 30px color-mix(in srgb, var(--k-gold) 85%, transparent); }
 }
 @media (prefers-reduced-motion: reduce) { .play-link { animation: none; } }
 
-/* phones: a touch smaller, tucked into the corner */
-@media (max-width: 520px) {
-  .play-link { top: 12px; right: 12px; padding: 9px 13px; font-size: 10px; gap: 7px; }
+/* phones: a touch smaller, tucked into the corner (520px one-off snapped to the
+   canonical 639px — the shrunk pill only tucks tighter, safe up to 639) */
+@media (max-width: 639px) {
+  .play-link { top: 12px; right: 12px; padding: var(--k-space-8) var(--k-space-12); font-size: var(--k-text-hud-xs); gap: var(--k-space-8); }
 }
 
 /* under-HUD variant (/demo): clear the ScrollHealth strip — ~36px of HP bars
@@ -44,7 +45,7 @@
    Declared LAST so it also wins over the phone top:12px above (equal
    specificity → source order decides). */
 .play-link--under-hud { top: 52px; }
-@media (max-width: 520px) {
+@media (max-width: 639px) {
   /* also clears DemoNav's "level select" pill, which on phones is centered
      but wide enough to reach this corner (measured bottom ~68px) */
   .play-link--under-hud { top: 82px; }

@@ -48,7 +48,7 @@
 .cfw__h2 {
   font-size: var(--k-text-2xl);
   font-weight: 400;
-  line-height: 0.942;
+  line-height: var(--c-lh-display);
   text-transform: uppercase;
   color: var(--k-black);
 }
@@ -64,27 +64,29 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr auto;
-  gap: var(--k-space-xs);
+  gap: var(--k-space-4);
 }
 
 .cfw__card {
   background: var(--c-blue);
-  border-radius: 12px;
-  padding: var(--k-space-lg);
+  border-radius: var(--k-radius-md);
+  padding: var(--k-space-20);
   color: var(--k-white);
   display: flex;
   flex-direction: column;
-  gap: var(--k-5);
+  gap: var(--k-space-40);
 }
 
 .cfw__card-t {
   font-size: var(--k-text-xl);
-  line-height: 0.942;
+  line-height: var(--c-lh-display);
   text-transform: uppercase;
 }
 
 .cfw__card-s {
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact card body size (Frame 54, node 38:4415); fluid --k-text-sm would shrink it on mobile */
   font-size: 16px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading; no 1.2 token and snapping is banned on pixel-ported sections */
   line-height: 1.2;
   max-width: 235px;
 }
@@ -92,13 +94,15 @@
 .cfw__strip {
   grid-column: 1 / -1;
   background: var(--c-green);
-  border-radius: 12px;
-  padding: var(--k-space-sm) var(--k-space-lg);
+  border-radius: var(--k-radius-md);
+  padding: var(--k-space-12) var(--k-space-20);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--k-black);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact strip label size (Frame 54, node 38:4415); fluid --k-text-sm would shrink it on mobile */
   font-size: 16px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading; no 1.2 token and snapping is banned on pixel-ported sections */
   line-height: 1.2;
   text-align: center;
 }
@@ -115,7 +119,7 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-lg);
+  gap: var(--k-space-20);
 }
 
 /* The ► arrow is the ACTIVE-item marker (Figma Frame 55): at rest it sits
@@ -126,9 +130,9 @@
   --arrow-indent: 85px;
   position: relative;
   font-size: var(--k-text-2xl);
-  line-height: 0.942;
+  line-height: var(--c-lh-display);
   color: var(--k-black);
-  transition: color 0.15s ease;
+  transition: color var(--k-t-fast) ease;
 }
 
 .cfw__item:hover {
@@ -144,13 +148,13 @@
   opacity: 0;
   transform: translate(-12px, -50%);
   transition:
-    opacity 0.2s ease,
-    transform 0.25s ease;
+    opacity var(--k-t-base) ease,
+    transform var(--k-t-slow) ease;
 }
 
 .cfw__text {
   display: inline-block;
-  transition: transform 0.25s ease;
+  transition: transform var(--k-t-slow) ease;
 }
 
 /* hovered item becomes the active one: arrow slides in, text indents */
@@ -174,8 +178,8 @@
     height: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--k-8);
-    padding: var(--k-6) var(--k-2);
+    gap: var(--k-space-64);
+    padding: var(--k-space-48) var(--k-space-16);
   }
 
   .cfw__champ-lane {
@@ -191,23 +195,23 @@
   }
 
   .cfw__h2 {
-    font-size: clamp(40px, 10.5vw, 64px);
+    font-size: var(--k-text-2xl);
   }
 
   .cfw__grid {
     position: static;
     height: auto;
-    margin-top: var(--k-5);
+    margin-top: var(--k-space-40);
     grid-template-rows: auto auto auto;
   }
 
   .cfw__card {
     min-height: 120px;
-    gap: 28px;
+    gap: var(--k-space-24);
   }
 
   .cfw__card-t {
-    font-size: clamp(28px, 7vw, 40px);
+    font-size: var(--k-text-xl);
   }
 
   .cfw__strip {
@@ -216,11 +220,12 @@
 
   .cfw__list {
     position: static;
-    margin-top: var(--k-5);
+    margin-top: var(--k-space-40);
   }
 
   .cfw__item {
     --arrow-indent: 44px;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile display-list tuple; nearest step --k-text-2xl has a 40px floor vs 32px (20% off, beyond the ~15% clamp-replacement bound) */
     font-size: clamp(32px, 8.5vw, 64px);
   }
 

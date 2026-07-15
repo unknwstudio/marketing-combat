@@ -2,7 +2,7 @@
 .sponsors__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--k-space-lg);
+  gap: var(--k-space-20);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -24,8 +24,8 @@
 
 .sponsors__mark {
   font-family: var(--k-font-mono);
-  font-size: 22px;
-  letter-spacing: 2px;
+  font-size: var(--k-text-md);
+  letter-spacing: var(--k-ls-pixel);
   /* var(--k-ink-cool) on this striped near-black bg: ~5:1, clears WCAG AA
      (was #3a3358 at ~1.76:1 — unreadable) */
   color: var(--k-ink-cool);
@@ -35,7 +35,7 @@
 @media (max-width: 1023px) {
   .sponsors__grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--k-space-sm);
+    gap: var(--k-space-12);
   }
 
   .sponsors__slot {
@@ -43,6 +43,6 @@
   }
 
   .sponsors__mark {
-    font-size: 13px;
+    font-size: var(--k-text-xs);
   }
 }

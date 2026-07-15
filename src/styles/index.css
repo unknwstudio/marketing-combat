@@ -106,6 +106,7 @@
   --k-amber: #ffb000;
   --k-amber-dark: #6b3800;
   --k-red-onlight: #c40d29;
+  --k-link-onlight: #0a5fa8; /* readable link blue for the white /classic & /mcp pages */
 
   /* Scoped sub-palettes folded into the one ledger (2026-07-13 audit: these
      had grown as independent raw-hex sub-systems in classic.css / GameChrome.css
@@ -152,6 +153,7 @@
   --k-tracks-border: #3a2a10; /* tracks card warm border */
   --k-champion-mauve: #af8dad; /* champion decorative */
   --k-champion-sage: #789a8c; /* champion decorative */
+  --k-gc-panel: #140a28; /* GameChrome translucent panel purple (2026-07-15 audit: collapsed two near-dupe one-offs #140a28/#140c28) */
 
   /* --- type ---
      Press Start 2P is self-hosted + preloaded (see @font-face above & layout.jsx),
@@ -191,35 +193,37 @@
   --k-text-hud-2xs: 8px;
   --k-text-hud-xs: 10px;
   --k-text-hud-sm: 12px;
+  /* upper fixed steps (2026-07-14 audit, 2nd pass): the game chrome / fixed
+     overlays also set 13/14/15/16/23px raw — same integer-only rule applies.
+     Snap: 13 -> 12 or 14, 15 -> 14 or 16, 23 -> 24. */
+  --k-text-hud-md: 14px;
+  --k-text-hud-lg: 16px;
+  --k-text-hud-xl: 24px;
 
-  /* --- spacing scale (8px arcade grid) --- */
-  /* fine sub-grid steps (2026-07-14 audit): the 8px grid had no step below 8 and
-     skipped 20, so all component-internal spacing (2/4/10/12/20px, the single
-     biggest source of raw-px sprawl) went off-token. These four close ~85% of it.
-     10px call sites snap case-by-case to --k-1 (8) or --k-space-sm (12). */
-  --k-space-2xs: 2px;
-  --k-space-xs: 4px;
-  --k-space-sm: 12px;
-  --k-space-lg: 20px;
-  --k-1: 8px;
-  --k-2: 16px;
-  --k-3: 24px;
-  --k-4: 32px;
-  /* filled scale holes (2026-07-13 audit): even on-8px-grid values (40/56/72/88)
-     had no step to reach for, forcing them off-token. Named value/8 like the rest. */
-  --k-5: 40px;
-  --k-6: 48px;
-  --k-7: 56px;
-  --k-8: 64px;
-  --k-9: 72px;
-  /* extended 2026-07-12: the most load-bearing spacing value on the page —
-     .dsec's own 96px/80px section padding — had no token to reach for,
-     nor did FinalCta's 120px close or Footer's 80px. All clean 8px
-     multiples. */
-  --k-10: 80px;
-  --k-11: 88px;
-  --k-12: 96px;
-  --k-15: 120px;
+  /* --- spacing scale (8px arcade grid + 2/4/12/20 sub-grid) ---
+     Naming (2026-07-14 audit, 2nd pass): ONE scheme, named by the pixel value
+     itself (--k-space-16 = 16px) — the old split ledger (--k-space-2xs/xs/sm/lg
+     alongside --k-1…--k-15 = value/8) forced memorizing two systems and put
+     --k-space-sm (12) "between" --k-1 (8) and --k-2 (16). Self-naming tokens
+     cost nothing to read and the 8px grid IS the system, so the value is the
+     name. Only these 17 steps exist; snap anything else to the nearest one. */
+  --k-space-2: 2px;
+  --k-space-4: 4px;
+  --k-space-8: 8px;
+  --k-space-12: 12px;
+  --k-space-16: 16px;
+  --k-space-20: 20px;
+  --k-space-24: 24px;
+  --k-space-32: 32px;
+  --k-space-40: 40px;
+  --k-space-48: 48px;
+  --k-space-56: 56px;
+  --k-space-64: 64px;
+  --k-space-72: 72px;
+  --k-space-80: 80px;
+  --k-space-88: 88px;
+  --k-space-96: 96px;
+  --k-space-120: 120px;
 
   /* --- border-radius (2026-07-14 audit: 9 distinct raw radii, no tokens; the
      12px card radius was hand-copied ~12x). Snap 4/7/9/13 -> 6/12, 17 -> lg. --- */
@@ -228,19 +232,53 @@
   --k-radius-lg: 17px;
   --k-radius-pill: 999px;
 
-  /* --- line-height (2026-07-14 audit: 20 distinct values -> 5 named steps) --- */
+  /* --- line-height (2026-07-14 audit: 20 distinct values -> 6 named steps) --- */
+  --k-lh-crushed: 0.9; /* oversized display type with overlapping-tight leading */
   --k-lh-flat: 1; /* pixel display, marquees, wordmarks */
   --k-lh-tight: 1.15; /* display headings */
   --k-lh-snug: 1.3; /* sub-heads */
   --k-lh-normal: 1.45; /* dense body */
   --k-lh-loose: 1.6; /* body default */
 
-  /* --- letter-spacing (2026-07-14 audit: 18 distinct values -> 5 named steps) --- */
-  --k-ls-display: -0.72px; /* Platform / GT Pressura display tracking */
-  --k-ls-tight: -0.3px;
+  /* --- letter-spacing (2026-07-14 audit: 18 distinct values -> named steps;
+     2nd pass: converted the px steps to em so tracking scales WITH the text and
+     the ramp has no fractional-px magic. -0.03em is exactly the Figma -0.72px
+     at the 24px display size it was specced for; -0.02em covers the old
+     -0.3px/-0.5px body/sub-head tracking. --k-ls-pixel stays in px on purpose:
+     Press Start 2P glyphs sit on a hard pixel grid, so their tracking must be
+     whole pixels, not a size-relative unit. */
+  --k-ls-display: -0.03em; /* Platform / GT Pressura display tracking (Figma -0.72px @ 24px) */
+  --k-ls-tight: -0.02em; /* sub-heads & body (old -0.3px / -0.5px call sites) */
   --k-ls-normal: 0;
+  --k-ls-wide-sm: 0.04em; /* the second heavily-used uppercase-label tracking */
   --k-ls-wide: 0.08em; /* uppercase mono labels */
-  --k-ls-pixel: 2px; /* Press Start 2P spacing */
+  --k-ls-pixel-sm: 1px; /* Press Start 2P spacing, subtle — whole px, see above */
+  --k-ls-pixel: 2px; /* Press Start 2P spacing — whole px, see above */
+
+  /* --- transition durations (2026-07-14 audit, 2nd pass: 15 distinct values in
+     two notations — 0.3s AND 300ms — for what are really five intents). One
+     notation (s), five steps; snap everything to the nearest intent. --- */
+  --k-t-tap: 0.05s; /* pressed-state feedback — must feel instant */
+  --k-t-fast: 0.12s; /* hovers, small UI state (old .1/.12/.14/.15/120-160ms) */
+  --k-t-base: 0.2s; /* standard component transitions (old .18/.2/.22/220ms) */
+  --k-t-slow: 0.3s; /* panel/emphasis moves (old .25/.3/300ms) */
+  --k-t-slower: 0.5s; /* big reveals / overlays */
+
+  /* --- shadows (2026-07-14 audit, 2nd pass: 13 unique box-shadows, no tokens).
+     The arcade "hard offset" idiom in its three sizes. Glows stay composed at
+     the call site (their color/blur IS the design), but their color must come
+     from the palette via color-mix — never a raw rgba triplet. --- */
+  --k-shadow-hard-sm: 1px 1px 0 color-mix(in srgb, var(--k-black) 55%, transparent);
+  --k-shadow-hard: 4px 4px 0 color-mix(in srgb, var(--k-black) 55%, transparent);
+  --k-shadow-hard-lg: 6px 6px 0 color-mix(in srgb, var(--k-black) 60%, transparent);
+
+  /* --- breakpoint ledger (@media can't read custom properties — this comment IS
+     the source of truth; stylelint can't gate it, reviews do). Canonical set:
+       479px  (xs, phones)          = 480 - 1
+       639px  (sm, large phones)    = 640 - 1
+       767px  (md, portrait tablet) = 768 - 1
+       1023px (lg, the site's main desktop/mobile split) = 1024 - 1
+     2026-07-14 audit: 520px and 599px one-offs were snapped into this set. --- */
 
   /* --- z-index scale for the page-level HUD/overlay layers (fixed or
      portaled-to-body components that stack against EACH OTHER — not the
@@ -307,7 +345,7 @@ body {
   font-family: var(--k-font);
   color: var(--k-ink);
   background: var(--k-bg);
-  line-height: 1.6;
+  line-height: var(--k-lh-loose);
   -webkit-font-smoothing: none;
   text-rendering: geometricPrecision;
   overflow-x: hidden;
@@ -322,7 +360,7 @@ body {
    engines just keep today's stripe, no worse than before.) */
 body:has(> .classic),
 body:has(> .mcp) {
-  background: #fff;
+  background: var(--k-white);
   color-scheme: light; /* these pages are white — keep their controls/scrollbars light */
 }
 
@@ -363,7 +401,7 @@ a {
    inherits a readable color instead of the dark-mode default. */
 body:has(> .classic) a,
 body:has(> .mcp) a {
-  color: #0a5fa8;
+  color: var(--k-link-onlight);
 }
 
 /* visually hidden but announced by AT / crawled by search — for content
@@ -373,6 +411,7 @@ body:has(> .mcp) a {
   position: absolute;
   width: 1px;
   height: 1px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: standard visually-hidden clip idiom, not scale spacing */
   margin: -1px;
   padding: 0;
   overflow: hidden;
@@ -384,19 +423,19 @@ body:has(> .mcp) a {
 .skip-link {
   position: absolute;
   top: -100%;
-  left: 8px;
+  left: var(--k-space-8);
   z-index: var(--z-skiplink);
-  padding: 10px 16px;
-  background: #000;
-  color: #fff;
-  border: 1px solid #fff;
+  padding: var(--k-space-8) var(--k-space-16);
+  background: var(--k-black);
+  color: var(--k-white);
+  border: 1px solid var(--k-white);
   font-family: var(--k-font-mono);
-  font-size: 14px;
+  font-size: var(--k-text-hud-md);
   text-transform: uppercase;
 }
 
 .skip-link:focus {
-  top: 8px;
+  top: var(--k-space-8);
 }
 
 /* accessibility: honor reduced motion globally; effect modules must check this too */

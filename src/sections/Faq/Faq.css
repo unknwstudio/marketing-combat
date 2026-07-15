@@ -13,11 +13,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--k-space-lg);
-  padding: 26px var(--k-1);
+  gap: var(--k-space-20);
+  padding: var(--k-space-24) var(--k-space-8);
   cursor: pointer;
   list-style: none;
-  transition: background 0.12s;
+  transition: background var(--k-t-fast);
 }
 
 /* hide the default disclosure triangle across engines */
@@ -26,7 +26,7 @@
 }
 
 .faq__summary:hover {
-  background: rgba(63, 224, 255, 0.06);
+  background: color-mix(in srgb, var(--k-cyan) 6%, transparent);
 }
 
 .faq__summary:focus-visible {
@@ -37,18 +37,18 @@
 .faq__q {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--k-space-12);
   font-family: var(--k-font-mono);
-  font-size: 26px;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
+  font-size: var(--k-text-lg);
+  line-height: var(--k-lh-tight);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-white);
   text-transform: none;
 }
 
 .faq__caret {
   color: var(--k-accent-green);
-  transition: transform 0.15s ease-out;
+  transition: transform var(--k-t-fast) ease-out;
 }
 
 .faq__item[open] .faq__caret {
@@ -59,9 +59,9 @@
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: var(--k-space-xs);
+  gap: var(--k-space-4);
   font-family: var(--k-font-mono);
-  font-size: 22px;
+  font-size: var(--k-text-md);
   color: var(--k-orange);
   white-space: nowrap;
 }
@@ -69,16 +69,16 @@
 /* all three arrows are the SAME glyph, rotated — so they read the same length */
 .faq__arrow {
   display: inline-block;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   transform: rotate(var(--rot, 0deg));
 }
 
 .faq__a {
-  padding: 0 var(--k-1) 26px 36px;
+  padding: 0 var(--k-space-8) var(--k-space-24) var(--k-space-32);
   font-family: var(--k-font-mono);
-  font-size: 22px;
-  line-height: 1.5;
-  letter-spacing: -0.5px;
+  font-size: var(--k-text-md);
+  line-height: var(--k-lh-normal);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
 }
 
@@ -90,6 +90,7 @@
   position: absolute;
   width: 1px;
   height: 1px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: visually-hidden clip pattern (same as .sr-only in index.css) — -1px pulls the 1px box out of view, not a spacing-scale value */
   margin: -1px;
   padding: 0;
   overflow: hidden;
@@ -100,21 +101,21 @@
 
 @media (max-width: 1023px) {
   .faq__summary {
-    padding: 18px var(--k-space-xs);
-    gap: var(--k-space-sm);
+    padding: var(--k-space-16) var(--k-space-4);
+    gap: var(--k-space-12);
   }
 
   .faq__q {
-    font-size: 14px;
-    gap: 10px;
+    font-size: var(--k-text-xs);
+    gap: var(--k-space-8);
   }
 
   .faq__combo {
-    font-size: 13px;
+    font-size: var(--k-text-xs);
   }
 
   .faq__a {
-    padding: 0 var(--k-space-xs) 18px 26px;
-    font-size: 13px;
+    padding: 0 var(--k-space-4) var(--k-space-16) var(--k-space-24);
+    font-size: var(--k-text-xs);
   }
 }

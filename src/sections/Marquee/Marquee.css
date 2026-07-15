@@ -30,14 +30,15 @@
   display: inline-flex;
   align-items: center;
   /* the star is a separator, so it must sit EQUIDISTANT from the text before
-     and after it: star->text gap (--k-4) === padding-right + padding-left of
-     two adjacent items (--k-2 + --k-2). Keep the two in lockstep. */
-  gap: var(--k-4);
-  padding: 14px var(--k-2);
+     and after it: star->text gap (--k-space-32) === padding-right + padding-left
+     of two adjacent items (--k-space-16 + --k-space-16). Keep the two in lockstep. */
+  gap: var(--k-space-32);
+  padding: var(--k-space-16); /* was 14px 16px — vertical snapped to its 16px horizontal sibling */
   font-family: var(--k-font);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke pixel-font ticker size; nearest fixed HUD steps (16/24) are ±4px and the pixel grid forbids a fluid clamp */
   font-size: 20px;
-  line-height: 1;
-  letter-spacing: 1px;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-pixel-sm);
   color: var(--k-black);
   white-space: nowrap;
   text-transform: uppercase;
@@ -78,9 +79,9 @@
   }
 
   .marquee__item {
-    font-size: 12px;
-    /* keep the equidistant-star rule: gap (--k-2) === 2× padding-x (--k-1) */
-    padding: 10px var(--k-1);
-    gap: var(--k-2);
+    font-size: var(--k-text-hud-sm);
+    /* keep the equidistant-star rule: gap (--k-space-16) === 2× padding-x (--k-space-8) */
+    padding: var(--k-space-8); /* was 10px 8px — vertical snapped to its 8px horizontal sibling */
+    gap: var(--k-space-16);
   }
 }

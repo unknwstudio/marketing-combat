@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--k-space-8);
   opacity: 0;
   visibility: hidden;
   will-change: opacity;
@@ -27,8 +27,10 @@
 
 .roundmoment__kicker {
   font-family: var(--k-font-mono);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: pinned-placard kicker scales 16→32px with the viewport; no scale step matches (md/lg max 22/24, xl min 28 — both bounds >15% off) */
   font-size: clamp(16px, 2.6vw, 32px);
-  line-height: 1;
+  line-height: var(--k-lh-flat);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0.42em one-off ultra-wide tracking, mirrored by the text-indent below for optical centering (spec-sanctioned rule-3 one-off) */
   letter-spacing: 0.42em;
   text-indent: 0.42em;
   text-transform: uppercase;
@@ -37,38 +39,40 @@
 
 .roundmoment__num {
   font-family: var(--k-font-accent);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: full-viewport ROUND-number display art (spec's own irreplaceable-clamp example) */
   font-size: clamp(150px, 30vw, 420px);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0.8 leading on the 150-420px numeral; snapping to --k-lh-crushed (0.9) shifts the giant placard by up to 42px */
   line-height: 0.8;
   color: var(--k-title-yellow);
   -webkit-text-stroke: 0.05em var(--k-orange);
   paint-order: stroke fill;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--k-ls-display);
   text-shadow:
     0 0 0.06em var(--k-orange),
-    0 0 0.22em rgba(255, 80, 0, 0.6);
+    0 0 0.22em color-mix(in srgb, var(--k-orange) 60%, transparent);
   will-change: transform;
 }
 
 .roundmoment__tag {
   font-family: var(--k-font-mono);
   font-size: var(--k-text-lg);
-  line-height: 1;
-  letter-spacing: 0.06em;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-wide);
   text-transform: uppercase;
   color: var(--k-body-green);
 }
 
 .roundmoment__pips {
   display: flex;
-  gap: 10px;
-  margin-top: var(--k-space-lg);
+  gap: var(--k-space-8);
+  margin-top: var(--k-space-20);
 }
 
 .roundmoment__pip {
   width: 14px;
   height: 14px;
   background: var(--k-gold);
-  box-shadow: 0 0 12px rgba(255, 210, 63, 0.85);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--k-gold) 85%, transparent);
 }
 
 @media (max-width: 1023px) {

@@ -5,20 +5,20 @@
 .c-why__head {
   display: flex;
   flex-direction: column;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   max-width: 760px;
-  margin-bottom: var(--k-8);
+  margin-bottom: var(--k-space-64);
 }
 
 .c-why__intro {
-  margin-top: var(--k-1);
+  margin-top: var(--k-space-8);
   max-width: 520px;
 }
 
 .c-why__list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: var(--k-8);
+  column-gap: var(--k-space-64);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -27,38 +27,38 @@
 
 .c-why__item {
   display: flex;
-  gap: var(--k-3);
-  padding: var(--k-4) 0;
+  gap: var(--k-space-24);
+  padding: var(--k-space-32) 0;
   border-bottom: 1px solid var(--k-black);
 }
 
 .c-why__n {
   flex: none;
-  font-size: clamp(28px, 3.2vw, 40px);
+  font-size: var(--k-text-xl);
   font-weight: 400;
-  line-height: 0.9;
+  line-height: var(--k-lh-crushed);
   color: var(--c-accent);
 }
 
 .c-why__title {
   font-size: var(--k-text-md);
   font-weight: 400;
-  line-height: 1.05;
+  line-height: var(--k-lh-flat);
   text-transform: uppercase;
   color: var(--k-black);
-  margin-bottom: var(--k-1);
+  margin-bottom: var(--k-space-8);
 }
 
 .c-why__body {
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
   max-width: 38ch;
 }
 
 @media (max-width: 1023px) {
   .c-why__head {
-    margin-bottom: var(--k-6);
+    margin-bottom: var(--k-space-48);
   }
 
   .c-why__list {

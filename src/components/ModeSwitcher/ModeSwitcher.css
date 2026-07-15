@@ -20,14 +20,14 @@
   z-index: var(--z-mode);
   display: flex;
   align-items: stretch;
-  gap: var(--k-space-xs);
-  padding: var(--k-space-xs);
-  background: rgba(7, 7, 7, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 99px;
+  gap: var(--k-space-4);
+  padding: var(--k-space-4);
+  background: color-mix(in srgb, var(--k-classic-ink) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--k-white) 16%, transparent);
+  border-radius: var(--k-radius-pill);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: transform var(--k-t-slow) cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 /* Auto-hide while the reader scrolls down so the opaque pill never covers copy
@@ -53,7 +53,7 @@
     max-width: calc(100vw - 20px);
   }
   .mode-switch__opt {
-    padding: 0 var(--k-space-sm);
+    padding: 0 var(--k-space-12);
   }
 }
 
@@ -61,9 +61,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 18px;
+  padding: 0 var(--k-space-16);
   height: 36px;
-  border-radius: 99px;
+  border-radius: var(--k-radius-pill);
   color: var(--k-white);
   text-decoration: none;
   white-space: nowrap;
@@ -78,21 +78,22 @@
 
 .mode-switch__opt--ai {
   font-family: var(--k-font, 'Press Start 2P', monospace);
-  font-size: 10px;
-  line-height: 1;
-  letter-spacing: 0.04em;
+  font-size: var(--k-text-hud-xs);
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
 }
 
 .mode-switch__opt--classic {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  font-size: var(--k-text-xs);
-  line-height: 1;
+  /* fixed pill chrome — integer HUD step, not the fluid scale (was --k-text-xs) */
+  font-size: var(--k-text-hud-sm);
+  line-height: var(--k-lh-flat);
 }
 
 .mode-switch__opt:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--k-white) 12%, transparent);
 }
 
 .mode-switch__opt:focus-visible {
@@ -108,9 +109,10 @@
 .mode-switch__opt--mcp {
   font-family: var(--k-font-mono, 'GT Pressura Mono', 'Courier New', monospace);
   -webkit-font-smoothing: antialiased;
-  font-size: var(--k-text-xs);
-  line-height: 1;
-  letter-spacing: -0.02em;
+  /* fixed pill chrome — integer HUD step, not the fluid scale (was --k-text-xs) */
+  font-size: var(--k-text-hud-sm);
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-tight);
 }
 
 .mode-switch__opt--active.mode-switch__opt--classic {

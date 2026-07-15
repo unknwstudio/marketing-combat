@@ -2,7 +2,7 @@
 .stages__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--k-space-lg);
+  gap: var(--k-space-20);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -11,24 +11,24 @@
 .stages__card {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--k-space-16);
 }
 
 .stages__card--final {
   border-color: var(--k-red);
-  box-shadow: 0 0 24px rgba(255, 46, 77, 0.28);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--k-red) 28%, transparent);
 }
 
 .stages__top {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--k-space-12);
 }
 
 .stages__meta {
   font-family: var(--k-font-mono);
-  font-size: 18px;
-  letter-spacing: -0.3px;
+  font-size: var(--k-text-base);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-accent-green);
   text-transform: uppercase;
 }
@@ -36,9 +36,10 @@
 .stages__title {
   margin: 0;
   font-family: var(--k-font-mono);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 28px card title sits between --k-text-lg (24) and --k-text-xl (40) — nearest step is a visible 4px shrink */
   font-size: 28px;
-  line-height: 1.1;
-  letter-spacing: -0.5px;
+  line-height: var(--k-lh-tight);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-white);
   text-transform: uppercase;
 }
@@ -46,9 +47,9 @@
 .stages__body {
   flex: 1;
   font-family: var(--k-font-mono);
-  font-size: 20px;
-  line-height: 1.4;
-  letter-spacing: -0.5px;
+  font-size: var(--k-text-md);
+  line-height: var(--k-lh-normal);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
 }
 
@@ -60,18 +61,18 @@
 @media (max-width: 1023px) {
   .stages__grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: var(--k-space-16);
   }
 
   .stages__meta {
-    font-size: 11px;
+    font-size: var(--k-text-xs);
   }
 
   .stages__title {
-    font-size: 18px;
+    font-size: var(--k-text-base);
   }
 
   .stages__body {
-    font-size: 13px;
+    font-size: var(--k-text-xs);
   }
 }

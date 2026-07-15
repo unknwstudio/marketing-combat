@@ -2,7 +2,7 @@
 .whyjoin__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--k-space-lg);
+  gap: var(--k-space-20);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -11,9 +11,9 @@
 .whyjoin__card {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--k-space-16);
   min-height: 260px;
-  transition: border-color 0.14s, transform 0.14s;
+  transition: border-color var(--k-t-fast), transform var(--k-t-fast);
 }
 
 @media (hover: hover) {
@@ -39,9 +39,10 @@
 .whyjoin__title {
   margin: 0;
   font-family: var(--k-font-mono);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: card-title display size sits between --k-text-lg (24) and --k-text-xl (40); either snap visibly damages the hierarchy */
   font-size: 30px;
-  line-height: 1;
-  letter-spacing: -0.5px;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-white);
   text-transform: uppercase;
 }
@@ -49,21 +50,21 @@
 .whyjoin__body {
   flex: 1;
   font-family: var(--k-font-mono);
-  font-size: 20px;
-  line-height: 1.4;
-  letter-spacing: -0.5px;
+  font-size: var(--k-text-md);
+  line-height: var(--k-lh-normal);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
 }
 
 @media (max-width: 1023px) {
   .whyjoin__grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--k-space-sm);
+    gap: var(--k-space-12);
   }
 
   .whyjoin__card {
     min-height: 0;
-    gap: var(--k-space-sm);
+    gap: var(--k-space-12);
   }
 
   .whyjoin__icon {
@@ -72,11 +73,11 @@
   }
 
   .whyjoin__title {
-    font-size: 16px;
+    font-size: var(--k-text-sm);
   }
 
   .whyjoin__body {
-    font-size: 12px;
+    font-size: var(--k-text-xs);
   }
 }
 

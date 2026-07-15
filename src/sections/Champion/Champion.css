@@ -45,8 +45,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-1);
-  padding: var(--k-space-lg);
+  gap: var(--k-space-8);
+  padding: var(--k-space-20);
   background: var(--k-black);
   border: 1px solid var(--k-muted);
   overflow: hidden; /* clip the full-bleed ticker to the black box */
@@ -61,7 +61,7 @@
      w=1499 in a 1359 box). Overflow 20px each side to reach the border, then
      the topbox clips it. Mobile overrides width back to 100%. */
   width: calc(100% + 40px);
-  padding: var(--k-space-xs) 0;
+  padding: var(--k-space-4) 0;
   overflow: hidden;
   background: var(--k-champion-mauve);
 }
@@ -90,22 +90,22 @@
 
 .champion__tickerItem {
   flex: none;
-  margin-right: var(--k-3); /* uniform pitch for the seamless loop */
+  margin-right: var(--k-space-24); /* uniform pitch for the seamless loop */
   /* Figma 35:4131 etc: GT Pressura Mono Regular, 24px, -0.72px, black, lowercase */
   font-family: var(--k-font-mono);
   font-size: var(--k-text-lg);
-  line-height: 1;
-  letter-spacing: -0.72px;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-display);
 }
 
 .champion__dot {
-  margin-left: var(--k-3);
+  margin-left: var(--k-space-24);
 }
 
 /* Stats row: four equal cells */
 .champion__stats {
   display: flex;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
   width: 100%;
 }
 
@@ -117,8 +117,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--k-1); /* Figma 19px is between cap-trimmed boxes; untrimmed line boxes add slack */
-  padding: 17px 30px;
+  gap: var(--k-space-8); /* Figma 19px is between cap-trimmed boxes; untrimmed line boxes add slack */
+  padding: var(--k-space-16) var(--k-space-32);
   background: var(--k-champion-sage);
   text-align: center;
 }
@@ -128,7 +128,7 @@
   font-family: var(--k-font-accent);
   font-weight: 500;
   font-size: var(--k-text-2xl);
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-black);
 }
 
@@ -138,8 +138,8 @@
 .champion__caption {
   font-family: var(--k-font-mono);
   font-size: var(--k-text-lg);
-  line-height: 1.15;
-  letter-spacing: -0.72px;
+  line-height: var(--k-lh-tight);
+  letter-spacing: var(--k-ls-display);
   max-width: 235px;
 }
 
@@ -163,14 +163,14 @@
   width: max-content;
   margin-inline: auto;
   z-index: 5;
-  padding: var(--k-1) var(--k-1) 10px;
+  padding: var(--k-space-8) var(--k-space-8) var(--k-space-8); /* bottom was 10px — snapped to the 8 grid */
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);
   font-family: var(--k-font-mono);
   font-size: var(--k-text-lg);
-  line-height: 1;
-  letter-spacing: -0.72px;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-display);
   text-transform: lowercase;
   white-space: nowrap;
   cursor: pointer;
@@ -201,8 +201,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--k-2);
-    padding: var(--k-3) var(--k-2);
+    gap: var(--k-space-16);
+    padding: var(--k-space-24) var(--k-space-16);
     background: var(--k-bg);
   }
 
@@ -236,7 +236,7 @@
     order: 3;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--k-1);
+    gap: var(--k-space-8);
     width: 100%;
   }
 

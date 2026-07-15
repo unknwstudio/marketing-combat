@@ -2,7 +2,7 @@
 .organizers__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--k-space-lg);
+  gap: var(--k-space-20);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -11,7 +11,7 @@
 .organizers__card {
   display: flex;
   flex-direction: column;
-  gap: var(--k-2);
+  gap: var(--k-space-16);
   align-items: flex-start;
 }
 
@@ -29,7 +29,7 @@
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border: 2px solid var(--k-line);
-  transition: transform 0.25s ease, filter 0.25s ease;
+  transition: transform var(--k-t-slow) ease, filter var(--k-t-slow) ease;
 }
 
 /* character-select hover: zoom + chromatic-aberration (see RGBSplitFilter),
@@ -41,7 +41,7 @@
   background: linear-gradient(
     100deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.4) 50%,
+    color-mix(in srgb, var(--k-white) 40%, transparent) 50%,
     transparent 60%
   );
   transform: translateX(-120%);
@@ -78,8 +78,8 @@
 
 .organizers__tag {
   font-family: var(--k-font-mono);
-  font-size: 18px;
-  letter-spacing: -0.3px;
+  font-size: var(--k-text-base);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-orange);
   text-transform: uppercase;
 }
@@ -87,37 +87,37 @@
 .organizers__name {
   margin: 0;
   font-family: var(--k-font-mono);
-  font-size: 24px;
-  line-height: 1.15;
-  letter-spacing: -0.5px;
+  font-size: var(--k-text-lg);
+  line-height: var(--k-lh-tight);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-white);
   text-transform: uppercase;
 }
 
 .organizers__bio {
   font-family: var(--k-font-mono);
-  font-size: 19px;
-  line-height: 1.4;
-  letter-spacing: -0.5px;
+  font-size: var(--k-text-base);
+  line-height: var(--k-lh-normal);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
 }
 
 @media (max-width: 1023px) {
   .organizers__grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    gap: var(--k-space-12);
   }
 
   .organizers__tag {
-    font-size: 11px;
+    font-size: var(--k-text-xs);
   }
 
   .organizers__name {
-    font-size: 15px;
+    font-size: var(--k-text-sm);
   }
 
   .organizers__bio {
-    font-size: 12px;
+    font-size: var(--k-text-xs);
   }
 }
 

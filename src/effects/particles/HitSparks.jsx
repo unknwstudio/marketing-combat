@@ -11,6 +11,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import { K_WHITE, K_GOLD, K_CYAN } from '@/game/palette'
 
 const SparksContext = createContext(null)
 
@@ -28,13 +29,13 @@ const GRAVITY = 0.18
 const FRICTION = 0.86
 
 // White core + arcade yellow + cyan. Yellow/cyan are read from the CSS tokens
-// so a Figma palette swap flows through; hex values are only fallbacks.
+// so a Figma palette swap flows through; the palette.js mirrors are only fallbacks.
 const readPalette = () => {
-  if (typeof window === 'undefined') return ['#ffffff', '#ffd23f', '#3fe0ff']
+  if (typeof window === 'undefined') return [K_WHITE, K_GOLD, K_CYAN]
   const s = getComputedStyle(document.documentElement)
-  const y = s.getPropertyValue('--k-gold').trim() || '#ffd23f'
-  const c = s.getPropertyValue('--k-cyan').trim() || '#3fe0ff'
-  return ['#ffffff', y, c]
+  const y = s.getPropertyValue('--k-gold').trim() || K_GOLD
+  const c = s.getPropertyValue('--k-cyan').trim() || K_CYAN
+  return [K_WHITE, y, c]
 }
 
 // Fixed, full-viewport, click-through overlay.
@@ -57,7 +58,7 @@ export default function HitSparks({ children }) {
   const partsRef = useRef([])
   const rafRef = useRef(0)
   const dprRef = useRef(1)
-  const paletteRef = useRef(['#ffffff', '#ffd23f', '#3fe0ff'])
+  const paletteRef = useRef([K_WHITE, K_GOLD, K_CYAN])
 
   // Portals must not render during SSR / first client render or hydration
   // mismatches (server has no <canvas>, client would). Gate on a mount flag so

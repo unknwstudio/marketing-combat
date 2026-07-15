@@ -4,36 +4,38 @@
 
 .legal {
   min-height: 100vh;
-  padding: var(--k-8, var(--k-8)) var(--k-3);
+  padding: var(--k-space-64) var(--k-space-24);
 }
 
 .legal__doc {
   max-width: 720px;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: var(--k-lh-loose);
 }
 
 .legal__title {
-  margin: 0 0 var(--k-2);
+  margin: 0 0 var(--k-space-16);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: legal-doc display title sits between --k-text-lg (24) and --k-text-xl (40); either snap is a visible 6-10px jump */
   font-size: 30px;
-  line-height: 1.15;
+  line-height: var(--k-lh-tight);
 }
 
 .legal__intro {
-  margin: 0 0 var(--k-3);
+  margin: 0 0 var(--k-space-24);
 }
 
 .legal__section {
-  margin-bottom: var(--k-2);
+  margin-bottom: var(--k-space-16);
 }
 
 .legal__h {
-  margin: 0 0 6px;
+  margin: 0 0 var(--k-space-8);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: section heading must stay above the 16px inherited body size; fluid --k-text-base bottoms out at 14px on phones (hierarchy inversion) */
   font-size: 18px;
 }
 
 .legal__p {
-  margin: 0 0 var(--k-1);
+  margin: 0 0 var(--k-space-8);
 }
 
 .legal__p:last-child {
@@ -41,7 +43,8 @@
 }
 
 .legal__list {
-  margin: 0 0 var(--k-1);
+  margin: 0 0 var(--k-space-8);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: list indent rides the skin's own font size (em), not the px spacing scale */
   padding-left: 1.25em;
 }
 
@@ -50,11 +53,11 @@
 }
 
 .legal__list li {
-  margin-bottom: var(--k-space-xs);
+  margin-bottom: var(--k-space-4);
 }
 
 .legal__back {
-  margin-top: var(--k-4, var(--k-4));
+  margin-top: var(--k-space-32);
 }
 
 .legal__back a {
@@ -81,7 +84,7 @@
 .legal--ai .legal__h {
   color: var(--k-accent-green);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--k-ls-wide-sm);
 }
 
 .legal--ai .legal__back a,

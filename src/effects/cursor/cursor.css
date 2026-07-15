@@ -38,6 +38,7 @@ html.k-cursor-on * {
   left: 0;
   width: 4px;
   height: 4px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: centers the 4px sprite core on the pointer hotspot (effect geometry, not spacing) */
   margin: -2px 0 0 -2px;
   background: var(--k-gold);
   box-shadow:
@@ -57,6 +58,7 @@ html.k-cursor-on * {
   left: 0;
   width: 4px;
   height: 4px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: centers the 4px dust square on the pointer hotspot (effect geometry, not spacing) */
   margin: -2px 0 0 -2px;
   background: var(--k-cyan);
   image-rendering: pixelated;

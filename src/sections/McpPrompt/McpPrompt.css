@@ -15,22 +15,22 @@
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   color: var(--k-black);
-  padding: var(--k-3) var(--k-2);
+  padding: var(--k-space-24) var(--k-space-16);
 }
 
 .mcp__center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-space-lg);
+  gap: var(--k-space-20);
   width: min(513px, 100%);
 }
 
 .mcp__caption {
   width: 316px;
   max-width: 100%;
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-tight);
   text-align: center;
 }
 
@@ -39,36 +39,37 @@
 .mcp__card {
   width: 100%;
   background: var(--k-amber);
-  border-radius: 17px;
-  padding: var(--k-space-xs);
+  border-radius: var(--k-radius-lg);
+  padding: var(--k-space-4);
 }
 
 .mcp__card-border {
   background: var(--k-amber-deep);
-  border-radius: 13px;
+  border-radius: var(--k-radius-md);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 1px hairline ring — this padding IS the card's 1px border (nested-background technique per the Figma anatomy above), not a spacing value */
   padding: 1px;
 }
 
 .mcp__card-inner {
   background: var(--k-amber);
-  border-radius: 12px;
-  padding: var(--k-2) var(--k-1) var(--k-1);
+  border-radius: var(--k-radius-md);
+  padding: var(--k-space-16) var(--k-space-8) var(--k-space-8);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
 }
 
 /* --- prompt preview: lowercase mono, clamped to 9 lines --------------- */
 
 .mcp__preview {
   width: 100%;
-  padding: 0 3px;
+  padding: 0 var(--k-space-4);
   box-sizing: border-box;
   font-family: var(--k-font-mono, 'GT Pressura Mono', 'Courier New', monospace);
-  font-size: 16px;
-  letter-spacing: -0.48px;
-  line-height: normal;
+  font-size: var(--k-text-sm);
+  letter-spacing: var(--k-ls-tight);
+  line-height: var(--k-lh-snug); /* GT Pressura Mono's metric `normal` computes to ~1.29 */
   text-transform: lowercase;
   /* var(--k-amber-dark) on var(--k-amber): ~5.2:1, clears WCAG AA (was var(--k-amber-deep) at ~1.98:1) */
   color: var(--k-amber-dark);
@@ -96,10 +97,10 @@
   background: var(--k-black);
   color: var(--k-white);
   font-family: inherit;
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-tight);
   border: 0;
-  border-radius: 99px;
+  border-radius: var(--k-radius-pill);
   cursor: pointer;
 }
 

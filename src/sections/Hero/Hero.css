@@ -25,7 +25,7 @@
 .hero__meter-pct,
 .hero__survive,
 .hero__pill {
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
 }
@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--k-3); /* Figma badge->lede spacing (33:3912 bottom to 33:3903 cap) */
+  gap: var(--k-space-24); /* Figma badge->lede spacing (33:3912 bottom to 33:3903 cap) */
   z-index: 3;
 }
 
@@ -74,12 +74,12 @@
    the site answers the pointer identically. */
 .hero__badge {
   display: inline-block;
-  padding: var(--k-1) var(--k-1) 10px;
+  padding: var(--k-space-8); /* was 8 / 8 / 10 — bottom snapped onto the 8-grid */
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);
   font-size: var(--k-text-lg); /* Figma 33:3913 */
-  letter-spacing: -0.72px;
+  letter-spacing: var(--k-ls-display);
   white-space: nowrap;
   cursor: pointer;
   text-decoration: none;
@@ -101,8 +101,8 @@
 .hero__lede {
   color: var(--k-accent-green);
   font-size: var(--k-text-lg); /* Figma 33:3903 */
-  line-height: 1.25; /* Figma normal leading -> 3-line block ~= 77px */
-  letter-spacing: -0.72px;
+  line-height: var(--k-lh-snug); /* Figma normal leading (1.25) snapped to the snug step */
+  letter-spacing: var(--k-ls-display);
   /* lift the green terminal copy off the busy CRT scene behind it (2026-07-14
      UX audit M3) — a soft dark halo + hard pixel offset, no layout change */
   text-shadow: 0 0 8px var(--k-shadow), 1px 2px 0 var(--k-shadow);
@@ -116,7 +116,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
   z-index: 3;
 }
 
@@ -126,15 +126,15 @@
   justify-content: space-between;
   width: 213px;
   height: 43px;
-  padding: var(--k-space-xs) var(--k-1) var(--k-space-xs) var(--k-space-xs);
-  background: rgba(0, 0, 0, 0.6);
+  padding: var(--k-space-4) var(--k-space-8) var(--k-space-4) var(--k-space-4);
+  background: color-mix(in srgb, var(--k-black) 60%, transparent);
   border: 2px solid var(--k-orange);
 }
 
 .hero__bars {
   display: flex;
   align-items: center;
-  gap: var(--k-space-2xs);
+  gap: var(--k-space-2);
   height: 100%;
 }
 
@@ -147,13 +147,13 @@
 .hero__meter-pct {
   color: var(--k-orange);
   font-size: var(--k-text-lg); /* Figma 33:3929 (Input Mono Condensed -> mono) */
-  letter-spacing: -0.72px;
+  letter-spacing: var(--k-ls-display);
 }
 
 .hero__survive {
   color: var(--k-orange);
   font-size: var(--k-text-lg); /* Figma 33:3911 */
-  letter-spacing: -0.72px;
+  letter-spacing: var(--k-ls-display);
   white-space: nowrap;
 }
 
@@ -170,16 +170,17 @@
 }
 
 .hero__pill {
-  padding: var(--k-1) var(--k-space-xs);
-  background: rgba(0, 0, 0, 0.6);
+  padding: var(--k-space-8) var(--k-space-4);
+  background: color-mix(in srgb, var(--k-black) 60%, transparent);
   border-top: 1px solid var(--k-white);
   border-bottom: 1px solid var(--k-white);
   color: var(--k-accent-green);
   font-size: var(--k-text-lg); /* Figma 33:3894 tags: 24px, -0.72px */
-  letter-spacing: -0.72px;
+  letter-spacing: var(--k-ls-display);
   white-space: nowrap;
-  transition: color 0.14s ease, background 0.14s ease, border-color 0.14s ease,
-    transform 0.14s ease, box-shadow 0.14s ease;
+  transition: color var(--k-t-fast) ease, background var(--k-t-fast) ease,
+    border-color var(--k-t-fast) ease, transform var(--k-t-fast) ease,
+    box-shadow var(--k-t-fast) ease;
 }
 
 /* hover flourish — the pill fills gold with black type, lifts, scales and
@@ -192,7 +193,7 @@
   border-color: var(--k-gold);
   color: var(--k-black);
   transform: translateY(-3px) scale(1.06);
-  box-shadow: 0 0 18px rgba(255, 210, 63, 0.6);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--k-gold) 60%, transparent);
 }
 
 /* --- decorative flanking grid lines (3-line sets, low opacity) --- */
@@ -205,8 +206,8 @@
   pointer-events: none;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(244, 244, 248, 0.22) 0,
-    rgba(244, 244, 248, 0.22) 1px,
+    color-mix(in srgb, var(--k-ink) 22%, transparent) 0,
+    color-mix(in srgb, var(--k-ink) 22%, transparent) 1px,
     transparent 1px,
     transparent 9px
   );
@@ -237,11 +238,11 @@
   z-index: 3;
   display: inline-flex;
   align-items: center;
-  gap: var(--k-2);
-  padding: var(--k-2) var(--k-5);
+  gap: var(--k-space-16);
+  padding: var(--k-space-16) var(--k-space-40);
   font-family: var(--k-font-mono);
   font-size: var(--k-text-lg);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--k-ls-wide);
   color: var(--k-black);
   background: var(--k-gold);
   border: 1px solid var(--k-white);
@@ -277,11 +278,12 @@
   z-index: 4;
   display: inline-flex;
   align-items: center;
-  gap: var(--k-2);
-  padding: var(--k-2) var(--k-4);
+  gap: var(--k-space-16);
+  padding: var(--k-space-16) var(--k-space-32);
   font-family: var(--k-font-pixel);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke pixel-font display size for the big PLAY launcher; nearest fixed HUD steps (16/24) are ±10px and the pixel grid forbids a fluid clamp */
   font-size: 34px;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-black);
   background: var(--k-gold);
   text-decoration: none;
@@ -290,10 +292,11 @@
   box-shadow:
     calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
     0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 rgba(255, 255, 255, 0.5),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(0, 0, 0, 0.28);
-  filter: drop-shadow(7px 9px 0 rgba(0, 0, 0, 0.45));
-  transition: transform 0.05s steps(2), filter 0.05s steps(2), background 0.1s;
+    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-white) 50%, transparent),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-black) 28%, transparent);
+  filter: drop-shadow(7px 9px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
+  transition: transform var(--k-t-tap) steps(2), filter var(--k-t-tap) steps(2),
+    background var(--k-t-fast);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -314,12 +317,12 @@
 
 .hero__playbig:active {
   transform: translateX(-50%) translate(4px, 4px);
-  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(2px 3px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
   box-shadow:
     calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
     0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 rgba(0, 0, 0, 0.28),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(255, 255, 255, 0.5);
+    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-black) 28%, transparent),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-white) 50%, transparent);
 }
 
 .hero__playbig:focus-visible {
@@ -384,10 +387,10 @@
     pointer-events: none;
     background: linear-gradient(
       180deg,
-      rgba(6, 1, 15, 0.6) 0%,
-      rgba(6, 1, 15, 0) 22%,
-      rgba(6, 1, 15, 0) 50%,
-      rgba(6, 1, 15, 0.88) 100%
+      color-mix(in srgb, var(--k-shadow) 60%, transparent) 0%,
+      color-mix(in srgb, var(--k-shadow) 0%, transparent) 22%,
+      color-mix(in srgb, var(--k-shadow) 0%, transparent) 50%,
+      color-mix(in srgb, var(--k-shadow) 88%, transparent) 100%
     );
   }
 
@@ -411,8 +414,8 @@
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    font-size: 12px;
-    padding: 6px 10px var(--k-1);
+    font-size: var(--k-text-hud-sm);
+    padding: var(--k-space-8); /* was 6 / 10 / 8 — snapped onto the 8-grid; the 44px min-height still governs the tap target */
   }
 
   .hero__lede {
@@ -422,9 +425,10 @@
     right: 14px;
     z-index: 3;
     max-width: 100%;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: legibility floor — reading copy that must NOT shrink below 12px on mobile (fluid --k-text-xs bottoms out at 11px) */
     font-size: 12px; /* real reading copy — floored to a legible size on mobile */
-    line-height: 1.5;
-    letter-spacing: -0.3px;
+    line-height: var(--k-lh-normal);
+    letter-spacing: var(--k-ls-tight);
     text-align: left;
   }
 
@@ -435,14 +439,14 @@
     right: 14px;
     left: auto;
     align-items: flex-end;
-    gap: 6px;
+    gap: var(--k-space-8);
     z-index: 4;
   }
 
   .hero__meter {
     width: 150px;
     height: 34px;
-    padding: 3px 6px 3px 3px;
+    padding: var(--k-space-4) var(--k-space-8) var(--k-space-4) var(--k-space-4); /* was 3/6/3/3 — snapped to the desktop meter's 4/8/4/4 idiom */
   }
 
   .hero__bar {
@@ -451,7 +455,7 @@
 
   .hero__meter-pct,
   .hero__survive {
-    font-size: 11px;
+    font-size: var(--k-text-hud-sm);
   }
 
   /* wordmark, low and centred over the fighters */
@@ -479,13 +483,13 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: var(--k-1);
+    gap: var(--k-space-8);
     z-index: 3;
   }
 
   .hero__pill {
-    font-size: 10px;
-    letter-spacing: -0.3px;
+    font-size: var(--k-text-hud-xs);
+    letter-spacing: var(--k-ls-tight);
   }
 
   /* mobile has no CRT/warp (3D is desktop-only), so plain absolute placement is
@@ -504,9 +508,10 @@
   .hero__playbig {
     top: 40%;
     --u: 4px;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: scaled-down pixel-font PLAY size; nearest fixed HUD steps (16/24) are ±4px and the pixel grid forbids a fluid clamp */
     font-size: 20px;
-    padding: var(--k-2) var(--k-3);
-    gap: var(--k-1);
+    padding: var(--k-space-16) var(--k-space-24);
+    gap: var(--k-space-8);
   }
 
   .hero__playbig-tri {
@@ -523,13 +528,14 @@
   }
 
   .hero__badge {
-    font-size: 10px;
+    font-size: var(--k-text-hud-xs);
   }
 
   .hero__lede {
     top: 74px;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: legibility floor — reading copy that must NOT shrink below 12px on phones (fluid --k-text-xs bottoms out at 11px) */
     font-size: 12px; /* keep reading copy legible on phones */
-    line-height: 1.55;
+    line-height: var(--k-lh-loose);
   }
 
   .hero__meter {
@@ -539,7 +545,7 @@
 
   .hero__meter-pct,
   .hero__survive {
-    font-size: 10px;
+    font-size: var(--k-text-hud-xs);
   }
 
   .hero__logo {
@@ -548,6 +554,6 @@
   }
 
   .hero__pill {
-    font-size: 9px;
+    font-size: var(--k-text-hud-2xs);
   }
 }

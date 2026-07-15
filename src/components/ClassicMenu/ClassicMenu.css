@@ -15,15 +15,15 @@
 
 .c-menu__card {
   pointer-events: auto;
-  margin: var(--k-2) var(--k-space-lg) 0 0;
+  margin: var(--k-space-16) var(--k-space-20) 0 0;
   width: 133px;
   background: var(--c-orange, var(--k-amber));
-  border-radius: 12px;
-  padding: var(--k-2) var(--k-1) var(--k-1);
+  border-radius: var(--k-radius-md);
+  padding: var(--k-space-16) var(--k-space-8) var(--k-space-8);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -33,12 +33,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact link spacing on the pixel-ported card (node 36:4312) — no snapping on Figma coordinates */
   gap: 6px;
 }
 
 .c-menu__link {
   color: var(--k-classic-ink);
   font-size: var(--k-text-sm);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading on the pixel-ported card (node 36:4312) — 1.2 has no token and must not snap */
   line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
@@ -63,9 +65,10 @@
   color: var(--k-white);
   font-family: inherit;
   font-size: var(--k-text-sm);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading on the pixel-ported card (node 36:4312) — 1.2 has no token and must not snap */
   line-height: 1.2;
   border: 0;
-  border-radius: 99px;
+  border-radius: var(--k-radius-pill);
   cursor: pointer;
   text-decoration: none;
 }
@@ -78,9 +81,9 @@
 
 @media (max-width: 1023px) {
   .c-menu__card {
-    margin: var(--k-space-sm) var(--k-space-sm) 0 0;
+    margin: var(--k-space-12) var(--k-space-12) 0 0;
     width: auto;
-    padding: 6px;
+    padding: var(--k-space-8);
     gap: 0;
   }
 
@@ -91,6 +94,6 @@
   .c-menu__apply {
     width: auto;
     min-width: 92px;
-    padding: 0 var(--k-space-lg);
+    padding: 0 var(--k-space-20);
   }
 }

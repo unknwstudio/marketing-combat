@@ -13,12 +13,16 @@
   --c-blue: var(--k-classic-blue);
   --c-green: var(--k-classic-green);
   --c-ink: var(--k-classic-ink);
+  /* Figma-exact display leading (2026-07-14 audit: the 0.942 literal was
+     hand-copied 5×). Deliberately fractional — it is the Figma spec value
+     for the classic display headings, not a drifted magic number. */
+  --c-lh-display: 0.942;
 
   min-height: 100%;
   background: var(--k-white);
   color: var(--k-black);
   font-family: var(--c-font);
-  line-height: 1.2;
+  line-height: var(--k-lh-tight);
   /* the global base sets font-smoothing: none for the pixel font — undo it */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -50,9 +54,9 @@
   /* content column + rhythm, all multiples of 8 */
   /* edge-hugging margin so every c-wrap section shares the hero / "who it's
      for" left edge (20px), instead of the old 120px inset */
-  --c-margin: 20px; /* -> 1400 content col, aligned to the hero edge */
-  --c-pad-major: var(--k-15); /* 120px vertical rhythm, major sections */
-  --c-pad-minor: var(--k-12); /* 96px, minor sections */
+  --c-margin: var(--k-space-20); /* -> 1400 content col, aligned to the hero edge */
+  --c-pad-major: var(--k-space-120); /* 120px vertical rhythm, major sections */
+  --c-pad-minor: var(--k-space-96); /* 96px, minor sections */
 }
 
 .acc-yellow {
@@ -89,9 +93,9 @@
 
 /* section eyebrow + heading + lede — the repeated editorial header */
 .c-kicker {
-  font-size: 12px;
-  line-height: 1.2;
-  letter-spacing: 0.08em;
+  font-size: var(--k-text-xs);
+  line-height: var(--k-lh-tight);
+  letter-spacing: var(--k-ls-wide);
   text-transform: uppercase;
   color: var(--c-accent);
 }
@@ -99,14 +103,14 @@
 .c-h2 {
   font-size: var(--k-text-2xl);
   font-weight: 400;
-  line-height: 0.942;
+  line-height: var(--c-lh-display);
   text-transform: uppercase;
   color: var(--k-black);
 }
 
 .c-lede {
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-normal);
   color: var(--k-black);
 }
 
@@ -126,9 +130,11 @@
    ============================================================ */
 
 .c-reveal {
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: reveal choreography timing (0.6s editorial fade+rise) — no --k-t-* step; snapping to 0.5s would quicken the tuned motion */
   transition:
     opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 70ms stagger step of the reveal choreography, not a UI-state duration */
   transition-delay: calc(var(--i, 0) * 70ms);
 }
 
@@ -148,14 +154,18 @@
   display: inline-block;
   /* breathing room so round-cap overshoot (G, O, C) isn't clipped by the
      mask's overflow:hidden; the neighbouring negative margin keeps layout put */
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: optical em-based cap-overshoot compensation (see comment above) — not a spacing-scale value */
   padding-block: 0.14em;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: line-mask reveal choreography timing (0.7s) — no --k-t-* step; snapping would visibly quicken it */
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 90ms per-line stagger of the mask reveal choreography */
   transition-delay: calc(var(--i, 0) * 90ms);
 }
 
 .c-mask-head .c-mask {
   display: block;
   overflow: hidden;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: cancels the .c-line 0.14em optical padding so layout stays put — pairs 1:1 with that value */
   margin-block: -0.14em;
 }
 
@@ -181,9 +191,9 @@
    and the vertical rhythm compresses to the 8px scale. */
 @media (max-width: 1023px) {
   .classic {
-    --c-margin: var(--k-2); /* 16px gutter */
-    --c-pad-major: var(--k-9); /* 72px */
-    --c-pad-minor: var(--k-7); /* 56px */
+    --c-margin: var(--k-space-16); /* 16px gutter */
+    --c-pad-major: var(--k-space-72); /* 72px */
+    --c-pad-minor: var(--k-space-56); /* 56px */
   }
 
   .c-sec {
@@ -196,6 +206,7 @@
   }
 
   .c-h2 {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile display floor of 32px below --k-text-2xl's 40px min; the token would defeat this <1024px override */
     font-size: clamp(32px, 8.5vw, 64px);
   }
 }

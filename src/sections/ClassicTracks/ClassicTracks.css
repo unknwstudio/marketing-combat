@@ -5,29 +5,29 @@
 .c-tracks__head {
   display: flex;
   flex-direction: column;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   max-width: 760px;
-  margin-bottom: var(--k-8);
+  margin-bottom: var(--k-space-64);
 }
 
 .c-tracks__intro {
-  margin-top: var(--k-1);
+  margin-top: var(--k-space-8);
   max-width: 520px;
 }
 
 .c-tracks__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
 }
 
 .c-track {
   display: flex;
   flex-direction: column;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   min-height: 560px;
-  padding: var(--k-5);
-  border-radius: 12px;
+  padding: var(--k-space-40);
+  border-radius: var(--k-radius-md);
   color: var(--k-white);
 }
 
@@ -40,8 +40,9 @@
 }
 
 .c-track__kicker {
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
   font-size: 12px;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--k-ls-wide);
   text-transform: uppercase;
   opacity: 0.75;
 }
@@ -49,13 +50,13 @@
 .c-track__title {
   font-size: var(--k-text-xl);
   font-weight: 400;
-  line-height: 0.95;
+  line-height: var(--k-lh-crushed);
   text-transform: uppercase;
 }
 
 .c-track__body {
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-normal);
   max-width: 42ch;
   opacity: 0.9;
 }
@@ -66,16 +67,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--k-2);
-  font-size: 14px;
-  letter-spacing: 0.04em;
+  gap: var(--k-space-16);
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
 }
 
 .c-track__arrow {
   display: inline-flex;
   align-items: center;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--k-t-slow) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .c-track__arrow .c-arrow {
@@ -90,7 +91,7 @@
 
 @media (max-width: 1023px) {
   .c-tracks__head {
-    margin-bottom: var(--k-6);
+    margin-bottom: var(--k-space-48);
   }
 
   .c-tracks__grid {
@@ -99,6 +100,6 @@
 
   .c-track {
     min-height: 0;
-    padding: var(--k-4);
+    padding: var(--k-space-32);
   }
 }

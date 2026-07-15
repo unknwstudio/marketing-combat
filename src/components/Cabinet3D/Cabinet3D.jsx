@@ -8,6 +8,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { playSfx } from '@/effects/audio/arcadeAudio'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import { GAME_COPY, openGameTakeover } from '@/lib/game'
+import { K_WHITE, K_BLACK, K_RED, K_CYAN, K_ORANGE, K_TITLE_YELLOW, K_ACCENT_GREEN } from '@/game/palette'
 import './Cabinet3D.css'
 
 const MODEL_URL = '/assets/demo/arcade-machine.glb'
@@ -42,7 +43,7 @@ const TROPHY_ART = [
   '..HGGGGGS...',
   '.HGGGGGGGS..',
 ]
-const TROPHY_PAL = { H: '#ffe98a', G: '#ffd000', S: '#ff5000' }
+const TROPHY_PAL = { H: '#ffe98a', G: K_TITLE_YELLOW, S: K_ORANGE }
 
 // Draw the trophy centred on `cx`, top edge at `top`, `p` px per pixel-cell.
 function drawTrophy(ctx, cx, top, p) {
@@ -80,24 +81,24 @@ function makeAttractTexture(variant = 'play') {
     x.font = '700 62px Arial, sans-serif'
     x.lineJoin = 'round'
     x.lineWidth = 8
-    x.strokeStyle = '#ff5000' // matches --k-orange
+    x.strokeStyle = K_ORANGE // matches --k-orange
     x.strokeText(GAME_COPY.youWin, 256, 74)
-    x.fillStyle = '#ffd000' // matches --k-title-yellow
+    x.fillStyle = K_TITLE_YELLOW // matches --k-title-yellow
     x.fillText(GAME_COPY.youWin, 256, 74)
     drawTrophy(x, 256, 122, 10) // 12×14 cells → 120×140px, centred (~y192)
     x.font = '24px "GT Pressura Mono", monospace'
-    x.fillStyle = '#3ad76f' // matches --k-accent-green
+    x.fillStyle = K_ACCENT_GREEN // matches --k-accent-green
     x.fillText('CHAMPION', 256, 306)
   } else {
     x.font = '700 96px Arial, sans-serif'
     x.lineJoin = 'round'
     x.lineWidth = 9
-    x.strokeStyle = '#ff5000'
+    x.strokeStyle = K_ORANGE
     x.strokeText(`${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`, 256, 168)
-    x.fillStyle = '#ffd000'
+    x.fillStyle = K_TITLE_YELLOW
     x.fillText(`${GAME_COPY.playGlyph} ${GAME_COPY.playLabel}`, 256, 168)
     x.font = '24px "GT Pressura Mono", monospace'
-    x.fillStyle = '#3ad76f'
+    x.fillStyle = K_ACCENT_GREEN
     x.fillText(GAME_COPY.pressStart, 256, 246)
   }
   const t = new THREE.CanvasTexture(c)
@@ -148,7 +149,7 @@ void main() {
 /* ---------- the cabinet (downloaded model, restyled to our palette) ---------- */
 
 const BODY_COLOR = new THREE.Color('#17121f') // near-black cabinet
-const NEON_COLOR = new THREE.Color('#ff2e4d') // our --k-red neon
+const NEON_COLOR = new THREE.Color(K_RED) // our --k-red neon
 
 const _pressScale = new THREE.Vector3() // scratch for button world-scale reads
 
@@ -220,9 +221,9 @@ function CabinetModel({ progressRef, screenVariant, onPlay, screenPower }) {
           // keep the model's own baked marquee art (ARCADE_baseColor.png:
           // gold "ai-kombat" on red) and light it like a real lit marquee
           const c = mat.clone()
-          c.color = new THREE.Color('#ffffff')
+          c.color = new THREE.Color(K_WHITE)
           if (c.map) {
-            c.emissive = new THREE.Color('#ffffff')
+            c.emissive = new THREE.Color(K_WHITE)
             c.emissiveMap = c.map
             c.emissiveIntensity = 0.9
           }
@@ -559,8 +560,8 @@ export default function Cabinet3D({
         <directionalLight position={[2.5, 6, 1.5]} intensity={1.3} />
         {/* Neon rims moved to the sides and slightly BEHIND (z 3→-0.5) so they
             graze the side panels as accents without glaring on the front glass. */}
-        <pointLight position={[-5.5, 2, -0.5]} color="#ff2e4d" intensity={48} distance={22} />
-        <pointLight position={[5.5, 2, -0.5]} color="#3fe0ff" intensity={36} distance={22} />
+        <pointLight position={[-5.5, 2, -0.5]} color={K_RED} intensity={48} distance={22} />
+        <pointLight position={[5.5, 2, -0.5]} color={K_CYAN} intensity={36} distance={22} />
         <CameraRig
           progressRef={progressRef}
           camFar={camFar}
@@ -587,7 +588,7 @@ export default function Cabinet3D({
             blur={2.6}
             far={3.2}
             resolution={512}
-            color="#000000"
+            color={K_BLACK}
           />
         </Suspense>
       </Canvas>

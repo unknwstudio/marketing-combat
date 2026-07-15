@@ -17,8 +17,8 @@
   font-family: var(--k-font-mono);
   /* exposed so a full-bleed child (e.g. FinalCta's victory band) can cancel the
      side padding responsively without hardcoding the value */
-  --dsec-pad-x: var(--k-10);
-  padding: var(--k-12) var(--dsec-pad-x);
+  --dsec-pad-x: var(--k-space-80);
+  padding: var(--k-space-96) var(--dsec-pad-x);
   overflow: hidden;
 }
 
@@ -31,16 +31,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-2);
+  gap: var(--k-space-16);
   text-align: center;
-  margin-bottom: var(--k-7);
+  margin-bottom: var(--k-space-56);
 }
 
 .dsec__round {
   font-family: var(--k-font-mono);
   font-size: var(--k-text-lg);
-  line-height: 1;
-  letter-spacing: -0.72px;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-display);
   color: var(--k-accent-green);
   text-transform: uppercase;
 }
@@ -50,7 +50,7 @@
   font-family: var(--k-font-accent);
   font-size: var(--k-text-2xl);
   font-weight: 500;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   text-transform: lowercase;
   color: var(--k-title-yellow);
   -webkit-text-stroke: 0.0625em var(--k-orange);
@@ -58,14 +58,14 @@
   text-shadow:
     0 0 0.03em var(--k-orange),
     0 0 0.08em var(--k-orange),
-    0 0 0.16em rgba(255, 80, 0, 0.65);
+    0 0 0.16em color-mix(in srgb, var(--k-orange) 65%, transparent);
 }
 
 .dsec__sub {
   max-width: 900px;
   font-size: var(--k-text-md);
-  line-height: 1.4;
-  letter-spacing: -0.5px;
+  line-height: var(--k-lh-normal);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
 }
 
@@ -73,14 +73,14 @@
 .dpill {
   display: inline-flex;
   align-items: center;
-  padding: var(--k-1) var(--k-1);
-  background: rgba(0, 0, 0, 0.6);
+  padding: var(--k-space-8) var(--k-space-8);
+  background: color-mix(in srgb, var(--k-black) 60%, transparent);
   border-top: 1px solid var(--k-white);
   border-bottom: 1px solid var(--k-white);
   color: var(--k-accent-green);
   font-size: var(--k-text-base);
-  line-height: 1;
-  letter-spacing: -0.5px;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-tight);
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -90,7 +90,7 @@
   position: relative;
   background: var(--k-panel);
   border: 2px solid var(--k-line);
-  padding: var(--k-3);
+  padding: var(--k-space-24);
 }
 
 /* --- shared CTA: matches the hero registration badge exactly -------- */
@@ -98,18 +98,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--k-1) 10px 10px;
+  padding: var(--k-space-8) var(--k-space-8) var(--k-space-8);
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);
   font-family: var(--k-font-mono);
   font-size: var(--k-text-lg);
-  line-height: 1;
-  letter-spacing: -0.72px;
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-display);
   text-transform: lowercase;
   white-space: nowrap;
   cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
 }
 
 .d-btn:hover {
@@ -146,7 +146,7 @@
 
 /* magnetic CTAs ease back to rest when the cursor leaves */
 [data-magnetic] {
-  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), background 0.12s, color 0.12s;
+  transition: transform var(--k-t-base) cubic-bezier(0.2, 0.8, 0.3, 1), background var(--k-t-fast), color var(--k-t-fast);
 }
 
 /* ============================================================
@@ -158,8 +158,8 @@
 .reveal-on .dsec__head,
 .reveal-on .stats__cell,
 .reveal-on .faq__item {
-  transition: opacity 0.6s ease-out, transform 0.16s ease-out,
-    border-color 0.14s ease-out, box-shadow 0.14s ease-out;
+  transition: opacity var(--k-t-slower) ease-out, transform var(--k-t-fast) ease-out,
+    border-color var(--k-t-fast) ease-out, box-shadow var(--k-t-fast) ease-out;
 }
 
 .reveal-on .dcard:not(.revealed),
@@ -243,6 +243,7 @@
      screen readers append "underscore" to every section label. The plain
      declaration above stays as the fallback for older engines. */
   content: '_' / '';
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: em-based caret gap must scale with the fluid eyebrow font-size; a px spacing token would decouple it */
   margin-left: 0.12em;
   animation: dsec-caret 1.06s steps(1, end) infinite;
 }
@@ -267,7 +268,7 @@
 .dindex {
   font-family: var(--k-font-accent);
   font-size: var(--k-text-xl);
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-orange);
 }
 
@@ -282,7 +283,7 @@
 
 .judges__portrait,
 .organizers__portrait {
-  transition: transform 0.18s ease-out, filter 0.18s ease-out;
+  transition: transform var(--k-t-base) ease-out, filter var(--k-t-base) ease-out;
 }
 
 .judges__card::after,
@@ -294,7 +295,7 @@
   top: 0;
   height: 22%;
   pointer-events: none;
-  background: linear-gradient(transparent, rgba(63, 224, 255, 0.28), transparent);
+  background: linear-gradient(transparent, color-mix(in srgb, var(--k-cyan) 28%, transparent), transparent);
   mix-blend-mode: screen;
   opacity: 0;
 }
@@ -303,7 +304,7 @@
   .judges__card:hover,
   .organizers__card:hover {
     border-color: var(--k-cyan);
-    box-shadow: 0 0 26px rgba(63, 224, 255, 0.3);
+    box-shadow: 0 0 26px color-mix(in srgb, var(--k-cyan) 30%, transparent);
   }
 
   .judges__card:hover .judges__portrait,
@@ -347,55 +348,57 @@
 @media (max-width: 1023px) {
   .dsec {
     width: 100%;
-    --dsec-pad-x: 20px;
-    padding: var(--k-7) var(--dsec-pad-x);
+    --dsec-pad-x: var(--k-space-20);
+    padding: var(--k-space-56) var(--dsec-pad-x);
   }
 
   .dsec__head {
-    margin-bottom: var(--k-4);
-    gap: var(--k-space-sm);
+    margin-bottom: var(--k-space-32);
+    gap: var(--k-space-12);
   }
 
   .dsec__round {
-    font-size: 12px;
+    font-size: var(--k-text-xs);
   }
 
   .dsec__title {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile re-clamp of the display title; nearest step --k-text-xl (min 28px) is 27% larger on small phones and would oversize it */
     font-size: clamp(22px, 7vw, 44px);
-    line-height: 1.2;
+    line-height: var(--k-lh-tight);
   }
 
   .dsec__sub {
-    font-size: 13px;
+    font-size: var(--k-text-xs);
   }
 
   .dpill {
-    font-size: 11px;
-    letter-spacing: -0.3px;
+    font-size: var(--k-text-xs);
+    letter-spacing: var(--k-ls-tight);
   }
 
   .dcard {
-    padding: 18px;
+    padding: var(--k-space-16);
   }
 
   .d-btn {
-    font-size: 15px;
-    padding: 6px var(--k-1) var(--k-1);
+    font-size: var(--k-text-sm);
+    padding: var(--k-space-8) var(--k-space-8) var(--k-space-8);
     min-height: 44px; /* comfortable touch target (already inline-flex/centered) */
   }
 
   .dindex {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: pins the card index at a fixed 28px below 1024px; both fluid neighbors deviate too far (--k-text-lg caps at 24px, --k-text-xl grows to 40px from ~575px viewports up) */
     font-size: 28px;
   }
 }
 
 @media (max-width: 639px) {
   .dsec {
-    --dsec-pad-x: 14px;
-    padding: 44px var(--dsec-pad-x);
+    --dsec-pad-x: var(--k-space-16);
+    padding: var(--k-space-40) var(--dsec-pad-x);
   }
 
   .dsec__sub {
-    font-size: 12px;
+    font-size: var(--k-text-xs);
   }
 }

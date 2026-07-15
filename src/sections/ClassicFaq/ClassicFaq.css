@@ -5,26 +5,27 @@
 .c-faq {
   display: grid;
   grid-template-columns: 420px 1fr;
-  gap: var(--k-8);
+  gap: var(--k-space-64);
   align-items: start;
 }
 
 .c-faq__aside {
   position: sticky;
-  top: var(--k-6);
+  top: var(--k-space-48);
   display: flex;
   flex-direction: column;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
 }
 
 /* the aside column is narrower than the full content width, so cap the heading
    at a size whose longest word ("Frequently") fits without the mask clipping it */
 .c-faq__aside .c-mask-head {
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke cap so "Frequently" fits the 420px aside without mask clipping; no scale step within tolerance (2xl min is 40px) */
   font-size: clamp(32px, 4vw, 52px);
 }
 
 .c-faq__note {
-  margin-top: var(--k-1);
+  margin-top: var(--k-space-8);
   max-width: 30ch;
 }
 
@@ -44,17 +45,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--k-3);
-  padding: var(--k-3) 0;
+  gap: var(--k-space-24);
+  padding: var(--k-space-24) 0;
   background: none;
   border: 0;
   font-family: inherit;
   font-size: var(--k-text-base);
-  line-height: 1.3;
+  line-height: var(--k-lh-snug);
   text-align: left;
   color: var(--k-black);
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color var(--k-t-base) ease;
 }
 
 .c-faq__item.is-open .c-faq__q,
@@ -77,7 +78,7 @@
   inset: 50% 0 auto 0;
   height: 2px;
   background: currentColor;
-  transition: transform 0.25s ease;
+  transition: transform var(--k-t-slow) ease;
 }
 
 .c-faq__toggle::after {
@@ -92,7 +93,7 @@
 .c-faq__answer {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s ease;
+  transition: grid-template-rows var(--k-t-slow) ease;
 }
 
 .c-faq__item.is-open .c-faq__answer {
@@ -102,23 +103,23 @@
 .c-faq__answer-inner {
   overflow: hidden;
   min-height: 0;
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-loose);
   color: var(--k-classic-panel);
   max-width: 60ch;
   /* pad only appears when open so the collapsed row has zero height */
   padding-bottom: 0;
-  transition: padding-bottom 0.3s ease;
+  transition: padding-bottom var(--k-t-slow) ease;
 }
 
 .c-faq__item.is-open .c-faq__answer-inner {
-  padding-bottom: var(--k-3);
+  padding-bottom: var(--k-space-24);
 }
 
 @media (max-width: 1023px) {
   .c-faq {
     grid-template-columns: 1fr;
-    gap: var(--k-6);
+    gap: var(--k-space-48);
   }
 
   .c-faq__aside {

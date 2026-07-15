@@ -4,7 +4,7 @@
 .arenas__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--k-2);
+  gap: var(--k-space-16);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -13,8 +13,8 @@
 .arenas__card {
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-sm);
-  padding: 18px;
+  gap: var(--k-space-12);
+  padding: var(--k-space-16);
 }
 
 .arenas__art {
@@ -28,13 +28,13 @@
 .arenas__top {
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-xs);
+  gap: var(--k-space-4);
 }
 
 .arenas__track {
   font-family: var(--k-font-mono);
-  font-size: 13px;
-  letter-spacing: -0.3px;
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-orange);
   text-transform: uppercase;
 }
@@ -42,9 +42,9 @@
 .arenas__name {
   margin: 0;
   font-family: var(--k-font-accent);
-  font-size: 26px;
+  font-size: var(--k-text-lg);
   font-weight: 500;
-  line-height: 1.1;
+  line-height: var(--k-lh-tight);
   text-transform: lowercase;
   color: var(--k-title-yellow);
 }
@@ -55,8 +55,8 @@
   flex: 1;
   font-family: var(--k-font-mono);
   font-size: var(--k-text-xs);
-  line-height: 1.4;
-  letter-spacing: -0.3px;
+  line-height: var(--k-lh-normal);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -68,36 +68,36 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--k-1);
-  padding-top: var(--k-space-sm);
+  gap: var(--k-space-8);
+  padding-top: var(--k-space-12);
   border-top: 2px solid var(--k-line);
 }
 
 .arenas__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
 }
 
 .arenas__difficulty {
   display: flex;
   align-items: center;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
 }
 
 .arenas__difLabel {
   font-family: var(--k-font-mono);
-  font-size: 12px;
-  letter-spacing: -0.2px;
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-muted);
   text-transform: uppercase;
 }
 
 .arenas__stars {
   display: inline-flex;
-  gap: var(--k-space-2xs);
-  font-size: 15px;
-  line-height: 1;
+  gap: var(--k-space-2);
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-flat);
 }
 
 .arenas__star {
@@ -109,7 +109,7 @@
   color: var(--k-title-yellow);
   opacity: 0;
   transform: scale(0.4);
-  transition: opacity 220ms ease, transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity var(--k-t-base) ease, transform var(--k-t-base) cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .arenas__stars--revealed .arenas__star--on {
@@ -117,6 +117,8 @@
   transform: scale(1);
 }
 
+/* 90ms stagger pitch — choreography offsets (like keyframe timing), deliberately
+   not snapped to the intent-duration tokens */
 .arenas__star--on:nth-child(1) {
   transition-delay: 0ms;
 }
@@ -144,26 +146,26 @@
 @media (max-width: 1023px) {
   .arenas__grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: var(--k-space-16);
   }
 
   .arenas__card {
-    gap: 14px;
+    gap: var(--k-space-12);
   }
 
   .arenas__track {
-    font-size: 11px;
+    font-size: var(--k-text-xs);
   }
 
   .arenas__name {
-    font-size: 24px;
+    font-size: var(--k-text-lg);
   }
 
   .arenas__body {
-    font-size: 13px;
+    font-size: var(--k-text-xs);
   }
 
   .arenas__difLabel {
-    font-size: 11px;
+    font-size: var(--k-text-xs);
   }
 }

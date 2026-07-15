@@ -11,10 +11,10 @@
 /* --- marquee ribbon --------------------------------------------------- */
 
 .c-cta__ribbon {
-  margin-bottom: var(--k-10);
+  margin-bottom: var(--k-space-80);
   overflow: hidden;
   border-block: 1px solid var(--k-black);
-  padding-block: var(--k-2);
+  padding-block: var(--k-space-16);
 }
 
 .c-cta__ribbon-track {
@@ -52,7 +52,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   text-align: center;
 }
 
@@ -69,24 +69,24 @@
 }
 
 .c-cta__pill {
-  margin-top: var(--k-3);
+  margin-top: var(--k-space-24);
   min-width: 260px;
   height: 56px;
-  padding-inline: var(--k-5);
+  padding-inline: var(--k-space-40);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
   background: var(--k-black);
   color: var(--k-white);
   font-family: inherit;
-  font-size: 16px;
+  font-size: var(--k-text-sm);
   border: 0;
-  border-radius: 99px;
+  border-radius: var(--k-radius-pill);
   cursor: pointer;
   transition:
-    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.2s ease;
+    transform var(--k-t-base) cubic-bezier(0.16, 1, 0.3, 1),
+    background var(--k-t-base) ease;
 }
 
 .c-cta__pill:hover {
@@ -96,7 +96,7 @@
 .c-cta__pill-arrow {
   width: 22px;
   height: auto;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--k-t-slow) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .c-cta__pill:hover .c-cta__pill-arrow,
@@ -105,15 +105,15 @@
 }
 
 .c-cta__fine {
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
   color: var(--k-classic-panel);
 }
 
 @media (max-width: 1023px) {
   .c-cta__ribbon {
-    margin-bottom: var(--k-7);
+    margin-bottom: var(--k-space-56);
   }
 
   .c-cta__h2 {

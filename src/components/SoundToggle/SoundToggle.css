@@ -9,17 +9,18 @@
   /* >=24px min target (WCAG 2.5.8) — the mobile rule below trims padding to
      ~23px, so pin a floor here that both breakpoints inherit */
   min-height: 32px;
-  gap: var(--k-1);
-  padding: var(--k-1) var(--k-space-sm);
-  background: rgba(0, 0, 0, 0.7);
+  gap: var(--k-space-8);
+  padding: var(--k-space-8) var(--k-space-12);
+  background: color-mix(in srgb, var(--k-black) 70%, transparent);
   border: 1px solid var(--k-white);
   color: var(--k-accent-green);
   font-family: var(--k-font-mono);
-  font-size: var(--k-text-xs);
-  letter-spacing: -0.3px;
+  /* fixed pill chrome — integer HUD step, not the fluid scale (was --k-text-xs) */
+  font-size: var(--k-text-hud-sm);
+  letter-spacing: var(--k-ls-tight);
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
 }
 
 .sndtoggle:hover {
@@ -42,7 +43,7 @@
 .sndtoggle__bars {
   display: inline-flex;
   align-items: flex-end;
-  gap: var(--k-space-2xs);
+  gap: var(--k-space-2);
   height: 14px;
 }
 
@@ -88,8 +89,8 @@
     left: 10px;
     top: auto;
     bottom: 68px;
-    padding: 6px 9px;
-    font-size: 11px;
+    padding: var(--k-space-4) var(--k-space-8);
+    font-size: var(--k-text-hud-xs);
   }
   .sndtoggle__bars {
     height: 11px;
