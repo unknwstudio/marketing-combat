@@ -88,7 +88,10 @@
   font-size: 16px;
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading; no 1.2 token and snapping is banned on pixel-ported sections */
   line-height: 1.2;
-  max-width: 235px;
+  /* 280 (was Figma 235): keeps the longest subtitle ("to A16Z & YC growth
+     partners") on ONE line so its card can't grow and make the top row taller
+     than the bottom (#11 equal heights) */
+  max-width: 280px;
 }
 
 .cfw__strip {
