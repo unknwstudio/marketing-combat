@@ -11,11 +11,13 @@
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
-  gap: var(--k-space-8);
   padding: var(--k-space-8) var(--k-space-16);
-  font-family: var(--k-font-pixel);
-  font-size: var(--k-text-hud-lg);
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-base);
+  letter-spacing: var(--k-ls-display);
   line-height: var(--k-lh-flat);
+  text-transform: lowercase;
+  white-space: nowrap;
   color: var(--k-black);
   background: var(--k-gold);
   text-decoration: none;
@@ -29,17 +31,6 @@
   filter: drop-shadow(4px 5px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
   transition: transform var(--k-t-tap) steps(2), filter var(--k-t-tap) steps(2), background var(--k-t-fast);
   -webkit-tap-highlight-color: transparent;
-}
-
-/* the play arrow — a crisp stepped pixel triangle in the button ink */
-.playfab__tri {
-  flex: none;
-  width: 14px;
-  height: 18px;
-  fill: currentColor;
-}
-.playfab__tri path {
-  shape-rendering: crispEdges;
 }
 
 .playfab:hover {
@@ -71,10 +62,6 @@
     top: auto;
     bottom: 68px;
     padding: var(--k-space-8) var(--k-space-12);
-    font-size: var(--k-text-hud-sm);
-  }
-  .playfab__tri {
-    width: 12px;
-    height: 15px;
+    font-size: var(--k-text-xs);
   }
 }
