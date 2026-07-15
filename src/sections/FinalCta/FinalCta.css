@@ -242,17 +242,14 @@
     transform var(--k-t-fast) cubic-bezier(0.3, 1.6, 0.4, 1);
 }
 
-/* the CTA + prompt dim during the ritual, then pop back at "ready" -- selling
+/* the CTA dims during the ritual, then pops back at "ready" -- selling
    "instead of losing, here's your one more move" */
-.finalcta__cta,
-.finalcta__press {
+.finalcta__cta {
   transition: opacity var(--k-t-slow) ease, filter var(--k-t-slow) ease;
 }
 
 .finalcta--stage-gameover .finalcta__cta,
-.finalcta--stage-countdown .finalcta__cta,
-.finalcta--stage-gameover .finalcta__press,
-.finalcta--stage-countdown .finalcta__press {
+.finalcta--stage-countdown .finalcta__cta {
   opacity: 0.5;
   filter: grayscale(0.6) brightness(0.7);
 }
@@ -303,27 +300,6 @@
   }
 }
 
-.finalcta__press {
-  font-family: var(--k-font);
-  font-size: var(--k-text-sm);
-  letter-spacing: var(--k-ls-pixel-sm);
-  color: var(--k-accent-green);
-  text-transform: uppercase;
-  animation: finalcta-blink 1.1s steps(2, start) infinite;
-}
-
-@keyframes finalcta-blink {
-  50% {
-    opacity: 0.55;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .finalcta__press {
-    animation: none;
-  }
-}
-
 @media (max-width: 1023px) {
   .finalcta {
     padding-top: 0;
@@ -371,9 +347,5 @@
 
   .finalcta__cta {
     font-size: var(--k-text-sm);
-  }
-
-  .finalcta__press {
-    font-size: var(--k-text-xs);
   }
 }

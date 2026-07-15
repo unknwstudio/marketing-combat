@@ -1,33 +1,11 @@
-/* Two wide track cards side by side, with a VS badge in the middle column
-   marking them as alternatives — pick one, not read both in sequence. */
+/* Two wide track cards side by side — the two hackathon tracks. */
 .tracks__grid {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: var(--k-space-24);
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-/* pixel-art "VS" badge between the two tracks so "pick one" reads instantly
-   even if the section head has scrolled out of view. align-self overrides the
-   grid's default row-stretch so it doesn't stretch to the cards' full height;
-   the two cards keep stretching to match each other. */
-.tracks__vs {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  flex-shrink: 0;
-}
-
-.tracks__vsImg {
-  display: block;
-  width: 92px;
-  height: auto;
-  /* a soft orange glow so the badge lives in the arcade world rather than
-     reading as a pasted-on sticker */
-  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--k-orange) 40%, transparent));
 }
 
 .tracks__card {
@@ -113,86 +91,10 @@
   gap: var(--k-space-12); /* was 10px — snapped +2px to match the card's bullets rhythm */
 }
 
-.tracks__fight {
-  align-self: flex-end;
-  font-family: var(--k-font);
-  font-size: var(--k-text-md);
-  letter-spacing: var(--k-ls-pixel-sm);
-  color: var(--k-red);
-  text-transform: uppercase;
-}
-
-/* ============================================================
-   MARCHING ANTS — 16-bit selection border on hover / keyboard focus,
-   in the section's yellow accent (titles are var(--k-title-yellow) here, so the
-   roster's cyan would read off-palette). Same mechanics as
-   Fighters.css: four 2px dashed edges on one ::after, crawled
-   clockwise by stepping background-position a full 12px dash-period
-   per cycle in steps(6) — quantized 2px jumps, never smooth. The card
-   had no hover state of its own, so this only ADDS. Doubles as the
-   visible focus indicator, hence reduced-motion FREEZES the dashes
-   (static outline) rather than hiding them.
-   ============================================================ */
-.tracks__card {
-  /* .dcard (demo.css) already sets this; restated so the ants frame
-     never silently loses its anchor if the shared class evolves */
-  position: relative;
-}
-
-.tracks__card::after {
-  content: '';
-  position: absolute;
-  inset: -6px; /* just outside the 2px card border, like a selection cursor */
-  pointer-events: none;
-  opacity: 0;
-  /* layer order everywhere below: top, bottom, left, right */
-  background-image:
-    linear-gradient(90deg, var(--k-gold) 0 6px, transparent 6px 12px),
-    linear-gradient(90deg, var(--k-gold) 0 6px, transparent 6px 12px),
-    linear-gradient(0deg, var(--k-gold) 0 6px, transparent 6px 12px),
-    linear-gradient(0deg, var(--k-gold) 0 6px, transparent 6px 12px);
-  background-size: 12px 2px, 12px 2px, 2px 12px, 2px 12px;
-  background-position: 0 0, 0 100%, 0 0, 100% 0;
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-}
-
-@media (hover: hover) {
-  .tracks__card:hover::after {
-    opacity: 1;
-    animation: tracks-ants 0.5s steps(6) infinite;
-  }
-}
-
-/* one dash-period per cycle: top marches right, right down, bottom left,
-   left up — a clockwise crawl around the card */
-@keyframes tracks-ants {
-  to {
-    background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tracks__card:hover::after {
-    animation: none; /* static dashes still mark hover/focus */
-  }
-}
-
 @media (max-width: 1023px) {
   .tracks__grid {
     grid-template-columns: 1fr;
     gap: var(--k-space-16);
-  }
-
-  /* stacked layout: the badge becomes its own centered row between the
-     two cards instead of a column between them */
-  .tracks__vs {
-    justify-self: center;
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: negative pull nesting the VS badge into the gap between the stacked cards; the spacing ladder has no negative steps */
-    margin: -6px 0;
-  }
-
-  .tracks__vsImg {
-    width: 64px;
   }
 
   .tracks__card {
@@ -208,9 +110,5 @@
   .tracks__special,
   .tracks__bullet {
     font-size: var(--k-text-xs);
-  }
-
-  .tracks__fight {
-    font-size: var(--k-text-hud-md);
   }
 }

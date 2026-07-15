@@ -5,9 +5,8 @@ import { useGLTF, ContactShadows } from '@react-three/drei'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import { playSfx } from '@/effects/audio/arcadeAudio'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
-import { GAME_COPY, openGameTakeover } from '@/lib/game'
+import { GAME_COPY } from '@/lib/game'
 import { K_WHITE, K_BLACK, K_RED, K_CYAN, K_ORANGE, K_TITLE_YELLOW, K_ACCENT_GREEN } from '@/game/palette'
 import './Cabinet3D.css'
 
@@ -153,7 +152,7 @@ const NEON_COLOR = new THREE.Color(K_RED) // our --k-red neon
 
 const _pressScale = new THREE.Vector3() // scratch for button world-scale reads
 
-function CabinetModel({ progressRef, screenVariant, onPlay, screenPower }) {
+function CabinetModel({ progressRef, screenVariant, screenPower }) {
   const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const { gl } = useThree()
   const uniformsRef = useRef(null)
@@ -306,9 +305,8 @@ function CabinetModel({ progressRef, screenVariant, onPlay, screenPower }) {
       mesh.userData.kMat.emissive.copy(NEON_COLOR)
       mesh.userData.kMat.emissiveIntensity = 0.85
     }
-    // pointer cursor on the canvas: /demo's PixelCursor hides the OS cursor,
-    // but this still carries the affordance wherever the native cursor shows
-    gl.domElement.style.cursor = mesh ? 'pointer' : ''
+    // the cabinet is decorative now (no click-to-play), so it never carries a
+    // pointer affordance — keep the native cursor as-is
   }
 
   // arcade-button depress: quick nudge into the panel, spring back ~80ms later.
@@ -344,18 +342,11 @@ function CabinetModel({ progressRef, screenVariant, onPlay, screenPower }) {
       onPointerMove={(e) => setHover(pickTarget(e.intersections))}
       onPointerOut={() => setHover(null)}
       onPointerDown={(e) => {
+        // decorative button depress only — no SFX, and no click-to-play
+        // (the arcade cabinet no longer launches the game)
         const t = pickTarget(e.intersections)
         if (!t?.userData.kControl) return
         depress(t)
-        playSfx('block', 0.35) // short thock — respects the global mute state
-      }}
-      onClick={(e) => {
-        const t = pickTarget(e.intersections)
-        if (!t) return
-        if (t.userData.kStart || t.userData.kScreen) {
-          playSfx('confirm', 0.5)
-          onPlay() // default openGameTakeover; the finale plays in place
-        }
       }}
     />
   )
@@ -364,7 +355,6 @@ function CabinetModel({ progressRef, screenVariant, onPlay, screenPower }) {
 function Cabinet({
   progressRef,
   screenVariant,
-  onPlay,
   screenPower,
   restYaw,
   parallaxYaw,
@@ -389,7 +379,6 @@ function Cabinet({
       <CabinetModel
         progressRef={progressRef}
         screenVariant={screenVariant}
-        onPlay={onPlay}
         screenPower={screenPower}
       />
     </group>
@@ -466,8 +455,6 @@ useGLTF.preload(MODEL_URL, DRACO_PATH)
  *   can fall back to the static image when it doesn't.
  * - `screenVariant`: which CRT attract art to paint — `'play'` (▶ PLAY /
  *   PRESS START) or `'youwin'` (the finale's YOU WIN! screen).
- * - `onPlay()`: called when the START button or CRT screen is clicked —
- *   defaults to opening the in-page game takeover.
  * - `screenPower`: fixes the CRT brightness (0..1) for a static mount. Default
  *   `null` keeps the scroll-driven ramp (0.3 standby → 1.0 full). The finale is
  *   static, so its progress never advances — it pins this instead.
@@ -485,7 +472,6 @@ useGLTF.preload(MODEL_URL, DRACO_PATH)
 export default function Cabinet3D({
   onSupported,
   screenVariant = 'play',
-  onPlay = openGameTakeover,
   screenPower = null,
   restYaw = 0.12,
   parallaxYaw = 0.1,
@@ -574,7 +560,6 @@ export default function Cabinet3D({
           <Cabinet
             progressRef={progressRef}
             screenVariant={screenVariant}
-            onPlay={onPlay}
             screenPower={screenPower}
             restYaw={restYaw}
             parallaxYaw={parallaxYaw}

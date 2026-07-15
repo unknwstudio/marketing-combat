@@ -1,10 +1,6 @@
-/* HeroStage — the real pixel Hero is the base layer (also the mobile/no-WebGL/
-   reduced-motion fallback); on desktop+WebGL a genuine WebGL CRT render
-   (HeroDisplay3D) fully covers it — canvas is opaque, so the DOM below is
-   invisible but stays mounted (a11y + the real registration link, reachable
-   because the canvas is pointer-events:none). Explicit stacking on BOTH
-   layers (not just z-index on the overlay) so the flat layer's own child
-   (.hero has position:relative) can never win the paint order. */
+/* HeroStage — thin wrapper around the flat pixel Hero. The WebGL CRT overlay
+   that used to cover the hero on desktop has been removed, so this is now just
+   the hero's positioning context (a few Hero.css rules scope to .herostage). */
 .herostage {
   position: relative;
 }
@@ -12,26 +8,4 @@
 .herostage__flat {
   position: relative;
   z-index: 0;
-}
-
-/* Desktop /demo only: the CRT (WebGL, ≥1024px) warps .hero__playbig's hit-area
-   by writing el.style.transform, which REPLACES the button's own transform (the
-   retired .hero__play hit this exact trap). Re-center the button WITHOUT
-   transform (margin-based) so the warp is free to own `transform` and the
-   clickable/hover box lands under the baked button; likewise reduce the :active
-   depress to a plain offset. Scoped to ≥1024px so the mobile flat fallback (no
-   CRT, no warp) keeps the button's own centering. The button's own rule in
-   Hero.css is never touched. */
-@media (min-width: 1024px) {
-  .herostage__flat .hero__playbig {
-    left: 0;
-    right: 0;
-    margin-inline: auto;
-    width: max-content;
-    transform: none;
-  }
-
-  .herostage__flat .hero__playbig:active {
-    transform: translate(4px, 4px);
-  }
 }

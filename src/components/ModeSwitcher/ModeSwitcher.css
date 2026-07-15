@@ -27,25 +27,6 @@
   border-radius: var(--k-radius-pill);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: transform var(--k-t-slow) cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-/* Auto-hide while the reader scrolls down so the opaque pill never covers copy
-   under the viewport's bottom-centre; JS toggles this (reduced-motion opts out).
-   Keep the translateX(-50%) centring and just add the translateY off-screen. */
-.mode-switch--hidden {
-  transform: translateX(-50%) translateY(calc(100% + 32px));
-}
-
-/* Keyboard focus always brings it back, even if JS hid it mid-scroll. */
-.mode-switch:focus-within {
-  transform: translateX(-50%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mode-switch {
-    transition: none;
-  }
 }
 
 @media (max-width: 479px) {

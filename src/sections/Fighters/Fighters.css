@@ -12,18 +12,6 @@
   overflow: hidden;
 }
 
-/* dark arena / lightning glow — exported composite (35:4165) */
-.fighters__bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
-}
-
 /* big centered glowing title (35:4237) */
 .fighters__title {
   position: absolute;
@@ -327,13 +315,6 @@
     height: auto;
     overflow: visible;
     padding: var(--k-space-48) var(--k-space-16);
-    /* keep the dark arena; the fixed 1440x755 bg image would distort
-       when stretched over a tall narrow column, so we drop it and rely
-       on the section's dark --k-bg fill. */
-  }
-
-  .fighters__bg {
-    display: none;
   }
 
   /* un-absolute the title so it flows; shrink to fit + allow wrap */

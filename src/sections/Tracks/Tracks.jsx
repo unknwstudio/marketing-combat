@@ -41,11 +41,10 @@ export default function Tracks() {
       </div>
 
       <ul className="tracks__grid">
-        {TRACKS.map((t, i) => [
+        {TRACKS.map((t) => (
           /* deliberately NOT focusable: the card does nothing on Enter, so a
              tab stop would only add dead stops before the real CTAs and make
-             screen readers announce the whole card as actionable. The
-             marching ants stay a hover flourish. */
+             screen readers announce the whole card as actionable. */
           <li key={t.n} className="dcard tracks__card">
             <img
               className="tracks__art pixelated"
@@ -86,25 +85,8 @@ export default function Tracks() {
                 </span>
               ))}
             </div>
-
-            <span className="tracks__fight">FIGHT!</span>
-          </li>,
-          /* VS badge sits between the two cards so "pick one track" reads
-             instantly from the grid itself, without depending on the
-             section head (which can scroll out of view above it). Hidden
-             from AT: the section aria-label + track names already say it. */
-          i === 0 && (
-            <li key="vs" className="tracks__vs" aria-hidden="true">
-              <img
-                className="tracks__vsImg pixelated"
-                src="/assets/demo/tracks/vs.png"
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
-            </li>
-          ),
-        ])}
+          </li>
+        ))}
       </ul>
     </section>
   )
