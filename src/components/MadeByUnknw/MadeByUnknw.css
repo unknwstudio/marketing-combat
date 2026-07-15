@@ -28,3 +28,20 @@
   width: auto;
   color: inherit;
 }
+
+/* Opt-in gold shimmer (host footer sets --madeby-a = base tone and --madeby-b =
+   highlight, then runs this animation): both the label and the wordmark track
+   `color`/`currentColor`, so they shimmer together, and the glow pulses via a
+   drop-shadow that applies to the whole credit. Reduced motion is honored by
+   the global animation-kill in index.css. */
+@keyframes madeby-shimmer {
+  0%,
+  100% {
+    color: var(--madeby-a);
+    filter: drop-shadow(0 0 0.12em color-mix(in srgb, var(--madeby-a) 30%, transparent));
+  }
+  50% {
+    color: var(--madeby-b);
+    filter: drop-shadow(0 0 0.4em color-mix(in srgb, var(--madeby-a) 65%, transparent));
+  }
+}

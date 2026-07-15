@@ -72,13 +72,17 @@
   justify-content: flex-end;
 }
 
+/* yellow like "Join the battle" (--k-title-yellow), shimmering gold */
 .footer__madeby {
-  color: var(--k-ink-dim);
+  --madeby-a: var(--k-title-yellow);
+  --madeby-b: color-mix(in srgb, var(--k-title-yellow) 45%, var(--k-white));
+  color: var(--madeby-a);
+  animation: madeby-shimmer 2.6s ease-in-out infinite;
 }
 
 .footer__madeby:hover,
 .footer__madeby:focus-visible {
-  color: var(--k-white);
+  animation-play-state: paused;
 }
 
 /* --- mobile: stack the three columns, centred --- */
