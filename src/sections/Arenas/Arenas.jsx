@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
+import { typeset } from '@/lib/typeset'
 import './Arenas.css'
 
 /**
@@ -68,11 +69,12 @@ export default function Arenas() {
   return (
     <section className="dsec dsec--alt arenas" aria-label="Battle arenas">
       <div className="dsec__head">
-        <span className="dsec__round">Stage 04 — select your arena</span>
+        <span className="dsec__round">{typeset('Stage 04 — select your arena')}</span>
         <h2 className="dsec__title">battle arenas</h2>
         <p className="dsec__sub">
-          Example case directions — real client briefs across industries. Win, and the prize
-          is funded by the client.
+          {typeset(
+            'Example case directions — real client briefs across industries. Win, and the prize is funded by the client.'
+          )}
         </p>
       </div>
 

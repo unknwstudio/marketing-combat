@@ -136,7 +136,6 @@ export default function Marquee() {
       className="marquee"
       aria-label="AI Marketing Kombat ticker"
       data-announce="FIGHT!"
-      data-sound="fight"
     >
       <div className="marquee__viewport" ref={viewportRef}>
         <Track />

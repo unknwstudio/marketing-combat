@@ -1,4 +1,5 @@
 import CtaLabel from '@/components/CtaLabel/CtaLabel'
+import { typeset } from '@/lib/typeset'
 import './Hero.css'
 
 /**
@@ -40,9 +41,9 @@ export default function Hero({ centerPlay = false }) {
           <CtaLabel>registration</CtaLabel>
         </a>
         <p className="hero__lede">
-          The first international hackathon for senior marketers of the AI era.
+          {typeset('The first international hackathon for senior marketers of the AI era.')}
           <br aria-hidden="true" />
-          Two days. Real cases. Use AI or get finished.
+          {typeset('Two days. Real cases. Use AI or get finished.')}
         </p>
       </div>
 

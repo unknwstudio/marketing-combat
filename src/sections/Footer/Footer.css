@@ -13,7 +13,7 @@
 
 .footer__inner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--k-space-40);
 }
@@ -42,11 +42,11 @@
   color: var(--k-ink-dim-2);
 }
 
-/* centre — legal links, stacked */
+/* centre column — legal links, stacked and left-aligned */
 .footer__links {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--k-space-8);
   font-family: var(--k-font-mono);
   font-size: var(--k-text-xs);
