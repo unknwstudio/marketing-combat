@@ -3,6 +3,13 @@
    ============================================================ */
 
 .c-foot {
+  /* one monochrome-white hierarchy on the black footer via opacity levels,
+     instead of separate blue-grey greys: wordmark + links are full white, the
+     rest is white dimmed to two tiers. */
+  --foot-dim: color-mix(in srgb, var(--k-white) 70%, transparent);
+  --foot-faint: color-mix(in srgb, var(--k-white) 55%, transparent);
+  --foot-line: color-mix(in srgb, var(--k-white) 14%, transparent);
+
   width: 1440px;
   background: var(--k-black);
   color: var(--k-white);
@@ -14,7 +21,7 @@
   grid-template-columns: 2fr 1fr 1fr;
   gap: var(--k-space-48);
   padding-bottom: var(--k-space-64);
-  border-bottom: 1px solid var(--k-classic-panel);
+  border-bottom: 1px solid var(--foot-line);
 }
 
 .c-foot__wordmark {
@@ -28,7 +35,7 @@
   margin-top: var(--k-space-16);
   font-size: var(--k-text-xs);
   line-height: var(--k-lh-normal);
-  color: var(--k-hud-steel);
+  color: var(--foot-dim);
   max-width: 32ch;
 }
 
@@ -46,7 +53,7 @@
   font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-wide);
   text-transform: uppercase;
-  color: var(--k-hud-slate);
+  color: var(--foot-faint);
 }
 
 .c-foot__link {
@@ -63,7 +70,7 @@
 
 .c-foot__legal {
   font-size: var(--k-text-xs);
-  color: var(--k-hud-steel);
+  color: var(--foot-faint);
 }
 
 .c-foot__base {
@@ -76,24 +83,29 @@
   font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
-  color: var(--k-hud-slate);
+  color: var(--foot-faint);
 }
 
 .c-foot__base p {
   margin: 0;
 }
 
-/* studio credit — matches the base row's slate, brightens to white on hover.
+/* studio credit — styled to the classic skin: Helvetica (not the arcade mono),
+   uppercase and tracked like the rest of the base row, slate → white on hover.
    The compound selector clears the global .classic a link color. */
 .c-foot__base .madeby {
-  color: var(--k-hud-slate);
-  text-transform: none;
-  letter-spacing: var(--k-ls-normal);
+  color: var(--foot-faint);
 }
 
 .c-foot__base .madeby:hover,
 .c-foot__base .madeby:focus-visible {
   color: var(--k-white);
+}
+
+.c-foot__base .madeby__by {
+  font-family: var(--c-font);
+  text-transform: uppercase;
+  letter-spacing: var(--k-ls-wide-sm);
 }
 
 @media (max-width: 1023px) {
