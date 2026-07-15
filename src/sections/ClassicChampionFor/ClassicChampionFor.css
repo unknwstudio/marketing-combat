@@ -36,7 +36,10 @@
 
 .cfw__champ {
   position: sticky;
-  top: 60px;
+  /* pinned below the fixed top-right menu card so the composed heading never
+     lands under it. 270 in design px clears the ~185px (screen) menu across the
+     desktop zoom range (down to 1024, where zoom≈0.71 → ~192px screen). */
+  top: 270px;
 }
 
 .cfw__who {
@@ -171,6 +174,36 @@
 
 .cfw__item:hover .cfw__text {
   transform: translateX(var(--arrow-indent));
+}
+
+/* "Future legends" is the marked item at rest (Figma Frame 55 / the reference):
+   blue, arrow shown, text indented into the arrow slot. */
+.cfw__item--legend {
+  color: var(--c-blue);
+}
+
+.cfw__item--legend .cfw__arrow {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.cfw__item--legend .cfw__text {
+  transform: translateX(var(--arrow-indent));
+}
+
+/* when another item is hovered, the legend yields the marker (one active at a
+   time) so the arrow feels like it moves onto the hovered row */
+.cfw__list:hover .cfw__item--legend:not(:hover) {
+  color: var(--k-black);
+}
+
+.cfw__list:hover .cfw__item--legend:not(:hover) .cfw__arrow {
+  opacity: 0;
+  transform: translate(-10px, -50%);
+}
+
+.cfw__list:hover .cfw__item--legend:not(:hover) .cfw__text {
+  transform: none;
 }
 
 /* all items rest identical (black, flush left) — blue + arrow + indent
