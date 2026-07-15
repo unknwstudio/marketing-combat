@@ -102,7 +102,9 @@
 .reg__check {
   display: flex;
   gap: var(--k-space-8);
-  align-items: flex-start;
+  /* centre the box on the label — the consent lines are single-line in the
+     modal, so this reads correctly aligned (and stays sensible if one wraps) */
+  align-items: center;
   font-size: var(--k-text-hud-sm);
   line-height: var(--k-lh-normal);
   cursor: pointer;
@@ -110,20 +112,10 @@
 
 .reg__check input {
   flex: 0 0 auto;
+  margin: 0;
   /* larger hit target than the ~13px native control (WCAG 2.5.8) */
   width: 18px;
   height: 18px;
-  /* Optically centre the 18px control on the FIRST line of the label (labels
-     can wrap, so we offset from the top rather than align-items:center).
-     Compute the offset from the LABEL's own line box — token font-size ×
-     line-height — NOT from `1lh`, which resolves against the <input>'s UA font
-     metrics (~15px here, not the 17.4px text line) and left the box reading
-     high. The trailing nudge drops it onto the text's x-height mass, which
-     sits above the line-box centre. */
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: optical first-line centering of the 18px control against the label metrics, not scale spacing */
-  margin-top: calc(
-    (var(--k-text-hud-sm) * var(--k-lh-normal) - 18px) / 2 + 0.12 * var(--k-text-hud-sm)
-  );
 }
 
 .reg__check a {

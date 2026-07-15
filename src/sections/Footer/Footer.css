@@ -1,27 +1,30 @@
 /* Quiet legal footer — the loud payoff moment lives in the arcade Announcer
    (Footer.jsx tags <footer> with data-announce/data-sound/data-announce-burst),
-   not here. This block stays deliberately understated. */
+   not here. Three aligned columns on desktop, a centred stack on mobile. */
 .footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--k-space-24);
   padding-top: var(--k-space-40);
-  /* the mode-switcher pill is now permanently visible (fixed, bottom-centre);
-     reserve enough bottom room that the "made by unknw" credit clears it
-     instead of tucking behind it. The top padding + tight gaps keep the block
-     visually compact despite the functional bottom clearance. */
+  /* the mode-switcher pill is permanently visible (fixed, bottom-centre);
+     reserve enough bottom room that the footer clears it instead of tucking
+     behind it */
   padding-bottom: var(--k-space-72);
   background: var(--k-black);
   border-top: 2px solid var(--k-line);
 }
 
-.footer__quiet {
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-space-40);
+}
+
+/* left — brand line + copyright */
+.footer__brand {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--k-space-12);
+  align-items: flex-start;
+  gap: var(--k-space-8);
+  text-align: left;
 }
 
 .footer__title {
@@ -32,7 +35,15 @@
   text-transform: uppercase;
 }
 
-.footer__legal {
+.footer__copy {
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-tight);
+  color: var(--k-ink-dim-2);
+}
+
+/* centre — legal links, stacked */
+.footer__links {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,31 +51,28 @@
   font-family: var(--k-font-mono);
   font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-tight);
-  color: var(--k-ink-dim-2);
+  text-transform: uppercase;
 }
 
-.footer__links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--k-space-8);
-}
-
-.footer__links a,
-.footer__linkPending {
+.footer__links a {
   color: var(--k-ink-dim);
+  text-decoration: none;
+  transition: color var(--k-t-fast) ease;
 }
 
-.footer__links a:hover {
+.footer__links a:hover,
+.footer__links a:focus-visible {
   color: var(--k-white);
   text-decoration: underline;
 }
 
-/* studio credit — a touch brighter than the legal line so the UNKNW mark reads
-   clearly, still brightens further on hover */
+/* right — studio credit */
+.footer__credit {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .footer__madeby {
-  margin-top: var(--k-space-8);
   color: var(--k-ink-dim);
 }
 
@@ -73,22 +81,28 @@
   color: var(--k-white);
 }
 
+/* --- mobile: stack the three columns, centred --- */
 @media (max-width: 1023px) {
   .footer {
-    gap: var(--k-space-24);
     padding-top: var(--k-space-48);
-    /* the fixed ModeSwitcher pill (~46px tall + 16px offset + safe-area) sits
-       on top of the page everywhere, footer included — extra clearance here
-       so "Legal information / Code of conduct / Privacy" isn't hidden under it */
+    /* extra clearance under the fixed ModeSwitcher pill (~46px + 16px offset +
+       safe-area) so the credit isn't hidden under it */
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0px is env()'s unit-carrying fallback inside calc() (a unitless 0 would invalidate the sum); the spacing itself is var(--k-space-96) */
     padding-bottom: calc(var(--k-space-96) + env(safe-area-inset-bottom, 0px));
   }
 
-  .footer__title {
-    font-size: var(--k-text-xs);
+  .footer__inner {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--k-space-24);
   }
 
-  .footer__legal {
+  .footer__brand {
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer__title {
     font-size: var(--k-text-xs);
   }
 }
