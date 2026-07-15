@@ -75,15 +75,10 @@
   letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
   color: var(--k-black);
-  transition: color var(--k-t-base) ease;
 }
 
 .c-floor__cap-s {
   color: var(--k-classic-panel);
-}
-
-.c-floor__item:hover .c-floor__cap {
-  color: var(--c-accent);
 }
 
 @media (max-width: 1023px) {

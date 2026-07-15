@@ -9,7 +9,6 @@
   /* Figma "Helvetica: Regular" — system stack, no webfont needed */
   --c-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --c-yellow: var(--k-classic-yellow); /* fills/backgrounds only — unreadable as text on white */
-  --c-gold: var(--k-classic-gold); /* readable yellow-family accent for text/icons on white */
   --c-orange: var(--k-amber);
   --c-blue: var(--k-classic-blue);
   --c-green: var(--k-classic-green);
@@ -56,8 +55,10 @@
   /* edge-hugging margin so every c-wrap section shares the hero / "who it's
      for" left edge (20px), instead of the old 120px inset */
   --c-margin: var(--k-space-20); /* -> 1400 content col, aligned to the hero edge */
-  --c-pad-major: var(--k-space-120); /* 120px vertical rhythm, major sections */
-  --c-pad-minor: var(--k-space-96); /* 96px, minor sections */
+  /* vertical rhythm (2026-07-15: 120/96 doubled to 240px between white sections,
+     which read as dead space — trimmed to a tighter editorial cadence) */
+  --c-pad-major: var(--k-space-80); /* major sections */
+  --c-pad-minor: var(--k-space-56); /* minor sections */
 }
 
 .acc-yellow {

@@ -127,7 +127,10 @@
    text indents into the 85px arrow slot (69px Figma slot + 16 gap). */
 
 .cfw__item {
-  --arrow-indent: 85px;
+  /* indent kept small + the arrow shrunk so the LONGEST item ("Performance
+     lead gens", ~663px wide) can't slide across the 60px gap into the pinned
+     champion cards on hover (was 85px, which overran the cards, #11) */
+  --arrow-indent: 40px;
   position: relative;
   font-size: var(--k-text-2xl);
   line-height: var(--c-lh-display);
@@ -141,12 +144,12 @@
 
 .cfw__arrow {
   position: absolute;
-  left: 17px; /* Figma icon slot is 69 wide, triangle right-aligned */
+  left: 0;
   top: 50%;
-  width: 52px;
-  height: 27px;
+  width: 28px;
+  height: 15px;
   opacity: 0;
-  transform: translate(-12px, -50%);
+  transform: translate(-10px, -50%);
   transition:
     opacity var(--k-t-base) ease,
     transform var(--k-t-slow) ease;
@@ -202,7 +205,9 @@
     position: static;
     height: auto;
     margin-top: var(--k-space-40);
-    grid-template-rows: auto auto auto;
+    /* 1fr rows (not auto) so the two card rows stay equal height even when a
+       subtitle wraps to two lines on narrow widths (#11) */
+    grid-template-rows: 1fr 1fr auto;
   }
 
   .cfw__card {

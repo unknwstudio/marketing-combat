@@ -25,19 +25,31 @@
 }
 
 .c-arena {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--k-space-16);
   min-height: 300px;
   padding: var(--k-space-24);
   background: var(--k-white);
+  /* uniform 1px black frame; the accent lives in an inset top strip (::before)
+     so the two never miter into each other at the rounded corners (the old
+     `border-top: 4px accent` + `border: 1px black` left a visible notch, #9). */
   border: 1px solid var(--k-black);
-  border-top: 4px solid var(--card-accent, var(--k-black));
   border-radius: var(--k-radius-md);
   color: var(--k-black);
-  transition:
-    background var(--k-t-slow) ease,
-    color var(--k-t-slow) ease;
+  overflow: hidden;
+}
+
+/* accent code strip — clipped to the card radius by the parent's overflow */
+.c-arena::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--card-accent, var(--k-black));
 }
 
 .c-arena__tag {
@@ -61,17 +73,7 @@
   color: var(--k-classic-panel);
 }
 
-/* hover/focus inverts the tile; the accent bar and tag keep the code */
-.c-arena:hover,
-.c-arena:focus-within {
-  background: var(--k-black);
-  color: var(--k-white);
-}
-
-.c-arena:hover .c-arena__body,
-.c-arena:focus-within .c-arena__body {
-  color: var(--k-white);
-}
+/* no hover state on these cards (#8) — the cards are static, accent-coded tiles */
 
 @media (max-width: 1023px) {
   .c-arenas__head {

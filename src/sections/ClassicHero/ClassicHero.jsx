@@ -1,4 +1,5 @@
 import ClassicHeroMedia from './ClassicHeroMedia'
+import { typeset } from '@/lib/typeset'
 import './ClassicHero.css'
 
 /**
@@ -14,11 +15,12 @@ export default function ClassicHero() {
       <div className="c-hero__left">
         <div className="c-hero__head">
           <h1 className="c-hero__title cap-trim">
-            The best marketer on&nbsp;the planet, decided
+            {typeset('The best marketer on the planet, decided')}
           </h1>
           <p className="c-hero__lede cap-trim">
-            The first international hackathon for senior marketers of the AI era. Real client
-            cases. Use AI — compare your skills.
+            {typeset(
+              'The first international hackathon for senior marketers of the AI era. Real client cases. Use AI — compare your skills.'
+            )}
           </p>
         </div>
         <button className="c-hero__cta" type="button" data-register>
