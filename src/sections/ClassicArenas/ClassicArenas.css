@@ -41,14 +41,16 @@
   overflow: hidden;
 }
 
-/* accent code strip — clipped to the card radius by the parent's overflow */
+/* accent code band — its height matches the corner radius so it rounds fully
+   with the card (a thin 4px strip can't follow a 12px radius and reads as a
+   cut nub at the corners); the parent's overflow clips it to the rounded top. */
 .c-arena::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: var(--k-radius-md);
   background: var(--card-accent, var(--k-black));
 }
 

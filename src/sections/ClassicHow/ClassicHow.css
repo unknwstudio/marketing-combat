@@ -53,7 +53,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  /* height = corner radius so the band rounds fully with the card (a thin 4px
+     strip reads as a cut nub against the rounded frame) */
+  height: var(--k-radius-md);
   background: var(--step-accent, var(--k-black));
 }
 
