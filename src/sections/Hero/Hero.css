@@ -7,13 +7,11 @@
 .hero {
   position: relative;
   width: 1440px;
-  /* 804px is the Figma scene (.hero__bg); the extra ~44px is a calm dark band
-     below it that houses the small secondary PLAY launcher, sitting just under
-     the tag-pill row. The band is var(--k-bg) (#0b0221), which matches the
-     scene's own dark bottom edge (~rgb(0,3,31)), so the seam at 804px is
-     invisible. Kept just tall enough that the PLAY clears the permanently
-     visible mode-switcher pill on a standard laptop viewport. */
-  height: 848px;
+  /* The logo + tag pills sit higher now, so the whole stage is shorter than the
+     804px Figma scene — the bg is anchored at the top and the extra height was
+     only ever a dark band. Everything (registration, logo, pills, the small
+     PLAY) fits inside this height. */
+  height: 772px;
   margin: 0 auto;
   overflow: hidden;
   background: var(--k-bg);
@@ -49,7 +47,7 @@
 /* --- glowing wordmark (raster) --- */
 .hero__logo {
   position: absolute;
-  top: 530px;
+  top: 430px;
   left: 50%;
   transform: translateX(-50%);
   width: 765px;   /* native export size -> crisp 1:1 pixels */
@@ -73,35 +71,51 @@
   z-index: 3;
 }
 
-/* The badge is a live <a> to /demo#register (see Hero.jsx). It keeps the
-   Figma box exactly, but needs anchor resets (no underline, block box) plus
-   pressable affordances: hover/focus-visible INVERT (white bg, black text) —
-   the same idiom as .d-btn:hover in demo.css, so every "registration" CTA on
-   the site answers the pointer identically. */
+/* The badge is a live <a> to /#register (see Hero.jsx). Same gold "sticker"
+   look as the big central registration and the floating register launcher —
+   every registration CTA on the site shares one font (mono) and one style
+   (notched pixel box + bevel + hard drop-shadow), just at different sizes. */
 .hero__badge {
-  display: inline-block;
-  padding: var(--k-space-8); /* was 8 / 8 / 10 — bottom snapped onto the 8-grid */
-  background: var(--k-black);
-  border: 1px solid var(--k-white);
-  color: var(--k-white);
+  --u: 4px;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--k-space-8) var(--k-space-16);
+  font-family: var(--k-font-mono);
   font-size: var(--k-text-lg); /* Figma 33:3913 */
   letter-spacing: var(--k-ls-display);
+  line-height: var(--k-lh-flat);
   white-space: nowrap;
+  color: var(--k-black);
+  background: var(--k-gold);
   cursor: pointer;
   text-decoration: none;
+  box-shadow:
+    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
+    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
+    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-white) 50%, transparent),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-black) 28%, transparent);
+  filter: drop-shadow(4px 5px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
+  transition: transform var(--k-t-tap) steps(2), filter var(--k-t-tap) steps(2),
+    background var(--k-t-fast);
 }
 
-.hero__badge:hover,
-.hero__badge:focus-visible {
-  background: var(--k-white);
-  color: var(--k-black);
+.hero__badge:hover {
+  background: color-mix(in srgb, var(--k-gold) 82%, white);
 }
 
-/* keyboard focus gets an extra offset ring — the invert alone can read as
-   "hover leftovers" when tabbing through the page */
+.hero__badge:active {
+  transform: translate(3px, 3px);
+  filter: drop-shadow(1px 2px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
+  box-shadow:
+    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
+    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
+    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-black) 28%, transparent),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-white) 50%, transparent);
+}
+
 .hero__badge:focus-visible {
-  outline: 2px solid var(--k-focus-ring);
-  outline-offset: 3px;
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 5px;
 }
 
 .hero__lede {
@@ -166,7 +180,7 @@
 /* --- bottom tag pills --- */
 .hero__tags {
   position: absolute;
-  top: 765px; /* below the logo's underline barcode (was 727 -> ~30px overlap) */
+  top: 665px; /* directly under the lifted logo's underline barcode */
   left: 347px;
   width: 746px;
   display: flex;
@@ -184,22 +198,6 @@
   font-size: var(--k-text-lg); /* Figma 33:3894 tags: 24px, -0.72px */
   letter-spacing: var(--k-ls-display);
   white-space: nowrap;
-  transition: color var(--k-t-fast) ease, background var(--k-t-fast) ease,
-    border-color var(--k-t-fast) ease, transform var(--k-t-fast) ease,
-    box-shadow var(--k-t-fast) ease;
-}
-
-/* hover flourish — the pill fills gold with black type, lifts, scales and
-   glows: unmistakable arcade feedback. Purely decorative (the pills aren't
-   links) — the cursor stays default. Scoped to /demo (.herostage wraps the
-   hero only there); on desktop /demo the CRT bakes an equivalent lit texture
-   and this drives the flat/mobile fallback. */
-.herostage .hero__pill:hover {
-  background: var(--k-gold);
-  border-color: var(--k-gold);
-  color: var(--k-black);
-  transform: translateY(-3px) scale(1.06);
-  box-shadow: 0 0 18px color-mix(in srgb, var(--k-gold) 60%, transparent);
 }
 
 /* --- decorative flanking grid lines (3-line sets, low opacity) --- */
@@ -284,13 +282,13 @@
   outline-offset: 8px;
 }
 
-/* --- SECONDARY: small PLAY launcher, pinned to the bottom of the hero -------
-   Compact gold pill sitting below the tag-pill row (the "block" in the hero),
-   a quiet way into the game now that registration owns the loud centre slot. */
+/* --- SECONDARY: small PLAY launcher, sitting in the hero just under the
+   tag-pill row — a quiet way into the game now that registration owns the loud
+   centre slot. */
 .hero__playsmall {
   position: absolute;
   left: 50%;
-  bottom: var(--k-space-8);
+  top: 712px;
   transform: translateX(-50%);
   z-index: 4;
   display: inline-flex;
