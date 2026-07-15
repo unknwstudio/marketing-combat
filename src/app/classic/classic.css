@@ -39,6 +39,24 @@
   text-box: trim-both cap alphabetic;
 }
 
+/* Chrome links must NOT take the blue link default. The global
+   `body:has(> .classic) a { color: --k-link-onlight }` (added so bare links are
+   readable on white) has higher specificity than the components' own colors, so
+   it turned the footer / mode-switch links blue. Restore their intended colors
+   at higher specificity here (the menu is handled in ClassicMenu.css). */
+.classic .c-foot__link {
+  color: var(--k-white);
+}
+
+.classic .c-foot__link:hover,
+.classic .c-foot__link:focus-visible {
+  color: var(--c-green);
+}
+
+.classic .mode-switch__opt:not(.mode-switch__opt--active) {
+  color: var(--k-white);
+}
+
 /* ============================================================
    SHARED SECTION SPINE (new build-out sections)
    The ported hero/champion sections are absolute Figma coords;
