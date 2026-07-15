@@ -1,24 +1,34 @@
 /* ============================================================
-   WHY JOIN — two-up numbered contents list.
+   WHY JOIN — two-column compose, MIRRORED: numbered reasons stack
+   on the LEFT and scroll up past the heading pinned on the RIGHT
+   (alternates the anchored side vs How's left-pinned heading).
    ============================================================ */
 
+.c-why {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--k-space-64);
+  align-items: start; /* required so the heading column can pin */
+}
+
 .c-why__head {
+  grid-column: 2; /* right column */
+  grid-row: 1;
+  position: sticky;
+  top: var(--k-space-80);
   display: flex;
   flex-direction: column;
   gap: var(--k-space-24);
-  max-width: 760px;
-  margin-bottom: var(--k-space-64);
 }
 
 .c-why__intro {
   margin-top: var(--k-space-8);
-  max-width: 520px;
+  max-width: 42ch;
 }
 
 .c-why__list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: var(--k-space-64);
+  grid-column: 1; /* left column */
+  grid-row: 1;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -37,9 +47,8 @@
   font-size: var(--k-text-xl);
   font-weight: 400;
   line-height: var(--k-lh-crushed);
-  /* editorial black index, not the blue accent: six blue numerals read as a
-     "wall of random blue" (#1). Blue now leads only where it's deliberate
-     (the stats hero cell, the coded How/Arena sets, the mission accent word). */
+  /* editorial black index, not the blue accent (a wall of blue numerals read as
+     "random blue", #1) */
   color: var(--k-black);
 }
 
@@ -56,15 +65,28 @@
   font-size: var(--k-text-sm);
   line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
-  max-width: 38ch;
+  max-width: 46ch;
 }
 
+/* below the split (and under reduced motion) fall back to a plain stack */
 @media (max-width: 1023px) {
+  .c-why {
+    grid-template-columns: 1fr;
+    gap: var(--k-space-40);
+  }
+
   .c-why__head {
-    margin-bottom: var(--k-space-48);
+    grid-column: 1;
+    position: static;
   }
 
   .c-why__list {
-    grid-template-columns: 1fr;
+    grid-column: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-why__head {
+    position: static;
   }
 }

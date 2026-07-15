@@ -3,8 +3,10 @@ import { typeset } from '@/lib/typeset'
 import './ClassicWhy.css'
 
 /**
- * WHY JOIN — six reasons as a two-up numbered contents list. Big weight-400
- * indices (single blue accent), hairline dividers, index left / copy right.
+ * WHY JOIN — two-column compose (same principle as How / Champion, #10) but
+ * MIRRORED: the heading pins on the RIGHT while the six numbered reasons stack
+ * and scroll up on the LEFT. Alternating the anchored side from block to block
+ * keeps the page from repeating the same left-heading layout every section.
  */
 
 const REASONS = [
@@ -19,7 +21,7 @@ const REASONS = [
 export default function ClassicWhy() {
   return (
     <section className="c-sec acc-blue" id="c-why" aria-label="Why join">
-      <div className="c-wrap">
+      <div className="c-wrap c-why">
         <header className="c-why__head">
           <MaskHead lines={['Why join the', 'hackathon?']} />
           <p className="c-lede c-reveal c-why__intro">
@@ -27,9 +29,9 @@ export default function ClassicWhy() {
           </p>
         </header>
 
-        <ul className="c-why__list">
+        <ol className="c-why__list">
           {REASONS.map((r, i) => (
-            <li className="c-why__item c-reveal" key={r.n} style={{ '--i': i % 2 }}>
+            <li className="c-why__item c-reveal" key={r.n} style={{ '--i': i }}>
               <span className="c-why__n cap-trim">{r.n}</span>
               <div className="c-why__text">
                 <h3 className="c-why__title cap-trim">{typeset(r.title)}</h3>
@@ -37,7 +39,7 @@ export default function ClassicWhy() {
               </div>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   )
