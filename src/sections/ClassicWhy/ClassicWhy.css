@@ -32,14 +32,19 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--k-black);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-16);
 }
 
+/* each reason is a bordered card (case-tracks idiom): index left, copy right */
 .c-why__item {
   display: flex;
   gap: var(--k-space-24);
-  padding: var(--k-space-32) 0;
-  border-bottom: 1px solid var(--k-black);
+  padding: var(--k-space-24);
+  background: var(--k-white);
+  border: 1px solid var(--k-black);
+  border-radius: var(--k-radius-md);
 }
 
 .c-why__n {
