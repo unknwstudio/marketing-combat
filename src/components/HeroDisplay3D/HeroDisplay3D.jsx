@@ -187,12 +187,13 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
   const gap = (746 - totalW) / (tags.length - 1)
   let tx = 347
   const ty = 765
+  // inert labels — no hover/focus state (see the wiring block below), so they
+  // always render in the resting green frame
   tags.forEach((t, i) => {
     const w = widths[i]
-    const lit = active === `tag${i}` // hover: gold fill + black type (= the CSS)
-    x.fillStyle = lit ? K_GOLD : 'rgba(0,0,0,0.6)'
+    x.fillStyle = 'rgba(0,0,0,0.6)'
     x.fillRect(tx, ty, w, 40)
-    x.strokeStyle = lit ? K_GOLD : K_WHITE
+    x.strokeStyle = K_WHITE
     x.lineWidth = 1
     x.beginPath()
     x.moveTo(tx, ty + 0.5)
@@ -200,7 +201,7 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
     x.moveTo(tx, ty + 39.5)
     x.lineTo(tx + w, ty + 39.5)
     x.stroke()
-    x.fillStyle = lit ? K_BLACK : K_ACCENT_GREEN
+    x.fillStyle = K_ACCENT_GREEN
     x.fillText(t, tx + pad, ty + 27)
     tx += w + gap
   })
@@ -422,10 +423,10 @@ function CRTPlane() {
     // the shader by swapping uTex to a pre-baked "lit" texture for that element.
     // KEYBOARD focus is mirrored the same way: the opaque canvas hides the DOM
     // :focus-visible ring, so without this Tab lands with no visible indicator
-    // (WCAG 2.4.7). Prominent elements (badge, playbig) are baked eagerly and
-    // warmed to the GPU; the four tag pills bake LAZILY on first hover to cap
-    // GPU memory (each texture is a full-res hero frame).
-    const textures = {} // key -> THREE.Texture: 'normal'|'badge'|'playbig'|'tag0..3'
+    // (WCAG 2.4.7). The two interactive elements (badge, playbig) are baked
+    // eagerly and warmed to the GPU; the tag pills are inert, so they get no
+    // lit texture at all.
+    const textures = {} // key -> THREE.Texture: 'normal'|'badge'|'playbig'
     let activeKey = null
     let bgImg = null
     let logoImg = null
@@ -517,11 +518,11 @@ function CRTPlane() {
 
       // guard: flat-only mode unmounts this component, but query defensively —
       // any missing element simply never lights.
+      // Only the genuinely interactive elements get a lit state — the four tag
+      // pills are inert <span>s (no hover/focus affordance in the DOM), so they
+      // stay in their resting green frame and are NOT wired.
       wire('badge', document.querySelector('.herostage__flat .hero__badge'))
       wire('playbig', document.querySelector('.herostage__flat .hero__playbig'))
-      document
-        .querySelectorAll('.herostage__flat .hero__tags .hero__pill')
-        .forEach((el, i) => wire(`tag${i}`, el))
 
       // pointer or focus may already be resting on an element when textures
       // finish loading — sync once so the first frame isn't stale

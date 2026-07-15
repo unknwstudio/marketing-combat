@@ -4,13 +4,16 @@ import './ClassicHow.css'
 /**
  * HOW IT WORKS — three numbered steps as hairline-ruled columns (editorial,
  * not carded). Oversized weight-400 indices walk the palette
- * yellow -> blue -> green so the row reads as one coded sequence.
+ * gold -> blue -> green so the row reads as one coded sequence (gold, not the
+ * bright yellow, so the numeral stays readable on the white page).
  */
 
 const STEPS = [
   {
     n: '01',
-    accent: 'var(--c-yellow)',
+    // gold, not --c-yellow: this accent colors the giant "01" numeral, and
+    // bright yellow on the white page is unreadable (1.07:1)
+    accent: 'var(--c-gold)',
     title: 'Qualifying round',
     body: '45 minutes online. A real case to solve under pressure, with the AI stack of your choice.',
   },

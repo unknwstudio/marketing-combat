@@ -8,7 +8,8 @@
 .classic {
   /* Figma "Helvetica: Regular" — system stack, no webfont needed */
   --c-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --c-yellow: var(--k-classic-yellow);
+  --c-yellow: var(--k-classic-yellow); /* fills/backgrounds only — unreadable as text on white */
+  --c-gold: var(--k-classic-gold); /* readable yellow-family accent for text/icons on white */
   --c-orange: var(--k-amber);
   --c-blue: var(--k-classic-blue);
   --c-green: var(--k-classic-green);

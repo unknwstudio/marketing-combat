@@ -1,3 +1,4 @@
+import MadeByUnknw from '@/components/MadeByUnknw/MadeByUnknw'
 import './Footer.css'
 
 /**
@@ -33,6 +34,7 @@ export default function Footer() {
             <a href="/legal/privacy">Privacy</a>
           </span>
         </div>
+        <MadeByUnknw className="footer__madeby" />
       </div>
     </footer>
   )

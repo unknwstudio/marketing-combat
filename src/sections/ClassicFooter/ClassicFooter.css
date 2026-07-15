@@ -67,11 +67,33 @@
 }
 
 .c-foot__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-space-16) var(--k-space-24);
   padding-top: var(--k-space-32);
   font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
   color: var(--k-hud-slate);
+}
+
+.c-foot__base p {
+  margin: 0;
+}
+
+/* studio credit — matches the base row's slate, brightens to white on hover.
+   The compound selector clears the global .classic a link color. */
+.c-foot__base .madeby {
+  color: var(--k-hud-slate);
+  text-transform: none;
+  letter-spacing: var(--k-ls-normal);
+}
+
+.c-foot__base .madeby:hover,
+.c-foot__base .madeby:focus-visible {
+  color: var(--k-white);
 }
 
 @media (max-width: 1023px) {

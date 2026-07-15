@@ -1,0 +1,30 @@
+/* Quiet "made by UNKNW" studio credit. Inherits its color from the footer it
+   sits in (currentColor drives the wordmark), so it reads as one muted tone and
+   brightens on hover/focus. */
+.madeby {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-space-8);
+  /* color is set by the host footer (below) so it matches that skin's muted
+     text tone; the wordmark tracks it via currentColor */
+  color: inherit;
+  text-decoration: none;
+  font-size: var(--k-text-xs);
+  line-height: var(--k-lh-flat);
+  transition: color var(--k-t-base) ease;
+}
+
+.madeby__by {
+  font-family: var(--k-font-mono);
+  letter-spacing: var(--k-ls-wide-sm);
+  text-transform: lowercase;
+}
+
+/* wordmark sized to the credit's own type so it scales with the footer, never a
+   fixed px; the 140:35 (4:1) mark lands ~54px wide next to the label */
+.madeby__mark {
+  display: block;
+  height: 1.15em;
+  width: auto;
+  color: inherit;
+}

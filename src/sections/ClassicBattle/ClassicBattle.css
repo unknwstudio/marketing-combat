@@ -24,15 +24,21 @@
 /* --- four figures, open row (no dividers) ----------------------------- */
 
 .c-battle__stats {
+  /* content-sized columns spread edge-to-edge — the four figures vary wildly in
+     width (1st / 300+ / $100M+ / 30), so equal 1fr columns left them ragged and
+     let the widest ($100M+) butt against its neighbour. space-between gives an
+     even optical rhythm; the column-gap is the guaranteed minimum gutter. */
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, max-content);
+  justify-content: space-between;
+  column-gap: var(--k-space-24);
 }
 
 .c-stat {
   display: flex;
   flex-direction: column;
   gap: var(--k-space-16);
-  padding: var(--k-space-32) var(--k-space-24) 0 0;
+  padding-top: var(--k-space-32);
 }
 
 .c-stat__num {
