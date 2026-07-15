@@ -139,7 +139,8 @@
   --arrow-indent: 40px;
   position: relative;
   font-size: var(--k-text-2xl);
-  line-height: var(--c-lh-display);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma cap-box ratio (46/64) so the five items pitch at 66px and the list is exactly 310px tall — the SAME height as the champion cards block, so "Future legends" aligns with the green strip (Frame 71). Relying on cap-trim (text-box-trim) here is not robust; this line-height reproduces it everywhere. */
+  line-height: 0.72;
   color: var(--k-black);
   transition: color var(--k-t-fast) ease;
 }
