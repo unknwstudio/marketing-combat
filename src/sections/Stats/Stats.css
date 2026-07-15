@@ -6,7 +6,13 @@
 
 .stats__row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* minmax(0, 1fr), NOT 1fr: while the odometer digits spin they sit at their
+     wide "widest 0-9 glyph" boxes, and a plain 1fr (= minmax(auto, 1fr)) lets
+     that wide min-content grow its column and squeeze the others — the long
+     captions then wrap to 2 lines mid-spin and snap back when the widths pin,
+     jittering the block height. minmax(0, …) keeps every column equal width
+     regardless of content, so the captions never reflow. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -106,7 +112,7 @@
   }
 
   .stats__row {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--k-space-4);
   }
 
