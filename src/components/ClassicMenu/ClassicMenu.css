@@ -37,7 +37,9 @@
   gap: 6px;
 }
 
-.c-menu__link {
+/* .classic prefix so the ink color beats the global `body:has(> .classic) a`
+   blue-link rule (higher specificity) — the menu items are <a> tags */
+.classic .c-menu__link {
   color: var(--k-classic-ink);
   font-size: var(--k-text-sm);
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading on the pixel-ported card (node 36:4312) — 1.2 has no token and must not snap */
@@ -55,7 +57,7 @@
   border-top: 1px solid var(--k-classic-ink);
 }
 
-.c-menu__apply {
+.classic .c-menu__apply {
   width: 100%;
   height: 32px;
   display: flex;
