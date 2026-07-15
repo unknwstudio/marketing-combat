@@ -1,7 +1,7 @@
 /* Four big arcade counters, divided by thin vertical rules. */
 .stats {
-  padding-top: var(--k-9);
-  padding-bottom: var(--k-9);
+  padding-top: var(--k-space-72);
+  padding-bottom: var(--k-space-72);
 }
 
 .stats__row {
@@ -16,8 +16,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: var(--k-1) var(--k-3);
+  gap: var(--k-space-16);
+  padding: var(--k-space-8) var(--k-space-24);
   text-align: center;
 }
 
@@ -31,16 +31,16 @@
   display: inline-flex;
   align-items: center;
   font-family: var(--k-font-accent);
-  font-size: 88px;
+  font-size: var(--k-text-3xl);
   font-weight: 500;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-title-yellow);
   -webkit-text-stroke: 0.04em var(--k-orange);
   paint-order: stroke fill;
   /* glow via drop-shadow, NOT text-shadow: the odometer windows clip their
      strips, and a filter applies AFTER clipping so spinning digits keep the
      same halo as the static prefix/suffix */
-  filter: drop-shadow(0 0 0.1em rgba(255, 80, 0, 0.55));
+  filter: drop-shadow(0 0 0.1em color-mix(in srgb, var(--k-orange) 55%, transparent));
 }
 
 /* ============================================================
@@ -68,7 +68,7 @@
 .stats__strip span {
   display: block;
   height: 1em;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   text-align: center;
 }
 
@@ -77,6 +77,7 @@
   position: absolute;
   width: 1px;
   height: 1px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: standard visually-hidden clip idiom (matches .sr-only in index.css) — the -1px margin is part of the AT-only pattern, not spacing */
   margin: -1px;
   padding: 0;
   overflow: hidden;
@@ -91,26 +92,26 @@
 
 .stats__caption {
   font-family: var(--k-font-mono);
-  font-size: 20px;
-  line-height: 1.3;
-  letter-spacing: -0.5px;
+  font-size: var(--k-text-md);
+  line-height: var(--k-lh-snug);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-accent-green);
   text-transform: uppercase;
 }
 
 @media (max-width: 1023px) {
   .stats {
-    padding-top: var(--k-5);
-    padding-bottom: var(--k-5);
+    padding-top: var(--k-space-40);
+    padding-bottom: var(--k-space-40);
   }
 
   .stats__row {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--k-space-xs);
+    gap: var(--k-space-4);
   }
 
   .stats__cell {
-    padding: 18px 10px;
+    padding: var(--k-space-16) var(--k-space-8);
   }
 
   /* with 2 columns, the left border on the 3rd cell (start of row 2) is wrong;
@@ -128,20 +129,24 @@
   }
 
   .stats__value {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: odometer counter sized to the 2-up mobile grid; sits between --k-text-xl (40) and --k-text-2xl (64), and the fluid xl would drop to 28px on phones */
     font-size: 44px;
   }
 
   .stats__caption {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile label floor — fluid --k-text-xs renders 14px on tablets (+3px, beyond type tolerance) */
     font-size: 11px;
   }
 }
 
 @media (max-width: 639px) {
   .stats__value {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: phone odometer size; nearest fluid step --k-text-xl renders 28px at 375px viewport (-8px, beyond type tolerance) */
     font-size: 36px;
   }
 
   .stats__caption {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: phone label floor — fluid --k-text-xs renders 11-14px over 480-639px (+4px worst case, beyond type tolerance) */
     font-size: 10px;
   }
 }

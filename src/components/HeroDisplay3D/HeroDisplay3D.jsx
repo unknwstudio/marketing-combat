@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import { K_WHITE, K_BLACK, K_GOLD, K_ORANGE, K_ACCENT_GREEN } from '@/game/palette'
 import './HeroDisplay3D.css'
 
 /**
@@ -73,16 +74,16 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
   const badgeText = '>>> registration <<<'
   const bw = x.measureText(badgeText).width + 16
   const bh = 24 + 18
-  x.fillStyle = active === 'badge' ? '#fff' : '#000'
+  x.fillStyle = active === 'badge' ? K_WHITE : K_BLACK
   x.fillRect(19, 23, bw, bh)
-  x.strokeStyle = '#fff'
+  x.strokeStyle = K_WHITE
   x.lineWidth = 1
   x.strokeRect(19.5, 23.5, bw - 1, bh - 1)
-  x.fillStyle = active === 'badge' ? '#000' : '#fff'
+  x.fillStyle = active === 'badge' ? K_BLACK : K_WHITE
   x.fillText(badgeText, 27, 23 + bh - 14)
 
   // lede (below badge)
-  x.fillStyle = '#3ad76f'
+  x.fillStyle = K_ACCENT_GREEN
   x.font = '24px ' + MONO
   wrapText(
     x,
@@ -98,16 +99,16 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
   const my0 = 23
   x.fillStyle = 'rgba(0,0,0,0.6)'
   x.fillRect(mx0, my0, 213, 43)
-  x.strokeStyle = '#ff5000'
+  x.strokeStyle = K_ORANGE
   x.lineWidth = 2
   x.strokeRect(mx0 + 1, my0 + 1, 211, 41)
-  x.fillStyle = '#ff5000'
+  x.fillStyle = K_ORANGE
   for (let i = 0; i < 4; i++) {
     x.fillRect(mx0 + 4 + i * 10, my0 + 4, 8, 35)
   }
   x.font = '24px ' + MONO
   x.fillText('15%', mx0 + 4 + 4 * 10 + 6, my0 + 43 - 12)
-  x.fillStyle = '#ff5000'
+  x.fillStyle = K_ORANGE
   x.font = '24px ' + MONO
   x.fillText('will you survive?', mx0 + 213 - x.measureText('will you survive?').width, my0 + 43 + 32)
 
@@ -148,13 +149,13 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
     x.fillStyle = 'rgba(0,0,0,0.45)'
     x.fillRect(bx - U + 7, by - U + 9, bw + U * 2, bh + U * 2)
     // notched black border — 4 axis-only slabs, corners left open
-    x.fillStyle = '#000'
+    x.fillStyle = K_BLACK
     x.fillRect(bx - U, by, U, bh)
     x.fillRect(bx + bw, by, U, bh)
     x.fillRect(bx, by - U, bw, U)
     x.fillRect(bx, by + bh, bw, U)
     // gold face (lighter when lit)
-    x.fillStyle = lit ? '#ffda62' : '#ffd23f'
+    x.fillStyle = lit ? '#ffda62' : K_GOLD
     x.fillRect(bx, by, bw, bh)
     // inset bevel: light top-left, dark bottom-right
     x.fillStyle = 'rgba(255,255,255,0.5)'
@@ -168,7 +169,7 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
     const cX = bx + bPadX
     const uW = triW / 6
     const uH = triH / 10
-    x.fillStyle = '#000'
+    x.fillStyle = K_BLACK
     for (let k = 0; k < 5; k++) {
       x.fillRect(cX + k * uW, cy - triH / 2 + k * uH, uW, triH - 2 * k * uH)
     }
@@ -189,9 +190,9 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
   tags.forEach((t, i) => {
     const w = widths[i]
     const lit = active === `tag${i}` // hover: gold fill + black type (= the CSS)
-    x.fillStyle = lit ? '#ffd23f' : 'rgba(0,0,0,0.6)'
+    x.fillStyle = lit ? K_GOLD : 'rgba(0,0,0,0.6)'
     x.fillRect(tx, ty, w, 40)
-    x.strokeStyle = lit ? '#ffd23f' : '#fff'
+    x.strokeStyle = lit ? K_GOLD : K_WHITE
     x.lineWidth = 1
     x.beginPath()
     x.moveTo(tx, ty + 0.5)
@@ -199,7 +200,7 @@ async function buildHeroTexture(bgImg, logoImg, active = null) {
     x.moveTo(tx, ty + 39.5)
     x.lineTo(tx + w, ty + 39.5)
     x.stroke()
-    x.fillStyle = lit ? '#000' : '#3ad76f'
+    x.fillStyle = lit ? K_BLACK : K_ACCENT_GREEN
     x.fillText(t, tx + pad, ty + 27)
     tx += w + gap
   })

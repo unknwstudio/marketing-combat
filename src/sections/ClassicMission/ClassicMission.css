@@ -11,14 +11,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-4);
+  gap: var(--k-space-32);
   text-align: center;
 }
 
 .c-mission__stmt {
   max-width: 20ch;
   font-size: var(--k-text-xl);
-  line-height: 1.05;
+  line-height: var(--k-lh-tight);
   color: var(--k-white);
   text-transform: none;
 }

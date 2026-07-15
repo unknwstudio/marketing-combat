@@ -67,7 +67,7 @@
     rgba(255, 0, 0, 0.5) 0,
     rgba(0, 255, 0, 0.5) 1px,
     rgba(0, 0, 255, 0.5) 2px,
-    rgba(0, 0, 0, 0) 3px
+    color-mix(in srgb, var(--k-black) 0%, transparent) 3px
   );
   opacity: calc(var(--crt-intensity) * 0.4);
 }

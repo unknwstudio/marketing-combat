@@ -38,7 +38,7 @@
   font-family: var(--k-font-accent);
   font-size: var(--k-text-2xl);
   font-weight: 500;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   text-transform: lowercase;
   white-space: nowrap;
   color: var(--k-title-yellow);
@@ -50,7 +50,7 @@
   text-shadow:
     0 0 0.03em var(--k-orange),
     0 0 0.08em var(--k-orange),
-    0 0 0.16em rgba(255, 80, 0, 0.65);
+    0 0 0.16em color-mix(in srgb, var(--k-orange) 65%, transparent);
 }
 
 /* content block: caption row + cards row (35:4206) */
@@ -61,8 +61,9 @@
   width: 1380px;
   display: flex;
   flex-direction: column;
-  /* caption box (24px) + 31 = 55px down to the cards row (Figma content-local y) */
-  gap: 31px;
+  /* caption box (24px) + 32 = 56px down to the cards row (Figma content-local
+     y was 31px — snapped +1px onto the 8-grid) */
+  gap: var(--k-space-32);
 }
 
 /* thin caption row (35:4226) */
@@ -71,11 +72,12 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  /* Figma 35:4226 — GT Pressura Mono 24px, var(--k-accent-green), tracking -0.72px */
+  /* Figma 35:4226 — GT Pressura Mono 24px, var(--k-accent-green), tracking -0.72px
+     (= var(--k-ls-display) exactly at 24px) */
   font-family: var(--k-font-mono);
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: -0.72px;
+  font-size: var(--k-text-lg);
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-display);
   text-transform: lowercase;
   color: var(--k-accent-green);
   white-space: nowrap;
@@ -84,7 +86,7 @@
 /* row of 5 fighter cards (35:4184) */
 .fighters__row {
   display: flex;
-  gap: var(--k-space-sm);
+  gap: var(--k-space-12);
   align-items: stretch;
   width: 100%;
   margin: 0;
@@ -97,9 +99,9 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: var(--k-space-12); /* was 11px — snapped +1px onto the sub-grid */
   cursor: pointer;
-  transition: transform 0.12s ease-out;
+  transition: transform var(--k-t-fast) ease-out;
 }
 
 /* hover affordance (desktop pointer only): cyan highlight + slight lift */
@@ -110,7 +112,7 @@
   .fighters__card:hover .fighters__portrait {
     box-shadow:
       inset 0 0 0 2px var(--k-cyan),
-      0 0 16px rgba(63, 224, 255, 0.55);
+      0 0 16px color-mix(in srgb, var(--k-cyan) 55%, transparent);
   }
   .fighters__card:hover .fighters__label {
     color: var(--k-white);
@@ -141,7 +143,8 @@
   overflow: visible;
   opacity: 0;
   z-index: 1;
-  filter: drop-shadow(0 0 6px rgba(63, 224, 255, 0.85)) drop-shadow(0 0 14px rgba(63, 224, 255, 0.5));
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--k-cyan) 85%, transparent))
+    drop-shadow(0 0 14px color-mix(in srgb, var(--k-cyan) 50%, transparent));
   pointer-events: none;
 }
 
@@ -177,7 +180,7 @@
   width: 100%;
   height: 321px;
   object-fit: cover;
-  transition: transform 0.25s ease, filter 0.25s ease;
+  transition: transform var(--k-t-slow) ease, filter var(--k-t-slow) ease;
 }
 
 /* character-select hover: zoom + chromatic-aberration (see RGBSplitFilter),
@@ -191,7 +194,7 @@
   background: linear-gradient(
     100deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.4) 50%,
+    color-mix(in srgb, var(--k-white) 40%, transparent) 50%,
     transparent 60%
   );
   transform: translateX(-120%);
@@ -284,15 +287,16 @@
   align-items: center;
   justify-content: center;
   min-height: 33px;
-  padding: var(--k-space-xs) var(--k-space-xs);
-  background: rgba(0, 0, 0, 0.6);
+  padding: var(--k-space-4);
+  background: color-mix(in srgb, var(--k-black) 60%, transparent);
   border-top: 1px solid var(--k-white);
   border-bottom: 1px solid var(--k-white);
-  /* Figma 35:4171 & siblings — GT Pressura Mono 24px, tracking -0.72px, 33px strip */
+  /* Figma 35:4171 & siblings — GT Pressura Mono 24px, tracking -0.72px
+     (= var(--k-ls-display) exactly at 24px), 33px strip */
   font-family: var(--k-font-mono);
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: -0.72px;
+  font-size: var(--k-text-lg);
+  line-height: var(--k-lh-flat);
+  letter-spacing: var(--k-ls-display);
   text-align: center;
   text-transform: uppercase;
   color: var(--k-muted);
@@ -306,7 +310,7 @@
 .fighters__card--selected .fighters__portrait {
   box-shadow:
     inset 0 0 0 2px var(--k-green),
-    0 0 16px rgba(63, 255, 135, 0.55);
+    0 0 16px color-mix(in srgb, var(--k-green) 55%, transparent);
 }
 
 /* ============================================================
@@ -322,7 +326,7 @@
     width: 100%;
     height: auto;
     overflow: visible;
-    padding: var(--k-6) var(--k-2);
+    padding: var(--k-space-48) var(--k-space-16);
     /* keep the dark arena; the fixed 1440x755 bg image would distort
        when stretched over a tall narrow column, so we drop it and rely
        on the section's dark --k-bg fill. */
@@ -340,8 +344,9 @@
     transform: none;
     white-space: normal;
     text-align: center;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke fluid display tuple tuned for the tablet reflow; nearest step --k-text-xl starts at 28px (+10px at small viewports, beyond type tolerance) */
     font-size: clamp(18px, 5vw, 44px);
-    line-height: 1.3;
+    line-height: var(--k-lh-snug);
     /* orange outline + glow inherited from the base rule; em-based so it scales
        down with the clamped font-size */
   }
@@ -352,15 +357,15 @@
     left: auto;
     top: auto;
     width: 100%;
-    margin-top: var(--k-4);
-    gap: var(--k-3);
+    margin-top: var(--k-space-32);
+    gap: var(--k-space-24);
   }
 
   /* stack the two caption lines, centered */
   .fighters__caption {
     flex-direction: column;
     justify-content: center;
-    gap: var(--k-1);
+    gap: var(--k-space-8);
     white-space: normal;
     text-align: center;
   }
@@ -369,7 +374,7 @@
   .fighters__row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--k-2);
+    gap: var(--k-space-16);
   }
 
   .fighters__card {
@@ -392,23 +397,24 @@
 /* --- phone (<=639px): 2-col grid, tighter type --- */
 @media (max-width: 639px) {
   .fighters {
-    padding: var(--k-4) var(--k-2);
+    padding: var(--k-space-32) var(--k-space-16);
   }
 
   .fighters__row {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--k-1);
+    gap: var(--k-space-8);
   }
 
   /* the 24px desktop caption is oversized on a phone; shrink it (it already
      wraps via white-space:normal above, so this is polish, not overflow-fix) */
   .fighters__caption {
-    font-size: 12px;
+    font-size: var(--k-text-xs);
   }
 
   /* shrink long labels (e.g. "PERFORMANCE LEAD GEN") so 2 cols fit at 360px */
   .fighters__label {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: phone label floor so 2 columns fit at 360px; fluid --k-text-xs bottoms out at 11px (+3px) and the fixed HUD ramp is reserved for pixel-font/fixed chrome */
     font-size: 8px;
-    padding: var(--k-1) var(--k-space-2xs);
+    padding: var(--k-space-8) var(--k-space-2);
   }
 }

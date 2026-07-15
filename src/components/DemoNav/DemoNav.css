@@ -8,16 +8,16 @@
   z-index: var(--z-nav);
   display: flex;
   align-items: center;
-  gap: var(--k-space-sm);
-  padding: 6px 14px;
-  background: rgba(6, 1, 15, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 99px;
+  gap: var(--k-space-12);
+  padding: var(--k-space-4) var(--k-space-12);
+  background: color-mix(in srgb, var(--k-shadow) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--k-white) 14%, transparent);
+  border-radius: var(--k-radius-pill);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  transition: opacity var(--k-t-base) ease-out, transform var(--k-t-base) ease-out;
   font-family: var(--k-font-mono);
 }
 
@@ -28,8 +28,8 @@
 }
 
 .dnav__kicker {
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: var(--k-text-hud-xs);
+  letter-spacing: var(--k-ls-wide);
   text-transform: uppercase;
   color: var(--k-body-green);
   white-space: nowrap;
@@ -38,7 +38,7 @@
 .dnav__links {
   display: flex;
   align-items: center;
-  gap: var(--k-space-2xs);
+  gap: var(--k-space-2);
 }
 
 .dnav__link {
@@ -47,17 +47,17 @@
   align-items: center;
   /* >=24px min target (WCAG 2.5.8) — was ~21px */
   min-height: 24px;
-  padding: var(--k-space-xs) 10px;
-  font-size: 13px;
-  letter-spacing: -0.2px;
+  padding: var(--k-space-4) var(--k-space-12);
+  font-size: var(--k-text-hud-sm);
+  letter-spacing: var(--k-ls-tight);
   text-transform: uppercase;
   color: var(--k-accent-green);
-  border-radius: 99px;
+  border-radius: var(--k-radius-pill);
   white-space: nowrap;
 }
 
 .dnav__link:hover {
-  background: rgba(58, 215, 111, 0.16);
+  background: color-mix(in srgb, var(--k-accent-green) 16%, transparent);
   color: var(--k-white);
 }
 
@@ -68,22 +68,22 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dnav {
-    transition: opacity 0.12s linear;
+    transition: opacity var(--k-t-fast) linear;
   }
 }
 
 @media (max-width: 767px) {
   .dnav {
     top: 30px;
-    gap: var(--k-1);
-    padding: 5px 10px;
+    gap: var(--k-space-8);
+    padding: var(--k-space-4) var(--k-space-8);
   }
   .dnav__kicker {
     display: none;
   }
   .dnav__link {
-    padding: var(--k-space-xs) 7px;
-    font-size: 11px;
+    padding: var(--k-space-4) var(--k-space-8);
+    font-size: var(--k-text-hud-xs);
   }
   /* invisible ≥44px vertical touch target that keeps the compact pill visual —
      clicks on the pseudo bubble up to the anchor (WCAG 2.5.8) */

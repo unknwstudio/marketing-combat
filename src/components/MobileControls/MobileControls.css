@@ -7,7 +7,7 @@
   inset: 0;
   z-index: var(--z-play-pad);
   pointer-events: none; /* only the buttons catch input */
-  font-family: monospace;
+  font-family: var(--k-font-mono);
 }
 
 .mc-btn {
@@ -16,12 +16,12 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(8, 4, 20, 0.55);
-  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: color-mix(in srgb, var(--k-shadow) 55%, transparent);
+  border: 2px solid color-mix(in srgb, var(--k-white) 45%, transparent);
   color: var(--k-hud-ink);
-  font-size: 23px;
-  font-weight: bold;
-  line-height: 1;
+  font-family: var(--k-font-pixel);
+  font-size: var(--k-text-hud-xl);
+  line-height: var(--k-lh-flat);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,7 +30,7 @@
   -webkit-tap-highlight-color: transparent;
   touch-action: none;
 }
-.mc-btn:active { background: rgba(255, 255, 255, 0.32); transform: scale(0.93); }
+.mc-btn:active { background: color-mix(in srgb, var(--k-white) 32%, transparent); transform: scale(0.93); }
 /* the SVG pixel arrows must never intercept the pointer — the slide-between-
    buttons logic reads pointerenter/leave on the BUTTONS themselves */
 .mc-btn svg { pointer-events: none; }
@@ -48,8 +48,8 @@
 .mc-ok {
   right: 26px;
   bottom: 70px;
-  background: rgba(255, 210, 63, 0.30);
-  border-color: rgba(255, 210, 63, 0.65);
+  background: color-mix(in srgb, var(--k-gold) 30%, transparent);
+  border-color: color-mix(in srgb, var(--k-gold) 65%, transparent);
   color: var(--k-gold);
 }
 
@@ -58,10 +58,10 @@
   content: 'BLK';
   position: absolute;
   bottom: -13px;
-  font-size: 8px;
-  font-weight: normal;
-  color: rgba(255, 255, 255, 0.55);
-  letter-spacing: 1px;
+  font-size: var(--k-text-hud-2xs);
+  font-weight: 400;
+  color: color-mix(in srgb, var(--k-white) 55%, transparent);
+  letter-spacing: var(--k-ls-pixel-sm);
 }
 
 @media (pointer: coarse) {

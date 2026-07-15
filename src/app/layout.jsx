@@ -57,6 +57,7 @@ export const metadata = {
 
 // mobile browser-chrome color. Dark to match the permanently-dark arcade
 // (/, /demo, /play); the white /classic & /mcp pages override this to light.
+// (meta theme-color can't read CSS vars — the raw hex mirrors --k-bg)
 export const viewport = {
   themeColor: '#0b0221',
 }

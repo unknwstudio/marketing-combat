@@ -19,8 +19,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--k-4);
-  background: rgba(6, 1, 15, 0.78);
+  gap: var(--k-space-32);
+  background: color-mix(in srgb, var(--k-shadow) 78%, transparent);
   pointer-events: auto;
   font-family: var(--k-font);
   text-align: center;
@@ -29,16 +29,17 @@
 
 .attract__coin {
   font-size: var(--k-text-xl);
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-gold);
-  text-shadow: 4px 4px 0 var(--k-black);
+  text-shadow: var(--k-shadow-hard);
   animation: attract-blink 1.2s steps(1, end) infinite;
 }
 
 .attract__key {
   font-size: var(--k-text-sm);
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-green);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 3px hard offset scaled down for the small key line (the 4px --k-shadow-hard reads chunky at this size); color is already the token */
   text-shadow: 3px 3px 0 var(--k-black);
   /* negative delay = opposite phase, so the two lines alternate like the
      two lamps of an idle marquee instead of flashing in unison */
@@ -75,14 +76,14 @@
 
 @media (max-width: 1023px) {
   .attract {
-    gap: var(--k-space-lg);
+    gap: var(--k-space-20);
   }
 
   .attract__coin {
-    font-size: 22px;
+    font-size: var(--k-text-hud-xl);
   }
 
   .attract__key {
-    font-size: 11px;
+    font-size: var(--k-text-hud-sm);
   }
 }

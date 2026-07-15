@@ -5,20 +5,20 @@
 .c-arenas__head {
   display: flex;
   flex-direction: column;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   max-width: 760px;
-  margin-bottom: var(--k-8);
+  margin-bottom: var(--k-space-64);
 }
 
 .c-arenas__intro {
-  margin-top: var(--k-1);
+  margin-top: var(--k-space-8);
   max-width: 520px;
 }
 
 .c-arenas__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -27,22 +27,22 @@
 .c-arena {
   display: flex;
   flex-direction: column;
-  gap: var(--k-2);
+  gap: var(--k-space-16);
   min-height: 300px;
-  padding: var(--k-3);
+  padding: var(--k-space-24);
   background: var(--k-white);
   border: 1px solid var(--k-black);
   border-top: 4px solid var(--card-accent, var(--k-black));
-  border-radius: 12px;
+  border-radius: var(--k-radius-md);
   color: var(--k-black);
   transition:
-    background 0.25s ease,
-    color 0.25s ease;
+    background var(--k-t-slow) ease,
+    color var(--k-t-slow) ease;
 }
 
 .c-arena__tag {
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-wide);
   text-transform: uppercase;
   color: var(--card-accent, var(--k-black));
 }
@@ -50,14 +50,14 @@
 .c-arena__title {
   font-size: var(--k-text-lg);
   font-weight: 400;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   text-transform: uppercase;
 }
 
 .c-arena__body {
   margin-top: auto;
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
 }
 
@@ -75,7 +75,7 @@
 
 @media (max-width: 1023px) {
   .c-arenas__head {
-    margin-bottom: var(--k-6);
+    margin-bottom: var(--k-space-48);
   }
 
   .c-arenas__grid {
@@ -87,7 +87,7 @@
   }
 }
 
-@media (max-width: 599px) {
+@media (max-width: 639px) {
   .c-arenas__grid {
     grid-template-columns: 1fr;
   }

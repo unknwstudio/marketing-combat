@@ -25,30 +25,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9px;
-  background: rgba(8, 4, 20, 0.6);
-  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--k-radius-sm);
+  background: color-mix(in srgb, var(--k-shadow) 60%, transparent);
+  border: 2px solid color-mix(in srgb, var(--k-white) 28%, transparent);
   color: var(--k-hud-ink);
   /* utility icons in a clean system font, NOT the pixel HUD font: Press Start 2P lacks ✕/❚❚ (they
      fall back) and sits ? high, so the pixel font made the three glyphs mismatch. One font + one
      size + line-height:1 + flex-center => all three identically centered. */
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 17px;
-  line-height: 1;
+  font-size: var(--k-text-hud-lg);
+  line-height: var(--k-lh-flat);
   opacity: 0.62;
   cursor: pointer;
-  transition: opacity 0.12s, background 0.12s, transform 0.08s;
+  transition: opacity var(--k-t-fast), background var(--k-t-fast), transform var(--k-t-tap);
 }
-.gc-corner:hover { opacity: 1; background: rgba(20, 10, 40, 0.85); }
+.gc-corner:hover { opacity: 1; background: color-mix(in srgb, var(--k-gc-panel) 85%, transparent); }
 .gc-corner:active { transform: scale(0.92); }
 .gc-corner:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; opacity: 1; }
 /* touch has no :hover, so the always-there escape hatches must be full-opacity and >=44px */
 @media (hover: none), (pointer: coarse) {
-  .gc-corner { opacity: 1; width: 44px; height: 44px; border-color: rgba(255, 255, 255, 0.5); }
+  .gc-corner { opacity: 1; width: 44px; height: 44px; border-color: color-mix(in srgb, var(--k-white) 50%, transparent); }
 }
 .gc-exit { left: 10px; }
 .gc-exit:hover { border-color: var(--gc-red); color: var(--k-hud-red-tint); }
-.gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: var(--k-1); pointer-events: none; }
+.gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: var(--k-space-8); pointer-events: none; }
 .gc-topright .gc-corner { position: static; }
 
 /* ---- shared full-screen overlay ---- */
@@ -60,39 +60,46 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--k-2);
-  padding: 28px;
+  gap: var(--k-space-16);
+  padding: var(--k-space-24);
   text-align: center;
-  background: rgba(5, 1, 12, 0.9);
+  background: color-mix(in srgb, var(--k-stage) 90%, transparent);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
 }
 
 /* ---- title / press start ---- */
-.gc-title { cursor: pointer; gap: var(--k-space-lg); }
+.gc-title { cursor: pointer; gap: var(--k-space-20); }
 /* full-bleed transparent start button BEHIND the content; content is pointer-transparent so a tap
    anywhere starts, while the HOW TO PLAY link keeps its own clicks (no interactive nesting). */
 .gc-startbtn { position: absolute; inset: 0; z-index: 0; margin: 0; padding: 0; border: 0; background: transparent; cursor: pointer; }
 .gc-startbtn:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: -4px; }
 .gc-title > :not(.gc-startbtn) { position: relative; z-index: 1; pointer-events: none; }
 .gc-title .gc-howtolink { pointer-events: auto; }
-.gc-kicker { font-size: 8px; letter-spacing: 3px; color: var(--gc-blue); opacity: 0.85; }
+.gc-kicker {
+  font-size: var(--k-text-hud-2xs);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: extra-wide 3px pixel-font tracking is the spaced-out arcade kicker look; snapping to the 2px ramp visibly collapses it */
+  letter-spacing: 3px;
+  color: var(--gc-blue);
+  opacity: 0.85;
+}
 .gc-logo {
   margin: 0;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: game-title display art must scale with the viewport inside fixed chrome; no scale step matches (xl min is 28 vs 22, ~27% off) */
   font-size: clamp(22px, 6.4vw, 46px);
-  line-height: 1.32;
-  letter-spacing: 2px;
+  line-height: var(--k-lh-snug);
+  letter-spacing: var(--k-ls-pixel);
   color: var(--gc-gold);
-  text-shadow: 0 0 20px rgba(255, 210, 63, 0.45), 4px 4px 0 rgba(0, 0, 0, 0.55);
+  text-shadow: 0 0 20px color-mix(in srgb, var(--k-gold) 45%, transparent), 4px 4px 0 color-mix(in srgb, var(--k-black) 55%, transparent);
 }
-.gc-logo span { color: var(--gc-red); text-shadow: 0 0 20px rgba(255, 77, 109, 0.5), 4px 4px 0 rgba(0, 0, 0, 0.55); }
+.gc-logo span { color: var(--gc-red); text-shadow: 0 0 20px color-mix(in srgb, var(--k-hud-red) 50%, transparent), 4px 4px 0 color-mix(in srgb, var(--k-black) 55%, transparent); }
 .gc-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--k-1) 18px;
+  gap: var(--k-space-8) var(--k-space-16);
   justify-content: center;
-  font-size: 8px;
-  letter-spacing: 1px;
+  font-size: var(--k-text-hud-2xs);
+  letter-spacing: var(--k-ls-pixel-sm);
   color: var(--k-hud-steel);
 }
 .gc-legend span { white-space: nowrap; }
@@ -102,8 +109,8 @@
   .gc-legend { display: none; }
 }
 .gc-start {
-  font-size: clamp(11px, 2.4vw, 15px);
-  letter-spacing: 2px;
+  font-size: var(--k-text-hud-md);
+  letter-spacing: var(--k-ls-pixel);
   color: var(--k-white);
   animation: gc-blink 1.05s steps(1, end) infinite;
 }
@@ -112,62 +119,62 @@
   background: none;
   border: none;
   color: var(--gc-blue);
-  font-size: 9px;
-  letter-spacing: 1px;
+  font-size: var(--k-text-hud-xs);
+  letter-spacing: var(--k-ls-pixel-sm);
   cursor: pointer;
-  padding: 6px 10px;
+  padding: var(--k-space-8) var(--k-space-12);
 }
 .gc-howtolink:hover { color: var(--k-white); text-decoration: underline; }
-.gc-hint { font-size: 8px; letter-spacing: 1px; color: var(--k-hud-steel); } /* >=4.5:1 on the dark overlay (was var(--k-hud-shadow), ~4.36:1) */
+.gc-hint { font-size: var(--k-text-hud-2xs); letter-spacing: var(--k-ls-pixel-sm); color: var(--k-hud-steel); } /* >=4.5:1 on the dark overlay (was var(--k-hud-shadow), ~4.36:1) */
 
 /* ---- menus (pause / how-to / confirm) ---- */
-.gc-menu { gap: var(--k-space-sm); }
+.gc-menu { gap: var(--k-space-12); }
 .gc-menu-title {
-  font-size: var(--k-text-md);
-  letter-spacing: 2px;
+  font-size: var(--k-text-hud-xl);
+  letter-spacing: var(--k-ls-pixel);
   color: var(--gc-gold);
-  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
-  margin-bottom: 6px;
+  text-shadow: 3px 3px 0 color-mix(in srgb, var(--k-black) 50%, transparent);
+  margin-bottom: var(--k-space-8);
 }
 .gc-item {
   pointer-events: auto;
   min-width: 250px;
   max-width: 82vw;
-  padding: 13px var(--k-2);
-  background: rgba(255, 255, 255, 0.055);
-  border: 2px solid rgba(255, 255, 255, 0.26);
+  padding: var(--k-space-12) var(--k-space-16);
+  background: color-mix(in srgb, var(--k-white) 6%, transparent);
+  border: 2px solid color-mix(in srgb, var(--k-white) 26%, transparent);
   color: var(--k-hud-ink);
-  font-size: var(--k-text-xs);
-  letter-spacing: 1.5px;
+  font-size: var(--k-text-hud-md);
+  letter-spacing: var(--k-ls-pixel);
   cursor: pointer;
-  transition: background 0.12s, border-color 0.12s, transform 0.06s;
+  transition: background var(--k-t-fast), border-color var(--k-t-fast), transform var(--k-t-tap);
 }
-.gc-item:hover { background: rgba(255, 210, 63, 0.14); border-color: var(--gc-gold); color: var(--k-white); }
+.gc-item:hover { background: color-mix(in srgb, var(--k-gold) 14%, transparent); border-color: var(--gc-gold); color: var(--k-white); }
 .gc-item:active { transform: scale(0.98); }
 .gc-item:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; }
-.gc-danger { border-color: rgba(255, 77, 109, 0.55); color: var(--k-hud-red-soft); }
-.gc-danger:hover { background: rgba(255, 77, 109, 0.16); border-color: var(--gc-red); color: var(--k-white); }
-.gc-toggle { border-color: rgba(143, 232, 255, 0.4); color: var(--gc-blue); }
-.gc-toggle:hover { background: rgba(143, 232, 255, 0.12); border-color: var(--gc-blue); }
+.gc-danger { border-color: color-mix(in srgb, var(--k-hud-red) 55%, transparent); color: var(--k-hud-red-soft); }
+.gc-danger:hover { background: color-mix(in srgb, var(--k-hud-red) 16%, transparent); border-color: var(--gc-red); color: var(--k-white); }
+.gc-toggle { border-color: color-mix(in srgb, var(--k-hud-cyan) 40%, transparent); color: var(--gc-blue); }
+.gc-toggle:hover { background: color-mix(in srgb, var(--k-hud-cyan) 12%, transparent); border-color: var(--gc-blue); }
 
 /* ---- how-to card ---- */
-.gc-howto { gap: 14px; }
-.gc-lead { margin: 0; font-family: ui-monospace, "Courier New", monospace; font-size: 12px; color: var(--k-hud-frost); }
+.gc-howto { gap: var(--k-space-12); }
+.gc-lead { margin: 0; font-family: ui-monospace, "Courier New", monospace; font-size: var(--k-text-hud-sm); color: var(--k-hud-frost); }
 .gc-keys {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--k-1) 26px;
-  margin: var(--k-space-xs) 0;
+  gap: var(--k-space-8) var(--k-space-24);
+  margin: var(--k-space-4) 0;
 }
-.gc-keys > div { display: flex; justify-content: space-between; gap: 18px; min-width: 190px; font-size: 9px; }
-.gc-keys b { color: var(--gc-green); font-weight: normal; letter-spacing: 1px; }
+.gc-keys > div { display: flex; justify-content: space-between; gap: var(--k-space-16); min-width: 190px; font-size: var(--k-text-hud-xs); }
+.gc-keys b { color: var(--gc-green); font-weight: 400; letter-spacing: var(--k-ls-pixel-sm); }
 .gc-keys span { color: var(--k-hud-mist); }
 .gc-note {
   margin: 0;
   max-width: 380px;
   font-family: ui-monospace, "Courier New", monospace;
-  font-size: 10.5px;
-  line-height: 1.7;
+  font-size: var(--k-text-hud-xs);
+  line-height: var(--k-lh-loose);
   color: var(--k-hud-slate);
 }
 
@@ -182,8 +189,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-2);
-  padding: 0 var(--k-2);
+  gap: var(--k-space-16);
+  padding: 0 var(--k-space-16);
 }
 
 /* funnel hook: sits above the game-action buttons, sends the engaged player to
@@ -193,20 +200,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
 }
 .gc-result-tagline {
   font-family: var(--k-font-pixel);
   font-size: var(--k-text-hud-2xs);
-  letter-spacing: 1px;
+  letter-spacing: var(--k-ls-pixel-sm);
   text-transform: uppercase;
   color: var(--gc-blue);
 }
 .gc-resultbar .gc-result-cta .gc-register {
   min-height: 44px;
-  padding: 12px 22px;
-  gap: var(--k-1);
-  font-size: 11px;
+  padding: var(--k-space-12) var(--k-space-24);
+  gap: var(--k-space-8);
+  font-size: var(--k-text-hud-sm);
   color: var(--k-black);
   background: var(--gc-gold);
   border-color: var(--gc-gold);
@@ -221,7 +228,7 @@
   pointer-events: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--k-space-8);
   justify-content: center;
 }
 .gc-resultbar .gc-item {
@@ -229,49 +236,50 @@
   min-width: 0;
   width: auto;
   min-height: 44px;   /* post-match CTAs (rematch/share) meet the 44px touch target */
-  padding: 11px 20px;
-  font-size: 10px;
-  background: rgba(5, 1, 12, 0.82);
+  padding: var(--k-space-12) var(--k-space-20);
+  font-size: var(--k-text-hud-xs);
+  background: color-mix(in srgb, var(--k-stage) 82%, transparent);
 }
 .gc-result-primary { border-color: var(--gc-gold); color: var(--gc-gold); }
-.gc-result-primary:hover { background: rgba(255, 210, 63, 0.18); border-color: var(--gc-gold); color: var(--k-white); }
-.gc-share-btn { border-color: rgba(143, 232, 255, 0.5); color: var(--gc-blue); }
-.gc-share-btn:hover { background: rgba(143, 232, 255, 0.16); border-color: var(--gc-blue); color: var(--k-white); }
+.gc-result-primary:hover { background: color-mix(in srgb, var(--k-gold) 18%, transparent); border-color: var(--gc-gold); color: var(--k-white); }
+.gc-share-btn { border-color: color-mix(in srgb, var(--k-hud-cyan) 50%, transparent); color: var(--gc-blue); }
+.gc-share-btn:hover { background: color-mix(in srgb, var(--k-hud-cyan) 16%, transparent); border-color: var(--gc-blue); color: var(--k-white); }
 
 /* ---- share / brag card ---- */
 .gc-bragcard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-1);
-  padding: 22px 34px;
-  margin: var(--k-space-xs) 0 var(--k-space-2xs);
-  background: linear-gradient(160deg, rgba(20, 12, 40, 0.9), rgba(8, 4, 20, 0.9));
+  gap: var(--k-space-8);
+  padding: var(--k-space-24) var(--k-space-32);
+  margin: var(--k-space-4) 0 var(--k-space-2);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--k-gc-panel) 90%, transparent), color-mix(in srgb, var(--k-shadow) 90%, transparent));
   border: 2px solid var(--gc-gold);
-  box-shadow: 0 0 26px rgba(255, 210, 63, 0.25), inset 0 0 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--k-gold) 25%, transparent), inset 0 0 40px color-mix(in srgb, var(--k-black) 40%, transparent);
 }
-.gc-brag-badge { font-size: 40px; line-height: 1; }
+/* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 40px trophy-emoji display badge; the fixed HUD ramp tops out at 24px and fluid steps are banned in fixed chrome */
+.gc-brag-badge { font-size: 40px; line-height: var(--k-lh-flat); }
 .gc-brag-head {
-  font-size: clamp(13px, 3vw, 18px);
-  letter-spacing: 1.5px;
+  font-size: var(--k-text-hud-lg);
+  letter-spacing: var(--k-ls-pixel);
   color: var(--gc-gold);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 0 color-mix(in srgb, var(--k-black) 50%, transparent);
 }
-.gc-brag-fighter { font-size: 9px; letter-spacing: 1.5px; color: var(--k-hud-ink); }
-.gc-brag-score { font-size: var(--k-text-xs); letter-spacing: 2px; color: var(--gc-green); } /* the gauntlet board line: initials · score */
+.gc-brag-fighter { font-size: var(--k-text-hud-xs); letter-spacing: var(--k-ls-pixel-sm); color: var(--k-hud-ink); }
+.gc-brag-score { font-size: var(--k-text-hud-md); letter-spacing: var(--k-ls-pixel); color: var(--gc-green); } /* the gauntlet board line: initials · score */
 /* manual-copy fallback when the clipboard API is blocked (embedded webviews) */
-.gc-copyfield { pointer-events: auto; width: min(320px, 82vw); padding: 9px 11px; font-family: ui-monospace, monospace;
-  font-size: var(--k-text-xs); color: var(--k-hud-ink); background: rgba(0, 0, 0, 0.5); border: 1px solid var(--gc-blue); border-radius: 6px; text-align: center; }
-.gc-brag-game { font-size: 7px; letter-spacing: 2px; color: var(--gc-blue); opacity: 0.85; margin-top: var(--k-space-2xs); }
+.gc-copyfield { pointer-events: auto; width: min(320px, 82vw); padding: var(--k-space-8) var(--k-space-12); font-family: ui-monospace, monospace;
+  font-size: var(--k-text-hud-md); color: var(--k-hud-ink); background: color-mix(in srgb, var(--k-black) 50%, transparent); border: 1px solid var(--gc-blue); border-radius: var(--k-radius-sm); text-align: center; }
+.gc-brag-game { font-size: var(--k-text-hud-2xs); letter-spacing: var(--k-ls-pixel); color: var(--gc-blue); opacity: 0.85; margin-top: var(--k-space-2); }
 
 @keyframes gc-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.12; } }
 @media (prefers-reduced-motion: reduce) { .gc-start { animation: none; } }
 
 /* short landscape phones: tighten so menus never overflow */
 @media (max-height: 430px) {
-  .gc-overlay { gap: 9px; padding: 14px; }
-  .gc-title { gap: var(--k-space-sm); }
-  .gc-item { padding: 9px 14px; }
-  .gc-keys { gap: 5px 22px; }
-  .gc-menu-title { margin-bottom: var(--k-space-2xs); }
+  .gc-overlay { gap: var(--k-space-8); padding: var(--k-space-12); }
+  .gc-title { gap: var(--k-space-12); }
+  .gc-item { padding: var(--k-space-8) var(--k-space-12); }
+  .gc-keys { gap: var(--k-space-4) var(--k-space-20); }
+  .gc-menu-title { margin-bottom: var(--k-space-2); }
 }

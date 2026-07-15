@@ -8,7 +8,7 @@
 .leaderboard__board {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 36px var(--k-5);
+  padding: var(--k-space-40) var(--k-space-40);
   /* the table's nowrap cells scroll INSIDE the card on narrow screens
      instead of pushing the page sideways */
   overflow-x: auto;
@@ -18,24 +18,25 @@
   width: 100%;
   border-collapse: collapse;
   font-family: var(--k-font);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Press Start 2P score digits specced 20px; the fixed HUD ramp has no 20 step (16/24 are both a visible 4px off) */
   font-size: 20px;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
 }
 
 .leaderboard__table th {
   font-family: var(--k-font-mono);
-  font-size: 18px;
-  letter-spacing: -0.3px;
+  font-size: var(--k-text-base);
+  letter-spacing: var(--k-ls-tight);
   font-weight: 400;
   color: var(--k-accent-green);
   text-transform: uppercase;
   text-align: left;
-  padding: 0 var(--k-2) var(--k-2);
+  padding: 0 var(--k-space-16) var(--k-space-16);
   border-bottom: 2px solid var(--k-line);
 }
 
 .leaderboard__table td {
-  padding: var(--k-space-lg) var(--k-2) 0;
+  padding: var(--k-space-20) var(--k-space-16) 0;
   white-space: nowrap;
 }
 
@@ -45,6 +46,7 @@
 
 .leaderboard__name {
   color: var(--k-white);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: arcade high-score initials register — 0.15em one-off sanctioned by the letter-spacing ledger */
   letter-spacing: 0.15em;
 }
 
@@ -61,8 +63,8 @@ th.leaderboard__score {
 
 .leaderboard__title {
   font-family: var(--k-font-mono);
-  font-size: 18px;
-  letter-spacing: -0.3px;
+  font-size: var(--k-text-base);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
   text-transform: uppercase;
 }
@@ -86,6 +88,7 @@ th.leaderboard__score {
 .leaderboard__youtag {
   color: var(--k-cyan);
   font-family: var(--k-font);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0.8em rides the table's own font-size (20px desktop / 12px mobile) — a fixed token would break the mobile ratio */
   font-size: 0.8em;
 }
 
@@ -128,23 +131,26 @@ th.leaderboard__score {
 
 @media (max-width: 1023px) {
   .leaderboard__board {
-    padding: var(--k-2);
+    padding: var(--k-space-16);
   }
 
+  /* the mobile table stays on the FIXED hud ramp (not the fluid steps): the
+     Press Start 2P digits anchor the register at integer sizes, and fluid
+     mono headers would outgrow them in the tablet band */
   .leaderboard__table {
-    font-size: 11px;
+    font-size: var(--k-text-hud-sm);
   }
 
   .leaderboard__table th {
-    font-size: 10px;
-    padding: 0 var(--k-1) 10px;
+    font-size: var(--k-text-hud-xs);
+    padding: 0 var(--k-space-8) var(--k-space-8);
   }
 
   .leaderboard__table td {
-    padding: var(--k-space-sm) var(--k-1) 0;
+    padding: var(--k-space-12) var(--k-space-8) 0;
   }
 
   .leaderboard__title {
-    font-size: 11px;
+    font-size: var(--k-text-hud-sm);
   }
 }

@@ -12,17 +12,19 @@
 .announce__text {
   position: relative;
   font-family: var(--k-font-accent);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: center-screen call-out display art; no scale step reaches 160px (--k-text-hero max 220 / 14vw is ~37% off on both bounds) */
   font-size: clamp(40px, 11vw, 160px);
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-title-yellow);
   text-transform: uppercase;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0.02em tracking on the giant call-out; snapping to --k-ls-wide-sm (0.04em) adds up to +3.2px per glyph at the 160px max size — visibly loosens "FIGHT!" */
   letter-spacing: 0.02em;
   white-space: nowrap;
   -webkit-text-stroke: 0.03em var(--k-orange);
   paint-order: stroke fill;
   text-shadow:
     0 0 0.08em var(--k-orange),
-    0 0 0.2em rgba(255, 80, 0, 0.7);
+    0 0 0.2em color-mix(in srgb, var(--k-orange) 70%, transparent);
   animation: announce-slam 0.34s cubic-bezier(0.2, 1.4, 0.3, 1) both,
     announce-out 0.3s ease-in 1s both;
 }

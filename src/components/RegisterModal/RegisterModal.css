@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--k-2);
+  padding: var(--k-space-16);
 }
 
 .reg__backdrop {
@@ -21,53 +21,53 @@
 .reg__dialog {
   position: relative;
   width: min(440px, 100%);
-  max-height: calc(100dvh - var(--k-4, 32px));
+  max-height: calc(100dvh - var(--k-space-32, 32px));
   overflow-y: auto;
-  padding: var(--k-3);
+  padding: var(--k-space-24);
   animation: reg-in 0.16s ease-out;
 }
 
 .reg__close {
   position: absolute;
-  top: var(--k-1);
-  right: var(--k-1);
+  top: var(--k-space-8);
+  right: var(--k-space-8);
   width: 32px;
   height: 32px;
   background: transparent;
   border: 0;
-  font-size: 22px;
-  line-height: 1;
+  font-size: var(--k-text-hud-xl);
+  line-height: var(--k-lh-flat);
   cursor: pointer;
 }
 
 .reg__title {
-  margin: 0 0 6px;
-  font-size: 22px;
-  line-height: 1.1;
+  margin: 0 0 var(--k-space-8);
+  font-size: var(--k-text-hud-xl);
+  line-height: var(--k-lh-tight);
 }
 
 .reg__sub {
-  margin: 0 0 var(--k-2);
-  font-size: 13px;
+  margin: 0 0 var(--k-space-16);
+  font-size: var(--k-text-hud-md);
   opacity: 0.8;
 }
 
 .reg__legend {
-  margin: 0 0 var(--k-2);
-  font-size: 11px;
+  margin: 0 0 var(--k-space-16);
+  font-size: var(--k-text-hud-xs);
   opacity: 0.7;
 }
 
 .reg__field {
-  margin-bottom: 14px;
+  margin-bottom: var(--k-space-16);
 }
 
 .reg__label {
   display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
+  margin-bottom: var(--k-space-8);
+  font-size: var(--k-text-hud-sm);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--k-ls-wide-sm);
 }
 
 .reg__input-wrap {
@@ -78,10 +78,11 @@
 .reg__input {
   flex: 1;
   width: 100%;
-  padding: 10px var(--k-space-sm);
+  padding: var(--k-space-12);
   font: inherit;
-  /* >=16px so iOS Safari does not auto-zoom the form on focus (a11y/UX) */
-  font-size: 16px;
+  /* >=16px so iOS Safari does not auto-zoom the form on focus (a11y/UX) —
+     the FIXED hud ramp (integer 16px) guarantees it never shrinks fluidly */
+  font-size: var(--k-text-hud-lg);
 }
 
 .reg__req {
@@ -89,21 +90,21 @@
 }
 
 .reg__error {
-  margin: 6px 0 0;
-  font-size: 12px;
+  margin: var(--k-space-8) 0 0;
+  font-size: var(--k-text-hud-sm);
   color: var(--k-red);
 }
 
 .reg__consent {
-  margin-bottom: 10px;
+  margin-bottom: var(--k-space-8);
 }
 
 .reg__check {
   display: flex;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
   align-items: flex-start;
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: var(--k-text-hud-sm);
+  line-height: var(--k-lh-normal);
   cursor: pointer;
 }
 
@@ -112,7 +113,14 @@
   /* larger hit target than the ~13px native control (WCAG 2.5.8) */
   width: 18px;
   height: 18px;
+  /* center the box against the FIRST line of the label (labels can wrap):
+     the old fixed 1px offset left the box ~2px low, so the text read as
+     floating high. 1lh = the label's line box; engines without lh support
+     fall back to the old offset. */
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: lh-fallback optical alignment, not scale spacing */
   margin-top: 1px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: optical first-line centering of the 18px control, not scale spacing */
+  margin-top: calc((1lh - 18px) / 2);
 }
 
 .reg__check a {
@@ -121,22 +129,22 @@
 
 .reg__submit {
   width: 100%;
-  margin-top: var(--k-2);
-  padding: var(--k-space-sm);
+  margin-top: var(--k-space-16);
+  padding: var(--k-space-12);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--k-text-hud-lg);
   cursor: pointer;
 }
 
 .reg__demo {
-  margin: var(--k-space-sm) 0 0;
-  font-size: 11px;
+  margin: var(--k-space-12) 0 0;
+  font-size: var(--k-text-hud-xs);
   text-align: center;
   opacity: 0.6;
 }
 
 .reg__success {
-  padding: var(--k-2) 0;
+  padding: var(--k-space-16) 0;
   text-align: center;
 }
 
@@ -202,7 +210,7 @@
   border: 1px solid var(--k-white);
   color: var(--k-white);
   text-transform: lowercase;
-  transition: background 0.12s, color 0.12s;
+  transition: background var(--k-t-fast), color var(--k-t-fast);
 }
 
 .reg--ai .reg__submit:hover {
@@ -252,11 +260,11 @@
 
 .reg--classic .reg__submit {
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--k-radius-pill);
   background: var(--k-black);
   color: var(--k-white);
   font-weight: 700;
-  transition: opacity 0.12s;
+  transition: opacity var(--k-t-fast);
 }
 
 .reg--classic .reg__submit:hover {

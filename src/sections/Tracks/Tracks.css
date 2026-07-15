@@ -3,7 +3,7 @@
 .tracks__grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -27,14 +27,14 @@
   height: auto;
   /* a soft orange glow so the badge lives in the arcade world rather than
      reading as a pasted-on sticker */
-  filter: drop-shadow(0 0 10px rgba(255, 80, 0, 0.4));
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--k-orange) 40%, transparent));
 }
 
 .tracks__card {
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  padding: 36px;
+  gap: var(--k-space-24); /* was 22px — snapped +2px onto the 8-grid */
+  padding: var(--k-space-32); /* was 36px — snapped -4px onto the 8-grid */
   border-color: var(--k-tracks-border);
 }
 
@@ -53,17 +53,18 @@
      above the word's baseline — subtle at 1:1, but a visible step once zoomed and
      jagged under the CRT scanlines. Baseline-align sits them on one true line. */
   align-items: baseline;
-  gap: 18px;
-  padding-bottom: 18px;
+  gap: var(--k-space-16); /* was 18px — snapped -2px onto the 8-grid */
+  padding-bottom: var(--k-space-16); /* was 18px — snapped -2px onto the 8-grid */
   border-bottom: 2px solid var(--k-line);
 }
 
 .tracks__name {
   margin: 0;
   font-family: var(--k-font-accent);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: track-name display size sits between --k-text-xl (40) and --k-text-2xl (64); -4px to xl exceeds type tolerance, and .tracks__top's baseline note depends on the 44px/40px pairing */
   font-size: 44px;
   font-weight: 500;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   text-transform: lowercase;
   color: var(--k-title-yellow);
 }
@@ -72,10 +73,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--k-space-12); /* was 10px — snapped +2px to match the card's bullets rhythm */
   font-family: var(--k-font-mono);
   font-size: var(--k-text-md);
-  letter-spacing: -0.5px;
+  letter-spacing: var(--k-ls-tight);
 }
 
 .tracks__specialLabel {
@@ -91,7 +92,7 @@
 .tracks__bullets {
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-sm);
+  gap: var(--k-space-12);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -101,22 +102,22 @@
 .tracks__bullet {
   font-family: var(--k-font-mono);
   font-size: var(--k-text-md);
-  line-height: 1.35;
-  letter-spacing: -0.5px;
+  line-height: var(--k-lh-snug);
+  letter-spacing: var(--k-ls-tight);
   color: var(--k-body-green);
 }
 
 .tracks__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--k-space-12); /* was 10px — snapped +2px to match the card's bullets rhythm */
 }
 
 .tracks__fight {
   align-self: flex-end;
   font-family: var(--k-font);
   font-size: var(--k-text-md);
-  letter-spacing: 1px;
+  letter-spacing: var(--k-ls-pixel-sm);
   color: var(--k-red);
   text-transform: uppercase;
 }
@@ -179,13 +180,14 @@
 @media (max-width: 1023px) {
   .tracks__grid {
     grid-template-columns: 1fr;
-    gap: var(--k-2);
+    gap: var(--k-space-16);
   }
 
   /* stacked layout: the badge becomes its own centered row between the
      two cards instead of a column between them */
   .tracks__vs {
     justify-self: center;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: negative pull nesting the VS badge into the gap between the stacked cards; the spacing ladder has no negative steps */
     margin: -6px 0;
   }
 
@@ -194,20 +196,21 @@
   }
 
   .tracks__card {
-    padding: var(--k-space-lg);
-    gap: var(--k-2);
+    padding: var(--k-space-20);
+    gap: var(--k-space-16);
   }
 
   .tracks__name {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: tablet/phone track-name size; nearest fluid step --k-text-lg drops to 20px at 360px viewports (-6px, beyond type tolerance) */
     font-size: 26px;
   }
 
   .tracks__special,
   .tracks__bullet {
-    font-size: 13px;
+    font-size: var(--k-text-xs);
   }
 
   .tracks__fight {
-    font-size: 14px;
+    font-size: var(--k-text-hud-md);
   }
 }

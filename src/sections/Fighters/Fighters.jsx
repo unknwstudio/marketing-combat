@@ -99,7 +99,7 @@ export default function Fighters() {
                 <path
                   d={f.bolt}
                   fill="#eaffff"
-                  stroke="#3fe0ff"
+                  stroke="var(--k-cyan)"
                   strokeWidth="2"
                   strokeLinejoin="miter"
                 />

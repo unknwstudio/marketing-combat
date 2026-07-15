@@ -3,6 +3,12 @@
  * SSR-safe: Phaser is injected from the client island (no top-level import).
  * Combat runs on a fixed 60Hz tick; rendering happens after. */
 import { MK } from './events';
+import {
+  K_WHITE, K_WHITE_HEX, K_BLACK, K_BLACK_HEX,
+  K_CYAN_HEX, K_GOLD, K_GOLD_HEX, K_ORANGE, K_STAGE, K_STAGE_HEX,
+  K_HUD_INK, K_HUD_FROST, K_HUD_STEEL, K_HUD_CYAN,
+  K_HUD_RED, K_HUD_RED_HEX, K_HUD_GREEN, K_HUD_GREEN_HEX,
+} from '../palette';
 
 export const GAME_W = 480;
 export const GAME_H = 270;
@@ -52,9 +58,9 @@ const HURT = { dx: 22, top: 130, bottom: 6 };
 // Per-archetype identity: hp, walk speed, damage mult, reach mult, attack-speed
 // mult. Makes "choose your fighter" actually matter.
 export const ROSTER = [
-  { key: 'fighter1', name: 'CMOs',                 color: 0x3fe0ff, style: 'ZONER',     hp: 95,  speed: 100, dmg: 0.95, reach: 1.15, atkSpeed: 1.00 },
-  { key: 'fighter2', name: 'HEADS OF GROWTH',      color: 0xff4d6d, style: 'RUSHDOWN',  hp: 98,  speed: 114, dmg: 1.00, reach: 0.98, atkSpeed: 1.10 },
-  { key: 'fighter3', name: 'PERFORMANCE LEAD GEN', color: 0x8bffa0, style: 'ALL-ROUND', hp: 110, speed: 96,  dmg: 1.05, reach: 1.02, atkSpeed: 1.00 },
+  { key: 'fighter1', name: 'CMOs',                 color: K_CYAN_HEX, style: 'ZONER',     hp: 95,  speed: 100, dmg: 0.95, reach: 1.15, atkSpeed: 1.00 },
+  { key: 'fighter2', name: 'HEADS OF GROWTH',      color: K_HUD_RED_HEX, style: 'RUSHDOWN',  hp: 98,  speed: 114, dmg: 1.00, reach: 0.98, atkSpeed: 1.10 },
+  { key: 'fighter3', name: 'PERFORMANCE LEAD GEN', color: K_HUD_GREEN_HEX, style: 'ALL-ROUND', hp: 110, speed: 96,  dmg: 1.05, reach: 1.02, atkSpeed: 1.00 },
   { key: 'fighter4', name: 'AI CREATORS',          color: 0xffcf3f, style: 'HEAVY',     hp: 124, speed: 80,  dmg: 1.32, reach: 1.08, atkSpeed: 0.80 },
   { key: 'fighter5', name: 'FUTURE LEGENDS',       color: 0xb08bff, style: 'ASSASSIN',  hp: 84,  speed: 126, dmg: 0.85, reach: 0.98, atkSpeed: 1.22 },
 ];
@@ -105,9 +111,9 @@ const MOVE_NAMES = {
 };
 // The combo counter names the B2B funnel as an escalating violence scale.
 function funnelTier(n) {
-  if (n >= 8) return { label: 'CLOSED-WON!!', color: '#ffd23f' };
-  if (n >= 5) return { label: 'SQL!', color: '#8bffa0' };
-  if (n >= 3) return { label: 'MQL!', color: '#8fe8ff' };
+  if (n >= 8) return { label: 'CLOSED-WON!!', color: K_GOLD };
+  if (n >= 5) return { label: 'SQL!', color: K_HUD_GREEN };
+  if (n >= 3) return { label: 'MQL!', color: K_HUD_CYAN };
   return { label: 'LEAD', color: '#c8d0dc' };
 }
 
@@ -141,7 +147,7 @@ const KEYSET_P2 = { left: ['LEFT'], right: ['RIGHT'], jump: ['UP'], block: ['DOW
 let FONT_FAMILY = "'Press Start 2P', monospace";
 export function setGameFont(f) { if (f) FONT_FAMILY = f; }
 const txt = (scene, x, y, s, size, color, ax = 0.5, ay = 0.5) =>
-  scene.add.text(x, y, s, { fontFamily: FONT_FAMILY, fontSize: `${size}px`, color, stroke: '#000', strokeThickness: 3 })
+  scene.add.text(x, y, s, { fontFamily: FONT_FAMILY, fontSize: `${size}px`, color, stroke: K_BLACK, strokeThickness: 3 })
     .setOrigin(ax, ay).setResolution(3);
 
 const SOUNDS = ['round1', 'round2', 'round3', 'fight', 'ko', 'win', 'lose', 'flawless', 'closethedeal', 'budgetcut', 'unsubscribed', 'gdprd', 'hit', 'kick', 'block', 'special', 'kothud', 'confirm'];
@@ -208,7 +214,7 @@ function bootCreate() { this.scene.start('select'); }
    SELECT — pick a fighter, then a stage; opponent is a random other fighter.
    ========================================================================= */
 function selectCreate() {
-  this.add.rectangle(0, 0, GAME_W, GAME_H, 0x05010c).setOrigin(0, 0);
+  this.add.rectangle(0, 0, GAME_W, GAME_H, K_STAGE_HEX).setOrigin(0, 0);
   this.add.image(GAME_W / 2, GAME_H / 2, 'stage_b2b-saas').setDisplaySize(GAME_W, GAME_H).setAlpha(0.18);
 
   this.phase = 'fighter';
@@ -218,9 +224,9 @@ function selectCreate() {
   this.mi = 0; // mode index into MODES
   this.isTouch = isCoarsePointer();
 
-  this.title = txt(this, GAME_W / 2, 22, 'CHOOSE YOUR FIGHTER', 15, '#ffd23f');
-  this.modeLabel = txt(this, GAME_W / 2, 8, '', 7, '#8fe8ff');
-  this.sub = txt(this, GAME_W / 2, GAME_H - 16, SELECT_HINT(this, true), 8, '#8fe8ff');
+  this.title = txt(this, GAME_W / 2, 22, 'CHOOSE YOUR FIGHTER', 15, K_GOLD);
+  this.modeLabel = txt(this, GAME_W / 2, 8, '', 7, K_HUD_CYAN);
+  this.sub = txt(this, GAME_W / 2, GAME_H - 16, SELECT_HINT(this, true), 8, K_HUD_CYAN);
 
   // fighter row
   this.picks = ROSTER.map((f, i) => {
@@ -229,20 +235,20 @@ function selectCreate() {
     const box = this.add.rectangle(x, 130, 78, 128, f.color, 0).setStrokeStyle(2, f.color, 0).setOrigin(0.5, 0.5);
     return { s, box, x };
   });
-  this.nameLabel = txt(this, GAME_W / 2, 208, '', 11, '#fff');
-  this.styleLabel = txt(this, GAME_W / 2, 219, '', 9, '#ffd23f');
+  this.nameLabel = txt(this, GAME_W / 2, 208, '', 11, K_WHITE);
+  this.styleLabel = txt(this, GAME_W / 2, 219, '', 9, K_GOLD);
   this.statG = this.add.graphics().setDepth(6);
   this.statLabels = [
-    txt(this, 150, 232, 'PWR', 7, '#9fb8c8', 1, 0.5),
-    txt(this, 224, 232, 'SPD', 7, '#9fb8c8', 1, 0.5),
-    txt(this, 296, 232, 'HP', 7, '#9fb8c8', 1, 0.5),
+    txt(this, 150, 232, 'PWR', 7, K_HUD_STEEL, 1, 0.5),
+    txt(this, 224, 232, 'SPD', 7, K_HUD_STEEL, 1, 0.5),
+    txt(this, 296, 232, 'HP', 7, K_HUD_STEEL, 1, 0.5),
   ];
 
   // stage strip (hidden until fighter chosen)
   this.stageImgs = STAGES.map((st, i) => {
     const x = 66 + i * 116;
     const img = this.add.image(x, 150, `stage_${st.key}`).setDisplaySize(104, 58).setVisible(false);
-    const box = this.add.rectangle(x, 150, 104, 58, 0xffffff, 0).setStrokeStyle(2, 0xffd23f, 0).setVisible(false);
+    const box = this.add.rectangle(x, 150, 104, 58, K_WHITE_HEX, 0).setStrokeStyle(2, K_GOLD_HEX, 0).setVisible(false);
     return { img, box, x };
   });
 
@@ -306,12 +312,12 @@ function selectUpdate(time, delta) {
   if (!scores.length) { this.idleT = 0; return; } // nothing to brag about yet — re-arm and wait
   const rows = scores.map((s, i) => `${String(i + 1).padStart(2, ' ')}  ${(s.initials || '???').slice(0, 3).padEnd(3, ' ')}  ${String(s.score || 0).padStart(6, ' ')}`);
   this.hs = [
-    this.add.rectangle(0, 0, GAME_W, GAME_H, 0x05010c, 0.88).setOrigin(0, 0).setDepth(90),
-    txt(this, GAME_W / 2, 34, 'HIGH SCORES', 15, '#ffd23f').setDepth(91),
+    this.add.rectangle(0, 0, GAME_W, GAME_H, K_STAGE_HEX, 0.88).setOrigin(0, 0).setDepth(90),
+    txt(this, GAME_W / 2, 34, 'HIGH SCORES', 15, K_GOLD).setDepth(91),
     // one text object for all rows — Press Start 2P is monospaced, so padStart columns align
-    this.add.text(GAME_W / 2, 58, rows.join('\n'), { fontFamily: FONT_FAMILY, fontSize: '8px', color: '#cfeaff', align: 'center', lineSpacing: 6, stroke: '#000', strokeThickness: 3 })
+    this.add.text(GAME_W / 2, 58, rows.join('\n'), { fontFamily: FONT_FAMILY, fontSize: '8px', color: K_HUD_FROST, align: 'center', lineSpacing: 6, stroke: K_BLACK, strokeThickness: 3 })
       .setOrigin(0.5, 0).setResolution(3).setDepth(91),
-    txt(this, GAME_W / 2, GAME_H - 14, 'SURVIVE THE GAUNTLET TO ENTER', 7, '#8fe8ff').setDepth(91),
+    txt(this, GAME_W / 2, GAME_H - 14, 'SURVIVE THE GAUNTLET TO ENTER', 7, K_HUD_CYAN).setDepth(91),
   ];
 }
 function refresh(scene) {
@@ -320,18 +326,18 @@ function refresh(scene) {
   const modeKey = MODES[scene.mi].key;
   scene.title.setText(p1 ? 'CHOOSE YOUR FIGHTER' : p2 ? 'PLAYER 2  CHOOSE' : 'CHOOSE STAGE');
   scene.modeLabel.setText(p1 ? `MODE:  ${MODES[scene.mi].label}   ▲▼` : '')
-    .setColor(modeKey === 'gauntlet' ? '#8bffa0' : modeKey === 'vs' ? '#8fe8ff' : '#ffd23f');
+    .setColor(modeKey === 'gauntlet' ? K_HUD_GREEN : modeKey === 'vs' ? K_HUD_CYAN : K_GOLD);
   scene.picks.forEach((p, i) => {
     const on = fighterPhase && i === idx;
     p.s.setVisible(fighterPhase).setAlpha(on ? 1 : 0.45).setScale(on ? 0.92 : 0.8);
-    p.box.setVisible(fighterPhase).setStrokeStyle(2, p2 ? 0xff4d6d : ROSTER[i].color, on ? 1 : 0);
+    p.box.setVisible(fighterPhase).setStrokeStyle(2, p2 ? K_HUD_RED_HEX : ROSTER[i].color, on ? 1 : 0);
   });
   scene.stageImgs.forEach((s, i) => {
     s.img.setVisible(!fighterPhase).setAlpha(i === scene.si ? 1 : 0.5);
-    s.box.setVisible(!fighterPhase).setStrokeStyle(2, 0xffd23f, i === scene.si ? 1 : 0);
+    s.box.setVisible(!fighterPhase).setStrokeStyle(2, K_GOLD_HEX, i === scene.si ? 1 : 0);
   });
   scene.nameLabel.setText(fighterPhase ? ROSTER[idx].name : STAGES[scene.si].name)
-    .setColor(p2 ? '#ff8fa3' : fighterPhase ? '#fff' : '#ffd23f');
+    .setColor(p2 ? '#ff8fa3' : fighterPhase ? K_WHITE : K_GOLD);
   scene.sub.setText(SELECT_HINT(scene, fighterPhase));
   drawStats(scene, idx);
 }
@@ -351,7 +357,7 @@ function drawStats(scene, idx) {
   ];
   const barX = [154, 228, 300], bw = 40, bh = 6, y = 229;
   vals.forEach((v, i) => {
-    g.fillStyle(0x000000, 0.5); g.fillRect(barX[i] - 1, y - 1, bw + 2, bh + 2);
+    g.fillStyle(K_BLACK_HEX, 0.5); g.fillRect(barX[i] - 1, y - 1, bw + 2, bh + 2);
     g.fillStyle(0x2a2a34, 1); g.fillRect(barX[i], y, bw, bh);
     g.fillStyle(f.color, 1); g.fillRect(barX[i], y, Math.round(bw * v), bh);
   });
@@ -456,19 +462,19 @@ function fightCreate() {
   this.ui = this.add.graphics().setDepth(40);
   const pName = ROSTER.find((r) => r.key === this.playerKey).name;
   const oName = this.boss ? BOSS.name : ROSTER.find((r) => r.key === this.oppKey).name;
-  txt(this, 12, 28, pName, 8, '#cfeaff', 0, 0);
-  txt(this, GAME_W - 12, 28, oName, 8, this.boss ? '#8bffa0' : '#cfeaff', 1, 0);
-  if (this.mode === 'gauntlet') txt(this, GAME_W / 2, 40, this.boss ? 'FINAL BOSS' : `GAUNTLET  ${this.rung + 1} / 5`, 7, '#8bffa0', 0.5, 0);
+  txt(this, 12, 28, pName, 8, K_HUD_FROST, 0, 0);
+  txt(this, GAME_W - 12, 28, oName, 8, this.boss ? K_HUD_GREEN : K_HUD_FROST, 1, 0);
+  if (this.mode === 'gauntlet') txt(this, GAME_W / 2, 40, this.boss ? 'FINAL BOSS' : `GAUNTLET  ${this.rung + 1} / 5`, 7, K_HUD_GREEN, 0.5, 0);
   txt(this, GAME_W / 2, GAME_H - 4,
     this.versus ? 'P1  WASD + FGH          P2  ARROWS + JKL'
       : this.isTouch ? 'J K L  attack     DOWN  block     UP  jump'
       : 'WASD move   J punch   K kick   L special   S block',
     8, '#5f93aa', 0.5, 1);
 
-  this.banner = txt(this, GAME_W / 2, 108, '', 24, '#ffd23f').setDepth(60).setVisible(false);
-  this.result = txt(this, GAME_W / 2, 104, '', 20, '#ffd23f').setDepth(60).setVisible(false);
-  this.comboText = txt(this, GAME_W / 2, 62, '', 12, '#ffd23f').setDepth(58).setVisible(false);
-  this.timerText = txt(this, GAME_W / 2, 19, '', 13, '#ffd23f').setDepth(41).setVisible(false); // round clock, centered between the HP bars
+  this.banner = txt(this, GAME_W / 2, 108, '', 24, K_GOLD).setDepth(60).setVisible(false);
+  this.result = txt(this, GAME_W / 2, 104, '', 20, K_GOLD).setDepth(60).setVisible(false);
+  this.comboText = txt(this, GAME_W / 2, 62, '', 12, K_GOLD).setDepth(58).setVisible(false);
+  this.timerText = txt(this, GAME_W / 2, 19, '', 13, K_GOLD).setDepth(41).setVisible(false); // round clock, centered between the HP bars
 
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') window.__fight = this; // dev debug handle
 
@@ -536,7 +542,7 @@ function startRound(scene) {
   buildIntroCard(scene);
   // reset text AND color/y: the banner object is shared, and the previous user (FIGHT! /
   // SHADOWBANNED / an "-ALITY" title) may have left it red/green or vertically displaced.
-  scene.banner.setText(`ROUND ${scene.round}`).setColor('#ffd23f').setY(108).setVisible(true);
+  scene.banner.setText(`ROUND ${scene.round}`).setColor(K_GOLD).setY(108).setVisible(true);
   snd(scene, `snd_round${Math.min(scene.round, 3)}`, 0.9);
 }
 
@@ -545,8 +551,8 @@ function buildIntroCard(scene) {
   destroyIntroCard(scene);
   const st = STAGES.find((s) => s.key === scene.stageKey);
   scene.introCard = {
-    name: txt(scene, GAME_W / 2, 64, (st ? st.name : '').toUpperCase() + ' ARENA', 13, '#ffffff').setDepth(60),
-    mission: txt(scene, GAME_W / 2, 86, MISSIONS[scene.stageKey] || '', 7, '#8fe8ff').setDepth(60),
+    name: txt(scene, GAME_W / 2, 64, (st ? st.name : '').toUpperCase() + ' ARENA', 13, K_WHITE).setDepth(60),
+    mission: txt(scene, GAME_W / 2, 86, MISSIONS[scene.stageKey] || '', 7, K_HUD_CYAN).setDepth(60),
   };
   positionIntroCard(scene); // place immediately (off-screen, or centered under Reduce Motion)
 }
@@ -783,7 +789,7 @@ function spawnSpark(scene, x, y, color, big) {
     scene.tweens.add({ targets: g, x: Math.round(rx + Math.cos(ang) * d), y: Math.round(ry + Math.sin(ang) * d), alpha: 0, duration: 150 + Math.random() * 150, onComplete: () => g.destroy() });
   }
   const s = big ? 12 : 8;
-  const core = scene.add.rectangle(rx, ry, s, s, 0xffffff, 0.95).setDepth(29);
+  const core = scene.add.rectangle(rx, ry, s, s, K_WHITE_HEX, 0.95).setDepth(29);
   scene.time.delayedCall(big ? 70 : 45, () => core.active && core.setSize(Math.round(s * 0.55), Math.round(s * 0.55)));
   scene.tweens.add({ targets: core, alpha: 0, duration: big ? 180 : 120, onComplete: () => core.destroy() });
 }
@@ -803,7 +809,7 @@ function juiceHit(scene, x, y, blocked, ko, type, color, wt = 1) {
     else if (type === 'kick') cam.shake(150, 0.007);
     else cam.shake(110, 0.005);
   }
-  const c = blocked ? 0x9fd8ff : ko ? 0xffe08a : type === 'special' ? (color || 0xffffff) : 0xffffff;
+  const c = blocked ? 0x9fd8ff : ko ? 0xffe08a : type === 'special' ? (color || K_WHITE_HEX) : K_WHITE_HEX;
   spawnSpark(scene, x, y, c, ko || type === 'special');
 }
 
@@ -821,7 +827,7 @@ function setupArenaFx(scene) {
     fx.ekg = scene.add.graphics().setDepth(5);                 // vitals trace along the top
   } else if (scene.stageKey === 'b2b-saas') {
     // a little 2x2 rack of server LEDs; they light up when a combo connects (applyHit)
-    fx.leds = [0, 1, 2, 3].map((i) => scene.add.rectangle(432 + (i % 2) * 7, 56 + Math.floor(i / 2) * 7, 3, 3, 0x8bffa0).setDepth(5).setAlpha(0.15));
+    fx.leds = [0, 1, 2, 3].map((i) => scene.add.rectangle(432 + (i % 2) * 7, 56 + Math.floor(i / 2) * 7, 3, 3, K_HUD_GREEN_HEX).setDepth(5).setAlpha(0.15));
   } else if (scene.stageKey === 'e-commerce') {
     fx.glow = scene.add.rectangle(GAME_W / 2, 124, 150, 104, 0xb08bff).setDepth(4).setAlpha(0.05).setBlendMode('ADD'); // the portal's breath
   } else if (scene.stageKey === 'enterprise') {
@@ -936,9 +942,9 @@ function startFinisher(scene, winner, loser) {
   scene.finWinner = winner; scene.finLoser = loser; scene.finisherT = 4200;
   winner.action = null; loser.action = null; loser.hitstun = 0; loser.dazed = true;
   scene.humanInputs[0].buf = null; // ignore the finishing press; require a fresh one to finish
-  scene.darken = scene.add.rectangle(0, 0, GAME_W, GAME_H, 0x000000, 0.55).setOrigin(0, 0).setDepth(35);
-  scene.banner.setText('CLOSE THE DEAL!').setColor('#ff5000').setVisible(true);
-  scene.finPrompt = txt(scene, GAME_W / 2, 134, scene.isTouch ? 'tap  J  K  L' : 'press  J  K  L', 8, '#ffd23f').setDepth(60);
+  scene.darken = scene.add.rectangle(0, 0, GAME_W, GAME_H, K_BLACK_HEX, 0.55).setOrigin(0, 0).setDepth(35);
+  scene.banner.setText('CLOSE THE DEAL!').setColor(K_ORANGE).setVisible(true);
+  scene.finPrompt = txt(scene, GAME_W / 2, 134, scene.isTouch ? 'tap  J  K  L' : 'press  J  K  L', 8, K_GOLD).setDepth(60);
   scene.time.delayedCall(140, () => snd(scene, 'snd_closethedeal', 1));
 }
 function finisherTimeout(scene) {
@@ -962,18 +968,18 @@ function fatalityBudgetCut(scene, loser, done) {
   scene.time.delayedCall(200, () => snd(scene, 'snd_budgetcut', 1));
   const bw = 196, bx = loser.isPlayer ? 12 : GAME_W - 12 - bw;
   scene.hideLoserBar = loser.isPlayer ? 'p' : 'o';            // stop drawUI drawing the real bar
-  const barRect = scene.add.rectangle(bx, 12, bw, 11, 0xffd23f).setOrigin(0, 0).setDepth(50);
+  const barRect = scene.add.rectangle(bx, 12, bw, 11, K_GOLD_HEX).setOrigin(0, 0).setDepth(50);
   loser.spr.setFrame(POSE.hit);
   scene.tweens.add({
     targets: barRect, y: FLOOR_Y - 10, duration: 720, ease: 'Bounce.easeOut',
-    onComplete: () => { spawnSpark(scene, bx + bw / 2, FLOOR_Y - 8, 0xffd23f, true); barRect.destroy(); },
+    onComplete: () => { spawnSpark(scene, bx + bw / 2, FLOOR_Y - 8, K_GOLD_HEX, true); barRect.destroy(); },
   });
   scene.time.delayedCall(1700, done);
 }
 function fatalityUnsubscribed(scene, loser, done) {
   scene.banner.setText('UNSUBSCRIBED!').setColor('#ff3020');
   scene.time.delayedCall(200, () => snd(scene, 'snd_unsubscribed', 1));
-  const box = txt(scene, Math.round(loser.kin.x), Math.round(loser.kin.y - 152), '[x] unsubscribe from all', 6, '#cfeaff').setDepth(60);
+  const box = txt(scene, Math.round(loser.kin.x), Math.round(loser.kin.y - 152), '[x] unsubscribe from all', 6, K_HUD_FROST).setDepth(60);
   scene.tweens.add({ targets: box, y: box.y - 16, alpha: 0, duration: 1400, delay: 300, onComplete: () => box.destroy() });
   scene.tweens.add({ targets: loser.spr, alpha: 0, duration: 1100, delay: 250 });
   scene.time.delayedCall(1700, done);
@@ -999,10 +1005,10 @@ function fatalityGdprd(scene, loser, done) {
 // happened. Priority: a no-damage final round beats everything, then the clock, then the
 // closing move. Solo only — in 2P this would spam the loser sitting next to you.
 function alityTitle(scene) {
-  if (!scene.p.tookDamage) return { text: 'FLAWLESS FUNNEL', color: '#8bffa0' };
-  if (scene.lastWinBlow === 'timeover') return { text: 'PIPELINE VICTORY', color: '#8fe8ff' };
-  if (scene.lastWinBlow === 'special') return { text: 'MQL-ALITY', color: '#ffd23f' };
-  return { text: 'CLOSED-WON', color: '#ffd23f' };
+  if (!scene.p.tookDamage) return { text: 'FLAWLESS FUNNEL', color: K_HUD_GREEN };
+  if (scene.lastWinBlow === 'timeover') return { text: 'PIPELINE VICTORY', color: K_HUD_CYAN };
+  if (scene.lastWinBlow === 'special') return { text: 'MQL-ALITY', color: K_GOLD };
+  return { text: 'CLOSED-WON', color: K_GOLD };
 }
 function finishMatch(scene, playerWon) {
   if (playerWon) scene.pWins++; else scene.oWins++;
@@ -1114,20 +1120,20 @@ function startInitials(scene, playerWon, after) {
   const cx = GAME_W / 2, letters = [0, 0, 0];
   let slot = 0;
   const slotX = (i) => cx + (i - 1) * 36;
-  const glyphs = letters.map((_, i) => txt(scene, slotX(i), 138, 'A', 20, '#eaf4ff').setDepth(71));
-  const unders = letters.map((_, i) => scene.add.rectangle(slotX(i), 156, 24, 3, 0xffd23f).setDepth(71));
+  const glyphs = letters.map((_, i) => txt(scene, slotX(i), 138, 'A', 20, K_HUD_INK).setDepth(71));
+  const unders = letters.map((_, i) => scene.add.rectangle(slotX(i), 156, 24, 3, K_GOLD_HEX).setDepth(71));
   const objs = [
-    scene.add.rectangle(0, 0, GAME_W, GAME_H, 0x05010c, 0.8).setOrigin(0, 0).setDepth(70),
-    txt(scene, cx, 52, playerWon ? 'GAUNTLET CHAMPION' : 'GAME OVER', 14, playerWon ? '#8bffa0' : '#ff4d6d').setDepth(71),
-    txt(scene, cx, 78, `SCORE  ${score}`, 10, '#ffd23f').setDepth(71),
-    txt(scene, cx, 102, 'ENTER YOUR INITIALS', 8, '#8fe8ff').setDepth(71),
-    txt(scene, cx, 182, scene.isTouch ? '▲▼ letter   ◀▶ slot   OK save' : '▲▼ letter   ◀▶ slot   ENTER save', 7, '#9fb8c8').setDepth(71),
+    scene.add.rectangle(0, 0, GAME_W, GAME_H, K_STAGE_HEX, 0.8).setOrigin(0, 0).setDepth(70),
+    txt(scene, cx, 52, playerWon ? 'GAUNTLET CHAMPION' : 'GAME OVER', 14, playerWon ? K_HUD_GREEN : K_HUD_RED).setDepth(71),
+    txt(scene, cx, 78, `SCORE  ${score}`, 10, K_GOLD).setDepth(71),
+    txt(scene, cx, 102, 'ENTER YOUR INITIALS', 8, K_HUD_CYAN).setDepth(71),
+    txt(scene, cx, 182, scene.isTouch ? '▲▼ letter   ◀▶ slot   OK save' : '▲▼ letter   ◀▶ slot   ENTER save', 7, K_HUD_STEEL).setDepth(71),
     ...glyphs, ...unders,
   ];
   const paint = () => {
     for (let i = 0; i < 3; i++) {
-      glyphs[i].setText(String.fromCharCode(65 + letters[i])).setColor(i === slot ? '#ffd23f' : '#eaf4ff');
-      unders[i].setFillStyle(i === slot ? 0xffd23f : 0x4a5560);
+      glyphs[i].setText(String.fromCharCode(65 + letters[i])).setColor(i === slot ? K_GOLD : K_HUD_INK);
+      unders[i].setFillStyle(i === slot ? K_GOLD_HEX : 0x4a5560);
     }
   };
   const spin = (d) => { letters[slot] = (letters[slot] + d + 26) % 26; snd(scene, 'snd_confirm', 0.2); paint(); };
@@ -1170,7 +1176,7 @@ function resolveTimeOver(scene) {
   const p = scene.p, o = scene.o;
   if (p.hp === o.hp) {
     scene.suddenDeath = true;
-    scene.banner.setText('SUDDEN DEATH').setColor('#ff5000').setVisible(true);
+    scene.banner.setText('SUDDEN DEATH').setColor(K_ORANGE).setVisible(true);
     scene.time.delayedCall(1400, () => { if (scene.phase === 'fight') scene.banner.setVisible(false); });
     return;
   }
@@ -1179,7 +1185,7 @@ function resolveTimeOver(scene) {
   scene._frozenDef = loser; scene.slowmoT = 500;
   juiceHit(scene, loser.kin.x, loser.kin.y - 92, false, true, 'punch', loser.stats.color);
   snd(scene, 'snd_kothud', 0.7);
-  scene.banner.setText('TIME OVER').setColor('#ffd23f').setVisible(true);
+  scene.banner.setText('TIME OVER').setColor(K_GOLD).setVisible(true);
   scene.time.delayedCall(600, () => scene.banner.setVisible(false));
   scene.finLoser = loser; // finishMatch reads this
   if (pWon) scene.lastWinBlow = 'timeover'; // a clock-out win earns the PIPELINE VICTORY title
@@ -1241,7 +1247,7 @@ function tick(scene, dtMs) {
   }
   if (scene.phase === 'fight' && !scene.suddenDeath) {
     const secs = Math.max(0, Math.ceil(scene.roundClock / 1000));
-    scene.timerText.setText(String(secs)).setColor(secs <= 10 ? '#ff3b30' : '#ffd23f').setVisible(true);
+    scene.timerText.setText(String(secs)).setColor(secs <= 10 ? '#ff3b30' : K_GOLD).setVisible(true);
   } else if (scene.timerText.visible) scene.timerText.setVisible(false);
   // the standing fighter strikes the victory pose once a round/match is decided
   // ('initials' included: the tableau holds behind the letter wheel)
@@ -1257,7 +1263,7 @@ function tick(scene, dtMs) {
     const off = animOffset(f, scene.animClock);
     f.spr.x = Math.round(f.kin.x) + off.dx;
     f.spr.y = Math.round(f.kin.y) + off.dy;
-    if (f.flash > 0) { f.flash -= dtMs; f.spr.setTintFill(0xffffff); }
+    if (f.flash > 0) { f.flash -= dtMs; f.spr.setTintFill(K_WHITE_HEX); }
     else if (f.action && f.action.windup > 0) { if (Math.floor(scene.animClock / 80) % 2) f.spr.setTintFill(0xff3020); else f.spr.clearTint(); } // "big move charging" red-silhouette blink
     else if (scene.boss && f === scene.o) { f.spr.setTint((Math.floor(scene.animClock / 110) % 2) ? 0x88ffcc : 0x33cc77); } // THE ALGORITHM's digital-green flicker
     else f.spr.clearTint();
@@ -1290,7 +1296,7 @@ function tick(scene, dtMs) {
     positionIntroCard(scene); // quantized steps() slide-in
     if (scene.introT <= 700) {
       destroyIntroCard(scene);
-      scene.banner.setText('FIGHT!').setColor('#ff5000');
+      scene.banner.setText('FIGHT!').setColor(K_ORANGE);
       if (!scene.fightSaid) { scene.fightSaid = true; snd(scene, 'snd_fight', 0.9); }
     }
     if (scene.introT <= 0) { scene.phase = 'fight'; scene.banner.setVisible(false); }
@@ -1316,19 +1322,19 @@ function drawUI(scene) {
     else if (f.ghostDelay > 0) f.ghostDelay -= dtr;
     else if (f.ghostHp > f.hp) f.ghostHp = Math.max(f.hp, f.ghostHp - f.hpMax * 0.0011 * dtr);
     const frac = f.hp / f.hpMax, gfrac = f.ghostHp / f.hpMax;
-    g.fillStyle(0x000000, 0.55); g.fillRect(x - 2, y - 2, bw + 4, bh + 4);
+    g.fillStyle(K_BLACK_HEX, 0.55); g.fillRect(x - 2, y - 2, bw + 4, bh + 4);
     g.fillStyle(0x360a0a, 1); g.fillRect(x, y, bw, bh);
     const fw = Math.max(0, Math.round(bw * frac)), gw = Math.max(0, Math.round(bw * gfrac));
     g.fillStyle(0xff8a5c, 0.85);                                  // the melting chunk = damage just taken
     if (leftAnchor) g.fillRect(x + fw, y, gw - fw, bh);
     else g.fillRect(x + bw - gw, y, gw - fw, bh);
-    g.fillStyle(frac > 0.3 ? 0xffd23f : 0xff3b30, 1);            // live fill on top
+    g.fillStyle(frac > 0.3 ? K_GOLD_HEX : 0xff3b30, 1);            // live fill on top
     g.fillRect(leftAnchor ? x : x + bw - fw, y, fw, bh);
-    g.lineStyle(1, 0xffffff, 0.85); g.strokeRect(x, y, bw, bh);
+    g.lineStyle(1, K_WHITE_HEX, 0.85); g.strokeRect(x, y, bw, bh);
     // round pips at the INNER end of each bar (toward centre) so they never touch the names
     for (let i = 0; i < scene.roundsToWin; i++) {
       const px = leftAnchor ? x + bw - 6 - i * 9 : x + 1 + i * 9;
-      g.fillStyle(i < wins ? 0x8bffa0 : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
+      g.fillStyle(i < wins ? K_HUD_GREEN_HEX : 0x2a2a2a, 1); g.fillRect(px, y + bh + 3, 5, 5);
     }
   };
   // stamina strip: a slim second bar sitting just under the name-label row (44px down —
@@ -1343,9 +1349,9 @@ function drawUI(scene) {
     // hard on/off blink (never a fade) on a failed swing — same "strike, don't ease" rule as
     // every other flash cue in this file (juiceHit, the wind-up tint, the fighters bolt).
     const denied = f.denyFlash > 0 && Math.floor(scene.animClock / 60) % 2 === 0;
-    g.fillStyle(0x000000, 0.5); g.fillRect(x - 1, sy - 1, sw + 2, sh + 2);
+    g.fillStyle(K_BLACK_HEX, 0.5); g.fillRect(x - 1, sy - 1, sw + 2, sh + 2);
     g.fillStyle(0x0a2430, 1); g.fillRect(x, sy, sw, sh);
-    g.fillStyle(denied ? 0xff3b30 : 0x3fe0ff, 1);
+    g.fillStyle(denied ? 0xff3b30 : K_CYAN_HEX, 1);
     g.fillRect(leftAnchor ? x : x + sw - fw, sy, fw, sh);
     g.lineStyle(1, denied ? 0xff3b30 : 0x1a6b80, 0.9); g.strokeRect(x, sy, sw, sh);
   };
@@ -1380,7 +1386,7 @@ export function createFightGame(Phaser, parent) {
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent, width: GAME_W, height: GAME_H,
-    pixelArt: true, roundPixels: true, backgroundColor: '#05010c',
+    pixelArt: true, roundPixels: true, backgroundColor: K_STAGE,
     // NONE + a whole-number zoom => every source pixel maps to exactly N screen
     // pixels (crisp grid, no shimmer). FIT's fractional scale is what made the
     // sprites/text look "mushy". Letterboxes on non-multiple viewports; on 1080p

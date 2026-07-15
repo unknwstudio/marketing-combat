@@ -6,13 +6,13 @@
 .c-floor__head {
   display: flex;
   flex-direction: column;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   max-width: 760px;
-  margin-bottom: var(--k-8);
+  margin-bottom: var(--k-space-64);
 }
 
 .c-floor__intro {
-  margin-top: var(--k-1);
+  margin-top: var(--k-space-8);
   max-width: 520px;
 }
 
@@ -20,13 +20,13 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 260px;
-  gap: var(--k-2);
+  gap: var(--k-space-16);
 }
 
 .c-floor__item {
   display: flex;
   flex-direction: column;
-  gap: var(--k-1);
+  gap: var(--k-space-8);
   min-width: 0;
 }
 
@@ -40,7 +40,7 @@
   position: relative;
   flex: 1;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--k-radius-md);
   background: var(--k-classic-panel);
 }
 
@@ -50,7 +50,7 @@
   object-fit: cover;
   /* unified cool duotone grade, tuned centrally */
   filter: grayscale(1) contrast(1.03);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--k-t-slower) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .c-floor__frame::after {
@@ -70,12 +70,12 @@
 .c-floor__cap {
   display: flex;
   align-items: baseline;
-  gap: var(--k-1);
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  gap: var(--k-space-8);
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
   color: var(--k-black);
-  transition: color 0.2s ease;
+  transition: color var(--k-t-base) ease;
 }
 
 .c-floor__cap-s {
@@ -88,7 +88,7 @@
 
 @media (max-width: 1023px) {
   .c-floor__head {
-    margin-bottom: var(--k-6);
+    margin-bottom: var(--k-space-48);
   }
 
   .c-floor__grid {
@@ -97,7 +97,7 @@
   }
 }
 
-@media (max-width: 599px) {
+@media (max-width: 639px) {
   .c-floor__grid {
     grid-template-columns: 1fr;
     grid-auto-rows: 240px;

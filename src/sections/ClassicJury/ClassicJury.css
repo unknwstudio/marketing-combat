@@ -7,21 +7,21 @@
 .c-jury__head {
   display: flex;
   flex-direction: column;
-  gap: var(--k-3);
+  gap: var(--k-space-24);
   max-width: 760px;
-  margin-bottom: var(--k-6);
+  margin-bottom: var(--k-space-48);
 }
 
 .c-jury__intro {
-  margin-top: var(--k-1);
+  margin-top: var(--k-space-8);
   max-width: 560px;
 }
 
 .c-jury__rail {
   display: flex;
-  gap: var(--k-2);
+  gap: var(--k-space-16);
   margin: 0;
-  padding: var(--k-1) var(--c-margin);
+  padding: var(--k-space-8) var(--c-margin);
   list-style: none;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -38,43 +38,43 @@
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
-  gap: var(--k-1);
-  padding-bottom: var(--k-2);
+  gap: var(--k-space-8);
+  padding-bottom: var(--k-space-16);
 }
 
 .c-judge__photo {
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 5;
-  margin-bottom: var(--k-2);
-  border-radius: 12px;
+  margin-bottom: var(--k-space-16);
+  border-radius: var(--k-radius-md);
   background: linear-gradient(160deg, var(--k-hud-steel), var(--k-classic-panel));
 }
 
 .c-judge__glyph {
   width: 44%;
   height: 44%;
-  fill: rgba(255, 255, 255, 0.45);
+  fill: color-mix(in srgb, var(--k-white) 45%, transparent);
 }
 
 .c-judge__name {
   font-size: var(--k-text-md);
   font-weight: 400;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   text-transform: uppercase;
   color: var(--k-black);
 }
 
 .c-judge__role {
-  font-size: 13px;
-  letter-spacing: 0.02em;
+  font-size: var(--k-text-xs);
+  letter-spacing: var(--k-ls-wide-sm);
   text-transform: uppercase;
   color: var(--c-accent);
 }
 
 .c-judge__bio {
-  font-size: 14px;
-  line-height: 1.45;
+  font-size: var(--k-text-xs);
+  line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
   max-width: 34ch;
 }
@@ -84,13 +84,14 @@
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 5;
-  margin-bottom: var(--k-2);
-  border-radius: 12px;
+  margin-bottom: var(--k-space-16);
+  border-radius: var(--k-radius-md);
   background: var(--k-black);
   color: var(--k-white);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: display-art "?" glyph sized to fill the 4/5 tile; no scale step within tolerance (3xl max is 88px) */
   font-size: clamp(64px, 8vw, 112px);
   font-weight: 400;
-  line-height: 1;
+  line-height: var(--k-lh-flat);
 }
 
 @media (max-width: 1023px) {

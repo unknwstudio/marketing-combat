@@ -16,17 +16,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(var(--k-2), 4vw, var(--k-7));
+  gap: clamp(var(--k-space-16), 4vw, var(--k-space-56));
   background: var(--k-shadow);
   overflow: hidden;
 }
 
 .vs-splash__name {
   font-family: var(--k-font);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke bill tuple so both nowrap names always fit the viewport; no scale step spans 18->56 (xl is 28/7vw/40) */
   font-size: clamp(18px, 4.5vw, 56px);
-  line-height: 1.2;
+  line-height: var(--k-lh-tight);
   white-space: nowrap;
-  text-shadow: 4px 4px 0 var(--k-black);
+  text-shadow: var(--k-shadow-hard);
 }
 
 .vs-splash__name--you {
@@ -42,8 +43,9 @@
 /* the stamp lands a beat AFTER the names — impact, then label */
 .vs-splash__vs {
   font-family: var(--k-font);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke stamp tuple; no scale step spans 14->32 (md caps at 22, xl floors at 28) */
   font-size: clamp(14px, 2.6vw, 32px);
-  line-height: 1;
+  line-height: var(--k-lh-flat);
   color: var(--k-white);
   text-shadow:
     3px 3px 0 var(--k-red),
@@ -93,6 +95,6 @@
 @media (max-width: 639px) {
   .vs-splash {
     flex-direction: column;
-    gap: 14px;
+    gap: var(--k-space-16);
   }
 }

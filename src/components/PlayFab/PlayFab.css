@@ -11,11 +11,11 @@
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
-  gap: var(--k-1);
-  padding: 10px 14px;
+  gap: var(--k-space-8);
+  padding: var(--k-space-8) var(--k-space-16);
   font-family: var(--k-font-pixel);
-  font-size: 16px;
-  line-height: 1;
+  font-size: var(--k-text-hud-lg);
+  line-height: var(--k-lh-flat);
   color: var(--k-black);
   background: var(--k-gold);
   text-decoration: none;
@@ -24,10 +24,10 @@
   box-shadow:
     calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
     0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 rgba(255, 255, 255, 0.5),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(0, 0, 0, 0.28);
-  filter: drop-shadow(4px 5px 0 rgba(0, 0, 0, 0.45));
-  transition: transform 0.05s steps(2), filter 0.05s steps(2), background 0.1s;
+    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-white) 50%, transparent),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-black) 28%, transparent);
+  filter: drop-shadow(4px 5px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
+  transition: transform var(--k-t-tap) steps(2), filter var(--k-t-tap) steps(2), background var(--k-t-fast);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -48,12 +48,12 @@
 
 .playfab:active {
   transform: translate(3px, 3px);
-  filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(1px 2px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
   box-shadow:
     calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
     0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 rgba(0, 0, 0, 0.28),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 rgba(255, 255, 255, 0.5);
+    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-black) 28%, transparent),
+    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-white) 50%, transparent);
 }
 
 .playfab:focus-visible {
@@ -70,8 +70,8 @@
     right: 10px;
     top: auto;
     bottom: 68px;
-    padding: var(--k-1) 11px;
-    font-size: 13px;
+    padding: var(--k-space-8) var(--k-space-12);
+    font-size: var(--k-text-hud-sm);
   }
   .playfab__tri {
     width: 12px;

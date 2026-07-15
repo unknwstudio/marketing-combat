@@ -8,6 +8,7 @@ export const metadata = {
 }
 
 // this page is white — override the root's dark browser-chrome color
+// (meta theme-color can't read CSS vars — the raw hex mirrors --k-white)
 export const viewport = { themeColor: '#ffffff' }
 
 /**
