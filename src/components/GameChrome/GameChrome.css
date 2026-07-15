@@ -178,33 +178,45 @@
   color: var(--k-hud-slate);
 }
 
-/* ---- result action bar (matchend) — a row under the Phaser result text ---- */
+/* ---- result screen (matchend) — full-screen layer over the frozen fight ----
+   A light scrim calms the busy victory scene so the DOM copy/buttons read
+   cleanly (the Phaser controls legend at the canvas bottom used to clash with
+   the button row); the register CTA is centred, the game-action buttons sit
+   above the legend. */
 .gc-resultbar {
   pointer-events: none;
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 13%;
+  inset: 0;
   z-index: var(--z-play-resultbar);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--k-space-16);
-  padding: 0 var(--k-space-16);
 }
 
-/* funnel hook: sits above the game-action buttons, sends the engaged player to
-   the REAL event (opens the registration modal). */
+/* dim the frozen scene behind the result UI */
+.gc-resultbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--k-black) 46%, transparent);
+}
+
+/* funnel hook — the primary CTA, dead-centre on the screen and the loudest
+   thing on it: sends the engaged player to the REAL event (register modal). */
 .gc-result-cta {
   pointer-events: auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--k-space-8);
+  gap: var(--k-space-12);
+  text-align: center;
+  max-width: min(90vw, 560px);
 }
 .gc-result-tagline {
   font-family: var(--k-font-pixel);
-  font-size: var(--k-text-hud-2xs);
+  font-size: var(--k-text-hud-xs);
   letter-spacing: var(--k-ls-pixel-sm);
   text-transform: uppercase;
   color: var(--gc-blue);
@@ -254,12 +266,19 @@
   }
 }
 
+/* secondary game actions — pinned near the bottom but lifted clear of the
+   Phaser controls legend (canvas bottom edge) so the two never overlap */
 .gc-resultbar-row {
   pointer-events: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9%;
   display: flex;
   flex-wrap: wrap;
   gap: var(--k-space-8);
   justify-content: center;
+  padding: 0 var(--k-space-16);
 }
 .gc-resultbar .gc-item {
   pointer-events: auto;

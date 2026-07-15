@@ -6,11 +6,13 @@ import './Footer.css'
  * data-announce/data-sound/data-announce-burst attributes below are read by the
  * client-side Announcer, so no 'use client' boundary is needed here.
  *
- * The end-of-tour payoff is a full-viewport arcade call-out (see
- * Announcer, which watches data-announce/data-sound/data-announce-burst
- * below), the same system used for "FIGHT!" / "STAGE 0X" / "FINISH HIM"
- * elsewhere on /demo. The footer itself stays deliberately quiet once the
- * flash fades — no second loud element competing with that moment.
+ * Three-column layout (desktop): brand + copyright on the left, the legal
+ * links stacked in the centre, the "made by unknw" studio credit on the right.
+ * Everything collapses to a centred single column below 1024px.
+ *
+ * The end-of-tour payoff is a full-viewport arcade call-out (see Announcer,
+ * which watches data-announce/data-sound/data-announce-burst below); the footer
+ * itself stays deliberately quiet once the flash fades.
  */
 export default function Footer() {
   return (
@@ -21,20 +23,24 @@ export default function Footer() {
       data-sound="win"
       data-announce-burst
     >
-      <div className="footer__quiet">
-        <span className="footer__title">AI MARKETING KOMBAT · JULY 2026 · BARCELONA</span>
-        <div className="footer__legal">
-          <span>© 2026 AI Marketing Kombat. All rights reserved.</span>
-          {/* Legal routes live under /legal/* (AI skin) — see src/lib/legal.js. */}
-          <span className="footer__links">
-            <a href="/legal/notice">Legal information</a>
-            <span aria-hidden="true">·</span>
-            <a href="/legal/conduct">Code of conduct</a>
-            <span aria-hidden="true">·</span>
-            <a href="/legal/privacy">Privacy</a>
-          </span>
+      <div className="footer__inner">
+        {/* left — brand line + copyright */}
+        <div className="footer__brand">
+          <span className="footer__title">AI MARKETING KOMBAT · JULY 2026 · BARCELONA</span>
+          <span className="footer__copy">© 2026 AI Marketing Kombat. All rights reserved.</span>
         </div>
-        <MadeByUnknw className="footer__madeby" />
+
+        {/* centre — legal links (routes under /legal/* — see src/lib/legal.js) */}
+        <nav className="footer__links" aria-label="Legal">
+          <a href="/legal/notice">Legal information</a>
+          <a href="/legal/conduct">Code of conduct</a>
+          <a href="/legal/privacy">Privacy</a>
+        </nav>
+
+        {/* right — studio credit */}
+        <div className="footer__credit">
+          <MadeByUnknw className="footer__madeby" />
+        </div>
       </div>
     </footer>
   )
