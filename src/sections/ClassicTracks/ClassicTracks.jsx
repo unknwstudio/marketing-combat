@@ -1,11 +1,11 @@
 import MaskHead from '@/components/classic-motion/MaskHead'
-import CArrow from '@/components/classic-motion/CArrow'
+import { typeset } from '@/lib/typeset'
 import './ClassicTracks.css'
 
 /**
- * HACKATHON TRACKS — two tall poster tiles, color-blocked opposites (black
- * vs blue) so the pair reads as a choice, not two identical boxes. Title top,
- * arrow bottom, shared internal baseline. Arrow slides on hover/focus.
+ * HACKATHON TRACKS — two color-blocked poster tiles, opposites (black vs blue)
+ * so the pair reads as a choice, not two identical boxes. Kicker, title, body —
+ * static (no hover affordance).
  */
 
 const TRACKS = [
@@ -13,13 +13,13 @@ const TRACKS = [
     n: 'Track 01',
     variant: 'dark',
     title: 'AI-Creatives',
-    body: 'Special: holographic banner maker. AI-automated generation of creative packs, and banner-pack verification via an AI-agent auditor.',
+    body: 'Holographic banner maker, AI-automated generation of creative packs, and banner-pack verification via an AI-agent auditor.',
   },
   {
     n: 'Track 02',
     variant: 'blue',
     title: 'AI-Performance',
-    body: 'Special: zero-waste media split. Strategy, analytics, paid-media buying and media-split management.',
+    body: 'Zero-waste media split — strategy, analytics, paid-media buying and media-split management.',
   },
 ]
 
@@ -30,7 +30,7 @@ export default function ClassicTracks() {
         <header className="c-tracks__head">
           <MaskHead lines={['Choose your', 'fighting style']} />
           <p className="c-lede c-reveal c-tracks__intro">
-            Two directions to compete in — pick the one that plays to your strengths.
+            {typeset('Two directions to compete in — pick the one that plays to your strengths.')}
           </p>
         </header>
 
@@ -43,13 +43,7 @@ export default function ClassicTracks() {
             >
               <p className="c-track__kicker cap-trim">{t.n}</p>
               <h3 className="c-track__title cap-trim">{t.title}</h3>
-              <p className="c-track__body">{t.body}</p>
-              <span className="c-track__go" aria-hidden="true">
-                <span className="c-track__go-label">Special move</span>
-                <span className="c-track__arrow">
-                  <CArrow />
-                </span>
-              </span>
+              <p className="c-track__body">{typeset(t.body)}</p>
             </article>
           ))}
         </div>

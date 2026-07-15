@@ -2,13 +2,15 @@
 
 import MaskHead from '@/components/classic-motion/MaskHead'
 import { useCountUp } from '@/components/classic-motion/useCountUp'
+import { typeset } from '@/lib/typeset'
 import './ClassicBattle.css'
 
 /**
  * THE BATTLE — the manifesto + the four headline figures, plus the
- * "powered by" sponsor strip. Editorial split: lede left, giant weight-400
- * numerals in a hairline-divided row below. One figure ($100M+) carries the
- * blue accent; the rest stay black. Numbers count up on view.
+ * "powered by" sponsor strip. Editorial split: lede left, then a bordered
+ * hairline grid of giant weight-400 numerals under a small meta kicker. One
+ * cell ($100M+, the standout metric) is a filled blue block — a deliberate
+ * highlight, not an arbitrary text color. Numbers count up on view.
  */
 
 const STATS = [
@@ -31,14 +33,11 @@ const STATS = [
 function Stat({ prefix, target, suffix, label, accent, index }) {
   const [ref, text] = useCountUp({ target, prefix, suffix })
   return (
-    <div className="c-stat c-reveal" style={{ '--i': index }}>
-      <span
-        ref={ref}
-        className={`c-stat__num cap-trim${accent ? ' c-stat__num--accent' : ''}`}
-      >
+    <div className={`c-stat c-reveal${accent ? ' c-stat--accent' : ''}`} style={{ '--i': index }}>
+      <span ref={ref} className="c-stat__num cap-trim">
         {text}
       </span>
-      <span className="c-stat__label cap-trim">{label}</span>
+      <span className="c-stat__label cap-trim">{typeset(label)}</span>
     </div>
   )
 }
@@ -50,16 +49,19 @@ export default function ClassicBattle() {
         <div className="c-battle__intro">
           <MaskHead lines={['Who can use AI', 'without limits?']} className="c-battle__h2" />
           <p className="c-lede c-reveal c-battle__lede">
-            The time has come to settle the legendary battle and find out who the best marketer in
-            the world is. AI Marketing Kombat is the marketers&rsquo; battle that ranks the best
-            specialists on planet Earth.
+            {typeset(
+              'The time has come to settle the legendary battle and find out who the best marketer in the world is. AI Marketing Kombat is the marketers’ battle that ranks the best specialists on planet Earth.'
+            )}
           </p>
         </div>
 
-        <div className="c-battle__stats">
-          {STATS.map((s, i) => (
-            <Stat key={s.label} index={i} {...s} />
-          ))}
+        <div className="c-battle__figures c-reveal">
+          <p className="c-battle__figures-kicker cap-trim">The arena in figures</p>
+          <div className="c-battle__stats">
+            {STATS.map((s, i) => (
+              <Stat key={s.label} index={i} {...s} />
+            ))}
+          </div>
         </div>
 
         {/* Sponsors hidden for now (not ready yet) — see note by SPONSORS above.

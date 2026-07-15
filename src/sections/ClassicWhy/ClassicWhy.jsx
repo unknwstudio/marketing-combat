@@ -1,4 +1,5 @@
 import MaskHead from '@/components/classic-motion/MaskHead'
+import { typeset } from '@/lib/typeset'
 import './ClassicWhy.css'
 
 /**
@@ -22,7 +23,7 @@ export default function ClassicWhy() {
         <header className="c-why__head">
           <MaskHead lines={['Why join the', 'hackathon?']} />
           <p className="c-lede c-reveal c-why__intro">
-            Find out your real level of mastering AI tools for marketing alongside your peers.
+            {typeset('Find out your real level of mastering AI tools for marketing alongside your peers.')}
           </p>
         </header>
 
@@ -31,8 +32,8 @@ export default function ClassicWhy() {
             <li className="c-why__item c-reveal" key={r.n} style={{ '--i': i % 2 }}>
               <span className="c-why__n cap-trim">{r.n}</span>
               <div className="c-why__text">
-                <h3 className="c-why__title cap-trim">{r.title}</h3>
-                <p className="c-why__body">{r.body}</p>
+                <h3 className="c-why__title cap-trim">{typeset(r.title)}</h3>
+                <p className="c-why__body">{typeset(r.body)}</p>
               </div>
             </li>
           ))}

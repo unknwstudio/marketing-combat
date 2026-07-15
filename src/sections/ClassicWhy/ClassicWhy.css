@@ -37,7 +37,10 @@
   font-size: var(--k-text-xl);
   font-weight: 400;
   line-height: var(--k-lh-crushed);
-  color: var(--c-accent);
+  /* editorial black index, not the blue accent: six blue numerals read as a
+     "wall of random blue" (#1). Blue now leads only where it's deliberate
+     (the stats hero cell, the coded How/Arena sets, the mission accent word). */
+  color: var(--k-black);
 }
 
 .c-why__title {

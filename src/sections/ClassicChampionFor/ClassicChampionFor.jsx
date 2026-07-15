@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { typeset } from '@/lib/typeset'
 import './ClassicChampionFor.css'
 
 /**
@@ -43,11 +44,27 @@ export default function ClassicChampionFor() {
     const setRunway = () => {
       if (mqMobile.matches) {
         outer.style.height = ''
+        outer.style.marginBottom = ''
         return
       }
       const scale = outer.getBoundingClientRect().width / 1440
       const viewportH = window.innerHeight / scale
-      outer.style.height = `${TRAVEL + Math.max(viewportH, BLOCK_H)}px`
+      const runway = TRAVEL + Math.max(viewportH, BLOCK_H)
+      outer.style.marginBottom = ''
+      outer.style.height = `${runway}px`
+      // The runway is a full viewport tall so the pin can finish (above), which
+      // leaves a tall blank BELOW the composed block on tall viewports. Pull the
+      // next section up into that blank (viewport-aware) so the composed block is
+      // followed by a normal gap, not ~400px of dead space (#12). Measure the
+      // REAL composed-content bottom (the who-list overflows its nominal column
+      // height, so a constant would clip "Future legends") in section-local px.
+      const sectionTop = outer.getBoundingClientRect().top + window.scrollY
+      const toLocal = (el) => (el.getBoundingClientRect().bottom + window.scrollY - sectionTop) / scale
+      const list = outer.querySelector('.cfw__list')
+      const lane = outer.querySelector('.cfw__champ-lane')
+      const composedEnd = Math.max(list ? toLocal(list) : 0, lane ? toLocal(lane) : 0)
+      const KEEP = 48 // small gap; the next section adds its own top padding
+      outer.style.marginBottom = `${-Math.max(runway - composedEnd - KEEP, 0)}px`
     }
 
     setRunway()
@@ -79,22 +96,22 @@ export default function ClassicChampionFor() {
           <div className="cfw__grid">
             <div className="cfw__card">
               <p className="cfw__card-t cap-trim">$30K+</p>
-              <p className="cfw__card-s cap-trim">in AI tool subscriptions</p>
+              <p className="cfw__card-s cap-trim">{typeset('in AI tool subscriptions')}</p>
             </div>
             <div className="cfw__card">
               <p className="cfw__card-t cap-trim">Intros</p>
-              <p className="cfw__card-s cap-trim">to A16Z &amp; YC growth partners</p>
+              <p className="cfw__card-s cap-trim">{typeset('to A16Z & YC growth partners')}</p>
             </div>
             <div className="cfw__card">
               <p className="cfw__card-t cap-trim">Offers</p>
-              <p className="cfw__card-s cap-trim">from sponsoring companies</p>
+              <p className="cfw__card-s cap-trim">{typeset('from sponsoring companies')}</p>
             </div>
             <div className="cfw__card">
-              <p className="cfw__card-t cap-trim">The title</p>
-              <p className="cfw__card-s cap-trim">#1 AI marketer of 2026</p>
+              <p className="cfw__card-t cap-trim">{typeset('The title')}</p>
+              <p className="cfw__card-s cap-trim">{typeset('#1 AI marketer of 2026')}</p>
             </div>
             <div className="cfw__strip">
-              <p className="cap-trim">5 min to apply · 3 questions · AI review · 48 hr response</p>
+              <p className="cap-trim">{typeset('5 min to apply · 3 questions · AI review · 48 hr response')}</p>
             </div>
           </div>
         </div>
@@ -112,7 +129,7 @@ export default function ClassicChampionFor() {
               <svg className="cfw__arrow" viewBox="0 0 52 27" aria-hidden="true">
                 <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
               </svg>
-              <span className="cfw__text cap-trim">{label}</span>
+              <span className="cfw__text cap-trim">{typeset(label)}</span>
             </li>
           ))}
           <li className="cfw__item cfw__item--legend">
