@@ -49,10 +49,8 @@ export default function ClassicHow() {
 
         <ol className="c-how__steps">
           {STEPS.map((s, i) => (
-            <li className="c-step c-reveal" key={s.n} style={{ '--i': i }}>
-              <span className="c-step__n cap-trim" style={{ '--step-accent': s.accent }}>
-                {s.n}
-              </span>
+            <li className="c-step c-reveal" key={s.n} style={{ '--i': i, '--step-accent': s.accent }}>
+              <span className="c-step__n cap-trim">{s.n}</span>
               <h3 className="c-step__title cap-trim">{typeset(s.title)}</h3>
               <p className="c-step__body">{typeset(s.body)}</p>
             </li>
