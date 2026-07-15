@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import MaskHead from '@/components/classic-motion/MaskHead'
+import { typeset } from '@/lib/typeset'
 import './ClassicFaq.css'
 
 /**
  * FAQ — a two-part split: sticky heading left, accordion right. Hairline rules
  * (no cards/shadows), one row open at a time, the open row turns green and its
- * "+" rotates to "×". Answers grow via grid-template-rows 0fr -> 1fr (no height
- * measuring). Reduced motion snaps them (global transition-zero gate).
+ * "+" SVG collapses to a "−". Answers grow via grid-template-rows 0fr -> 1fr (no
+ * height measuring). Reduced motion snaps them (global transition-zero gate).
  */
 
 const FAQS = [
@@ -46,11 +47,25 @@ export default function ClassicFaq() {
                   aria-controls={`c-faq-a-${i}`}
                   onClick={() => setOpen(isOpen ? -1 : i)}
                 >
-                  <span className="c-faq__q-text cap-trim">{item.q}</span>
-                  <span className="c-faq__toggle" aria-hidden="true" />
+                  <span className="c-faq__q-text cap-trim">{typeset(item.q)}</span>
+                  <svg
+                    className="c-faq__toggle"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <line className="c-faq__toggle-bar" x1="5" y1="12" x2="19" y2="12" />
+                    <line
+                      className="c-faq__toggle-bar c-faq__toggle-bar--v"
+                      x1="12"
+                      y1="5"
+                      x2="12"
+                      y2="19"
+                    />
+                  </svg>
                 </button>
                 <div className="c-faq__answer" id={`c-faq-a-${i}`} role="region" aria-labelledby={`c-faq-q-${i}`}>
-                  <p className="c-faq__answer-inner">{item.a}</p>
+                  <p className="c-faq__answer-inner">{typeset(item.a)}</p>
                 </div>
               </li>
             )

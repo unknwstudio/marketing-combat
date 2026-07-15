@@ -1,4 +1,5 @@
 import MaskHead from '@/components/classic-motion/MaskHead'
+import { typeset } from '@/lib/typeset'
 import './ClassicFloor.css'
 
 /**
@@ -25,7 +26,7 @@ export default function ClassicFloor() {
         <header className="c-floor__head">
           <MaskHead lines={['Inside the arena']} />
           <p className="c-lede c-reveal c-floor__intro">
-            Moments from the battle — strategy under pressure, AI in the hands of the best.
+            {typeset('Moments from the battle — strategy under pressure, AI in the hands of the best.')}
           </p>
         </header>
 
@@ -36,8 +37,8 @@ export default function ClassicFloor() {
                 <img src={p.src} alt={p.alt} loading="lazy" />
               </span>
               <figcaption className="c-floor__cap cap-trim">
-                <span className="c-floor__cap-t">{p.cap}</span>
-                <span className="c-floor__cap-s">{p.sub}</span>
+                <span className="c-floor__cap-t">{typeset(p.cap)}</span>
+                <span className="c-floor__cap-s">{typeset(p.sub)}</span>
               </figcaption>
             </figure>
           ))}

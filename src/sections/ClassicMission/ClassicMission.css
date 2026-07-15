@@ -2,38 +2,57 @@
    MISSION — inverted centered statement band.
    ============================================================ */
 
+/* white editorial band, left-aligned like every other section (#14). (The old
+   inverted-black variant never actually rendered — .c-sec's white background
+   overrode it at equal specificity — so this is the state the page has shown.) */
 .c-mission {
-  background: var(--k-black);
-  color: var(--k-white);
+  background: var(--k-white);
+  color: var(--k-black);
 }
 
 .c-mission__wrap {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--k-space-32);
-  text-align: center;
+  align-items: flex-start;
+  gap: var(--k-space-24);
+  text-align: left;
+}
+
+.c-mission__kicker {
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
+  font-size: 12px;
+  letter-spacing: var(--k-ls-wide);
+  text-transform: uppercase;
+  color: var(--k-classic-panel);
 }
 
 .c-mission__stmt {
-  max-width: 20ch;
-  font-size: var(--k-text-xl);
+  max-width: 18ch;
+  font-size: var(--k-text-2xl);
   line-height: var(--k-lh-tight);
-  color: var(--k-white);
+  color: var(--k-black);
   text-transform: none;
 }
 
+/* one accent word (blue on white ~8:1, well clear of AA) */
 .c-mission__hl {
   color: var(--c-accent);
 }
 
+.c-mission__rule {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--k-black);
+  margin-block: var(--k-space-8);
+}
+
 .c-mission__sub {
-  max-width: 60ch;
-  color: var(--k-hud-steel);
+  max-width: 56ch;
+  color: var(--k-classic-panel);
 }
 
 @media (max-width: 1023px) {
   .c-mission__stmt {
-    font-size: var(--k-text-lg);
+    font-size: var(--k-text-xl);
   }
 }

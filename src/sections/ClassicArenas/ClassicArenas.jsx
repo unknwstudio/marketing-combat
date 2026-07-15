@@ -1,4 +1,5 @@
 import MaskHead from '@/components/classic-motion/MaskHead'
+import { typeset } from '@/lib/typeset'
 import './ClassicArenas.css'
 
 /**
@@ -22,9 +23,10 @@ const ARENAS = [
   },
   {
     tag: 'A3',
-    // gold, not --c-yellow: this accent also paints the card's tag TEXT, and
-    // bright yellow on the white card is unreadable (1.07:1)
-    accent: 'var(--c-gold)',
+    // the site's signature orange (--k-orange, #ff5000), not --c-yellow: this
+    // accent also paints the card's tag TEXT, and bright yellow on the white
+    // card is unreadable (1.07:1); orange reads clearly and stays legible
+    accent: 'var(--k-orange)',
     title: 'E-commerce',
     body: 'High volume. Thin margins. ROAS pressure. Mission: scale creative and squeeze CAC with AI.',
   },
@@ -43,7 +45,7 @@ export default function ClassicArenas() {
         <header className="c-arenas__head">
           <MaskHead lines={['Case tracks']} />
           <p className="c-lede c-reveal c-arenas__intro">
-            Real client briefs across industries. Win and the client pays the prize.
+            {typeset('Real client briefs across industries. Win and the client pays the prize.')}
           </p>
         </header>
 
@@ -56,7 +58,7 @@ export default function ClassicArenas() {
             >
               <span className="c-arena__tag cap-trim">{a.tag}</span>
               <h3 className="c-arena__title cap-trim">{a.title}</h3>
-              <p className="c-arena__body">{a.body}</p>
+              <p className="c-arena__body">{typeset(a.body)}</p>
             </li>
           ))}
         </ul>

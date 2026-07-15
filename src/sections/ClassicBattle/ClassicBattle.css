@@ -6,7 +6,7 @@
 .c-battle {
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-96);
+  gap: var(--k-space-64);
 }
 
 .c-battle__intro {
@@ -21,24 +21,47 @@
   max-width: 620px;
 }
 
-/* --- four figures, open row (no dividers) ----------------------------- */
+/* --- four figures: bordered hairline grid + one filled cell ----------- */
+
+.c-battle__figures {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-20);
+}
+
+.c-battle__figures-kicker {
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
+  font-size: 12px;
+  letter-spacing: var(--k-ls-wide);
+  text-transform: uppercase;
+  color: var(--k-classic-panel);
+}
 
 .c-battle__stats {
-  /* content-sized columns spread edge-to-edge — the four figures vary wildly in
-     width (1st / 300+ / $100M+ / 30), so equal 1fr columns left them ragged and
-     let the widest ($100M+) butt against its neighbour. space-between gives an
-     even optical rhythm; the column-gap is the guaranteed minimum gutter. */
   display: grid;
-  grid-template-columns: repeat(4, max-content);
-  justify-content: space-between;
-  column-gap: var(--k-space-24);
+  grid-template-columns: repeat(4, 1fr);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 1px hairline grid divider (the black background shows through the gaps) — the Swiss/editorial framing; no sub-px token exists */
+  gap: 1px;
+  background: var(--k-black);
+  border: 1px solid var(--k-black);
 }
 
 .c-stat {
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-16);
-  padding-top: var(--k-space-32);
+  justify-content: space-between;
+  gap: var(--k-space-32);
+  min-height: 240px;
+  padding: var(--k-space-24);
+  background: var(--k-white);
+  color: var(--k-black);
+}
+
+/* the standout figure ($100M+) is a filled block, not blue text — a deliberate
+   highlight so the one blue reads as intentional (#1/#2) */
+.c-stat--accent {
+  background: var(--c-blue);
+  color: var(--k-white);
 }
 
 .c-stat__num {
@@ -46,11 +69,7 @@
   font-size: clamp(56px, 6.6vw, 96px);
   font-weight: 400;
   line-height: var(--k-lh-crushed);
-  color: var(--k-black);
-}
-
-.c-stat__num--accent {
-  color: var(--c-accent);
+  color: inherit;
 }
 
 .c-stat__label {
@@ -61,6 +80,10 @@
   text-transform: uppercase;
   color: var(--k-classic-panel);
   max-width: 22ch;
+}
+
+.c-stat--accent .c-stat__label {
+  color: var(--k-white);
 }
 
 /* --- sponsor strip ---------------------------------------------------- */
@@ -123,10 +146,11 @@
   }
 
   .c-stat {
-    /* let the giant numeral column shrink below its intrinsic width so the
-       2-up grid can't push past the viewport */
+    /* let the giant numeral shrink below its intrinsic width so the 2-up grid
+       can't push past the viewport */
     min-width: 0;
-    padding: var(--k-space-24) var(--k-space-16) var(--k-space-24) 0;
+    min-height: 160px;
+    padding: var(--k-space-20) var(--k-space-16);
   }
 
   .c-stat__num {
