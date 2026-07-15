@@ -1,10 +1,8 @@
-/* Floating PLAY launcher, bottom-right — mirrors SoundToggle (bottom-left).
-   Compact copy of the hero's .hero__playbig 8-bit look: notched black border
-   (4 axis-only box-shadows leave the corners cut), an inset bevel (light
-   top-left / dark bottom-right), a hard pixel drop-shadow, and a real depress
-   on :active. */
+/* Floating registration launcher, bottom-right — mirrors SoundToggle
+   (bottom-left). Black terminal box (black fill, white hairline, mono
+   ">>> registration <<<") that inverts on hover — the site's quiet "secondary"
+   registration look. Only the big central hero CTA is gold. */
 .playfab {
-  --u: 3px; /* notch + bevel unit (smaller than the hero's 5px) */
   position: fixed;
   right: 16px;
   bottom: 16px;
@@ -18,33 +16,19 @@
   line-height: var(--k-lh-flat);
   text-transform: lowercase;
   white-space: nowrap;
-  color: var(--k-black);
-  background: var(--k-gold);
+  color: var(--k-white);
+  background: var(--k-black);
+  border: 1px solid var(--k-white);
   text-decoration: none;
   cursor: pointer;
-  image-rendering: pixelated;
-  box-shadow:
-    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
-    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-white) 50%, transparent),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-black) 28%, transparent);
-  filter: drop-shadow(4px 5px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
-  transition: transform var(--k-t-tap) steps(2), filter var(--k-t-tap) steps(2), background var(--k-t-fast);
+  transition: background var(--k-t-fast) ease, color var(--k-t-fast) ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.playfab:hover {
-  background: color-mix(in srgb, var(--k-gold) 82%, white);
-}
-
-.playfab:active {
-  transform: translate(3px, 3px);
-  filter: drop-shadow(1px 2px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
-  box-shadow:
-    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
-    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-black) 28%, transparent),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-white) 50%, transparent);
+.playfab:hover,
+.playfab:focus-visible {
+  background: var(--k-white);
+  color: var(--k-black);
 }
 
 .playfab:focus-visible {
@@ -53,11 +37,9 @@
 }
 
 /* phones: shrink a touch + sit just ABOVE the bottom-center ModeSwitcher pill
-   (bottom-right), mirroring SoundToggle at bottom-left. Was top:80px, which
-   parked it over the hero header copy — moved down off the hero content. */
+   (bottom-right), mirroring SoundToggle at bottom-left. */
 @media (max-width: 639px) {
   .playfab {
-    --u: 2px;
     right: 10px;
     top: auto;
     bottom: 68px;

@@ -71,51 +71,32 @@
   z-index: 3;
 }
 
-/* The badge is a live <a> to /#register (see Hero.jsx). Same gold "sticker"
-   look as the big central registration and the floating register launcher —
-   every registration CTA on the site shares one font (mono) and one style
-   (notched pixel box + bevel + hard drop-shadow), just at different sizes. */
+/* The badge is a live <a> to /#register (see Hero.jsx). Black terminal box
+   (black fill, white hairline, mono ">>> registration <<<") that inverts on
+   hover — the site's quiet "secondary" registration look. Only the big central
+   hero CTA is gold; every other registration button is black. */
 .hero__badge {
-  --u: 4px;
-  display: inline-flex;
-  align-items: center;
-  padding: var(--k-space-8) var(--k-space-16);
-  font-family: var(--k-font-mono);
+  display: inline-block;
+  padding: var(--k-space-8);
+  background: var(--k-black);
+  border: 1px solid var(--k-white);
+  color: var(--k-white);
   font-size: var(--k-text-lg); /* Figma 33:3913 */
   letter-spacing: var(--k-ls-display);
-  line-height: var(--k-lh-flat);
   white-space: nowrap;
-  color: var(--k-black);
-  background: var(--k-gold);
   cursor: pointer;
   text-decoration: none;
-  box-shadow:
-    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
-    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-white) 50%, transparent),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-black) 28%, transparent);
-  filter: drop-shadow(4px 5px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
-  transition: transform var(--k-t-tap) steps(2), filter var(--k-t-tap) steps(2),
-    background var(--k-t-fast);
 }
 
-.hero__badge:hover {
-  background: color-mix(in srgb, var(--k-gold) 82%, white);
-}
-
-.hero__badge:active {
-  transform: translate(3px, 3px);
-  filter: drop-shadow(1px 2px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
-  box-shadow:
-    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
-    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-black) 28%, transparent),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-white) 50%, transparent);
+.hero__badge:hover,
+.hero__badge:focus-visible {
+  background: var(--k-white);
+  color: var(--k-black);
 }
 
 .hero__badge:focus-visible {
-  outline: 3px solid var(--k-focus-ring);
-  outline-offset: 5px;
+  outline: 2px solid var(--k-focus-ring);
+  outline-offset: 3px;
 }
 
 .hero__lede {
@@ -299,13 +280,12 @@
   font-size: var(--k-text-base);
   letter-spacing: var(--k-ls-wide);
   line-height: var(--k-lh-flat);
-  color: var(--k-black);
-  background: var(--k-gold);
-  border: 1px solid var(--k-black);
+  color: var(--k-white);
+  background: var(--k-black);
+  border: 1px solid var(--k-white);
   text-decoration: none;
   cursor: pointer;
-  filter: drop-shadow(3px 4px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
-  transition: background var(--k-t-fast) ease, transform var(--k-t-tap);
+  transition: background var(--k-t-fast) ease, color var(--k-t-fast) ease;
 }
 
 .hero__playsmall-tri {
@@ -318,13 +298,10 @@
   shape-rendering: crispEdges;
 }
 
-.hero__playsmall:hover {
-  background: color-mix(in srgb, var(--k-gold) 82%, white);
-}
-
-.hero__playsmall:active {
-  transform: translateX(-50%) translate(2px, 2px);
-  filter: drop-shadow(1px 2px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
+.hero__playsmall:hover,
+.hero__playsmall:focus-visible {
+  background: var(--k-white);
+  color: var(--k-black);
 }
 
 .hero__playsmall:focus-visible {
