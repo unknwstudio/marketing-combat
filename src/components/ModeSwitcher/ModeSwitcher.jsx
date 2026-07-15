@@ -1,7 +1,6 @@
 // @ts-check
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import './ModeSwitcher.css'
 
 /**
@@ -13,50 +12,16 @@ import './ModeSwitcher.css'
  * pages with their own global styling scopes, so a hard swap is more robust
  * than client-side routing between them.
  *
- * Because the pill sits dead-centre at the bottom, an 88%-opaque box would
- * occlude reading copy that scrolls under it (seen on /demo's cards). It now
- * auto-hides while the reader scrolls down and slides back on scroll-up or when
- * scrolling stops, so it never covers content mid-read. Reduced-motion users
- * keep it always-visible (an abrupt hide/show would be worse than a brief
- * overlap), and keyboard focus always reveals it (see :focus-within in CSS).
+ * The pill is PERMANENTLY visible — it never hides on scroll (it's the primary
+ * way to switch modes, so it must always be reachable). Keyboard focus is
+ * covered by :focus-within in CSS.
  */
 /**
  * @param {{ active?: 'ai' | 'classic' | 'mcp' }} props  which mode is current (styles its pill active)
  */
 export default function ModeSwitcher({ active }) {
-  const [hidden, setHidden] = useState(false)
-  const lastY = useRef(0)
-  const idle = useRef(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    lastY.current = window.scrollY
-    let raf = 0
-    const onScroll = () => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        raf = 0
-        const y = window.scrollY
-        const dy = y - lastY.current
-        if (y > 240 && dy > 4) setHidden(true)
-        else if (dy < -4) setHidden(false)
-        lastY.current = y
-        // always reachable at rest: reveal once scrolling stops
-        clearTimeout(idle.current)
-        idle.current = setTimeout(() => setHidden(false), 700)
-      })
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      if (raf) cancelAnimationFrame(raf)
-      clearTimeout(idle.current)
-    }
-  }, [])
-
   return (
-    <nav className={'mode-switch' + (hidden ? ' mode-switch--hidden' : '')} aria-label="Site mode">
+    <nav className="mode-switch" aria-label="Site mode">
       <a
         href="/"
         className={

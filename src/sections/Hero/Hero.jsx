@@ -1,14 +1,12 @@
 import CtaLabel from '@/components/CtaLabel/CtaLabel'
 import './Hero.css'
-import CRTOverlay from '@/effects/crt/CRTOverlay'
-import { GAME_COPY } from '@/lib/game'
 
 /**
  * HERO section — pixel-faithful port of Figma "Frame 29" (node 33:4045).
  * Fixed 1440x804 stage. Graphics are exported PNGs (public/assets/hero),
  * all text/layout is live code using the global pixel font + tokens.
  */
-export default function Hero({ withPlay = false, centerPlay = false }) {
+export default function Hero({ centerPlay = false }) {
   return (
     <section className="hero" aria-label="AI Marketing Kombat">
       {/* the real, styled title is the logo image below — this is the page's
@@ -70,40 +68,42 @@ export default function Hero({ withPlay = false, centerPlay = false }) {
         <span className="hero__pill">FINAL · BARCELONA</span>
       </div>
 
-      {/* big central PLAY launcher (home hero) — a chunky arcade button over the
-          scene that drops the visitor straight into /play. VsSplash's delegated
-          a[href="/play"] listener catches the click for the first-visit VS
-          flash; data-burst + data-sfx match the site's other play affordances. */}
       {centerPlay && (
-        <a
-          className="hero__playbig"
-          href="/play"
-          data-sfx="confirm"
-          data-burst
-          aria-label="Play AI Marketing Kombat"
-        >
-          <svg className="hero__playbig-tri" viewBox="0 0 6 10" aria-hidden="true">
-            <path d="M0 0h1v10H0zM1 1h1v8H1zM2 2h1v6H2zM3 3h1v4H3zM4 4h1v2H4z" />
-          </svg>
-          PLAY
-        </a>
-      )}
+        <>
+          {/* PRIMARY hero CTA — registration, as a bold arcade sticker sitting
+              centre-stage over the scene (it took the prominent slot the big
+              PLAY button used to own). Same registration contract as the
+              top-left badge: opens the modal via the delegated [data-register]
+              listener, with the #register fragment as the no-JS fallback. */}
+          <a
+            className="hero__registerbig"
+            href="/#register"
+            data-sfx="confirm"
+            data-burst
+            data-register
+            aria-label="Register for AI Marketing Kombat"
+          >
+            <CtaLabel>registration</CtaLabel>
+          </a>
 
-      {withPlay && (
-        <a
-          className="hero__play"
-          href="/play"
-          data-sfx="confirm"
-          data-burst
-          aria-label="Play AI Marketing Kombat"
-        >
-          <span aria-hidden="true">{GAME_COPY.playGlyph} </span>
-          {GAME_COPY.playLabel}
-        </a>
+          {/* SECONDARY — a small PLAY launcher at the very bottom of the hero.
+              VsSplash's delegated a[href="/play"] listener catches the click for
+              the first-visit VS flash; data-burst + data-sfx match the site's
+              other play affordances. */}
+          <a
+            className="hero__playsmall"
+            href="/play"
+            data-sfx="confirm"
+            data-burst
+            aria-label="Play AI Marketing Kombat"
+          >
+            <svg className="hero__playsmall-tri" viewBox="0 0 6 10" aria-hidden="true">
+              <path d="M0 0h1v10H0zM1 1h1v8H1zM2 2h1v6H2zM3 3h1v4H3zM4 4h1v2H4z" />
+            </svg>
+            play
+          </a>
+        </>
       )}
-
-      {/* CRT screen effect scoped to this section only (not global) */}
-      <CRTOverlay scoped intensity={0.34} flicker powerOn={false} />
     </section>
   )
 }

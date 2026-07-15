@@ -7,7 +7,13 @@
 .hero {
   position: relative;
   width: 1440px;
-  height: 804px;
+  /* 804px is the Figma scene (.hero__bg); the extra ~44px is a calm dark band
+     below it that houses the small secondary PLAY launcher, sitting just under
+     the tag-pill row. The band is var(--k-bg) (#0b0221), which matches the
+     scene's own dark bottom edge (~rgb(0,3,31)), so the seam at 804px is
+     invisible. Kept just tall enough that the PLAY clears the permanently
+     visible mode-switcher pill on a standard laptop viewport. */
+  height: 848px;
   margin: 0 auto;
   overflow: hidden;
   background: var(--k-bg);
@@ -221,55 +227,14 @@
   left: 1120px;
 }
 
-/* --- PLAY affordance (prop-gated, rendered only via HeroStage/withPlay) --- */
-/* Centered with auto side-margins, NOT transform:translateX(-50%): on desktop
-   /demo the CRT's warpElToScreen writes the hit-area onto el.style.transform,
-   and an inline transform REPLACES (never composes with) a stylesheet transform
-   — so translateX(-50%) centering was silently dropped the moment the warp ran,
-   shoving the clickable box ~half its width right of the drawn button (a dead
-   click on the wordmark). Auto-margins leave `transform` free for the warp. */
-.hero__play {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 680px;
-  width: max-content;
-  margin-inline: auto;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--k-space-16);
-  padding: var(--k-space-16) var(--k-space-40);
-  font-family: var(--k-font-mono);
-  font-size: var(--k-text-lg);
-  letter-spacing: var(--k-ls-wide);
-  color: var(--k-black);
-  background: var(--k-gold);
-  border: 1px solid var(--k-white);
-  text-decoration: none;
-}
-
-.hero__play:hover {
-  background: var(--k-white);
-}
-
-.hero__play:focus-visible {
-  outline: 3px solid var(--k-focus-ring);
-  outline-offset: 2px;
-}
-
-/* --- BIG central PLAY launcher (home hero, prop-gated via centerPlay) -------
-   A bold amber play triangle floating over the scene, above the wordmark — the
-   same gold as the ai-kombat wordmark (--k-wordmark-gold). A real <a> to /play.
-   drop-shadow (not box-shadow) traces the triangle's alpha edge, so the dark
-   pixel offset + glow follow the arrow itself, not its bounding box. A gentle
-   scale pulse on the arrow draws the eye; :hover scales/brightens the whole
-   anchor — its transform keeps translateX(-50%) so centering survives. */
-/* Pixel arcade PLAY button — chunky 8-bit look: Press Start 2P, notched pixel
-   corners (the 4 axis-only box-shadows leave the corners cut), an inset bevel
-   (light top-left / dark bottom-right), a hard pixel drop-shadow, and a real
-   depress on :active. */
-.hero__playbig {
+/* --- PRIMARY hero CTA: registration sticker (prop-gated via centerPlay) ------
+   Took the prominent centre-stage slot the big PLAY button used to own. Chunky
+   8-bit arcade "sticker": gold face, notched pixel corners (4 axis-only
+   box-shadows leave the corners cut), an inset bevel (light top-left / dark
+   bottom-right), a hard pixel drop-shadow, and a real depress on :active. Mono
+   font (not the pixel face) so the longer ">>> registration <<<" label stays
+   readable. */
+.hero__registerbig {
   --u: 5px;
   position: absolute;
   left: 50%;
@@ -278,17 +243,17 @@
   z-index: 4;
   display: inline-flex;
   align-items: center;
-  gap: var(--k-space-16);
-  padding: var(--k-space-16) var(--k-space-32);
-  font-family: var(--k-font-pixel);
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke pixel-font display size for the big PLAY launcher; nearest fixed HUD steps (16/24) are ±10px and the pixel grid forbids a fluid clamp */
-  font-size: 34px;
+  padding: var(--k-space-16) var(--k-space-40);
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-xl);
+  letter-spacing: var(--k-ls-display);
   line-height: var(--k-lh-flat);
+  text-transform: lowercase;
+  white-space: nowrap;
   color: var(--k-black);
   background: var(--k-gold);
   text-decoration: none;
   cursor: pointer;
-  image-rendering: pixelated;
   box-shadow:
     calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
     0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
@@ -300,22 +265,11 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* the play arrow — a crisp stepped pixel triangle in the button ink */
-.hero__playbig-tri {
-  flex: none;
-  width: 26px;
-  height: 36px;
-  fill: currentColor;
-}
-.hero__playbig-tri path {
-  shape-rendering: crispEdges;
-}
-
-.hero__playbig:hover {
+.hero__registerbig:hover {
   background: color-mix(in srgb, var(--k-gold) 82%, white);
 }
 
-.hero__playbig:active {
+.hero__registerbig:active {
   transform: translateX(-50%) translate(4px, 4px);
   filter: drop-shadow(2px 3px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
   box-shadow:
@@ -325,25 +279,59 @@
     inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-white) 50%, transparent);
 }
 
-.hero__playbig:focus-visible {
+.hero__registerbig:focus-visible {
   outline: 3px solid var(--k-focus-ring);
   outline-offset: 8px;
 }
 
-@keyframes hero-playbig-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.06);
-  }
+/* --- SECONDARY: small PLAY launcher, pinned to the bottom of the hero -------
+   Compact gold pill sitting below the tag-pill row (the "block" in the hero),
+   a quiet way into the game now that registration owns the loud centre slot. */
+.hero__playsmall {
+  position: absolute;
+  left: 50%;
+  bottom: var(--k-space-8);
+  transform: translateX(-50%);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-space-8);
+  padding: var(--k-space-4) var(--k-space-16);
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-base);
+  letter-spacing: var(--k-ls-wide);
+  line-height: var(--k-lh-flat);
+  color: var(--k-black);
+  background: var(--k-gold);
+  border: 1px solid var(--k-black);
+  text-decoration: none;
+  cursor: pointer;
+  filter: drop-shadow(3px 4px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
+  transition: background var(--k-t-fast) ease, transform var(--k-t-tap);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero__playbig-tri {
-    animation: none;
-  }
+.hero__playsmall-tri {
+  flex: none;
+  width: 12px;
+  height: 20px;
+  fill: currentColor;
+}
+.hero__playsmall-tri path {
+  shape-rendering: crispEdges;
+}
+
+.hero__playsmall:hover {
+  background: color-mix(in srgb, var(--k-gold) 82%, white);
+}
+
+.hero__playsmall:active {
+  transform: translateX(-50%) translate(2px, 2px);
+  filter: drop-shadow(1px 2px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
+}
+
+.hero__playsmall:focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 4px;
 }
 
 /* ============================================================
@@ -492,31 +480,21 @@
     letter-spacing: var(--k-ls-tight);
   }
 
-  /* mobile has no CRT/warp (3D is desktop-only), so plain absolute placement is
-     safe here. `position:static` demoted it below every absolute sibling and
-     hid it; keep it absolute, centered (base left/right/margin-inline:auto),
-     lifted off the bottom above the tag pills. */
-  .hero__play {
-    top: auto;
-    bottom: 34px;
-    z-index: 4;
-  }
-
-  /* big central launcher — scaled down over the scene. Keep translateX(-50%)
-     (not translate(-50%,-50%)) so the :hover/:active scale rules above don't
-     drop the vertical centering and make the arrow jump on tap. */
-  .hero__playbig {
+  /* central registration sticker — scaled down over the scene. Keep
+     translateX(-50%) (not translate(-50%,-50%)) so the :active offset rule
+     doesn't drop the vertical centering. */
+  .hero__registerbig {
     top: 40%;
     --u: 4px;
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: scaled-down pixel-font PLAY size; nearest fixed HUD steps (16/24) are ±4px and the pixel grid forbids a fluid clamp */
-    font-size: 20px;
-    padding: var(--k-space-16) var(--k-space-24);
-    gap: var(--k-space-8);
+    font-size: var(--k-text-base);
+    padding: var(--k-space-12) var(--k-space-20);
   }
 
-  .hero__playbig-tri {
-    width: 17px;
-    height: 23px;
+  /* the small PLAY would collide with the bottom tag-pill row on a phone; the
+     always-present floating PLAY launcher (PlayFab, bottom-right) covers play
+     on mobile, so hide the hero's own bottom PLAY under the breakpoint. */
+  .hero__playsmall {
+    display: none;
   }
 }
 

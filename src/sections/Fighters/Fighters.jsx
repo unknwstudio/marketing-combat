@@ -45,15 +45,6 @@ const FIGHTERS = [
 export default function Fighters() {
   return (
     <section className="fighters" aria-label="Choose your fighter">
-      <img
-        className="fighters__bg"
-        src={`/assets/fighters/bg.webp`}
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-        decoding="async"
-      />
-
       <h2 className="fighters__title">choose your fighter</h2>
 
       <div className="fighters__content">
@@ -82,14 +73,11 @@ export default function Fighters() {
                   top ends are placed at local x=720-cardCenter (converted
                   to the svg's local units) so, despite five very different
                   lean angles, every one lands on the exact same pixel —
-                  x=720, the top of the section — which is where
-                  fighters__bg's real painted trunk sits. On hover, a
-                  card's strike touches down right out of that trunk
-                  instead of floating as an unrelated line. Same
-                  forking-ribbon style as the bg art (thin core + small
-                  perpendicular ticks) so the two match visually too. A
-                  fresh SVG layer, not a crop of fighters__bg: that
-                  background is one flat composite image. */}
+                  x=720, the top of the section. All five strikes therefore
+                  fork out of a single shared origin point instead of five
+                  unrelated lines. (The lightning background image this used
+                  to emerge from has been removed; the shared-origin geometry
+                  is kept so the strikes still read as one coherent bolt.) */}
               <svg
                 className="fighters__bolt"
                 aria-hidden="true"

@@ -209,19 +209,49 @@
   text-transform: uppercase;
   color: var(--gc-blue);
 }
+/* the primary funnel CTA — deliberately the loudest thing on the result
+   screen: bigger type, chunkier box, a gold glow and a slow attract pulse so
+   it out-shouts the rematch/share/exit row below it */
 .gc-resultbar .gc-result-cta .gc-register {
-  min-height: 44px;
-  padding: var(--k-space-12) var(--k-space-24);
-  gap: var(--k-space-8);
-  font-size: var(--k-text-hud-sm);
+  min-height: 52px;
+  padding: var(--k-space-16) var(--k-space-32);
+  gap: var(--k-space-12);
+  font-size: var(--k-text-hud-md);
   color: var(--k-black);
   background: var(--gc-gold);
-  border-color: var(--gc-gold);
+  border-width: 3px;
+  border-color: var(--k-white);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--gc-gold) 55%, transparent),
+    0 0 28px color-mix(in srgb, var(--gc-gold) 65%, transparent);
+  animation: gc-register-pulse 1.6s ease-in-out infinite;
 }
 .gc-resultbar .gc-result-cta .gc-register:hover {
   background: var(--k-white);
   border-color: var(--k-white);
   color: var(--k-black);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--k-white) 55%, transparent),
+    0 0 32px color-mix(in srgb, var(--gc-gold) 80%, transparent);
+}
+
+@keyframes gc-register-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--gc-gold) 55%, transparent),
+      0 0 24px color-mix(in srgb, var(--gc-gold) 55%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--gc-gold) 70%, transparent),
+      0 0 40px color-mix(in srgb, var(--gc-gold) 85%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-resultbar .gc-result-cta .gc-register {
+    animation: none;
+  }
 }
 
 .gc-resultbar-row {

@@ -30,11 +30,11 @@ function FinishRun({ tag }) {
 
 /**
  * JOIN THE BATTLE — closing call to action, staged as an arcade
- * "GAME OVER -> CONTINUE?" ritual: the round ends, a countdown ticks with a
- * beep each second, and instead of hitting zero it resolves into the
- * registration CTA (the game's one-more-move is: register). Any keypress or
- * click skips straight to the resolved state. Reduced-motion shows the
- * resolved state immediately, no countdown/beeps/shake/scramble.
+ * "GAME OVER -> CONTINUE?" ritual: the round ends, a silent countdown ticks,
+ * and instead of hitting zero it resolves into the registration CTA (the
+ * game's one-more-move is: register). Any keypress or click skips straight to
+ * the resolved state. Reduced-motion shows the resolved state immediately, no
+ * countdown/shake/scramble.
  *
  * The headline also DECODES on entry (GSAP ScrambleText, lazy-imported like
  * RoundMoments so gsap never lands in the base bundle): CRT glyph noise
@@ -64,25 +64,6 @@ export default function FinalCta() {
     const timers = []
     const after = (fn, ms) => timers.push(setTimeout(fn, ms))
 
-    let audioCtx = null
-    const beep = (freq, dur = 0.09) => {
-      try {
-        const Ctx = window.AudioContext || window.webkitAudioContext
-        audioCtx = audioCtx || new Ctx()
-        const osc = audioCtx.createOscillator()
-        const gain = audioCtx.createGain()
-        osc.type = 'square'
-        osc.frequency.value = freq
-        gain.gain.value = 0.05
-        osc.connect(gain).connect(audioCtx.destination)
-        osc.start()
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur)
-        osc.stop(audioCtx.currentTime + dur)
-      } catch {
-        /* Web Audio unavailable — the visual sequence still plays */
-      }
-    }
-
     const skipToReady = () => {
       if (cancelled) return
       cancelled = true
@@ -103,7 +84,6 @@ export default function FinalCta() {
 
         shake(7)
         el.classList.add('finalcta--stage-gameover')
-        beep(180, 0.14)
         window.addEventListener('keydown', skipToReady)
         window.addEventListener('pointerdown', skipToReady)
 
@@ -136,7 +116,6 @@ export default function FinalCta() {
           el.classList.replace('finalcta--stage-gameover', 'finalcta--stage-countdown')
           let n = 5
           if (numRef.current) numRef.current.textContent = String(n)
-          beep(660)
           const tick = () => {
             if (cancelled) return
             n -= 1
@@ -145,7 +124,6 @@ export default function FinalCta() {
               return
             }
             if (numRef.current) numRef.current.textContent = String(n)
-            beep(660)
             after(tick, 700)
           }
           after(tick, 700)
@@ -236,7 +214,6 @@ export default function FinalCta() {
           prompt — surfacing it here too so the / and /demo CTA isn't a leap
           of faith about how much registering actually costs in time */}
       <p className="finalcta__facts">5 min to apply · 3 questions · AI review · 48 hr response</p>
-      <span className="finalcta__press">▮ PRESS ANY KEY TO CONTINUE ▮</span>
     </section>
   )
 }

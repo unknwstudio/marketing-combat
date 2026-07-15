@@ -54,18 +54,24 @@ export default function Stages() {
             </div>
             <h3 className="stages__title">{s.heading || s.title}</h3>
             <p className="stages__body">{s.body}</p>
-            <button
-              type="button"
-              className={'d-btn stages__cta' + (s.final ? ' d-btn--red' : '')}
-              data-magnetic
-              data-sfx="confirm"
-              data-register
-            >
-              <CtaLabel>{s.cta}</CtaLabel>
-            </button>
           </li>
         ))}
       </ul>
+
+      {/* one shared registration CTA for the whole block (the per-card
+          "registration"/"finish him" buttons were removed) */}
+      <div className="stages__cta-wrap">
+        <button
+          type="button"
+          className="d-btn stages__cta"
+          data-magnetic
+          data-sfx="confirm"
+          data-burst
+          data-register
+        >
+          <CtaLabel>registration</CtaLabel>
+        </button>
+      </div>
     </section>
   )
 }
