@@ -7,6 +7,7 @@ import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import Cabinet3DGate from '@/components/Cabinet3D/Cabinet3DGate'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import { GAME_COPY } from '@/lib/game'
+import { typeset } from '@/lib/typeset'
 import './FinalCta.css'
 
 // Running-band victory callout. FINISH_LABEL rides in data-announce (Announcer.jsx
@@ -187,8 +188,9 @@ export default function FinalCta() {
         join the battle
       </h2>
       <p className="finalcta__body">
-        Compare your skills, put yourself on the map, and find out who is the best marketer on
-        the planet. One battle. One leaderboard.
+        {typeset(
+          'Compare your skills, put yourself on the map, and find out who is the best marketer on the planet. One battle. One leaderboard.'
+        )}
       </p>
 
       <div className="finalcta__continue" aria-hidden="true">

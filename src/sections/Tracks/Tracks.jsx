@@ -1,5 +1,6 @@
 import './Tracks.css'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
+import { typeset } from '@/lib/typeset'
 
 /**
  * STAGE 03 — HACKATHON TRACKS. Two fighting-style tracks.
@@ -36,7 +37,7 @@ export default function Tracks() {
   return (
     <section className="dsec tracks" aria-label="Hackathon tracks">
       <div className="dsec__head">
-        <span className="dsec__round">Stage 03 — choose your fighting style</span>
+        <span className="dsec__round">{typeset('Stage 03 — choose your fighting style')}</span>
         <h2 className="dsec__title">hackathon tracks</h2>
       </div>
 

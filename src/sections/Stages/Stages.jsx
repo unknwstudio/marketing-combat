@@ -1,4 +1,5 @@
 import CtaLabel from '@/components/CtaLabel/CtaLabel'
+import { typeset } from '@/lib/typeset'
 import './Stages.css'
 
 /**
@@ -35,10 +36,10 @@ export default function Stages() {
   return (
     <section id="format" className="dsec stages" aria-label="Hackathon stages">
       <div className="dsec__head">
-        <span className="dsec__round">Stage 05 — three stages to compete</span>
+        <span className="dsec__round">{typeset('Stage 05 — three stages to compete')}</span>
         <h2 className="dsec__title">hackathon stages</h2>
         <p className="dsec__sub">
-          After qualification, participants are ranked according to their level of expertise.
+          {typeset('After qualification, participants are ranked according to their level of expertise.')}
         </p>
       </div>
 
