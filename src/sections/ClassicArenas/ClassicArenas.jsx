@@ -22,7 +22,9 @@ const ARENAS = [
   },
   {
     tag: 'A3',
-    accent: 'var(--c-yellow)',
+    // gold, not --c-yellow: this accent also paints the card's tag TEXT, and
+    // bright yellow on the white card is unreadable (1.07:1)
+    accent: 'var(--c-gold)',
     title: 'E-commerce',
     body: 'High volume. Thin margins. ROAS pressure. Mission: scale creative and squeeze CAC with AI.',
   },

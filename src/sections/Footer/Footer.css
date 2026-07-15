@@ -57,6 +57,17 @@
   text-decoration: underline;
 }
 
+/* studio credit — matches the muted legal tone, brightens on hover */
+.footer__madeby {
+  margin-top: var(--k-space-8);
+  color: var(--k-ink-dim-2);
+}
+
+.footer__madeby:hover,
+.footer__madeby:focus-visible {
+  color: var(--k-white);
+}
+
 @media (max-width: 1023px) {
   .footer {
     gap: var(--k-space-24);

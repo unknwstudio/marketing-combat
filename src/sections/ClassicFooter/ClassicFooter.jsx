@@ -1,3 +1,4 @@
+import MadeByUnknw from '@/components/MadeByUnknw/MadeByUnknw'
 import './ClassicFooter.css'
 
 /**
@@ -58,6 +59,7 @@ export default function ClassicFooter() {
 
       <div className="c-wrap c-foot__base">
         <p className="cap-trim">© 2026 AI Marketing Kombat · July 2026 · Barcelona</p>
+        <MadeByUnknw />
       </div>
     </footer>
   )

@@ -118,6 +118,11 @@
   --k-classic-ink: #070707;
   --k-classic-panel: #222222;
   --k-classic-yellow: #fff600;
+  /* readable-on-white counterpart of --k-classic-yellow: the bright yellow is a
+     fill/background color only (1.07:1 on white — unusable as text). Foreground
+     accents that would otherwise be yellow on the white classic page use this
+     dark gold instead (4.9:1 on white, clears WCAG AA 1.4.3). */
+  --k-classic-gold: #8a6d00;
   --k-classic-blue: #0052da;
   --k-classic-green: #00da95;
 
