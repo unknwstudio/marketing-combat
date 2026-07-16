@@ -99,11 +99,13 @@
 }
 
 
-/* base row: © on the left rail, the studio credit dead-CENTER of the row
-   (1fr | auto | 1fr — the empty right cell mirrors the © cell) */
+/* base row: © on the left rail, the studio credit on the right rail. Kept OFF
+   the centre on purpose — the permanently-visible mode-switcher pill floats
+   dead-centre at the viewport bottom and would otherwise sit right on top of a
+   centred credit (which is exactly what hid it). */
 .c-foot__base {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: var(--k-space-16) var(--k-space-24);
   padding-top: var(--k-space-32);
@@ -114,7 +116,7 @@
 }
 
 .c-foot__base .madeby {
-  justify-self: center;
+  justify-self: end;
 }
 
 .c-foot__base p {

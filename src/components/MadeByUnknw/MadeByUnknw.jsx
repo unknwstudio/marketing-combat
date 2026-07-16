@@ -1,7 +1,7 @@
 import './MadeByUnknw.css'
 
 /**
- * "made by UNKNW" studio credit. The block-letter UNKNW wordmark is the
+ * "designed by UNKNW" studio credit. The block-letter UNKNW wordmark is the
  * canonical mark ported verbatim from the unknw.com site (components/layout/
  * Logo.tsx, viewBox 0 0 140 35); it fills with currentColor so it inherits
  * whatever muted footer tone it's dropped into and brightens on hover. Kept
@@ -14,9 +14,9 @@ export default function MadeByUnknw({ className = '' }) {
       href="https://unknw.com"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Made by UNKNW — opens unknw.com in a new tab"
+      aria-label="Designed by UNKNW — opens unknw.com in a new tab"
     >
-      <span className="madeby__by cap-trim">made by</span>
+      <span className="madeby__by cap-trim">designed by</span>
       <svg
         className="madeby__mark"
         viewBox="0 0 140 35"
