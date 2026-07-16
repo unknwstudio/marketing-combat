@@ -7,11 +7,14 @@
 .hero {
   position: relative;
   width: 1440px;
-  /* The logo + tag pills sit higher now, so the whole stage is shorter than the
-     804px Figma scene — the bg is anchored at the top and the extra height was
-     only ever a dark band. Everything (registration, logo, pills, the small
-     PLAY) fits inside this height. */
-  height: 772px;
+  /* Fill the viewport height so the next section never peeks under the fold.
+     The canvas zooms the whole 1440px design by --canvas-scale, and that zoom
+     also multiplies any vh here (100dvh renders at 100dvh × scale) — so dividing
+     100dvh by the scale lands the stage at exactly one screen tall on screen.
+     772px (the composition's natural height, bg anchored top, PLAY at the
+     bottom) is the floor: on ultra-wide/short viewports the calc dips below it,
+     and we keep the full composition rather than clip it. */
+  height: max(772px, calc(100dvh / var(--canvas-scale, 1)));
   margin: 0 auto;
   overflow: hidden;
   background: var(--k-bg);
@@ -38,8 +41,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 1440px;
-  height: 804px;
+  width: 100%;
+  height: 100%;
+  /* cover the (now viewport-tall) stage, anchored at the top so the sun + sky
+     stay framed exactly as before; only the dark waterline at the bottom gains
+     or loses a sliver as the stage grows past its native 804px. */
+  object-fit: cover;
+  object-position: 50% 0;
   display: block;
 }
 

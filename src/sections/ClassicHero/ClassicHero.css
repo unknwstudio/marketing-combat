@@ -7,7 +7,13 @@
 .c-hero {
   position: relative;
   width: 1440px;
-  height: 804px;
+  /* Fill the viewport height so no later section peeks under the fold. The
+     canvas zoom multiplies any vh here, so dividing 100dvh by --canvas-scale
+     lands the stage at exactly one screen tall on screen; 804px (the Figma
+     frame) is the floor for short/ultra-wide viewports. The yellow left panel
+     stretches to match (space-between keeps the CTA pinned to the bottom) and
+     the photo covers the full height — see .c-hero__left / .c-hero__photo. */
+  height: max(804px, calc(100dvh / var(--canvas-scale, 1)));
   background: var(--c-yellow);
   overflow: hidden;
 }
@@ -19,7 +25,9 @@
   left: 0;
   top: 0;
   width: 720px;
-  height: 804px;
+  /* full stage height (which now tracks the viewport) so space-between keeps the
+     headline at the top and the Registration CTA pinned to the bottom */
+  height: 100%;
   padding: var(--k-space-16);
   display: flex;
   flex-direction: column;
@@ -77,9 +85,11 @@
 .c-hero__photo {
   position: absolute;
   left: 720px;
-  top: -4px;
+  top: 0;
   width: 720px;
-  height: 808px;
+  /* cover the full stage height (tracks the viewport) so the photo never leaves
+     a yellow gap below it as the hero grows past its native 804px */
+  height: 100%;
   object-fit: cover;
   border-radius: var(--k-radius-md) 0 0 var(--k-radius-md);
 }

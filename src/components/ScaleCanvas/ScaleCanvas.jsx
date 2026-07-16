@@ -100,8 +100,12 @@ export default function ScaleCanvas({
           fluid
             ? undefined
             : mode === 'zoom'
-              ? { width, zoom: scale }
-              : { width, transform: `scale(${scale})` }
+              ? // --canvas-scale mirrors the live zoom (scrollbar-aware, so it's
+                // the real on-screen ratio, not vw/1440). Children read it to size
+                // themselves against the true viewport under the zoom multiply —
+                // e.g. a full-height hero: height: calc(100dvh / var(--canvas-scale)).
+                { width, zoom: scale, '--canvas-scale': scale }
+              : { width, transform: `scale(${scale})`, '--canvas-scale': scale }
         }
       >
         {children}
