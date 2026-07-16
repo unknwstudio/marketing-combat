@@ -32,36 +32,35 @@
   gap: var(--k-space-8);
 }
 
+/* same styling as the champion cards (.cfw__card): figure top, label bottom,
+   the space filling between */
 .c-stat {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--k-space-24);
-  min-height: 200px;
-  padding: var(--k-space-24);
+  gap: var(--k-space-20);
+  min-height: 150px;
+  padding: var(--k-space-20);
   background: var(--c-blue);
   border-radius: var(--k-radius-md);
   color: var(--k-white);
 }
 
+/* the figure — matches the champion card title (.cfw__card-t) */
 .c-stat__num {
-  /* sized to fit the widest figure ($100M+) inside the 2x2 card without
-     clipping; smaller than the old full-width row's 96px */
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke display-numeral tuple fitted to the card width; no scale step lands in this range */
-  font-size: clamp(40px, 4.6vw, 68px);
-  font-weight: 400;
-  line-height: var(--k-lh-crushed);
-  color: inherit;
+  font-size: var(--k-text-xl);
+  line-height: var(--c-lh-display);
+  text-transform: uppercase;
 }
 
+/* the label — matches the champion card subtitle (.cfw__card-s): 16px,
+   sentence-case, full white, no tracking (was a 12px uppercase tracked kicker) */
 .c-stat__label {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
-  font-size: 12px;
-  line-height: var(--k-lh-snug);
-  letter-spacing: var(--k-ls-wide-sm);
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--k-white) 82%, transparent);
-  max-width: 22ch;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact card subtitle size, matching .cfw__card-s */
+  font-size: 16px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading, matching .cfw__card-s */
+  line-height: 1.2;
+  max-width: 280px;
 }
 
 /* --- sponsor strip ---------------------------------------------------- */
@@ -121,16 +120,9 @@
   }
 
   .c-stat {
-    /* let the giant numeral shrink below its intrinsic width so the 2-up grid
-       can't push past the viewport */
     min-width: 0;
-    min-height: 160px;
-    padding: var(--k-space-20) var(--k-space-16);
-  }
-
-  .c-stat__num {
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke mobile stat-numeral tuple; nearest step --k-text-xl caps at 40px vs 48px (20% off, beyond the ~15% clamp-replacement bound) */
-    font-size: clamp(28px, 8.5vw, 48px);
+    min-height: 120px;
+    padding: var(--k-space-16);
   }
 
   .c-battle__logos {
