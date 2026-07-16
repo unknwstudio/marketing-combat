@@ -4,31 +4,22 @@ import './ClassicHow.css'
 
 /**
  * HOW IT WORKS — a two-column compose (like the champion block, #10): the
- * heading column pins (position: sticky) while the three steps stack vertically
- * on the right and rise into place beside it on scroll. Oversized weight-400
- * indices walk the palette orange -> blue -> green so the row reads as one coded
- * sequence (orange, not the bright yellow, so the numeral stays readable).
+ * heading column pins (position: sticky) while the steps rise into place beside
+ * it on scroll. The steps are a large hover-list in the "who it's for" idiom —
+ * each title is big editorial type that turns blue with a ► marker on hover; a
+ * quiet line of detail sits under each.
  */
 
 const STEPS = [
   {
-    n: '01',
-    // the site's signature orange (--k-orange), not --c-yellow: this accent
-    // colors the giant "01" numeral, and bright yellow on the white page is
-    // unreadable (1.07:1)
-    accent: 'var(--k-orange)',
     title: 'Qualifying round',
     body: '45 minutes online. A real case to solve under pressure, with the AI stack of your choice.',
   },
   {
-    n: '02',
-    accent: 'var(--c-blue)',
     title: 'Evaluation',
     body: 'A panel of judges + AI assesses every solution. The client gets the final word.',
   },
   {
-    n: '03',
-    accent: 'var(--c-green)',
     title: 'The final',
     body: '2 hours in Barcelona at Harbour.Space University — in person. A closed networking event and a private closing party follow.',
   },
@@ -49,9 +40,13 @@ export default function ClassicHow() {
 
         <ol className="c-how__steps">
           {STEPS.map((s, i) => (
-            <li className="c-step c-reveal" key={s.n} style={{ '--i': i, '--step-accent': s.accent }}>
-              <span className="c-step__n cap-trim">{s.n}</span>
-              <h3 className="c-step__title cap-trim">{typeset(s.title)}</h3>
+            <li className="c-step c-reveal" key={s.title} style={{ '--i': i }}>
+              <span className="c-step__item">
+                <svg className="c-step__arrow" viewBox="0 0 52 27" aria-hidden="true" focusable="false">
+                  <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
+                </svg>
+                <span className="c-step__title cap-trim">{typeset(s.title)}</span>
+              </span>
               <p className="c-step__body">{typeset(s.body)}</p>
             </li>
           ))}
