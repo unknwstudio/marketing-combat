@@ -1,4 +1,3 @@
-import CtaLabel from '@/components/CtaLabel/CtaLabel'
 import { typeset } from '@/lib/typeset'
 import './Hero.css'
 
@@ -30,16 +29,10 @@ export default function Hero({ centerPlay = false }) {
       {/* glowing wordmark + underline */}
       <img className="hero__logo" src={`/assets/hero/logo.webp`} alt="AI Marketing Kombat" />
 
-      {/* top-left: registration badge + lede. The badge is a REAL link to the
-          FinalCta section (#register): the hero and FinalCta share the home
-          page, so it's a same-page fragment scroll (smooth via the
-          motion-gated rule in FinalCta.css). data-sfx follows the MagneticCTA
-          contract (see MagneticCTA.jsx) so a click SFX attaches if the badge
-          is ever tagged data-magnetic. */}
+      {/* top-left: intro lede. The registration badge that used to sit above it
+          was removed — registration lives in the floating launcher and the CTAs
+          further down the page — so the lede now sits at the top of the block. */}
       <div className="hero__intro">
-        <a href="/#register" className="hero__badge" data-sfx="confirm" data-burst data-register>
-          <CtaLabel>registration</CtaLabel>
-        </a>
         <p className="hero__lede">
           {typeset('The first international hackathon for senior marketers of the AI era.')}
           <br aria-hidden="true" />
