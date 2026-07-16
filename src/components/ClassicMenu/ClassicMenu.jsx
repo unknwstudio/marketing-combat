@@ -31,10 +31,18 @@ export default function ClassicMenu() {
       <nav className="c-menu__card" aria-label="Page menu">
         <div className="c-menu__links">
           {/* /classic now carries these sections itself, so the menu anchors
-              to the local section ids (was cross-page /#… while the page only
-              had the hero). */}
+              to the local section ids — the same live set the footer's EVENT
+              column links (How it works / Tracks / Battle arenas / FAQ). */}
           <a className="c-menu__link" href="#c-how">
             How it works
+          </a>
+          <span className="c-menu__rule" aria-hidden="true" />
+          <a className="c-menu__link" href="#c-tracks">
+            Tracks
+          </a>
+          <span className="c-menu__rule" aria-hidden="true" />
+          <a className="c-menu__link" href="#c-arenas">
+            Case tracks
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
           {/* Judges link hidden together with the ClassicJury section

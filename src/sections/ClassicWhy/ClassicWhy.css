@@ -82,11 +82,15 @@
 
   .c-why__head {
     grid-column: 1;
+    /* auto rows: desktop pins both columns into row 1 (side by side); in the
+       single mobile column that stacked them ON TOP of each other */
+    grid-row: auto;
     position: static;
   }
 
   .c-why__list {
     grid-column: 1;
+    grid-row: auto;
   }
 }
 
