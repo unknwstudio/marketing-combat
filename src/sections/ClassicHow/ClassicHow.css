@@ -200,6 +200,12 @@
     flex: none;
   }
 
+  .c-step__item {
+    /* the desktop 0.72 cap-box makes WRAPPED lines overlap on narrow columns
+       ("A creative block") — mobile items may wrap, so they get real leading */
+    line-height: var(--k-lh-flat);
+  }
+
   .c-phase {
     padding: var(--k-space-24);
   }

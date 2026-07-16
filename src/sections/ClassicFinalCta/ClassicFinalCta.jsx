@@ -36,7 +36,7 @@ export default function ClassicFinalCta() {
         <button className="c-cta__pill" type="button" data-register>
           <span className="c-cta__pill-label">Registration</span>
         </button>
-        <p className="c-cta__fine cap-trim">5 min to apply · 3 questions · AI review · 48 hr response</p>
+        <p className="c-cta__fine cap-trim">5 min to apply · 3 questions · AI review · 48 hr response</p>
       </div>
     </section>
   )
