@@ -1,31 +1,30 @@
 /* ============================================================
-   HOW IT WORKS — scroll-pinned compose (champion idiom): the
-   phase cards pin on the right while the heading + "A real task"
-   list scrolls up 1:1 into the gap beside them. Native sticky;
-   the runway height + column heights are set by JS on resize.
+   HOW IT WORKS — scroll-pinned compose (champion idiom). The
+   left column ("A real task" + list) pins on the left; the
+   right column ("Registration…" heading + phase cards) scrolls
+   up 1:1 into the gap beside it. Native sticky; runway + lane
+   heights are set by JS on resize.
    ============================================================ */
 
 .c-how {
   position: relative;
   width: 1440px;
-  /* fallback runway before JS measures (so no-JS / SSR doesn't collapse the
-     absolute columns); JS overwrites height on mount + resize */
+  /* fallback runway before JS measures (no-JS / SSR); JS overwrites on mount */
   height: 1660px;
 }
 
-/* right lane — bounds the sticky travel of the phase cards */
-.c-how__cards-lane {
+/* right column — "Registration…" heading + cards; rises to compose */
+.c-how__cards-col {
   position: absolute;
   left: 750px;
-  top: 60px;
+  top: var(--how-rise-top, 620px);
   width: 670px;
-  height: var(--how-lane-h, 1400px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-64); /* heading → cards */
 }
 
 .c-how__cards {
-  position: sticky;
-  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
-  height: var(--how-col-h, 676px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -34,22 +33,21 @@
   gap: var(--k-space-16);
 }
 
-/* left column — heading + list; scrolls up into the composed slot */
-.c-how__lead {
+/* left lane — bounds the sticky travel of the "A real task" column */
+.c-how__lead-lane {
   position: absolute;
   left: 20px;
-  top: var(--how-lead-top, 830px);
+  top: 60px;
   width: 670px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--k-space-64);
+  height: var(--how-lane-h, 1100px);
 }
 
-/* second heading movement grouped with the list it introduces */
-.c-how__task {
+.c-how__lead {
+  position: sticky;
+  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-32);
+  gap: var(--k-space-32); /* "A real task —" → list */
 }
 
 /* --- "A real task —" components: a large hover-list (who-it's-for idiom) ----- */
@@ -111,11 +109,10 @@
   transform: translateX(var(--arrow-indent));
 }
 
-/* --- phase cards (pinned column): 1px frame + coded accent strip ---------- */
+/* --- phase cards: 1px frame + coded accent strip ------------------------- */
 
 .c-phase {
   position: relative;
-  flex: 1; /* fill the column so the three cards match the lead's height */
   display: flex;
   flex-direction: column;
   gap: var(--k-space-12);
@@ -153,8 +150,6 @@
 }
 
 .c-phase__body {
-  /* pushed to the card base so number+title anchor the top */
-  margin-top: auto;
   font-size: var(--k-text-sm);
   line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
@@ -167,7 +162,6 @@
   .c-how {
     position: static;
     width: 100%;
-    /* height cleared by JS; the important reset is here for no-JS/SSR */
     height: auto;
     display: flex;
     flex-direction: column;
@@ -175,8 +169,8 @@
     padding: var(--c-pad-minor) var(--c-margin);
   }
 
-  .c-how__cards-lane,
-  .c-how__lead {
+  .c-how__cards-col,
+  .c-how__lead-lane {
     position: static;
     left: auto;
     top: auto;
@@ -184,13 +178,11 @@
     height: auto;
   }
 
-  .c-how__cards {
+  .c-how__lead {
     position: static;
-    height: auto;
   }
 
   .c-phase {
-    flex: none;
     padding: var(--k-space-24);
   }
 }
