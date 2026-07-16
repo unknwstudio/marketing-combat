@@ -1,28 +1,51 @@
 /* ============================================================
-   HOW IT WORKS — two columns: the heading + "A real task —"
-   hover-list on the left, the three phase cards on the right.
+   HOW IT WORKS — scroll-pinned compose (champion idiom): the
+   phase cards pin on the right while the heading + "A real task"
+   list scrolls up 1:1 into the gap beside them. Native sticky;
+   the runway height + column heights are set by JS on resize.
    ============================================================ */
 
 .c-how {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--k-space-64);
-  /* stretch so the cards column matches the (taller) left column's height */
-  align-items: stretch;
+  position: relative;
+  width: 1440px;
+  /* fallback runway before JS measures (so no-JS / SSR doesn't collapse the
+     absolute columns); JS overwrites height on mount + resize */
+  height: 1660px;
 }
 
-/* left column: the stages heading, then the "A real task —" heading + its list.
-   The big gap sets the two heading movements apart. */
+/* right lane — bounds the sticky travel of the phase cards */
+.c-how__cards-lane {
+  position: absolute;
+  left: 750px;
+  top: 60px;
+  width: 670px;
+  height: var(--how-lane-h, 1400px);
+}
+
+.c-how__cards {
+  position: sticky;
+  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
+  height: var(--how-col-h, 676px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-16);
+}
+
+/* left column — heading + list; scrolls up into the composed slot */
 .c-how__lead {
+  position: absolute;
+  left: 20px;
+  top: var(--how-lead-top, 830px);
+  width: 670px;
   display: flex;
   flex-direction: column;
   gap: var(--k-space-64);
 }
 
-/* second heading movement grouped with the list it introduces. It's the same
-   c-h2 size as the stages heading (they're one heading, two movements); the
-   space-64 gap above + the em-dash into the list keep it from reading as a
-   fourth stage, and space-32 (> the 24 item rhythm) sets it above the list. */
+/* second heading movement grouped with the list it introduces */
 .c-how__task {
   display: flex;
   flex-direction: column;
@@ -41,9 +64,6 @@
   gap: var(--k-space-20);
 }
 
-/* each component is a large hover-list item in the "who it's for" idiom
-   (.cfw__item): big editorial type that turns blue with a ► marker sliding in on
-   hover, the label indenting into the freed arrow slot. No card frame. */
 .c-step {
   --arrow-indent: var(--k-space-48);
   position: relative;
@@ -91,21 +111,11 @@
   transform: translateX(var(--arrow-indent));
 }
 
-/* --- right column: the three phase cards --------------------------------- */
+/* --- phase cards (pinned column): 1px frame + coded accent strip ---------- */
 
-.c-how__cards {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--k-space-16);
-}
-
-/* each phase is a bordered card (case-tracks idiom): 1px frame + a coded accent
-   strip clipped to the radius */
 .c-phase {
   position: relative;
+  flex: 1; /* fill the column so the three cards match the lead's height */
   display: flex;
   flex-direction: column;
   gap: var(--k-space-12);
@@ -122,8 +132,7 @@
   top: 0;
   left: 0;
   right: 0;
-  /* height = corner radius so the band rounds fully with the card (a thin 4px
-     strip reads as a cut nub against the rounded frame) */
+  /* height = corner radius so the band rounds fully with the card */
   height: var(--k-radius-md);
   background: var(--phase-accent, var(--k-black));
 }
@@ -144,8 +153,7 @@
 }
 
 .c-phase__body {
-  /* pushed to the bottom so the number+title sit at the top of the taller card
-     and the body anchors the base (no empty gap when the cards grow to fill) */
+  /* pushed to the card base so number+title anchor the top */
   margin-top: auto;
   font-size: var(--k-text-sm);
   line-height: var(--k-lh-normal);
@@ -153,24 +161,36 @@
   max-width: 42ch;
 }
 
-/* desktop: the three cards grow equally so their stack (plus the 16px gaps)
-   matches the taller left column's height (fed by align-items: stretch above).
-   Scoped to ≥1024 so the single-column mobile stack keeps content-height cards. */
-@media (min-width: 1024px) {
-  .c-phase {
-    flex: 1;
-  }
-}
-
-/* --- fluid < 1024: single column ----------------------------------------- */
+/* --- fluid < 1024: plain stacked layout (no pin / no runway) -------------- */
 
 @media (max-width: 1023px) {
   .c-how {
-    grid-template-columns: 1fr;
-    gap: var(--k-space-40);
+    position: static;
+    width: 100%;
+    /* height cleared by JS; the important reset is here for no-JS/SSR */
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--k-space-48);
+    padding: var(--c-pad-minor) var(--c-margin);
+  }
+
+  .c-how__cards-lane,
+  .c-how__lead {
+    position: static;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+  }
+
+  .c-how__cards {
+    position: static;
+    height: auto;
   }
 
   .c-phase {
+    flex: none;
     padding: var(--k-space-24);
   }
 }
