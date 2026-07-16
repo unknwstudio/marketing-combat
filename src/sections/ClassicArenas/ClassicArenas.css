@@ -19,6 +19,9 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--k-space-24);
+  /* start-align so each card keeps its own height and the staircase margin
+     offsets it (stretch would instead shrink the more-offset cards) */
+  align-items: start;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -30,6 +33,10 @@
   flex-direction: column;
   gap: var(--k-space-16);
   min-height: 300px;
+  /* staircase: each card rests a step lower than the last (via the inline --i),
+     so the row descends left→right; the c-reveal stagger (--i * 70ms) then rises
+     them into that stepped position in sequence as the row scrolls in. */
+  margin-top: calc(var(--i, 0) * var(--k-space-64));
   padding: var(--k-space-24);
   background: var(--k-white);
   /* uniform 1px black frame; the accent lives in an inset top strip (::before)
@@ -88,6 +95,8 @@
 
   .c-arena {
     min-height: 0;
+    /* no staircase once the row wraps (2-up / 1-up) — it would misalign rows */
+    margin-top: 0;
   }
 }
 
