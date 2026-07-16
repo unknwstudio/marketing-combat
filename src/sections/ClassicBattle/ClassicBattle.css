@@ -3,44 +3,30 @@
    Grid built on the 8px scale / classic tokens only.
    ============================================================ */
 
+/* two-column: heading + lede on the left, the four blue stat cards as a 2x2
+   grid on the right (champion-card idiom) */
 .c-battle {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: var(--k-space-64);
+  align-items: start;
 }
 
 .c-battle__intro {
   display: flex;
   flex-direction: column;
   gap: var(--k-space-24);
-  max-width: 760px;
 }
 
 .c-battle__lede {
   margin-top: var(--k-space-8);
-  max-width: 620px;
-}
-
-/* --- four figures: blue cards (champion-card idiom) ------------------- */
-
-.c-battle__figures {
-  display: flex;
-  flex-direction: column;
-  gap: var(--k-space-20);
-}
-
-.c-battle__figures-kicker {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
-  font-size: 12px;
-  letter-spacing: var(--k-ls-wide);
-  text-transform: uppercase;
-  color: var(--k-classic-panel);
+  max-width: 46ch;
 }
 
 .c-battle__stats {
   display: grid;
-  /* minmax(0, …) keeps the four cards equal width regardless of numeral width */
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* 2x2; minmax(0, …) keeps the cards equal width regardless of numeral width */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--k-space-8);
 }
 
@@ -48,8 +34,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--k-space-32);
-  min-height: 240px;
+  gap: var(--k-space-24);
+  min-height: 200px;
   padding: var(--k-space-24);
   background: var(--c-blue);
   border-radius: var(--k-radius-md);
@@ -57,8 +43,10 @@
 }
 
 .c-stat__num {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke display-numeral tuple; nearest step --k-text-3xl (48/12vw/88) pins at 88px for the whole 1024-1440 range (+20px jump at 1024, -7px at 1440) — beyond the snap allowance */
-  font-size: clamp(56px, 6.6vw, 96px);
+  /* sized to fit the widest figure ($100M+) inside the 2x2 card without
+     clipping; smaller than the old full-width row's 96px */
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke display-numeral tuple fitted to the card width; no scale step lands in this range */
+  font-size: clamp(40px, 4.6vw, 68px);
   font-weight: 400;
   line-height: var(--k-lh-crushed);
   color: inherit;
@@ -126,11 +114,8 @@
 
 @media (max-width: 1023px) {
   .c-battle {
-    gap: var(--k-space-64);
-  }
-
-  .c-battle__stats {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    gap: var(--k-space-40);
   }
 
   .c-stat {
