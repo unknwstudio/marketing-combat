@@ -37,10 +37,14 @@ export default function ClassicMenu() {
             How it works
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
+          {/* Judges link hidden together with the ClassicJury section
+              (ClassicApp.jsx) — they toggle as a pair, else the link scrolls
+              nowhere. Re-enable both at once.
           <a className="c-menu__link" href="#c-judges">
             Judges
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
+          */}
           <a className="c-menu__link" href="#c-faq">
             FAQs
           </a>

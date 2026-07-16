@@ -40,7 +40,7 @@
 /* .classic prefix so the ink color beats the global `body:has(> .classic) a`
    blue-link rule (higher specificity) — the menu items are <a> tags */
 .classic .c-menu__link {
-  color: var(--k-classic-ink);
+  color: var(--c-ink);
   font-size: var(--k-text-sm);
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading on the pixel-ported card (node 36:4312) — 1.2 has no token and must not snap */
   line-height: 1.2;
@@ -54,7 +54,7 @@
 
 .c-menu__rule {
   width: 100%;
-  border-top: 1px solid var(--k-classic-ink);
+  border-top: 1px solid var(--c-ink);
 }
 
 .classic .c-menu__apply {

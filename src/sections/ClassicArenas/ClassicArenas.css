@@ -24,72 +24,64 @@
   list-style: none;
 }
 
+/* solid yellow card (champion-card idiom, .cfw__card; --c-yellow is a
+   fill-only tone — black text on it, like the hero): title pinned to the
+   top, mission line to the bottom, the fill breathing between them — same
+   inner metrics as the blue cards (padding/gap 20, min-height 150) */
 .c-arena {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-16);
-  min-height: 300px;
-  padding: var(--k-space-24);
-  background: var(--k-white);
-  /* uniform 1px black frame; the accent lives in an inset top strip (::before)
-     so the two never miter into each other at the rounded corners (the old
-     `border-top: 4px accent` + `border: 1px black` left a visible notch, #9). */
-  border: 1px solid var(--k-black);
+  justify-content: space-between;
+  gap: var(--k-space-20);
+  min-height: 150px;
+  padding: var(--k-space-20);
+  background: var(--c-yellow);
   border-radius: var(--k-radius-md);
   color: var(--k-black);
-  overflow: hidden;
 }
 
-/* accent code band — its height matches the corner radius so it rounds fully
-   with the card (a thin 4px strip can't follow a 12px radius and reads as a
-   cut nub at the corners); the parent's overflow clips it to the rounded top. */
-.c-arena::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--k-radius-md);
-  background: var(--card-accent, var(--k-black));
-}
-
-.c-arena__tag {
-  font-size: var(--k-text-xs);
-  letter-spacing: var(--k-ls-wide);
-  text-transform: uppercase;
-  color: var(--card-accent, var(--k-black));
-}
-
+/* matches the champion card title (.cfw__card-t) */
 .c-arena__title {
-  font-size: var(--k-text-lg);
+  font-size: var(--k-text-xl);
   font-weight: 400;
-  line-height: var(--k-lh-flat);
+  line-height: var(--c-lh-display);
   text-transform: uppercase;
 }
 
+/* matches the champion card subtitle (.cfw__card-s) */
 .c-arena__body {
-  margin-top: auto;
-  font-size: var(--k-text-sm);
-  line-height: var(--k-lh-normal);
-  color: var(--k-classic-panel);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact card subtitle size, matching .cfw__card-s */
+  font-size: 16px;
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading, matching .cfw__card-s */
+  line-height: 1.2;
 }
 
-/* no hover state on these cards (#8) — the cards are static, accent-coded tiles */
+/* no hover state on these cards (#8) — the cards are static tiles */
 
-/* STAIRCASE → LINE (desktop): the row RESTS as a flat line; the reveal starts
-   each card stepped below (a descending staircase, deeper per --i) and rides it
-   up into the line, staggered by the c-reveal --i*70ms delay — so the cards
-   "stack into one line" as the row scrolls in (Frame 74's compose language).
-   Overrides the global .c-reveal armed transform (higher specificity). Under
-   reduced motion `classic-reveal-on` is never added, so cards rest flat at once. */
+/* PINNED DEAL (desktop): the section grows by a JS-set runway and this wrapper
+   pins (native sticky) while the cards ride up from the staircase into the
+   row, 1:1 with the scroll (see ClassicArenas.jsx). The section paints ABOVE
+   its neighbours so the deep-set cards ride in over the next section's
+   background instead of clipping under it. */
 @media (min-width: 1024px) {
-  .classic-reveal-on .c-arena.c-reveal {
-    transform: translateY(calc((var(--i, 0) + 1) * var(--k-space-40)));
+  #c-arenas {
+    z-index: 1; /* .c-sec is already position: relative */
   }
 
-  .classic-reveal-on .c-arena.c-reveal.is-in {
-    transform: translateY(0);
+  .c-arenas__pin {
+    position: sticky;
+    top: 100px; /* == PIN_TOP in the component */
+  }
+
+  .c-arena {
+    will-change: transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-arenas__pin {
+    position: static;
   }
 }
 

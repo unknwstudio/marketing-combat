@@ -127,14 +127,14 @@ export default function ClassicChampionFor() {
           {['CMOs', 'Heads of growth', 'Performance lead gens', 'AI creator'].map((label) => (
             <li className="cfw__item" key={label}>
               <svg className="cfw__arrow" viewBox="0 0 52 27" aria-hidden="true">
-                <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
+                <path d="M0 0L51.75 13.42L0 26.85Z" fill="currentColor" />
               </svg>
               <span className="cfw__text cap-trim">{typeset(label)}</span>
             </li>
           ))}
           <li className="cfw__item cfw__item--legend">
             <svg className="cfw__arrow" viewBox="0 0 52 27" aria-hidden="true">
-              <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
+              <path d="M0 0L51.75 13.42L0 26.85Z" fill="currentColor" />
             </svg>
             <span className="cfw__text cap-trim">Future legends</span>
           </li>

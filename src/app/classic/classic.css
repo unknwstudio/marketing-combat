@@ -11,7 +11,7 @@
   --c-yellow: var(--k-classic-yellow); /* fills/backgrounds only — unreadable as text on white */
   --c-orange: var(--k-amber);
   --c-blue: var(--k-classic-blue);
-  --c-green: var(--k-classic-green);
+  --c-green: var(--k-classic-green); /* fills/backgrounds only — 1.83:1 as text on white; text uses --c-blue */
   --c-ink: var(--k-classic-ink);
   /* Figma-exact display leading (2026-07-14 audit: the 0.942 literal was
      hand-copied 5×). Deliberately fractional — it is the Figma spec value
@@ -67,7 +67,10 @@
 
 .classic {
   /* per-section accent: one color leads each section, rotated across
-     the page. Sections opt in via .acc-* ; blue is the resting default. */
+     the page. Sections opt in via .acc-* ; blue is the resting default.
+     NOTE: --c-accent is TEXT-safe only for blue/black. Under .acc-green /
+     .acc-yellow the accent may be used for FILLS only (green 1.83:1 and
+     yellow 1.07:1 on white) — text under those accents uses --c-blue. */
   --c-accent: var(--c-blue);
   /* content column + rhythm, all multiples of 8 */
   /* edge-hugging margin so every c-wrap section shares the hero / "who it's
@@ -88,9 +91,6 @@
 .acc-green {
   --c-accent: var(--c-green);
 }
-.acc-black {
-  --c-accent: var(--k-black);
-}
 
 /* section block — fills the 1440 canvas; children constrain to the column */
 .c-sec {
@@ -101,23 +101,10 @@
   color: var(--k-black);
 }
 
-.c-sec--minor {
-  padding-block: var(--c-pad-minor);
-}
-
 /* centered 1200 content column */
 .c-wrap {
   width: calc(1440px - 2 * var(--c-margin));
   margin-inline: auto;
-}
-
-/* section eyebrow + heading + lede — the repeated editorial header */
-.c-kicker {
-  font-size: var(--k-text-xs);
-  line-height: var(--k-lh-tight);
-  letter-spacing: var(--k-ls-wide);
-  text-transform: uppercase;
-  color: var(--c-accent);
 }
 
 .c-h2 {
@@ -134,12 +121,6 @@
   color: var(--k-black);
 }
 
-/* 1px structural hairline */
-.c-rule {
-  border: 0;
-  border-top: 1px solid var(--k-black);
-}
-
 /* ============================================================
    CLASSIC REVEAL — calm editorial fade+rise + line-mask.
    Behaviour lives in components/classic-motion/ClassicReveal;
@@ -150,11 +131,9 @@
    ============================================================ */
 
 .c-reveal {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: reveal choreography timing (0.6s editorial fade+rise) — no --k-t-* step; snapping to 0.5s would quicken the tuned motion */
   transition:
     opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 70ms stagger step of the reveal choreography, not a UI-state duration */
   transition-delay: calc(var(--i, 0) * 70ms);
 }
 
@@ -174,18 +153,14 @@
   display: inline-block;
   /* breathing room so round-cap overshoot (G, O, C) isn't clipped by the
      mask's overflow:hidden; the neighbouring negative margin keeps layout put */
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: optical em-based cap-overshoot compensation (see comment above) — not a spacing-scale value */
   padding-block: 0.14em;
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: line-mask reveal choreography timing (0.7s) — no --k-t-* step; snapping would visibly quicken it */
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 90ms per-line stagger of the mask reveal choreography */
   transition-delay: calc(var(--i, 0) * 90ms);
 }
 
 .c-mask-head .c-mask {
   display: block;
   overflow: hidden;
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: cancels the .c-line 0.14em optical padding so layout stays put — pairs 1:1 with that value */
   margin-block: -0.14em;
 }
 

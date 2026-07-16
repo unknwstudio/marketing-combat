@@ -117,13 +117,16 @@
   /* classic (white editorial) mode */
   --k-classic-ink: #070707;
   --k-classic-panel: #222222;
+  /* fill/background color only — 1.07:1 on white, unusable as text. Foreground
+     accents that would otherwise be yellow on the white classic page use the
+     signature --k-orange instead. */
   --k-classic-yellow: #fff600;
-  /* readable-on-white counterpart of --k-classic-yellow: the bright yellow is a
-     fill/background color only (1.07:1 on white — unusable as text). Foreground
-     accents that would otherwise be yellow on the white classic page use this
-     dark gold instead (4.9:1 on white, clears WCAG AA 1.4.3). */
-  --k-classic-gold: #8a6d00;
   --k-classic-blue: #0052da;
+  /* fill/background color only — 1.83:1 on white, unusable as text (same
+     hazard class as --k-classic-yellow). Text that wants to be green on the
+     white classic page uses --k-classic-blue instead (accent policy in
+     classic.css); mint an -onlight pair (the --k-red-onlight precedent) only
+     if a real green-text need appears. */
   --k-classic-green: #00da95;
 
   /* /play game-HUD blue-white readout ramp (light → dark) + status accents */
@@ -416,7 +419,6 @@ body:has(> .mcp) a {
   position: absolute;
   width: 1px;
   height: 1px;
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: standard visually-hidden clip idiom, not scale spacing */
   margin: -1px;
   padding: 0;
   overflow: hidden;

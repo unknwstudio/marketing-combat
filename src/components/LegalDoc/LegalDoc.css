@@ -44,7 +44,6 @@
 
 .legal__list {
   margin: 0 0 var(--k-space-8);
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: list indent rides the skin's own font size (em), not the px spacing scale */
   padding-left: 1.25em;
 }
 

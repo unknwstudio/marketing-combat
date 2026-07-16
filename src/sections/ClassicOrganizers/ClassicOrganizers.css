@@ -37,7 +37,7 @@
   width: 160px;
   height: 160px;
   border-radius: var(--k-radius-md);
-  background: linear-gradient(160deg, var(--k-hud-steel), var(--k-classic-panel));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--k-classic-panel) 45%, var(--k-white)), var(--k-classic-panel));
   color: var(--k-white);
   font-size: var(--k-text-lg);
   text-transform: uppercase;

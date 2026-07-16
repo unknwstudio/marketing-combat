@@ -1,20 +1,23 @@
 /* ============================================================
-   THE BATTLE — lede + 4 giant figures + sponsor strip.
-   Grid built on the 8px scale / classic tokens only.
+   THE BATTLE — scroll-pinned compose (champion idiom): the four
+   blue stat cards pin on the right (anchor); the question rides
+   up 1:1 into the slot beside them. Native sticky; runway +
+   lane heights set by JS on resize.
    ============================================================ */
 
-/* two-column: heading + lede on the left, the four blue stat cards as a 2x2
-   grid on the right (champion-card idiom) */
 .c-battle {
-  display: grid;
-  /* 50/50 with a 64px gap so the cards column starts on the SAME vertical axis
-     as the other two-column blocks (How / Why) instead of further left */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--k-space-64);
-  align-items: start;
+  position: relative;
+  width: 1440px;
+  /* fallback runway before JS measures (no-JS / SSR); JS overwrites on mount */
+  height: 1300px;
 }
 
+/* left riser — the question; rides up and parks beside the pinned cards */
 .c-battle__intro {
+  position: absolute;
+  left: 20px;
+  top: var(--battle-rise-top, 450px);
+  width: 670px;
   display: flex;
   flex-direction: column;
   gap: var(--k-space-24);
@@ -23,6 +26,20 @@
 .c-battle__lede {
   margin-top: var(--k-space-8);
   max-width: 46ch;
+}
+
+/* right lane — bounds the sticky travel of the stat cards */
+.c-battle__lane {
+  position: absolute;
+  left: 750px;
+  top: 60px;
+  width: 670px;
+  height: var(--battle-lane-h, 900px);
+}
+
+.c-battle__stats-col {
+  position: sticky;
+  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
 }
 
 .c-battle__stats {
@@ -54,7 +71,7 @@
 }
 
 /* the label — matches the champion card subtitle (.cfw__card-s): 16px,
-   sentence-case, full white, no tracking (was a 12px uppercase tracked kicker) */
+   sentence-case, full white, no tracking */
 .c-stat__label {
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact card subtitle size, matching .cfw__card-s */
   font-size: 16px;
@@ -63,7 +80,7 @@
   max-width: 280px;
 }
 
-/* --- sponsor strip ---------------------------------------------------- */
+/* --- sponsor strip (hidden for now; styles kept for re-enable) --------- */
 
 .c-battle__sponsors {
   display: flex;
@@ -74,8 +91,7 @@
 }
 
 .c-battle__sponsors-label {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
-  font-size: 12px;
+  font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-wide);
   text-transform: uppercase;
   color: var(--k-classic-panel);
@@ -111,12 +127,30 @@
   opacity: 1;
 }
 
-/* --- fluid < 1024 ----------------------------------------------------- */
+/* --- fluid < 1024: plain stacked layout (no pin / no runway) ------------ */
 
 @media (max-width: 1023px) {
   .c-battle {
-    grid-template-columns: 1fr;
+    position: static;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
     gap: var(--k-space-40);
+    padding: var(--c-pad-minor) var(--c-margin);
+  }
+
+  .c-battle__intro,
+  .c-battle__lane {
+    position: static;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+  }
+
+  .c-battle__stats-col {
+    position: static;
   }
 
   .c-stat {

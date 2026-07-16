@@ -29,25 +29,24 @@ const STICKY_TOP = 200 // pin position — clears the fixed top-right menu (~187
 const TOP = 60 // both columns' natural top in the section
 const GAP = 80 // stacked gap between the pinned column's bottom and the riser's top
 
-// the components of "A real task —": each becomes one hover-list item
-const TASK = ['A brief', 'A data room', 'Google / Meta / TikTok', 'A creative block', 'AI tools', 'Limited time']
+// the components of "A real task": each becomes one hover-list item
+// (Google/Meta/TikTok are separate rows — joined they overflow the column
+// when the hover indent slides the line right)
+const TASK = ['A brief', 'A data room', 'Google', 'Meta', 'TikTok', 'A creative block', 'AI tools', 'Limited time']
 
 const PHASES = [
   {
     n: '01',
-    accent: 'var(--k-orange)',
     title: 'Qualifying round',
     body: '45 minutes online. A real case to solve under pressure, with the AI stack of your choice.',
   },
   {
     n: '02',
-    accent: 'var(--c-blue)',
     title: 'Evaluation',
     body: 'A panel of judges + AI assesses every solution. The client gets the final word.',
   },
   {
     n: '03',
-    accent: 'var(--c-green)',
     title: 'The final',
     body: '2 hours in Barcelona at Harbour.Space University — in person. A closed networking event and a private closing party follow.',
   },
@@ -67,14 +66,18 @@ export default function ClassicHow() {
         outer.style.marginBottom = ''
         outer.style.removeProperty('--how-rise-top')
         outer.style.removeProperty('--how-lane-h')
+        outer.style.removeProperty('--how-col-h')
         return
       }
       const scale = outer.getBoundingClientRect().width / 1440
       const viewportH = window.innerHeight / scale
       const pinned = outer.querySelector('.c-how__cards-col') // left: Registration + cards, the anchor, pins
       const riser = outer.querySelector('.c-how__lead') // right: A real task + list, stacks onto the anchor
-      const pinnedH = pinned.getBoundingClientRect().height / scale
+      // equal columns: the anchor stretches to the riser's height (the three
+      // cards grow evenly via flex), so the composed pair shares one baseline
       const riserH = riser.getBoundingClientRect().height / scale
+      outer.style.setProperty('--how-col-h', `${riserH}px`)
+      const pinnedH = pinned.getBoundingClientRect().height / scale
 
       // stack the rising column one pinned-column-height + gap below the top
       const riseTop = TOP + pinnedH + GAP
@@ -119,7 +122,7 @@ export default function ClassicHow() {
           </header>
           <ol className="c-how__cards">
             {PHASES.map((p) => (
-              <li className="c-phase" key={p.n} style={{ '--phase-accent': p.accent }}>
+              <li className="c-phase" key={p.n}>
                 <span className="c-phase__n cap-trim">{p.n}</span>
                 <div className="c-phase__text">
                   <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
@@ -134,13 +137,13 @@ export default function ClassicHow() {
       {/* right column — "A real task —" + components list; scrolls up and stacks
           onto the pinned anchor */}
       <div className="c-how__lead">
-        <MaskHead lines={['A real task —']} className="c-how__task-h" />
+        <MaskHead lines={['A real task']} className="c-how__task-h" />
         <ol className="c-how__steps">
           {TASK.map((label, i) => (
             <li className="c-step" key={label} style={{ '--i': i }}>
               <span className="c-step__item">
                 <svg className="c-step__arrow" viewBox="0 0 52 27" aria-hidden="true" focusable="false">
-                  <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
+                  <path d="M0 0L51.75 13.42L0 26.85Z" fill="currentColor" />
                 </svg>
                 <span className="c-step__title cap-trim">{typeset(label)}</span>
               </span>

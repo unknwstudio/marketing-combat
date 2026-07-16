@@ -31,18 +31,33 @@ export default function ClassicReveal() {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((en) => {
-          if (!en.isIntersecting) return
-          en.target.classList.add('is-in')
-          io.unobserve(en.target)
+          if (en.isIntersecting) {
+            en.target.classList.add('is-in')
+          } else if (en.boundingClientRect.top > 0) {
+            // The element left through the BOTTOM edge (the user scrolled back
+            // up above it): RE-ARM it so the reveal replays on the next pass
+            // down. One-shot semantics made the animation feel broken — it
+            // only ever played once per page load. Leaving through the TOP
+            // (scrolling on past it) keeps it revealed, so nothing re-animates
+            // while scrolling back up through already-seen content.
+            en.target.classList.remove('is-in')
+          }
         })
       },
       { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
     )
     els.forEach((el) => io.observe(el))
 
-    // never leave anything stuck hidden
+    // Never leave anything stuck hidden IN VIEW: force-reveal only elements
+    // already inside the viewport at the deadline. A blanket reveal here used
+    // to flip every below-fold element 4s after load, which silently disarmed
+    // all scroll-in animations (the arenas staircase never played because of
+    // it) — below-fold elements stay observed and reveal on scroll instead.
     const failsafe = window.setTimeout(() => {
-      els.forEach((el) => el.classList.add('is-in'))
+      els.forEach((el) => {
+        const r = el.getBoundingClientRect()
+        if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('is-in')
+      })
     }, 4000)
 
     return () => {
