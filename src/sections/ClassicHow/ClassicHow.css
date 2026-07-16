@@ -30,48 +30,58 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-16);
+  gap: var(--k-space-48);
 }
 
-/* each step is a bordered card (case-tracks idiom): 1px frame + a coded accent
-   strip clipped to the radius */
+/* each step is a large hover-list item in the "who it's for" idiom (.cfw__item):
+   a big editorial title that turns blue with a ► marker sliding in on hover — no
+   card frame — over a quiet line of detail that indents with it. */
 .c-step {
-  position: relative;
+  --arrow-indent: var(--k-space-48);
   display: flex;
   flex-direction: column;
   gap: var(--k-space-12);
-  padding: var(--k-space-32);
-  background: var(--k-white);
-  border: 1px solid var(--k-black);
-  border-radius: var(--k-radius-md);
-  overflow: hidden;
 }
 
-.c-step::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  /* height = corner radius so the band rounds fully with the card (a thin 4px
-     strip reads as a cut nub against the rounded frame) */
-  height: var(--k-radius-md);
-  background: var(--step-accent, var(--k-black));
-}
-
-.c-step__n {
+.c-step__item {
+  position: relative;
+  display: block;
   font-size: var(--k-text-2xl);
   font-weight: 400;
-  line-height: var(--k-lh-crushed);
-  color: var(--step-accent, var(--k-black));
+  line-height: var(--c-lh-display);
+  color: var(--k-black);
+  transition: color var(--k-t-fast) ease;
+}
+
+.c-step:hover .c-step__item {
+  color: var(--c-blue);
+}
+
+.c-step__arrow {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 28px;
+  height: 15px;
+  opacity: 0;
+  transform: translate(-10px, -50%);
+  transition:
+    opacity var(--k-t-base) ease,
+    transform var(--k-t-slow) ease;
 }
 
 .c-step__title {
-  font-size: var(--k-text-lg);
-  font-weight: 400;
-  line-height: var(--k-lh-flat);
-  text-transform: uppercase;
-  color: var(--k-black);
+  display: inline-block;
+  transition: transform var(--k-t-slow) ease;
+}
+
+.c-step:hover .c-step__arrow {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.c-step:hover .c-step__title {
+  transform: translateX(var(--arrow-indent));
 }
 
 .c-step__body {
@@ -79,6 +89,12 @@
   line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
   max-width: 42ch;
+  transition: transform var(--k-t-slow) ease;
+}
+
+/* the detail line indents in lockstep with its title so the two stay aligned */
+.c-step:hover .c-step__body {
+  transform: translateX(var(--arrow-indent));
 }
 
 /* the pin needs vertical travel; below the split (or under reduced motion,
@@ -92,10 +108,6 @@
 
   .c-how__head {
     position: static;
-  }
-
-  .c-step {
-    padding: var(--k-space-24);
   }
 }
 
