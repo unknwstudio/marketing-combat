@@ -38,11 +38,13 @@
 
 /* phones: shrink a touch + sit just ABOVE the bottom-center ModeSwitcher pill
    (bottom-right), mirroring SoundToggle at bottom-left. */
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   .playfab {
+    /* stacked above the bottom-center ModeSwitcher for the whole fluid
+       range — at 640-1023 the old bottom corner still collided with it */
     right: 10px;
     top: auto;
-    bottom: 68px;
+    bottom: 72px;
     padding: var(--k-space-8) var(--k-space-12);
     font-size: var(--k-text-xs);
   }
