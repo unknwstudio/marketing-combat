@@ -7,22 +7,27 @@ import './ClassicHow.css'
 
 /**
  * HOW IT WORKS — the scroll-pinned compose, same principle as the champion /
- * who-it's-for block: the two columns start STACKED (cards above, the heading +
- * "A real task" list below) and COMPOSE side by side as you scroll, held by
- * native position: sticky (no per-frame JS, so it can't jiggle).
+ * who-it's-for block: two headed columns start stacked and compose side by side
+ * on scroll, held by native position: sticky.
  *
- * The phase cards pin on the right; the lead column (heading + list) scrolls up
- * 1:1 into the gap beside them. Geometry is measured at runtime (the content
- * isn't Figma-pixel-fixed): the cards column is set to the lead's height so the
- * composed pair is equal, the lead is stacked one column-height + gap below, and
- * the runway = pin travel + one viewport so the compose finishes as the page
- * scroll runs out. Because both columns are ~680px (taller than the champion's
- * ~440), the very start shows mostly the cards with the heading rising in — the
- * stack can't fully fit one screen, but the compose motion is identical.
+ *   left  — "A real task —" + the components list       (who-it's-for analog)
+ *   right — "Registration. Qualifying round. Final" +   (champion-gets analog)
+ *           the 01/02/03 phase cards
+ *
+ * The LEFT column pins (it's the shorter of the two, so it fits the viewport
+ * when stuck); the taller RIGHT column (heading + cards) scrolls up 1:1 into the
+ * gap beside it and overflows below the fold like the champion's who-list. The
+ * pin sits at 200 so the composed heads clear the fixed top-right menu.
+ *
+ * Geometry is measured at runtime: the right column is stacked one pinned-column
+ * height + gap below, travel = that offset, the lane = travel + pinned column so
+ * the unpin lands exactly on the compose, runway = travel + one viewport, and a
+ * negative marginBottom pulls the next section up under the composed block.
  */
 
 const STICKY_TOP = 200 // pin position — clears the fixed top-right menu (~187)
-const GAP = 80 // stacked gap between the cards' bottom and the lead's top
+const TOP = 60 // both columns' natural top in the section
+const GAP = 80 // stacked gap between the pinned column's bottom and the riser's top
 
 // the components of "A real task —": each becomes one hover-list item
 const TASK = ['A brief', 'A data room', 'Google / Meta / TikTok', 'A creative block', 'AI tools', 'Limited time']
@@ -60,37 +65,32 @@ export default function ClassicHow() {
       if (mqMobile.matches) {
         outer.style.height = ''
         outer.style.marginBottom = ''
-        outer.style.removeProperty('--how-col-h')
-        outer.style.removeProperty('--how-lead-top')
+        outer.style.removeProperty('--how-rise-top')
         outer.style.removeProperty('--how-lane-h')
         return
       }
       const scale = outer.getBoundingClientRect().width / 1440
       const viewportH = window.innerHeight / scale
-      const lead = outer.querySelector('.c-how__lead')
-      const leadH = lead.getBoundingClientRect().height / scale
+      const pinned = outer.querySelector('.c-how__lead') // left, pins
+      const riser = outer.querySelector('.c-how__cards-col') // right, rises
+      const pinnedH = pinned.getBoundingClientRect().height / scale
+      const riserH = riser.getBoundingClientRect().height / scale
 
-      // equal-height columns: the cards fill the lead's height
-      outer.style.setProperty('--how-col-h', `${leadH}px`)
-      // stack the lead one card-column-height + gap below the cards' start (60)
-      const cardsTop = 60
-      const leadTop = cardsTop + leadH + GAP
-      outer.style.setProperty('--how-lead-top', `${leadTop}px`)
-      // Travel is the offset between the two columns' natural tops (like the
-      // champion's who_top − champ_top). The lane = travel + column keeps the
-      // cards pinned until the lead reaches them (unpin lands exactly on the
-      // compose), then both scroll away together.
-      const travel = leadTop - cardsTop
-      outer.style.setProperty('--how-lane-h', `${travel + leadH}px`)
-      // runway = travel + one viewport so the pin finishes at the end of scroll
-      const runway = travel + Math.max(viewportH, leadH)
+      // stack the rising right column one pinned-column-height + gap below the top
+      const riseTop = TOP + pinnedH + GAP
+      outer.style.setProperty('--how-rise-top', `${riseTop}px`)
+      // travel = the offset between the two columns' natural tops. lane =
+      // travel + pinned column keeps the pin until the riser reaches it (unpin
+      // lands on the compose), then both scroll away together.
+      const travel = riseTop - TOP
+      outer.style.setProperty('--how-lane-h', `${travel + pinnedH}px`)
+      // runway = travel + one viewport (the riser is the tall composed block)
+      const runway = travel + Math.max(viewportH, riserH)
       outer.style.height = `${runway}px`
-      // pull the next section up into the blank the tall runway leaves below the
-      // composed block (mirrors the champion) — measure the real composed bottom
+      // pull the next section up into the blank the tall runway leaves below
       const sectionTop = outer.getBoundingClientRect().top + window.scrollY
       const toLocal = (el) => (el.getBoundingClientRect().bottom + window.scrollY - sectionTop) / scale
-      const laneEl = outer.querySelector('.c-how__cards-lane')
-      const composedEnd = Math.max(toLocal(lead), laneEl ? toLocal(laneEl) : 0)
+      const composedEnd = Math.max(toLocal(riser), toLocal(outer.querySelector('.c-how__lead-lane')))
       const KEEP = 48
       outer.style.marginBottom = `${-Math.max(runway - composedEnd - KEEP, 0)}px`
     }
@@ -109,15 +109,27 @@ export default function ClassicHow() {
 
   return (
     <section className="c-how" ref={outerRef} id="c-how" aria-label="How it works">
-      {/* left column — heading + "A real task" list; scrolls up 1:1 into the
-          gap beside the pinned cards. DOM-first so the mobile stack (both
-          columns become static) reads heading → cards, not cards → heading;
-          on desktop both columns are absolute so source order is irrelevant. */}
-      <div className="c-how__lead">
+      {/* right column — "Registration…" heading + phase cards; scrolls up into
+          the composed slot. DOM-first so the mobile static stack leads with the
+          section heading; on desktop both columns are absolute so order is moot. */}
+      <div className="c-how__cards-col">
         <header className="c-how__head">
           <MaskHead lines={['Registration.', 'Qualifying round.', 'Final']} />
         </header>
-        <div className="c-how__task">
+        <ol className="c-how__cards">
+          {PHASES.map((p) => (
+            <li className="c-phase" key={p.n} style={{ '--phase-accent': p.accent }}>
+              <span className="c-phase__n cap-trim">{p.n}</span>
+              <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
+              <p className="c-phase__body">{typeset(p.body)}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {/* left lane — "A real task —" + components list; pins (native sticky) */}
+      <div className="c-how__lead-lane">
+        <div className="c-how__lead">
           <MaskHead lines={['A real task —']} className="c-how__task-h" />
           <ol className="c-how__steps">
             {TASK.map((label, i) => (
@@ -132,19 +144,6 @@ export default function ClassicHow() {
             ))}
           </ol>
         </div>
-      </div>
-
-      {/* right lane — the phase cards pin (native sticky) until they compose */}
-      <div className="c-how__cards-lane">
-        <ol className="c-how__cards">
-          {PHASES.map((p) => (
-            <li className="c-phase" key={p.n} style={{ '--phase-accent': p.accent }}>
-              <span className="c-phase__n cap-trim">{p.n}</span>
-              <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
-              <p className="c-phase__body">{typeset(p.body)}</p>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   )
