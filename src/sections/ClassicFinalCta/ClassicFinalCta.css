@@ -110,6 +110,6 @@
   }
 
   .classic .c-cta__h2 {
-    font-size: var(--k-text-2xl);
+    font-size: var(--c-text-display-mobile);
   }
 }

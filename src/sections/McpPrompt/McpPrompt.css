@@ -107,3 +107,11 @@
 .mcp__copy:hover {
   background: var(--k-classic-panel);
 }
+
+/* The mode-switch pill is dark chrome on the white /mcp page too — its
+   inactive links must NOT take the global on-light blue
+   (`body:has(> .mcp) a`); restore white at higher specificity, mirroring
+   classic.css's identical override for /classic. */
+.mcp .mode-switch__opt:not(.mode-switch__opt--active) {
+  color: var(--k-white);
+}

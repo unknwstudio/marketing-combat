@@ -41,34 +41,11 @@
   color: color-mix(in srgb, var(--k-white) 55%, transparent);
 }
 
-/* mobile: the black band becomes a FULL-SCREEN chapter break — the statement
-   sits centered in its own viewport (svh, so the browser chrome doesn't cut
-   it). The type steps down to xl so the longest line ("the people reshaping")
-   fits the narrow column instead of running past the screen edges. This is
-   the one full-screen section on mobile — it's the page's gravitas beat. */
+/* mobile: a regular band (a full-screen version read as forced) — the
+   statement takes the shared mobile display size, which also keeps the
+   longest line ("the people reshaping") inside the narrow column */
 @media (max-width: 1023px) {
-  .classic .c-mission {
-    min-height: 100vh;
-    min-height: 100svh;
-    display: flex;
-    /* the wrap stretches to the full band so the poster split below works */
-    align-items: stretch;
-  }
-
-  /* poster split: the statement floats at the upper third, the supporting
-     line anchors to the bottom of the screen — the two auto margins share
-     the free space 1:1 above and between */
-  .c-mission__wrap {
-    justify-content: flex-start;
-    gap: 0;
-  }
-
   .classic .c-mission__stmt {
-    margin-top: auto;
-    font-size: var(--k-text-xl);
-  }
-
-  .classic .c-mission__sub {
-    margin-top: auto;
+    font-size: var(--c-text-display-mobile);
   }
 }

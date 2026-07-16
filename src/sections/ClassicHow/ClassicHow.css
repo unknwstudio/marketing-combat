@@ -201,21 +201,16 @@
   }
 
   .c-step__item {
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile display-list tuple matching .cfw__item; nearest step --k-text-2xl has a 40px floor vs 32px (20% off, beyond the ~15% clamp-replacement bound) */
-    font-size: clamp(32px, 8.5vw, 64px);
+    font-size: var(--c-text-display-mobile);
     /* the desktop 0.72 cap-box makes WRAPPED lines overlap on narrow columns
        ("A creative block") — mobile items may wrap, so they get real leading */
     line-height: var(--k-lh-flat);
   }
 
-  /* the list's heading keeps the full 2xl step above the 32px items (the
-     who-it's-for hierarchy); .classic prefix outguns classic.css's mobile
-     .c-h2 clamp at equal specificity */
-  .classic .c-how__task-h {
-    font-size: var(--k-text-2xl);
-  }
-
   .c-phase {
+    /* content-height mobile cards: the index tops out with the text (desktop
+       centers because the stretched equal-height cards need equal padding) */
+    align-items: flex-start;
     padding: var(--k-space-24);
   }
 }
