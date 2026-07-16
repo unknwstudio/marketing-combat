@@ -138,13 +138,18 @@
   }
 
   .c-hero__chips {
-    position: static;
+    /* overlaid on the photo bottom, like desktop — not parked on a yellow
+       band of its own (the hero is relative; the photo is the last flow
+       child, so the section bottom == the photo bottom) */
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: var(--k-space-8);
     padding: var(--k-space-16);
-    background: var(--c-yellow);
   }
 
   .c-hero__chip {
