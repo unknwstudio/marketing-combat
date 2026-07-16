@@ -71,25 +71,9 @@ export default function Hero({ centerPlay = false }) {
 
       {centerPlay && (
         <>
-          {/* PRIMARY hero CTA — registration, as a bold arcade sticker sitting
-              centre-stage over the scene (it took the prominent slot the big
-              PLAY button used to own). Same registration contract as the
-              top-left badge: opens the modal via the delegated [data-register]
-              listener, with the #register fragment as the no-JS fallback. */}
-          <a
-            className="hero__registerbig"
-            href="/#register"
-            data-sfx="confirm"
-            data-burst
-            data-register
-            aria-label="Register for AI Marketing Kombat"
-          >
-            <CtaLabel>registration</CtaLabel>
-          </a>
-
-          {/* SECONDARY — a small PLAY launcher at the very bottom of the hero.
-              VsSplash's delegated a[href="/play"] listener catches the click for
-              the first-visit VS flash; data-burst + data-sfx match the site's
+          {/* A small PLAY launcher at the bottom of the hero. VsSplash's
+              delegated a[href="/play"] listener catches the click for the
+              first-visit VS flash; data-burst + data-sfx match the site's
               other play affordances. */}
           <a
             className="hero__playsmall"
