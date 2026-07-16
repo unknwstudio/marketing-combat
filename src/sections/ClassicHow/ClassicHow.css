@@ -7,7 +7,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--k-space-64);
-  align-items: start;
+  /* stretch so the cards column matches the (taller) left column's height */
+  align-items: stretch;
 }
 
 /* left column: the stages heading, then the "A real task —" heading + its list.
@@ -141,10 +142,22 @@
 }
 
 .c-phase__body {
+  /* pushed to the bottom so the number+title sit at the top of the taller card
+     and the body anchors the base (no empty gap when the cards grow to fill) */
+  margin-top: auto;
   font-size: var(--k-text-sm);
   line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
   max-width: 42ch;
+}
+
+/* desktop: the three cards grow equally so their stack (plus the 16px gaps)
+   matches the taller left column's height (fed by align-items: stretch above).
+   Scoped to ≥1024 so the single-column mobile stack keeps content-height cards. */
+@media (min-width: 1024px) {
+  .c-phase {
+    flex: 1;
+  }
 }
 
 /* --- fluid < 1024: single column ----------------------------------------- */
