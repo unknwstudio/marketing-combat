@@ -5,9 +5,13 @@
 .c-tracks__head {
   display: flex;
   flex-direction: column;
+  /* moved to the right side of the section, right-aligned */
+  align-items: flex-end;
   gap: var(--k-space-24);
   max-width: 760px;
+  margin-left: auto;
   margin-bottom: var(--k-space-64);
+  text-align: right;
 }
 
 .c-tracks__intro {
@@ -73,7 +77,11 @@
 
 @media (max-width: 1023px) {
   .c-tracks__head {
+    /* back to left-aligned on mobile — a right-aligned heading reads oddly there */
+    align-items: flex-start;
+    margin-left: 0;
     margin-bottom: var(--k-space-48);
+    text-align: left;
   }
 
   .c-tracks__grid {
