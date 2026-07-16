@@ -4,8 +4,9 @@ import './ClassicTracks.css'
 
 /**
  * HACKATHON TRACKS — two color-blocked poster tiles, opposites (black vs blue)
- * so the pair reads as a choice, not two identical boxes. Kicker, title, body —
- * static (no hover affordance).
+ * so the pair reads as a choice, not two identical boxes. Champion-card layout
+ * (Frame 10): kicker + title pinned to the top, body pinned to the bottom, the
+ * space filling between them. Static (no hover affordance).
  */
 
 const TRACKS = [
@@ -41,8 +42,10 @@ export default function ClassicTracks() {
               key={t.n}
               style={{ '--i': i }}
             >
-              <p className="c-track__kicker cap-trim">{t.n}</p>
-              <h3 className="c-track__title cap-trim">{t.title}</h3>
+              <div className="c-track__top">
+                <p className="c-track__kicker cap-trim">{t.n}</p>
+                <h3 className="c-track__title cap-trim">{t.title}</h3>
+              </div>
               <p className="c-track__body">{typeset(t.body)}</p>
             </article>
           ))}

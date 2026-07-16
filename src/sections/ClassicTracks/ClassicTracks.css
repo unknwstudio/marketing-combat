@@ -21,9 +21,12 @@
   gap: var(--k-space-24);
 }
 
+/* champion-card layout (Frame 10): title group pinned top, body pinned bottom,
+   the space filling between them */
 .c-track {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: var(--k-space-24);
   min-height: 340px;
   padding: var(--k-space-40);
@@ -39,6 +42,13 @@
   background: var(--c-blue);
 }
 
+/* kicker + title, kept together at the top */
+.c-track__top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-16);
+}
+
 .c-track__kicker {
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
   font-size: 12px;
@@ -48,7 +58,7 @@
 }
 
 .c-track__title {
-  font-size: var(--k-text-xl);
+  font-size: var(--k-text-2xl);
   font-weight: 400;
   line-height: var(--k-lh-crushed);
   text-transform: uppercase;
