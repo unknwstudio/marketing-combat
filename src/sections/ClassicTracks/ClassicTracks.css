@@ -70,11 +70,19 @@
   }
 
   .c-tracks__grid {
-    grid-template-columns: 1fr;
+    /* minmax(0, …) so a long nowrap title ("AI-PERFORMANCE") can't push the
+       card past the viewport (grid items default to min-width: auto) */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .c-track {
+    min-width: 0;
     min-height: 0;
     padding: var(--k-space-32);
+  }
+
+  .c-track__title {
+    /* one step down from 2xl — "AI-PERFORMANCE" overflowed the phone column */
+    font-size: var(--k-text-xl);
   }
 }

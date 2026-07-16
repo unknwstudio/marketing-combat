@@ -142,6 +142,11 @@
 @media (max-width: 1023px) {
   .c-foot {
     width: 100%;
+    /* clear the fixed ModeSwitcher pill (~46px + offset + safe-area) so the
+       base row (© / made by) isn't hidden under it — same reservation the
+       AI-mode footer makes */
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0px is env()'s unit-carrying fallback inside calc() (a unitless 0 would invalidate the sum); the spacing itself is var(--k-space-96) */
+    padding-bottom: calc(var(--k-space-96) + env(safe-area-inset-bottom, 0px));
   }
 
   .c-foot__grid {

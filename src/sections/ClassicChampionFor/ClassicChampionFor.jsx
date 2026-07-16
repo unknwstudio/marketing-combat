@@ -111,7 +111,9 @@ export default function ClassicChampionFor() {
               <p className="cfw__card-s cap-trim">{typeset('#1 AI marketer of 2026')}</p>
             </div>
             <div className="cfw__strip">
-              <p className="cap-trim">{typeset('5 min to apply · 3 questions · AI review · 48 hr response')}</p>
+              {/* NBSP binds each "·" to the segment BEFORE it, so narrow
+                  screens wrap after a separator — never onto a leading dot */}
+              <p className="cap-trim">{'5 min to apply · 3 questions · AI review · 48 hr response'}</p>
             </div>
           </div>
         </div>

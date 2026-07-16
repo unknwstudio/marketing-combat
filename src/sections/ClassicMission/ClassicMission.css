@@ -41,8 +41,20 @@
   color: color-mix(in srgb, var(--k-white) 55%, transparent);
 }
 
+/* mobile: the black band becomes a FULL-SCREEN chapter break — the statement
+   sits centered in its own viewport (svh, so the browser chrome doesn't cut
+   it). The type steps down to xl so the longest line ("the people reshaping")
+   fits the narrow column instead of running past the screen edges. This is
+   the one full-screen section on mobile — it's the page's gravitas beat. */
 @media (max-width: 1023px) {
+  .classic .c-mission {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+
   .classic .c-mission__stmt {
-    font-size: var(--k-text-2xl);
+    font-size: var(--k-text-xl);
   }
 }

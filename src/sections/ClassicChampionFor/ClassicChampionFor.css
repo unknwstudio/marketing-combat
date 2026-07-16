@@ -272,6 +272,9 @@
     --arrow-indent: var(--k-space-48);
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile display-list tuple; nearest step --k-text-2xl has a 40px floor vs 32px (20% off, beyond the ~15% clamp-replacement bound) */
     font-size: clamp(32px, 8.5vw, 64px);
+    /* the desktop 0.72 cap-box makes WRAPPED lines overlap on narrow columns
+       ("Performance lead gens") — mobile items wrap, so they get real leading */
+    line-height: var(--k-lh-flat);
   }
 
   .cfw__arrow {
