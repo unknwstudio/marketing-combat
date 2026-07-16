@@ -10,15 +10,22 @@
   align-items: start;
 }
 
-/* left column: heading, then the "A real task —" lede over the components list */
+/* left column: the stages heading, then the "A real task —" heading + its list.
+   The big gap sets the two heading movements apart. */
 .c-how__lead {
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-24);
+  gap: var(--k-space-64);
 }
 
-.c-how__intro {
-  max-width: 46ch;
+/* second heading movement grouped with the list it introduces. It's the same
+   c-h2 size as the stages heading (they're one heading, two movements); the
+   space-64 gap above + the em-dash into the list keep it from reading as a
+   fourth stage, and space-32 (> the 24 item rhythm) sets it above the list. */
+.c-how__task {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-32);
 }
 
 /* --- "A real task —" components: a large hover-list (who-it's-for idiom) ----- */
