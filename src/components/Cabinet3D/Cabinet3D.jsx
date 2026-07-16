@@ -522,7 +522,7 @@ export default function Cabinet3D({
     return (
       <img
         className="cab3d__fallback"
-        src="/assets/demo/arcade-machine-front.webp"
+        src="/assets/demo/arcade-machine-cutout.webp"
         alt="Arcade cabinet showing YOU WIN"
         loading="lazy"
         decoding="async"
