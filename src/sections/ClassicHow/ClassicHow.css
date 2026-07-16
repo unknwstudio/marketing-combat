@@ -13,10 +13,10 @@
   height: 1660px;
 }
 
-/* right column — "Registration…" heading + cards; rises to compose */
+/* left column — "Registration…" heading + cards; rises to compose */
 .c-how__cards-col {
   position: absolute;
-  left: 750px;
+  left: 20px;
   top: var(--how-rise-top, 620px);
   width: 670px;
   display: flex;
@@ -33,10 +33,10 @@
   gap: var(--k-space-16);
 }
 
-/* left lane — bounds the sticky travel of the "A real task" column */
+/* right lane — bounds the sticky travel of the "A real task" column */
 .c-how__lead-lane {
   position: absolute;
-  left: 20px;
+  left: 750px;
   top: 60px;
   width: 670px;
   height: var(--how-lane-h, 1100px);
