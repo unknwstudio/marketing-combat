@@ -206,66 +206,7 @@
   left: 1120px;
 }
 
-/* --- PRIMARY hero CTA: registration sticker (prop-gated via centerPlay) ------
-   Took the prominent centre-stage slot the big PLAY button used to own. Chunky
-   8-bit arcade "sticker": gold face, notched pixel corners (4 axis-only
-   box-shadows leave the corners cut), an inset bevel (light top-left / dark
-   bottom-right), a hard pixel drop-shadow, and a real depress on :active. Mono
-   font (not the pixel face) so the longer ">>> registration <<<" label stays
-   readable. */
-.hero__registerbig {
-  --u: 5px;
-  position: absolute;
-  left: 50%;
-  top: 300px;
-  transform: translateX(-50%);
-  z-index: 4;
-  display: inline-flex;
-  align-items: center;
-  padding: var(--k-space-16) var(--k-space-40);
-  font-family: var(--k-font-mono);
-  font-size: var(--k-text-xl);
-  letter-spacing: var(--k-ls-display);
-  line-height: var(--k-lh-flat);
-  text-transform: lowercase;
-  white-space: nowrap;
-  color: var(--k-black);
-  background: var(--k-gold);
-  text-decoration: none;
-  cursor: pointer;
-  box-shadow:
-    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
-    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-white) 50%, transparent),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-black) 28%, transparent);
-  filter: drop-shadow(7px 9px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
-  transition: transform var(--k-t-tap) steps(2), filter var(--k-t-tap) steps(2),
-    background var(--k-t-fast);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.hero__registerbig:hover {
-  background: color-mix(in srgb, var(--k-gold) 82%, white);
-}
-
-.hero__registerbig:active {
-  transform: translateX(-50%) translate(4px, 4px);
-  filter: drop-shadow(2px 3px 0 color-mix(in srgb, var(--k-black) 45%, transparent));
-  box-shadow:
-    calc(-1 * var(--u)) 0 0 var(--k-black), var(--u) 0 0 var(--k-black),
-    0 calc(-1 * var(--u)) 0 var(--k-black), 0 var(--u) 0 var(--k-black),
-    inset var(--u) var(--u) 0 color-mix(in srgb, var(--k-black) 28%, transparent),
-    inset calc(-1 * var(--u)) calc(-1 * var(--u)) 0 color-mix(in srgb, var(--k-white) 50%, transparent);
-}
-
-.hero__registerbig:focus-visible {
-  outline: 3px solid var(--k-focus-ring);
-  outline-offset: 8px;
-}
-
-/* --- SECONDARY: small PLAY launcher, sitting in the hero just under the
-   tag-pill row — a quiet way into the game now that registration owns the loud
-   centre slot. */
+/* --- small PLAY launcher, sitting in the hero just under the tag-pill row --- */
 .hero__playsmall {
   position: absolute;
   left: 50%;
@@ -455,19 +396,8 @@
     letter-spacing: var(--k-ls-tight);
   }
 
-  /* central registration sticker — scaled down over the scene. Keep
-     translateX(-50%) (not translate(-50%,-50%)) so the :active offset rule
-     doesn't drop the vertical centering. */
-  .hero__registerbig {
-    top: 40%;
-    --u: 4px;
-    font-size: var(--k-text-base);
-    padding: var(--k-space-12) var(--k-space-20);
-  }
-
-  /* the small PLAY would collide with the bottom tag-pill row on a phone; the
-     always-present floating PLAY launcher (PlayFab, bottom-right) covers play
-     on mobile, so hide the hero's own bottom PLAY under the breakpoint. */
+  /* the small PLAY would collide with the bottom tag-pill row on a phone, so
+     hide the hero's own bottom PLAY under the breakpoint. */
   .hero__playsmall {
     display: none;
   }
