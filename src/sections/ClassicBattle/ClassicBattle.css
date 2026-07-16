@@ -7,7 +7,9 @@
    grid on the right (champion-card idiom) */
 .c-battle {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  /* 50/50 with a 64px gap so the cards column starts on the SAME vertical axis
+     as the other two-column blocks (How / Why) instead of further left */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--k-space-64);
   align-items: start;
 }
