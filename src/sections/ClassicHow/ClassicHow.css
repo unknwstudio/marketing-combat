@@ -37,7 +37,8 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-24);
+  /* 20px gap to match the who-it's-for list (.cfw__list) rhythm exactly */
+  gap: var(--k-space-20);
 }
 
 /* each component is a large hover-list item in the "who it's for" idiom
@@ -53,7 +54,8 @@
   display: block;
   font-size: var(--k-text-2xl);
   font-weight: 400;
-  line-height: var(--c-lh-display);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: the who-it's-for list's cap-box ratio (46/64 = .72) so this list's item pitch matches .cfw__item exactly (66px), not the looser display leading */
+  line-height: 0.72;
   color: var(--k-black);
   transition: color var(--k-t-fast) ease;
 }
