@@ -1,9 +1,9 @@
 /* ============================================================
    HOW IT WORKS — scroll-pinned compose (champion idiom). The
-   left column ("A real task" + list) pins on the left; the
-   right column ("Registration…" heading + phase cards) scrolls
-   up 1:1 into the gap beside it. Native sticky; runway + lane
-   heights are set by JS on resize.
+   left column ("Registration…" heading + phase cards) is the
+   ANCHOR and pins; the right column ("A real task" + list)
+   scrolls up 1:1 and stacks onto it. Native sticky; runway +
+   lane heights are set by JS on resize.
    ============================================================ */
 
 .c-how {
@@ -13,12 +13,19 @@
   height: 1660px;
 }
 
-/* left column — "Registration…" heading + cards; rises to compose */
-.c-how__cards-col {
+/* left lane — bounds the sticky travel of the "Registration…" + cards column */
+.c-how__cards-lane {
   position: absolute;
   left: 20px;
-  top: var(--how-rise-top, 620px);
+  top: 60px;
   width: 670px;
+  height: var(--how-lane-h, 1100px);
+}
+
+/* the anchor: heading + cards, pinned */
+.c-how__cards-col {
+  position: sticky;
+  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
   display: flex;
   flex-direction: column;
   gap: var(--k-space-64); /* heading → cards */
@@ -33,18 +40,12 @@
   gap: var(--k-space-16);
 }
 
-/* right lane — bounds the sticky travel of the "A real task" column */
-.c-how__lead-lane {
+/* right column — "A real task —" + list; rises and stacks onto the anchor */
+.c-how__lead {
   position: absolute;
   left: 750px;
-  top: 60px;
+  top: var(--how-rise-top, 620px);
   width: 670px;
-  height: var(--how-lane-h, 1100px);
-}
-
-.c-how__lead {
-  position: sticky;
-  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
   display: flex;
   flex-direction: column;
   gap: var(--k-space-32); /* "A real task —" → list */
@@ -177,8 +178,8 @@
     padding: var(--c-pad-minor) var(--c-margin);
   }
 
-  .c-how__cards-col,
-  .c-how__lead-lane {
+  .c-how__cards-lane,
+  .c-how__lead {
     position: static;
     left: auto;
     top: auto;
@@ -186,7 +187,7 @@
     height: auto;
   }
 
-  .c-how__lead {
+  .c-how__cards-col {
     position: static;
   }
 

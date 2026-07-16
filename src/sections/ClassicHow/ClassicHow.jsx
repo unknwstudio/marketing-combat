@@ -71,12 +71,12 @@ export default function ClassicHow() {
       }
       const scale = outer.getBoundingClientRect().width / 1440
       const viewportH = window.innerHeight / scale
-      const pinned = outer.querySelector('.c-how__lead') // left, pins
-      const riser = outer.querySelector('.c-how__cards-col') // right, rises
+      const pinned = outer.querySelector('.c-how__cards-col') // left: Registration + cards, the anchor, pins
+      const riser = outer.querySelector('.c-how__lead') // right: A real task + list, stacks onto the anchor
       const pinnedH = pinned.getBoundingClientRect().height / scale
       const riserH = riser.getBoundingClientRect().height / scale
 
-      // stack the rising right column one pinned-column-height + gap below the top
+      // stack the rising column one pinned-column-height + gap below the top
       const riseTop = TOP + pinnedH + GAP
       outer.style.setProperty('--how-rise-top', `${riseTop}px`)
       // travel = the offset between the two columns' natural tops. lane =
@@ -84,13 +84,13 @@ export default function ClassicHow() {
       // lands on the compose), then both scroll away together.
       const travel = riseTop - TOP
       outer.style.setProperty('--how-lane-h', `${travel + pinnedH}px`)
-      // runway = travel + one viewport (the riser is the tall composed block)
-      const runway = travel + Math.max(viewportH, riserH)
+      // runway = travel + one viewport (whichever column is the taller composed block)
+      const runway = travel + Math.max(viewportH, pinnedH, riserH)
       outer.style.height = `${runway}px`
       // pull the next section up into the blank the tall runway leaves below
       const sectionTop = outer.getBoundingClientRect().top + window.scrollY
       const toLocal = (el) => (el.getBoundingClientRect().bottom + window.scrollY - sectionTop) / scale
-      const composedEnd = Math.max(toLocal(riser), toLocal(outer.querySelector('.c-how__lead-lane')))
+      const composedEnd = Math.max(toLocal(riser), toLocal(outer.querySelector('.c-how__cards-lane')))
       const KEEP = 48
       outer.style.marginBottom = `${-Math.max(runway - composedEnd - KEEP, 0)}px`
     }
@@ -109,43 +109,44 @@ export default function ClassicHow() {
 
   return (
     <section className="c-how" ref={outerRef} id="c-how" aria-label="How it works">
-      {/* right column — "Registration…" heading + phase cards; scrolls up into
-          the composed slot. DOM-first so the mobile static stack leads with the
+      {/* left lane — "Registration…" heading + phase cards; the ANCHOR, pins
+          (native sticky). DOM-first so the mobile static stack leads with the
           section heading; on desktop both columns are absolute so order is moot. */}
-      <div className="c-how__cards-col">
-        <header className="c-how__head">
-          <MaskHead lines={['Registration.', 'Qualifying round.', 'Final']} />
-        </header>
-        <ol className="c-how__cards">
-          {PHASES.map((p) => (
-            <li className="c-phase" key={p.n} style={{ '--phase-accent': p.accent }}>
-              <span className="c-phase__n cap-trim">{p.n}</span>
-              <div className="c-phase__text">
-                <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
-                <p className="c-phase__body">{typeset(p.body)}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      {/* left lane — "A real task —" + components list; pins (native sticky) */}
-      <div className="c-how__lead-lane">
-        <div className="c-how__lead">
-          <MaskHead lines={['A real task —']} className="c-how__task-h" />
-          <ol className="c-how__steps">
-            {TASK.map((label, i) => (
-              <li className="c-step" key={label} style={{ '--i': i }}>
-                <span className="c-step__item">
-                  <svg className="c-step__arrow" viewBox="0 0 52 27" aria-hidden="true" focusable="false">
-                    <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
-                  </svg>
-                  <span className="c-step__title cap-trim">{typeset(label)}</span>
-                </span>
+      <div className="c-how__cards-lane">
+        <div className="c-how__cards-col">
+          <header className="c-how__head">
+            <MaskHead lines={['Registration.', 'Qualifying round.', 'Final']} />
+          </header>
+          <ol className="c-how__cards">
+            {PHASES.map((p) => (
+              <li className="c-phase" key={p.n} style={{ '--phase-accent': p.accent }}>
+                <span className="c-phase__n cap-trim">{p.n}</span>
+                <div className="c-phase__text">
+                  <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
+                  <p className="c-phase__body">{typeset(p.body)}</p>
+                </div>
               </li>
             ))}
           </ol>
         </div>
+      </div>
+
+      {/* right column — "A real task —" + components list; scrolls up and stacks
+          onto the pinned anchor */}
+      <div className="c-how__lead">
+        <MaskHead lines={['A real task —']} className="c-how__task-h" />
+        <ol className="c-how__steps">
+          {TASK.map((label, i) => (
+            <li className="c-step" key={label} style={{ '--i': i }}>
+              <span className="c-step__item">
+                <svg className="c-step__arrow" viewBox="0 0 52 27" aria-hidden="true" focusable="false">
+                  <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
+                </svg>
+                <span className="c-step__title cap-trim">{typeset(label)}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   )
