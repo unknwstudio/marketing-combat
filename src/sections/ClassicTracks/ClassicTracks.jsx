@@ -5,19 +5,17 @@ import './ClassicTracks.css'
 /**
  * HACKATHON TRACKS — two color-blocked poster tiles, opposites (black vs blue)
  * so the pair reads as a choice, not two identical boxes. Champion-card layout
- * (Frame 10): kicker + title pinned to the top, body pinned to the bottom, the
- * space filling between them. Static (no hover affordance).
+ * (Frame 10): title pinned to the top, body pinned to the bottom, the space
+ * filling between them. Static (no hover affordance).
  */
 
 const TRACKS = [
   {
-    n: 'Track 01',
     variant: 'dark',
     title: 'AI-Creatives',
     body: 'Holographic banner maker, AI-automated generation of creative packs, and banner-pack verification via an AI-agent auditor.',
   },
   {
-    n: 'Track 02',
     variant: 'blue',
     title: 'AI-Performance',
     body: 'Zero-waste media split — strategy, analytics, paid-media buying and media-split management.',
@@ -39,13 +37,10 @@ export default function ClassicTracks() {
           {TRACKS.map((t, i) => (
             <article
               className={`c-track c-track--${t.variant} c-reveal`}
-              key={t.n}
+              key={t.title}
               style={{ '--i': i }}
             >
-              <div className="c-track__top">
-                <p className="c-track__kicker cap-trim">{t.n}</p>
-                <h3 className="c-track__title cap-trim">{t.title}</h3>
-              </div>
+              <h3 className="c-track__title cap-trim">{t.title}</h3>
               <p className="c-track__body">{typeset(t.body)}</p>
             </article>
           ))}

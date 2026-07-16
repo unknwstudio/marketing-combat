@@ -46,21 +46,6 @@
   background: var(--c-blue);
 }
 
-/* kicker + title, kept together at the top */
-.c-track__top {
-  display: flex;
-  flex-direction: column;
-  gap: var(--k-space-16);
-}
-
-.c-track__kicker {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: matches the classic .c-kicker 12px editorial-label convention (classic.css); fluid --k-text-xs would grow it to 14px at desktop */
-  font-size: 12px;
-  letter-spacing: var(--k-ls-wide);
-  text-transform: uppercase;
-  opacity: 0.75;
-}
-
 .c-track__title {
   font-size: var(--k-text-2xl);
   font-weight: 400;

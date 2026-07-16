@@ -48,7 +48,7 @@
   aspect-ratio: 4 / 5;
   margin-bottom: var(--k-space-16);
   border-radius: var(--k-radius-md);
-  background: linear-gradient(160deg, var(--k-hud-steel), var(--k-classic-panel));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--k-classic-panel) 45%, var(--k-white)), var(--k-classic-panel));
 }
 
 .c-judge__glyph {

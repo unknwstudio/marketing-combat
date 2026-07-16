@@ -22,16 +22,20 @@
   height: var(--how-lane-h, 1100px);
 }
 
-/* the anchor: heading + cards, pinned */
+/* the anchor: heading + cards, pinned. Stretched by JS to the riser column's
+   height (--how-col-h) so the composed pair shares one bottom line. */
 .c-how__cards-col {
   position: sticky;
   top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
   display: flex;
   flex-direction: column;
   gap: var(--k-space-64); /* heading → cards */
+  height: var(--how-col-h, auto);
 }
 
+/* the card stack fills the stretched column; the three cards grow evenly */
 .c-how__cards {
+  flex: 1;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -40,7 +44,11 @@
   gap: var(--k-space-16);
 }
 
-/* right column — "A real task —" + list; rises and stacks onto the anchor */
+.c-how__cards .c-phase {
+  flex: 1;
+}
+
+/* right column — "A real task" + list; rises and stacks onto the anchor */
 .c-how__lead {
   position: absolute;
   left: 750px;
@@ -48,7 +56,9 @@
   width: 670px;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-32); /* "A real task —" → list */
+  /* heading → list air matches the who-it's-for column (its Figma slot is
+     heading cap-box + 80px gap — see .cfw__list top:126 = 46 + 80) */
+  gap: var(--k-space-80);
 }
 
 /* --- "A real task —" components: a large hover-list (who-it's-for idiom) ----- */
@@ -112,29 +122,22 @@
 
 /* --- phase cards: 1px frame + coded accent strip ------------------------- */
 
-/* compact card: the big index sits on the LEFT, the title + body to its right */
+/* compact card: solid green fill (the .cfw__strip idiom — black on green),
+   the big index on the LEFT, the title + body to its right. Content centers
+   vertically so the card's top/bottom padding stays EQUAL when the stack is
+   stretched to the riser column's height (flex: 1 would otherwise dump all
+   the extra space below the content). */
 .c-phase {
   position: relative;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--k-space-24);
   padding: var(--k-space-24);
-  background: var(--k-white);
-  border: 1px solid var(--k-black);
+  background: var(--c-green);
   border-radius: var(--k-radius-md);
+  color: var(--k-black);
   overflow: hidden;
-}
-
-.c-phase::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  /* height = corner radius so the band rounds fully with the card */
-  height: var(--k-radius-md);
-  background: var(--phase-accent, var(--k-black));
 }
 
 .c-phase__n {
@@ -142,7 +145,6 @@
   font-size: var(--k-text-3xl);
   font-weight: 400;
   line-height: var(--k-lh-crushed);
-  color: var(--phase-accent, var(--k-black));
 }
 
 .c-phase__text {
@@ -162,7 +164,8 @@
 .c-phase__body {
   font-size: var(--k-text-sm);
   line-height: var(--k-lh-normal);
-  color: var(--k-classic-panel);
+  /* black on the green fill (the grey panel tone lacks contrast there) */
+  color: var(--k-black);
 }
 
 /* --- fluid < 1024: plain stacked layout (no pin / no runway) -------------- */
@@ -189,6 +192,12 @@
 
   .c-how__cards-col {
     position: static;
+    height: auto;
+  }
+
+  .c-how__cards,
+  .c-how__cards .c-phase {
+    flex: none;
   }
 
   .c-phase {

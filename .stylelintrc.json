@@ -1,15 +1,28 @@
 {
   "$schema": "https://json.schemastore.org/stylelintrc.json",
-  "//": "Design-system gate (2026-07-13 audit, hardened 2026-07-14 2nd pass). The token ledger lives in src/styles/index.css — the ONE file allowed to hold raw values (it defines them). Everywhere else: colors must be tokens or color-mix of tokens (color-no-hex = error); spacing (margin/padding/gap), font-size, line-height, letter-spacing and border-radius must come from the --k-* / --c-* scales (error). Sanctioned exceptions carry an inline 'stylelint-disable-next-line … -- deliberate: <reason>' comment at the call site — every disable must state its reason.",
+  "//": "Design-system gate (2026-07-13 audit, hardened 2026-07-14 2nd pass). The token ledger lives in src/styles/index.css \u2014 the ONE file allowed to hold raw values (it defines them). Everywhere else: colors must be tokens or color-mix of tokens (color-no-hex = error); spacing (margin/padding/gap), font-size, line-height, letter-spacing and border-radius must come from the --k-* / --c-* scales (error). Sanctioned exceptions carry an inline 'stylelint-disable-next-line \u2026 -- deliberate: <reason>' comment at the call site \u2014 every disable must state its reason.",
   "rules": {
     "color-no-hex": true,
     "declaration-property-value-disallowed-list": [
       {
-        "/^(margin|padding|gap|row-gap|column-gap)/": ["/-?\\d+(\\.\\d+)?px/"],
-        "/^font-size$/": ["/\\d+(\\.\\d+)?(px|em|rem)/", "/clamp\\(/"],
-        "/^line-height$/": ["/^-?\\d+(\\.\\d+)?$/", "/^-?\\d+(\\.\\d+)?px$/", "/^normal$/"],
-        "/^letter-spacing$/": ["/-?\\d+(\\.\\d+)?(px|em)/"],
-        "/^border-radius$/": ["/\\d+(\\.\\d+)?px/"]
+        "/^(margin|padding|gap|row-gap|column-gap)/": [
+          "/-?\\d+(\\.\\d+)?px/"
+        ],
+        "/^font-size$/": [
+          "/\\d+(\\.\\d+)?(px|em|rem)/",
+          "/clamp\\(/"
+        ],
+        "/^line-height$/": [
+          "/^-?\\d+(\\.\\d+)?$/",
+          "/^-?\\d+(\\.\\d+)?px$/",
+          "/^normal$/"
+        ],
+        "/^letter-spacing$/": [
+          "/-?\\d+(\\.\\d+)?(px|em)/"
+        ],
+        "/^border-radius$/": [
+          "/\\d+(\\.\\d+)?px/"
+        ]
       },
       {
         "message": "Use a design token (--k-* / --c-* in src/styles/index.css) instead of a raw value; truly deliberate values need a stylelint-disable comment with a reason"
@@ -18,11 +31,14 @@
   },
   "overrides": [
     {
-      "files": ["src/styles/index.css"],
+      "files": [
+        "src/styles/index.css"
+      ],
       "rules": {
         "color-no-hex": null,
         "declaration-property-value-disallowed-list": null
       }
     }
-  ]
+  ],
+  "reportNeedlessDisables": true
 }

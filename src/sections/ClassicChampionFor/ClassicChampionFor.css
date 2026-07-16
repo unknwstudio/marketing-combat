@@ -139,7 +139,7 @@
   /* indent kept small + the arrow shrunk so the LONGEST item ("Performance
      lead gens", ~663px wide) can't slide across the 60px gap into the pinned
      champion cards on hover (was 85px, which overran the cards, #11) */
-  --arrow-indent: 40px;
+  --arrow-indent: var(--k-space-40);
   position: relative;
   font-size: var(--k-text-2xl);
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma cap-box ratio (46/64) so the five items pitch at 66px and the list is exactly 310px tall — the SAME height as the champion cards block, so "Future legends" aligns with the green strip (Frame 71). Relying on cap-trim (text-box-trim) here is not robust; this line-height reproduces it everywhere. */
@@ -222,7 +222,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--k-space-64);
-    padding: var(--k-space-48) var(--k-space-16);
+    padding: var(--k-space-48) var(--c-margin);
   }
 
   .cfw__champ-lane {
@@ -269,7 +269,7 @@
   }
 
   .cfw__item {
-    --arrow-indent: 44px;
+    --arrow-indent: var(--k-space-48);
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile display-list tuple; nearest step --k-text-2xl has a 40px floor vs 32px (20% off, beyond the ~15% clamp-replacement bound) */
     font-size: clamp(32px, 8.5vw, 64px);
   }

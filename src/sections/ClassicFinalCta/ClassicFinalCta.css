@@ -3,6 +3,10 @@
    ============================================================ */
 
 .c-cta {
+  /* rides ABOVE the tucked-under footer (reveal-from-under) — the opaque
+     yellow band is the "page" that lifts off it */
+  position: relative;
+  z-index: 1;
   background: var(--c-yellow);
   color: var(--k-black);
   overflow: hidden;
@@ -56,11 +60,11 @@
   text-align: center;
 }
 
-.c-cta__kicker {
-  color: var(--k-black);
-}
-
-.c-cta__h2 {
+/* .classic prefix raises specificity above the shared .c-h2 size — classic.css
+   is imported AFTER the section CSS, so the equal-specificity tie was losing
+   and the heading silently rendered one type step smaller (same hazard the
+   Mission block documents and patches). */
+.classic .c-cta__h2 {
   font-size: var(--k-text-3xl);
 }
 
@@ -105,7 +109,7 @@
     margin-bottom: var(--k-space-56);
   }
 
-  .c-cta__h2 {
+  .classic .c-cta__h2 {
     font-size: var(--k-text-2xl);
   }
 }

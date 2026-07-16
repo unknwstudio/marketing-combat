@@ -39,7 +39,6 @@
   font-size: var(--k-text-sm);
   line-height: var(--k-lh-flat);
   color: var(--k-green);
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 3px hard offset scaled down for the small key line (the 4px --k-shadow-hard reads chunky at this size); color is already the token */
   text-shadow: 3px 3px 0 var(--k-black);
   /* negative delay = opposite phase, so the two lines alternate like the
      two lamps of an idle marquee instead of flashing in unison */

@@ -16,6 +16,39 @@
   padding-block: var(--k-space-96) var(--k-space-40);
 }
 
+/* REVEAL-FROM-UNDER (desktop): the footer tucks beneath the final CTA
+   (negative top margin, z below) and pins bottom-aligned while the CTA departs
+   above it; margin-bottom re-adds the reveal runway. --foot-h / --foot-pin are
+   set by the component's resize measurer (design px through the canvas scale);
+   without JS both default to a plain static footer. */
+@media (min-width: 1024px) {
+  .c-foot {
+    position: sticky;
+    top: var(--foot-pin, auto);
+    z-index: 0;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0px is the unit-carrying no-JS fallback inside calc (a unitless 0 would invalidate the product); the real offset is the JS-measured --foot-h */
+    margin-top: calc(-1 * var(--foot-h, 0px));
+  }
+
+  /* the reveal runway — a sibling spacer, NOT the footer's own margin (a
+     bottom margin belongs to the sticky element's margin box and would zero
+     out its displacement bound, killing the pin) */
+  .c-foot-runway {
+    height: var(--foot-h, 0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-foot {
+    position: static;
+    margin-top: 0;
+  }
+
+  .c-foot-runway {
+    height: 0;
+  }
+}
+
 .c-foot__grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -56,22 +89,15 @@
   color: var(--foot-faint);
 }
 
+/* link COLOR (incl. green hover) is owned by classic.css's higher-specificity
+   `.classic .c-foot__link` override (it outguns the global on-light link color);
+   color declarations here would silently no-op. */
 .c-foot__link {
   font-size: var(--k-text-xs);
-  color: var(--k-white);
   text-decoration: none;
   transition: color var(--k-t-base) ease;
 }
 
-.c-foot__link:hover,
-.c-foot__link:focus-visible {
-  color: var(--c-green);
-}
-
-.c-foot__legal {
-  font-size: var(--k-text-xs);
-  color: var(--foot-faint);
-}
 
 .c-foot__base {
   display: flex;
