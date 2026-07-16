@@ -3,25 +3,47 @@ import { typeset } from '@/lib/typeset'
 import './ClassicHow.css'
 
 /**
- * HOW IT WORKS — a two-column compose (like the champion block, #10): the
- * heading column pins (position: sticky) while the right column scrolls up
- * beside it. The right column lists what a real task throws at you as a large
- * hover-list in the "who it's for" idiom — each item is big editorial type that
- * turns blue with a ► marker sliding in on hover.
+ * HOW IT WORKS — a two-column layout. The left column carries the heading and,
+ * under it, what a real task throws at you as a large hover-list in the "who
+ * it's for" idiom (each component turns blue with a ► marker sliding in on
+ * hover). The right column holds the three phase cards — a 1px frame + a coded
+ * accent strip walking orange → blue → green.
  */
 
 // the components of "A real task —": each becomes one hover-list item
 const TASK = ['a brief', 'a data room', 'Google / Meta / TikTok', 'a creative block', 'AI tools', 'limited time']
 
+const PHASES = [
+  {
+    n: '01',
+    // the site's signature orange (--k-orange), not --c-yellow: bright yellow on
+    // the white page is unreadable (1.07:1)
+    accent: 'var(--k-orange)',
+    title: 'Qualifying round',
+    body: '45 minutes online. A real case to solve under pressure, with the AI stack of your choice.',
+  },
+  {
+    n: '02',
+    accent: 'var(--c-blue)',
+    title: 'Evaluation',
+    body: 'A panel of judges + AI assesses every solution. The client gets the final word.',
+  },
+  {
+    n: '03',
+    accent: 'var(--c-green)',
+    title: 'The final',
+    body: '2 hours in Barcelona at Harbour.Space University — in person. A closed networking event and a private closing party follow.',
+  },
+]
+
 export default function ClassicHow() {
   return (
     <section className="c-sec acc-blue" id="c-how" aria-label="How it works">
       <div className="c-wrap c-how">
-        <header className="c-how__head">
-          <MaskHead lines={['Registration.', 'Qualifying round.', 'Final']} />
-        </header>
-
-        <div className="c-how__body">
+        <div className="c-how__lead">
+          <header className="c-how__head">
+            <MaskHead lines={['Registration.', 'Qualifying round.', 'Final']} />
+          </header>
           <p className="c-lede c-reveal c-how__intro">{typeset('A real task —')}</p>
           <ol className="c-how__steps">
             {TASK.map((label, i) => (
@@ -36,6 +58,16 @@ export default function ClassicHow() {
             ))}
           </ol>
         </div>
+
+        <ol className="c-how__cards">
+          {PHASES.map((p, i) => (
+            <li className="c-phase c-reveal" key={p.n} style={{ '--i': i, '--phase-accent': p.accent }}>
+              <span className="c-phase__n cap-trim">{p.n}</span>
+              <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
+              <p className="c-phase__body">{typeset(p.body)}</p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   )
