@@ -120,8 +120,10 @@ export default function ClassicHow() {
           {PHASES.map((p) => (
             <li className="c-phase" key={p.n} style={{ '--phase-accent': p.accent }}>
               <span className="c-phase__n cap-trim">{p.n}</span>
-              <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
-              <p className="c-phase__body">{typeset(p.body)}</p>
+              <div className="c-phase__text">
+                <h3 className="c-phase__title cap-trim">{typeset(p.title)}</h3>
+                <p className="c-phase__body">{typeset(p.body)}</p>
+              </div>
             </li>
           ))}
         </ol>
