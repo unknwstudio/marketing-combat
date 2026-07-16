@@ -127,6 +127,10 @@
     gap: var(--k-space-32);
   }
 
+  .c-hero__title {
+    font-size: var(--c-text-display-mobile);
+  }
+
 
   .c-hero__photo {
     position: static;

@@ -189,6 +189,12 @@
     --c-margin: var(--k-space-16); /* 16px gutter */
     --c-pad-major: var(--k-space-72); /* 72px */
     --c-pad-minor: var(--k-space-56); /* 56px */
+    /* THE one mobile display size. Desktop sets every display voice (section
+       headings, champion/who heads, hero title, the big hover-list items) to
+       the same --k-text-2xl; this token is its <1024 counterpart (the 2xl
+       40px floor is too large for phones), so the voices can't drift apart
+       on mobile again — 2026-07-16 audit found 33/40/41px coexisting. */
+    --c-text-display-mobile: clamp(32px, 8.5vw, 64px);
   }
 
   .c-sec {
@@ -201,7 +207,6 @@
   }
 
   .c-h2 {
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: mobile display floor of 32px below --k-text-2xl's 40px min; the token would defeat this <1024px override */
-    font-size: clamp(32px, 8.5vw, 64px);
+    font-size: var(--c-text-display-mobile);
   }
 }

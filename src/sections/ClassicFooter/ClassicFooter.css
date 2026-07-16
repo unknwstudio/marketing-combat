@@ -142,6 +142,8 @@
 @media (max-width: 1023px) {
   .c-foot {
     width: 100%;
+    /* tighter mobile rhythm: 96px of desktop headroom read as dead space */
+    padding-top: var(--k-space-56);
     /* clear the fixed ModeSwitcher pill (~46px + offset + safe-area) so the
        base row (© / made by) isn't hidden under it — same reservation the
        AI-mode footer makes */
@@ -149,12 +151,23 @@
     padding-bottom: calc(var(--k-space-96) + env(safe-area-inset-bottom, 0px));
   }
 
+  /* the wordmark anchors the footer — one step up from its desktop lg */
+  .c-foot__wordmark {
+    font-size: var(--k-text-xl);
+  }
+
   .c-foot__grid {
     grid-template-columns: 1fr 1fr;
-    gap: var(--k-space-40);
+    gap: var(--k-space-32);
+    padding-bottom: var(--k-space-40);
   }
 
   .c-foot__brand {
     grid-column: 1 / -1;
+  }
+
+  .c-foot__base {
+    padding-top: var(--k-space-24);
+    row-gap: var(--k-space-12);
   }
 }

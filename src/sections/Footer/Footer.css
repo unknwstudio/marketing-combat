@@ -89,10 +89,12 @@
 @media (max-width: 1023px) {
   .footer {
     padding-top: var(--k-space-48);
-    /* extra clearance under the fixed ModeSwitcher pill (~46px + 16px offset +
-       safe-area) so the credit isn't hidden under it */
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0px is env()'s unit-carrying fallback inside calc() (a unitless 0 would invalidate the sum); the spacing itself is var(--k-space-96) */
-    padding-bottom: calc(var(--k-space-96) + env(safe-area-inset-bottom, 0px));
+    /* clearance for the WHOLE fixed bottom chrome stack: the sound toggle and
+       the registration dock sit ABOVE the ModeSwitcher pill on mobile — the
+       old 96px only cleared the pill, so "made by" landed in the same line
+       as the corner controls */
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 0px is env()'s unit-carrying fallback inside calc() (a unitless 0 would invalidate the sum); the spacing itself is the two tokens */
+    padding-bottom: calc(var(--k-space-96) + var(--k-space-64) + env(safe-area-inset-bottom, 0px));
   }
 
   .footer__inner {
