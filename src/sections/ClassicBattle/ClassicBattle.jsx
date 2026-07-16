@@ -54,13 +54,10 @@ export default function ClassicBattle() {
           </p>
         </div>
 
-        <div className="c-battle__figures c-reveal">
-          <p className="c-battle__figures-kicker cap-trim">The arena in figures</p>
-          <div className="c-battle__stats">
-            {STATS.map((s, i) => (
-              <Stat key={s.label} index={i} {...s} />
-            ))}
-          </div>
+        <div className="c-battle__stats c-reveal">
+          {STATS.map((s, i) => (
+            <Stat key={s.label} index={i} {...s} />
+          ))}
         </div>
 
         {/* Sponsors hidden for now (not ready yet) — see note by SPONSORS above.
