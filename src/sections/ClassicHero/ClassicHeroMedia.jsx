@@ -1,7 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import {
+  initMotionPause,
+  isMotionPaused,
+  subscribeMotionPaused,
+} from '@/effects/motion/motionPause'
 
 /**
  * ClassicHeroMedia — the hero visual, poster-first. `autoPlay` downloads the
@@ -14,13 +19,33 @@ import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
  */
 export default function ClassicHeroMedia() {
   const [play, setPlay] = useState(false)
+  const videoRef = useRef(null)
 
   useEffect(() => {
     if (prefersReducedMotion()) return
     const conn = navigator.connection
     if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return
-    setPlay(true)
+    // MotionToggle paused (WCAG 2.2.2): stay on the poster — don't even start
+    // the ~1.5MB download; upgrade to the video if the user unpauses later.
+    initMotionPause()
+    if (!isMotionPaused()) setPlay(true)
+    return subscribeMotionPaused((paused) => {
+      if (!paused) setPlay(true)
+    })
   }, [])
+
+  // once the <video> is live, MotionToggle pauses/resumes it in place
+  useEffect(() => {
+    if (!play) return
+    const sync = (paused) => {
+      const v = videoRef.current
+      if (!v) return
+      if (paused) v.pause()
+      else v.play().catch(() => {}) // autoplay policy — muted, so this only fails in exotic cases
+    }
+    sync(isMotionPaused())
+    return subscribeMotionPaused(sync)
+  }, [play])
 
   if (!play) {
     return (
@@ -34,6 +59,7 @@ export default function ClassicHeroMedia() {
 
   return (
     <video
+      ref={videoRef}
       className="c-hero__photo"
       src="/assets/classic/hero-video.mp4"
       poster="/assets/classic/hero-photo.jpg"

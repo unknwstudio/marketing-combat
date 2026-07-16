@@ -10,13 +10,20 @@ import './ClassicFloor.css'
  */
 
 const BASE = '/assets/classic/floor'
+// No alt field: each photo sits in a <figure> whose visible caption (cap + sub)
+// carries the information, so the images are decorative-within-a-captioned-figure
+// (alt="") — the old generic alts ("Hackathon moment" ×2) only duplicated less
+// than the captions already say (1.1.1, 2026-07-16 audit).
+// -1300/-960 WebP (new names per the cache-busting convention): the old 2206px
+// JPGs rendered at ≤~900 design px THROUGH the grayscale+blend grade — full-res
+// color chroma was paid for and thrown away (2026-07-16 perf audit, −816KB).
 const PHOTOS = [
-  { src: `${BASE}/hackathon.jpg`, alt: 'Hackathon moment', cap: 'On the clock', sub: 'Qualifying round' },
-  { src: `${BASE}/speaker-stage.jpg`, alt: 'Speaker on stage', cap: 'On stage', sub: 'Opening talk' },
-  { src: `${BASE}/room.jpg`, alt: 'The room', cap: 'The room', sub: 'Harbour.Space' },
-  { src: `${BASE}/audience.jpg`, alt: 'In the audience', cap: 'All eyes in', sub: 'Jury & peers' },
-  { src: `${BASE}/speaker.jpg`, alt: 'Speaker', cap: 'Closing words', sub: 'Barcelona final' },
-  { src: `${BASE}/hackathon-2.jpg`, alt: 'Hackathon moment', cap: 'Heads down', sub: 'Solving the brief' },
+  { src: `${BASE}/hackathon-960.webp`, cap: 'On the clock', sub: 'Qualifying round' },
+  { src: `${BASE}/speaker-stage-1300.webp`, cap: 'On stage', sub: 'Opening talk' },
+  { src: `${BASE}/room-1300.webp`, cap: 'The room', sub: 'Harbour.Space' },
+  { src: `${BASE}/audience-1300.webp`, cap: 'All eyes in', sub: 'Jury & peers' },
+  { src: `${BASE}/speaker-1300.webp`, cap: 'Closing words', sub: 'Barcelona final' },
+  { src: `${BASE}/hackathon-2-960.webp`, cap: 'Heads down', sub: 'Solving the brief' },
 ]
 
 export default function ClassicFloor() {
@@ -34,7 +41,7 @@ export default function ClassicFloor() {
           {PHOTOS.map((p, i) => (
             <figure className="c-floor__item c-reveal" key={p.cap} style={{ '--i': i }}>
               <span className="c-floor__frame">
-                <img src={p.src} alt={p.alt} loading="lazy" />
+                <img src={p.src} alt="" loading="lazy" />
               </span>
               <figcaption className="c-floor__cap cap-trim">
                 <span className="c-floor__cap-t">{typeset(p.cap)}</span>

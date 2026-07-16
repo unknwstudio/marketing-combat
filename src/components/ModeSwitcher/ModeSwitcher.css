@@ -82,6 +82,13 @@
   outline-offset: -2px;
 }
 
+/* active pills have gold/yellow/amber FILLS — a gold ring on them is invisible
+   (~1:1 contrast, 2.4.7/1.4.11 — 2026-07-16 audit); use the ink they already
+   pair with for text */
+.mode-switch__opt--active:focus-visible {
+  outline-color: var(--k-classic-ink);
+}
+
 .mode-switch__opt--active.mode-switch__opt--ai {
   background: var(--k-gold);
   color: var(--k-classic-ink);

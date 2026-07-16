@@ -115,7 +115,7 @@ export default function ClassicArenas() {
   }, [])
 
   return (
-    <section className="c-sec acc-blue" id="c-arenas" aria-label="Battle arenas" ref={sectionRef}>
+    <section className="c-sec acc-blue" id="c-arenas" aria-label="Case tracks" ref={sectionRef}>
       <div className="c-arenas__pin">
         <div className="c-wrap">
           <header className="c-arenas__head">

@@ -44,6 +44,11 @@
   }
 }
 
+/* WCAG 2.2.2 — the universal MotionToggle pause (keyboard/touch-reachable) */
+.motion-paused .c-cta__ribbon-track {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .c-cta__ribbon-track {
     animation: none;

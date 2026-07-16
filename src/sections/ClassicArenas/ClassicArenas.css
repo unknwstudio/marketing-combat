@@ -51,10 +51,8 @@
 
 /* matches the champion card subtitle (.cfw__card-s) */
 .c-arena__body {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact card subtitle size, matching .cfw__card-s */
-  font-size: 16px;
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading, matching .cfw__card-s */
-  line-height: 1.2;
+  font-size: var(--k-classic-text-card);
+  line-height: var(--k-classic-lh-card);
 }
 
 /* no hover state on these cards (#8) — the cards are static tiles */

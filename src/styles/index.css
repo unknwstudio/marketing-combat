@@ -128,6 +128,13 @@
      classic.css); mint an -onlight pair (the --k-red-onlight precedent) only
      if a real green-text need appears. */
   --k-classic-green: #00da95;
+  /* classic champion-card body/label tuple (Figma-exact: Frame 54 node 38:4415).
+     One idiom, five adopters (champion/stats/arenas/tracks/phases) — the 16px/1.2
+     pair was disable-annotated at every call site (2026-07-16 audit: 8 identical
+     disables). Fixed px on purpose: fluid --k-text-sm would shrink it on mobile,
+     and 1.2 must not snap on pixel-ported sections (the --c-lh-display precedent). */
+  --k-classic-text-card: 16px;
+  --k-classic-lh-card: 1.2;
 
   /* /play game-HUD blue-white readout ramp (light → dark) + status accents */
   --k-hud-ink: #eaf4ff;
@@ -279,6 +286,15 @@
   --k-shadow-hard-sm: 1px 1px 0 color-mix(in srgb, var(--k-black) 55%, transparent);
   --k-shadow-hard: 4px 4px 0 color-mix(in srgb, var(--k-black) 55%, transparent);
   --k-shadow-hard-lg: 6px 6px 0 color-mix(in srgb, var(--k-black) 60%, transparent);
+
+  /* --- fixed HUD dock insets --- SoundToggle (bottom-left), MotionToggle
+     (stacked above it) and PlayFab (bottom-right) share this corner geometry
+     and must move in lockstep (2026-07-16 audit: the 10px/72px mobile pair was
+     hand-duplicated across the pills — commit #60 had to touch both at once).
+     The mobile lift clears the bottom-center ModeSwitcher pill. */
+  --k-dock-inset: 16px; /* desktop corner inset */
+  --k-dock-inset-sm: 10px; /* mobile corner inset */
+  --k-dock-lift: 72px; /* mobile bottom lift over the centered ModeSwitcher */
 
   /* --- breakpoint ledger (@media can't read custom properties — this comment IS
      the source of truth; stylelint can't gate it, reviews do). Canonical set:

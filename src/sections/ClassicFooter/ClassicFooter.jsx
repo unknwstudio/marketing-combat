@@ -20,7 +20,9 @@ import './ClassicFooter.css'
 const NAV = [
   { label: 'How it works', href: '#c-how' },
   { label: 'Tracks', href: '#c-tracks' },
-  { label: 'Battle arenas', href: '#c-arenas' },
+  // label matches the section's visible MaskHead heading (was "Battle arenas",
+  // which disagreed with both the on-page copy and the top menu — 2026-07-16 audit)
+  { label: 'Case tracks', href: '#c-arenas' },
   { label: 'FAQ', href: '#c-faq' },
 ]
 

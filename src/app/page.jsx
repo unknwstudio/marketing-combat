@@ -36,6 +36,7 @@ import DemoNav from '@/components/DemoNav/DemoNav'
 import Announcer from '@/components/Announcer/Announcer'
 import KonamiFatality from '@/components/KonamiFatality/KonamiFatality'
 import SoundToggle from '@/components/SoundToggle/SoundToggle'
+import MotionToggle from '@/components/MotionToggle/MotionToggle'
 import PlayFab from '@/components/PlayFab/PlayFab'
 import MagneticCTA from '@/components/MagneticCTA/MagneticCTA'
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal'
@@ -118,6 +119,8 @@ export default function Page() {
       <ScrollHealth />
       <KonamiFatality />
       <SoundToggle />
+      {/* universal auto-motion pause (WCAG 2.2.2) — docked above SoundToggle */}
+      <MotionToggle />
       {/* hero-styled PLAY launcher, bottom-right — mirrors SoundToggle bottom-left */}
       <PlayFab />
       <MagneticCTA />

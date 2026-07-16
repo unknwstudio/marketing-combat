@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run lint:ds",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

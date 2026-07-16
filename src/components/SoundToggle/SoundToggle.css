@@ -1,8 +1,8 @@
 /* Arcade mute pill, bottom-left on desktop. */
 .sndtoggle {
   position: fixed;
-  left: 16px;
-  bottom: 16px;
+  left: var(--k-dock-inset);
+  bottom: var(--k-dock-inset);
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
@@ -85,13 +85,18 @@
        desktop split (it is wide enough to reach the corners well past 640px),
        so the pill stacks just ABOVE it for the whole fluid range — clear of
        the hero copy up top and the switcher below. */
-    left: 10px;
+    left: var(--k-dock-inset-sm);
     top: auto;
-    bottom: 72px;
+    bottom: var(--k-dock-lift);
     padding: var(--k-space-4) var(--k-space-8);
     font-size: var(--k-text-hud-xs);
   }
   .sndtoggle__bars {
     height: 11px;
   }
+}
+
+/* the pill's own equalizer bars are auto-motion too — park them with the rest */
+.motion-paused .sndtoggle__bars i {
+  animation-play-state: paused;
 }

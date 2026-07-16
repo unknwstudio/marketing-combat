@@ -78,7 +78,9 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-8);
+  /* 12, not 8: with ~13px-tall link rows an 8px gap gives a ~21px pitch and
+     fails the 2.5.8 24px-spacing exception on mobile (2026-07-16 audit) */
+  gap: var(--k-space-12);
 }
 
 .c-foot__col-h {
@@ -137,6 +139,11 @@
 
 .c-foot__base .madeby:hover,
 .c-foot__base .madeby:focus-visible {
+  animation-play-state: paused;
+}
+
+/* WCAG 2.2.2 — the universal MotionToggle pause (keyboard/touch-reachable) */
+.motion-paused .c-foot__base .madeby {
   animation-play-state: paused;
 }
 

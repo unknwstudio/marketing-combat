@@ -67,6 +67,12 @@
   animation-play-state: paused;
 }
 
+/* the universal MotionToggle pause (keyboard/touch-reachable, unlike hover);
+   the JS-driven crawl subscribes to the same state in Marquee.jsx */
+.motion-paused .marquee__viewport {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee__viewport {
     animation: none;

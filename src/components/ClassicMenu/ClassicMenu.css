@@ -79,11 +79,14 @@
   background: var(--k-classic-panel);
 }
 
-/* --- fluid mobile (< 1024px): collapse to the Apply pill only ----------
-   The pill stands ALONE — no orange card chrome around it (the wrapped
-   version read as a clumsy double-pill blob over the hero). */
+/* --- fluid mobile (< 1024px OR any coarse pointer): collapse to the Apply
+   pill only — the (pointer: coarse) arm matches ScaleCanvas.css so touch
+   tablets that get the fluid page body also get the mobile menu, not a
+   shrunk desktop card (2026-07-16 audit). The pill stands ALONE — no orange
+   card chrome around it (the wrapped version read as a clumsy double-pill
+   blob over the hero). */
 
-@media (max-width: 1023px) {
+@media (max-width: 1023px), (pointer: coarse) {
   .c-menu__card {
     margin: var(--k-space-12) var(--k-space-12) 0 0;
     width: auto;

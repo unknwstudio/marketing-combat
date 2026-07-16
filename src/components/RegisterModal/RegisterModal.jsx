@@ -222,6 +222,10 @@ export default function RegisterModal({ variant = 'ai' }) {
                       id={`reg-${c.id}`}
                       type="checkbox"
                       checked={consents[c.id]}
+                      /* aria-required (not native required) — the noValidate
+                         submit flow owns validation; SR users still learn the
+                         box is mandatory before erroring (3.3.2) */
+                      aria-required={c.required || undefined}
                       aria-invalid={errors[c.id] ? 'true' : undefined}
                       aria-describedby={errors[c.id] ? errId : undefined}
                       onChange={(e) => setConsent(c.id, e.target.checked)}

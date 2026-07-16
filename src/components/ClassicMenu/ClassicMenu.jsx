@@ -17,13 +17,25 @@ export default function ClassicMenu() {
     const el = ref.current
     if (!el) return
     const apply = () => {
+      // mirror ScaleCanvas's fluid decision EXACTLY, including its coarse-pointer
+      // branch — without it a 1024-1439px touch tablet gets a fluid mobile page
+      // body under a shrunk desktop menu card (2026-07-16 audit). Read inside
+      // apply so 2-in-1 mode flips are picked up live.
+      const coarse =
+        typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
       const w = document.documentElement.clientWidth
-      const scale = w >= 1024 ? w / 1440 : 1
+      const scale = w >= 1024 && !coarse ? w / 1440 : 1
       el.style.transform = `scale(${scale})`
     }
     apply()
     window.addEventListener('resize', apply)
-    return () => window.removeEventListener('resize', apply)
+    const mq =
+      typeof window.matchMedia === 'function' ? window.matchMedia('(pointer: coarse)') : null
+    mq?.addEventListener?.('change', apply)
+    return () => {
+      window.removeEventListener('resize', apply)
+      mq?.removeEventListener?.('change', apply)
+    }
   }, [])
 
   return (
@@ -32,7 +44,7 @@ export default function ClassicMenu() {
         <div className="c-menu__links">
           {/* /classic now carries these sections itself, so the menu anchors
               to the local section ids — the same live set the footer's EVENT
-              column links (How it works / Tracks / Battle arenas / FAQ). */}
+              column links (How it works / Tracks / Case tracks / FAQ). */}
           <a className="c-menu__link" href="#c-how">
             How it works
           </a>
@@ -54,7 +66,7 @@ export default function ClassicMenu() {
           <span className="c-menu__rule" aria-hidden="true" />
           */}
           <a className="c-menu__link" href="#c-faq">
-            FAQs
+            FAQ
           </a>
         </div>
         <a className="c-menu__apply" href="#cta" data-register>

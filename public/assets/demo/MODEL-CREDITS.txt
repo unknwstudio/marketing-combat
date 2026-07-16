@@ -7,3 +7,20 @@ Modifications: exported to Draco-compressed .glb; cabinet body (STEEL3) and
 neon trim (NEON) recolored to the site palette; the SCREEN material is replaced
 at runtime with a live CRT attract shader; the ARCADE marquee is replaced with a
 runtime "AI KOMBAT" glow texture; the GLASS panel is dimmed.
+
+---
+
+Draco decoder provenance (public/draco/, executed under CSP 'wasm-unsafe-eval')
+
+Self-hosted copy of Google's Draco decoder as shipped with three@0.161.0
+(three/examples/jsm/libs/draco/gltf/ — the glTF variant). Provenance VERIFIED:
+all three sha256 hashes match that package copy byte-for-byte. Pinned here so
+any future swap is detectable (2026-07-16 security audit):
+
+sha256:
+  8625489da79a805f4f2a7d511c3e52d8b4085608a9d2a4d5f4f9de5db0aea04f  draco_decoder.js
+  a680d927bed9cb864ddbd63521868891af2bfbe755092761b4837487618df8ac  draco_decoder.wasm
+  8bb2952d2ba7d67e1414f8df819410cb0434a666be53f671fff75f68843d76f6  draco_wasm_wrapper.js
+
+If these files are ever replaced, re-verify against the copies inside the
+matching three.js release and update the hashes here in the same commit.
