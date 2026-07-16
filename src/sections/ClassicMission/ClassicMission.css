@@ -36,7 +36,9 @@
 
 .classic .c-mission__sub {
   max-width: 56ch;
-  color: var(--k-hud-steel);
+  /* same dimmed white as the footer's Event / Legal headings (.c-foot__col-h
+     uses --foot-faint = white 55%) — matched here on the black band */
+  color: color-mix(in srgb, var(--k-white) 55%, transparent);
 }
 
 @media (max-width: 1023px) {
