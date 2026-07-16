@@ -7,16 +7,15 @@ import './ClassicBattle.css'
 
 /**
  * THE BATTLE — the manifesto + the four headline figures, plus the
- * "powered by" sponsor strip. Editorial split: lede left, then a bordered
- * hairline grid of giant weight-400 numerals under a small meta kicker. One
- * cell ($100M+, the standout metric) is a filled blue block — a deliberate
- * highlight, not an arbitrary text color. Numbers count up on view.
+ * "powered by" sponsor strip. Editorial split: lede left, then a row of four
+ * blue cards (the champion-card idiom) of giant weight-400 numerals under a
+ * small meta kicker. Numbers count up on view.
  */
 
 const STATS = [
   { target: 1, suffix: 'st', label: 'International hackathon' },
   { target: 300, suffix: '+', label: 'Participants' },
-  { prefix: '$', target: 100, suffix: 'M+', label: 'Budget under management', accent: true },
+  { prefix: '$', target: 100, suffix: 'M+', label: 'Budget under management' },
   { target: 30, label: 'Finalists in Barcelona' },
 ]
 
@@ -30,10 +29,10 @@ const STATS = [
 //   { src: '/assets/classic/sponsors/tiktok.svg', alt: 'TikTok' },
 // ]
 
-function Stat({ prefix, target, suffix, label, accent, index }) {
+function Stat({ prefix, target, suffix, label, index }) {
   const [ref, text] = useCountUp({ target, prefix, suffix })
   return (
-    <div className={`c-stat c-reveal${accent ? ' c-stat--accent' : ''}`} style={{ '--i': index }}>
+    <div className="c-stat c-reveal" style={{ '--i': index }}>
       <span ref={ref} className="c-stat__num cap-trim">
         {text}
       </span>
