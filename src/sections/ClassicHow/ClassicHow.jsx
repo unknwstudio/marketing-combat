@@ -11,7 +11,7 @@ import './ClassicHow.css'
  */
 
 // the components of "A real task —": each becomes one hover-list item
-const TASK = ['a brief', 'a data room', 'Google / Meta / TikTok', 'a creative block', 'AI tools', 'limited time']
+const TASK = ['A brief', 'A data room', 'Google / Meta / TikTok', 'A creative block', 'AI tools', 'Limited time']
 
 const PHASES = [
   {
@@ -44,19 +44,22 @@ export default function ClassicHow() {
           <header className="c-how__head">
             <MaskHead lines={['Registration.', 'Qualifying round.', 'Final']} />
           </header>
-          <p className="c-lede c-reveal c-how__intro">{typeset('A real task —')}</p>
-          <ol className="c-how__steps">
-            {TASK.map((label, i) => (
-              <li className="c-step c-reveal" key={label} style={{ '--i': i }}>
-                <span className="c-step__item">
-                  <svg className="c-step__arrow" viewBox="0 0 52 27" aria-hidden="true" focusable="false">
-                    <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
-                  </svg>
-                  <span className="c-step__title cap-trim">{typeset(label)}</span>
-                </span>
-              </li>
-            ))}
-          </ol>
+          {/* second heading movement: names the challenge and heads its list */}
+          <div className="c-how__task">
+            <MaskHead lines={['A real task —']} className="c-how__task-h" />
+            <ol className="c-how__steps">
+              {TASK.map((label, i) => (
+                <li className="c-step c-reveal" key={label} style={{ '--i': i }}>
+                  <span className="c-step__item">
+                    <svg className="c-step__arrow" viewBox="0 0 52 27" aria-hidden="true" focusable="false">
+                      <path d="M0 0L51.75 13.42L0 26.85Z" fill="var(--k-classic-blue)" />
+                    </svg>
+                    <span className="c-step__title cap-trim">{typeset(label)}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
 
         <ol className="c-how__cards">
