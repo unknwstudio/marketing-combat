@@ -111,12 +111,14 @@
 
 /* --- phase cards: 1px frame + coded accent strip ------------------------- */
 
+/* compact card: the big index sits on the LEFT, the title + body to its right */
 .c-phase {
   position: relative;
   display: flex;
-  flex-direction: column;
-  gap: var(--k-space-12);
-  padding: var(--k-space-32);
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--k-space-24);
+  padding: var(--k-space-24);
   background: var(--k-white);
   border: 1px solid var(--k-black);
   border-radius: var(--k-radius-md);
@@ -135,10 +137,17 @@
 }
 
 .c-phase__n {
-  font-size: var(--k-text-2xl);
+  flex-shrink: 0;
+  font-size: var(--k-text-3xl);
   font-weight: 400;
   line-height: var(--k-lh-crushed);
   color: var(--phase-accent, var(--k-black));
+}
+
+.c-phase__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-8);
 }
 
 .c-phase__title {
@@ -153,7 +162,6 @@
   font-size: var(--k-text-sm);
   line-height: var(--k-lh-normal);
   color: var(--k-classic-panel);
-  max-width: 42ch;
 }
 
 /* --- fluid < 1024: plain stacked layout (no pin / no runway) -------------- */
