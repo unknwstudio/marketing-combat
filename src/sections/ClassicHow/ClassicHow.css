@@ -19,8 +19,14 @@
   gap: var(--k-space-24);
 }
 
+/* right column: the "A real task —" lede over the hover-list */
+.c-how__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-32);
+}
+
 .c-how__intro {
-  margin-top: var(--k-space-8);
   max-width: 46ch;
 }
 
@@ -30,17 +36,15 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-48);
+  gap: var(--k-space-24);
 }
 
-/* each step is a large hover-list item in the "who it's for" idiom (.cfw__item):
-   a big editorial title that turns blue with a ► marker sliding in on hover — no
-   card frame — over a quiet line of detail that indents with it. */
+/* each task component is a large hover-list item in the "who it's for" idiom
+   (.cfw__item): big editorial type that turns blue with a ► marker sliding in on
+   hover, the label indenting into the freed arrow slot. No card frame. */
 .c-step {
   --arrow-indent: var(--k-space-48);
-  display: flex;
-  flex-direction: column;
-  gap: var(--k-space-12);
+  position: relative;
 }
 
 .c-step__item {
@@ -81,19 +85,6 @@
 }
 
 .c-step:hover .c-step__title {
-  transform: translateX(var(--arrow-indent));
-}
-
-.c-step__body {
-  font-size: var(--k-text-sm);
-  line-height: var(--k-lh-normal);
-  color: var(--k-classic-panel);
-  max-width: 42ch;
-  transition: transform var(--k-t-slow) ease;
-}
-
-/* the detail line indents in lockstep with its title so the two stay aligned */
-.c-step:hover .c-step__body {
   transform: translateX(var(--arrow-indent));
 }
 
