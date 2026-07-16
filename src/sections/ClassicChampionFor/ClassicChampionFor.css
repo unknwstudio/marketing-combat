@@ -77,7 +77,10 @@
   color: var(--k-white);
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-40);
+  /* title pinned to the top, subtitle to the bottom, the space FILLING between
+     them (Figma Frame 10 auto-layout) — not a fixed gap */
+  justify-content: space-between;
+  gap: var(--k-space-20);
 }
 
 .cfw__card-t {
