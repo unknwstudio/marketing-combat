@@ -1,34 +1,27 @@
 /* ============================================================
-   HOW IT WORKS — two-column compose: sticky heading + a vertical
-   stack of steps that rise into place beside it on scroll (#10).
+   HOW IT WORKS — two columns: the heading + "A real task —"
+   hover-list on the left, the three phase cards on the right.
    ============================================================ */
 
 .c-how {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--k-space-64);
-  align-items: start; /* required so the heading column can pin */
+  align-items: start;
 }
 
-.c-how__head {
-  /* pins while the taller steps column scrolls up beside it */
-  position: sticky;
-  top: var(--k-space-80);
+/* left column: heading, then the "A real task —" lede over the components list */
+.c-how__lead {
   display: flex;
   flex-direction: column;
   gap: var(--k-space-24);
 }
 
-/* right column: the "A real task —" lede over the hover-list */
-.c-how__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--k-space-32);
-}
-
 .c-how__intro {
   max-width: 46ch;
 }
+
+/* --- "A real task —" components: a large hover-list (who-it's-for idiom) ----- */
 
 .c-how__steps {
   margin: 0;
@@ -39,7 +32,7 @@
   gap: var(--k-space-24);
 }
 
-/* each task component is a large hover-list item in the "who it's for" idiom
+/* each component is a large hover-list item in the "who it's for" idiom
    (.cfw__item): big editorial type that turns blue with a ► marker sliding in on
    hover, the label indenting into the freed arrow slot. No card frame. */
 .c-step {
@@ -88,22 +81,74 @@
   transform: translateX(var(--arrow-indent));
 }
 
-/* the pin needs vertical travel; below the split (or under reduced motion,
-   where a pinned column reads oddly against snapped reveals) fall back to a
-   plain stacked layout. */
+/* --- right column: the three phase cards --------------------------------- */
+
+.c-how__cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-16);
+}
+
+/* each phase is a bordered card (case-tracks idiom): 1px frame + a coded accent
+   strip clipped to the radius */
+.c-phase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-space-12);
+  padding: var(--k-space-32);
+  background: var(--k-white);
+  border: 1px solid var(--k-black);
+  border-radius: var(--k-radius-md);
+  overflow: hidden;
+}
+
+.c-phase::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* height = corner radius so the band rounds fully with the card (a thin 4px
+     strip reads as a cut nub against the rounded frame) */
+  height: var(--k-radius-md);
+  background: var(--phase-accent, var(--k-black));
+}
+
+.c-phase__n {
+  font-size: var(--k-text-2xl);
+  font-weight: 400;
+  line-height: var(--k-lh-crushed);
+  color: var(--phase-accent, var(--k-black));
+}
+
+.c-phase__title {
+  font-size: var(--k-text-lg);
+  font-weight: 400;
+  line-height: var(--k-lh-flat);
+  text-transform: uppercase;
+  color: var(--k-black);
+}
+
+.c-phase__body {
+  font-size: var(--k-text-sm);
+  line-height: var(--k-lh-normal);
+  color: var(--k-classic-panel);
+  max-width: 42ch;
+}
+
+/* --- fluid < 1024: single column ----------------------------------------- */
+
 @media (max-width: 1023px) {
   .c-how {
     grid-template-columns: 1fr;
     gap: var(--k-space-40);
   }
 
-  .c-how__head {
-    position: static;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .c-how__head {
-    position: static;
+  .c-phase {
+    padding: var(--k-space-24);
   }
 }
