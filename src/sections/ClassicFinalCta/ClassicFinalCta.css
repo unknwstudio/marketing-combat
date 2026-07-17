@@ -81,6 +81,12 @@
   align-items: center;
   gap: var(--k-space-24);
   text-align: center;
+  /* +160px of yellow around the body (owner 2026-07-17): the section must be
+     tall enough that the END-OF-PAGE frame shows ONLY yellow + footer — the
+     white ribbon scrolls fully off-screen. Sized for common desktop design
+     viewports (~940px worst case: 1280x832 / 1512x982-class windows): the
+     CTA-top-to-page-end distance grows to ~1030 > viewport + ribbon. */
+  padding-block: var(--k-space-40) var(--k-space-120);
 }
 
 /* .classic prefix raises specificity above the shared .c-h2 size — classic.css
