@@ -1,7 +1,9 @@
 /* ============================================================
    CHAMPION GETS / WHO IT'S FOR — composed block per Figma
    Frame 54 (node 38:4415): 1440x556, two 670px columns at
-   x=20 and x=750, each y=60, h=436.
+   x=20 and x=750, each y=60, h=436. Sides SWAPPED vs the Figma
+   source on owner request (2026-07-17): champion pins LEFT,
+   the who-list rides up on the RIGHT.
 
    The pin is NATIVE position:sticky (never a JS transform — a
    rAF fake-sticky jiggles). The outer .cfw is the runway (height
@@ -18,12 +20,12 @@
   background: var(--k-white);
 }
 
-/* right lane: bounds the sticky travel. Champion starts at its Figma
+/* left lane: bounds the sticky travel. Champion starts at its Figma
    y=60 (lane top) and can slide down to lane bottom - own height:
    60 + 965 - 436 = 589 — the composed position. */
 .cfw__champ-lane {
   position: absolute;
-  left: 750px;
+  left: 20px;
   top: 60px;
   width: 670px;
   height: 965px; /* 589 - 60 + 436 = travel + column height */
@@ -44,7 +46,7 @@
 
 .cfw__who {
   position: absolute;
-  left: 20px;
+  left: 750px;
   top: 589px; /* its Figma stacked slot (section 38:4361): 529 + 60 */
 }
 
@@ -133,9 +135,10 @@
 
 .cfw__item {
   /* indent kept small + the arrow shrunk so the LONGEST item ("Performance
-     lead gens", ~663px wide) can't slide across the 60px gap into the pinned
-     champion cards on hover (was 85px, which overran the cards, #11) */
-  --arrow-indent: var(--k-space-40);
+     lead gens", ~663px wide) can't slide past the CANVAS EDGE on hover — the
+     who-column now sits at x=750 (right side), so 750 + 663 + indent must
+     stay ≤ 1440 (ScaleCanvas clips) — 24px leaves a 3px margin */
+  --arrow-indent: var(--k-space-24);
   position: relative;
   font-size: var(--k-text-2xl);
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma cap-box ratio (46/64) so the five items pitch at 66px and the list is exactly 310px tall — the SAME height as the champion cards block, so "Future legends" aligns with the green strip (Frame 71). Relying on cap-trim (text-box-trim) here is not robust; this line-height reproduces it everywhere. */
