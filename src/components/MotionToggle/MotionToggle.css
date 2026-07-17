@@ -3,9 +3,10 @@
    that shorten to stubs when motion is paused. */
 .motiontoggle {
   position: fixed;
-  left: var(--k-dock-inset);
-  /* one pill row (32px + 8px air) above the sound pill's slot */
-  bottom: calc(var(--k-dock-inset) + var(--k-space-40));
+  /* desktop: IN A ROW with SOUND (owner 2026-07-17) — one shared-width pill
+     slot to the right of the corner pill; mobile stacks (media block below) */
+  left: calc(var(--k-dock-inset) + var(--k-dock-pill-min) + var(--k-space-8));
+  bottom: var(--k-dock-inset);
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
