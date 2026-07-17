@@ -168,6 +168,50 @@ const GRIDS = {
     '...XXX...',
     '....X....',
   ],
+  // 🔊 speaker + sound waves (11x9) — SOUND ON. Left: a right-facing speaker
+  // cone (flat mouth on the right); right: two ")" arcs radiating out.
+  soundOn: [
+    '....X......',
+    '...XX....X.',
+    '.XXXX.X...X',
+    'XXXXX..X..X',
+    'XXXXX..X..X',
+    'XXXXX..X..X',
+    '.XXXX.X...X',
+    '...XX....X.',
+    '....X......',
+  ],
+  // 🔇 speaker + ✕ (11x9) — SOUND OFF (muted). Same cone, an X where the
+  // waves were — the universal "muted" glyph.
+  soundOff: [
+    '....X......',
+    '...XX......',
+    '.XXXX.X...X',
+    'XXXXX..X.X.',
+    'XXXXX...X..',
+    'XXXXX..X.X.',
+    '.XXXX.X...X',
+    '...XX......',
+    '....X......',
+  ],
+  // ∿ wave (12x5) — MOTION ON. A moving zigzag reads as "animation running",
+  // distinct from the speaker cone and the play triangle in the same column.
+  motionOn: [
+    '....X.......',
+    '...X.X.....X',
+    '..X...X...X.',
+    '.X.....X.X..',
+    'X.......X...',
+  ],
+  // — flat line (12x5) — MOTION OFF. The wave flattened to a still line:
+  // "no motion". Reinforces the OFF label; the muted color carries the rest.
+  motionOff: [
+    '............',
+    '............',
+    'XXXXXXXXXXXX',
+    '............',
+    '............',
+  ],
 }
 
 /**

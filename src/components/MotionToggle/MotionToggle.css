@@ -1,6 +1,6 @@
 /* Motion-pause pill (WCAG 2.2.2) — SoundToggle's sibling, docked directly
-   above it bottom-left. Same terminal look; the glyph is three "speed lines"
-   that shorten to stubs when motion is paused. */
+   above it bottom-left. Same terminal look; the pixel glyph is a moving wave
+   (motionOn) that flattens to a still line (motionOff). */
 .motiontoggle {
   position: fixed;
   /* desktop: IN A ROW with SOUND (owner 2026-07-17) — one shared-width pill
@@ -49,29 +49,13 @@
   }
 }
 
-/* three "speed lines" (decorative) */
-.motiontoggle__glyph {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--k-space-2);
-}
-
-.motiontoggle__glyph i {
-  width: 12px;
-  height: 2px;
-  background: currentColor;
-}
-
-.motiontoggle__glyph i:nth-child(2) {
-  width: 9px;
-}
-.motiontoggle__glyph i:nth-child(3) {
-  width: 6px;
-}
-
-.motiontoggle--off .motiontoggle__glyph i {
-  width: 4px;
+/* the pixel wave glyph (motionOn / motionOff). currentColor flips it green ->
+   muted with the label via the --off rule above. The wave grid is wide (12x5),
+   so give the icon a touch more width than its em box for legibility. */
+.motiontoggle__icon {
+  flex: 0 0 auto;
+  width: 1.6em;
+  height: auto;
 }
 
 /* (AI skin only — /classic's pause control is the hero ClassicMotionChip) */

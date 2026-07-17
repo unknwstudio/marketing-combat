@@ -7,6 +7,7 @@ import {
   toggleMotionPaused,
   subscribeMotionPaused,
 } from '@/effects/motion/motionPause'
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import './MotionToggle.css'
 
 /**
@@ -36,11 +37,7 @@ export default function MotionToggle({ inline = false }) {
          (a pressed state on top of a state-swapping label is ambiguous). */
       onClick={toggleMotionPaused}
     >
-      <span className="motiontoggle__glyph" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
+      <PixelIcon className="motiontoggle__icon" name={paused ? 'motionOff' : 'motionOn'} size="1.3em" />
       <span className="motiontoggle__label">{paused ? 'MOTION OFF' : 'MOTION ON'}</span>
     </button>
   )

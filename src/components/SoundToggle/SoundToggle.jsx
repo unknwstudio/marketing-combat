@@ -9,6 +9,7 @@ import {
   subscribeMuted,
   playSfx,
 } from '@/effects/audio/arcadeAudio'
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import './SoundToggle.css'
 
 /**
@@ -48,11 +49,7 @@ export default function SoundToggle({ inline = false }) {
         if (!isMuted()) playSfx('confirm', 0.5)
       }}
     >
-      <span className="sndtoggle__bars" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
+      <PixelIcon className="sndtoggle__icon" name={muted ? 'soundOff' : 'soundOn'} size="1.3em" />
       <span className="sndtoggle__label">{muted ? 'SOUND OFF' : 'SOUND ON'}</span>
     </button>
   )

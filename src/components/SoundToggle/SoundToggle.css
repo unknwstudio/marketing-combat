@@ -47,44 +47,10 @@
   }
 }
 
-/* animated equalizer bars (on) */
-.sndtoggle__bars {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: var(--k-space-2);
-  height: 14px;
-}
-
-.sndtoggle__bars i {
-  width: 3px;
-  height: 100%;
-  background: currentColor;
-  transform-origin: bottom;
-  animation: eq 0.8s ease-in-out infinite;
-}
-
-.sndtoggle__bars i:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.sndtoggle__bars i:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.sndtoggle--off .sndtoggle__bars i {
-  animation: none;
-  transform: scaleY(0.35);
-}
-
-@keyframes eq {
-  0%, 100% { transform: scaleY(0.35); }
-  50% { transform: scaleY(1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sndtoggle__bars i {
-    animation: none;
-    transform: scaleY(0.7);
-  }
+/* the pixel speaker glyph (soundOn / soundOff). currentColor makes it flip
+   green -> muted with the label via the --off rule above — no per-icon color. */
+.sndtoggle__icon {
+  flex: 0 0 auto;
 }
 
 /* The hero-inline instance (owner frame 77): an in-flow pill under the energy
@@ -110,13 +76,4 @@
     font-size: var(--k-text-hud-xs);
     min-width: var(--k-dock-pill-min-sm);
   }
-
-  .sndtoggle__bars {
-    height: 11px;
-  }
-}
-
-/* the pill's own equalizer bars are auto-motion too — park them with the rest */
-.motion-paused .sndtoggle__bars i {
-  animation-play-state: paused;
 }
