@@ -134,12 +134,14 @@
    text indents into the 85px arrow slot (69px Figma slot + 16 gap). */
 
 .cfw__item {
-  /* 0 on desktop: the marker sits in the inter-column GUTTER (the arrow rule
-     below pulls it to left:-36px), so the text never indents — which also
-     means the longest item can never slide past the 1440 canvas edge. The
-     indent mechanism stays for mobile, where the arrow is back INSIDE the
-     column and the text must make room (the media block overrides both). */
-  --arrow-indent: 0px;
+  /* 24 is the CEILING, not a taste choice: the active text must still slide
+     (the ClassicHow task list sets the idiom — owner 2026-07-17), and with
+     the column at x=750 the longest item ("Performance lead gens", ~662px)
+     tops out at 750 + 662 + 24 = 1436 ≤ the 1440 canvas clip (~3px margin).
+     The marker itself sits in the inter-column gutter (arrow rule below), so
+     text and arrow can never collide at any indent. Mobile overrides both
+     (arrow back inside the column, 48px indent). */
+  --arrow-indent: var(--k-space-24);
   position: relative;
   font-size: var(--k-text-2xl);
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma cap-box ratio (46/64) so the five items pitch at 66px and the list is exactly 310px tall — the SAME height as the champion cards block, so "Future legends" aligns with the green strip (Frame 71). Relying on cap-trim (text-box-trim) here is not robust; this line-height reproduces it everywhere. */
