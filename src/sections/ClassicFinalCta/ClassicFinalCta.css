@@ -14,9 +14,13 @@
 /* .c-sec.c-cta (0,2,0): the section-system's `.c-sec { background: white }`
    in classic.css loads LAST (ClassicApp import order) and silently overrode
    the equal-specificity yellow — the band shipped white until the owner
-   caught it (2026-07-17). Doubling the class makes the yellow ordering-proof. */
+   caught it (2026-07-17). Doubling the class makes the yellow ordering-proof.
+   padding-top 0: the ribbon sits at the section's very top edge, so the
+   yellow starts AT the running line and runs down ("жёлтый до бегущей
+   строки") — no yellow strip above it. */
 .c-sec.c-cta {
   background: var(--c-yellow); /* fill-only use — text on it stays black */
+  padding-top: 0;
 }
 
 /* --- marquee ribbon --------------------------------------------------- */
