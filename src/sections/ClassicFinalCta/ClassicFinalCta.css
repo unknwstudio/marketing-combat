@@ -81,12 +81,29 @@
   align-items: center;
   gap: var(--k-space-24);
   text-align: center;
-  /* +160px of yellow around the body (owner 2026-07-17): the section must be
-     tall enough that the END-OF-PAGE frame shows ONLY yellow + footer — the
-     white ribbon scrolls fully off-screen. Sized for common desktop design
-     viewports (~940px worst case: 1280x832 / 1512x982-class windows): the
-     CTA-top-to-page-end distance grows to ~1030 > viewport + ribbon. */
-  padding-block: var(--k-space-40) var(--k-space-120);
+}
+
+/* END-OF-PAGE FRAME (owner 2026-07-17): the last frame must compose like the
+   hero — yellow stage + footer filling the viewport exactly, ribbon fully
+   scrolled off, body breathing in the middle. A fixed padding can't do that
+   (too short on tall windows → white ribbon sliver pinned at the top; too tall
+   on short ones → an empty yellow shelf under the fine print), so size the
+   section off the live viewport the same way the hero does:
+   one viewport in canvas px (100dvh / --canvas-scale) minus the footer that
+   shares the final frame (--foot-h, set on <main> by the footer's measurer),
+   plus the 62px ribbon + 8px rounding safety so the tape ends ABOVE the frame.
+   The body then centers in the leftover yellow via auto margins (min breathing
+   stays: ribbon margin 80 above, .c-sec padding 80 below). */
+@media (min-width: 1024px) {
+  .c-sec.c-cta {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh / var(--canvas-scale, 1) - var(--foot-h, 380px) + 70px);
+  }
+
+  .c-cta__body {
+    margin-block: auto;
+  }
 }
 
 /* .classic prefix raises specificity above the shared .c-h2 size — classic.css
