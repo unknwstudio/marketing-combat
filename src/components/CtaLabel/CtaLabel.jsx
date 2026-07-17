@@ -9,9 +9,13 @@
 export default function CtaLabel({ children }) {
   return (
     <>
-      <span aria-hidden="true">{'>>> '}</span>
+      {/* NBSP, not a plain space: the chevron spans are FLEX ITEMS inside the
+          inline-flex buttons, and a trailing/leading plain space at a flex-item
+          edge is collapsed — the buttons rendered ">>>registration<<<" while
+          the Figma comp (33:3912) spaces the chevrons (owner 2026-07-17) */}
+      <span aria-hidden="true">{'>>>\u00A0'}</span>
       {children}
-      <span aria-hidden="true">{' <<<'}</span>
+      <span aria-hidden="true">{'\u00A0<<<'}</span>
     </>
   )
 }
