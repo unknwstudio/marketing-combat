@@ -66,7 +66,11 @@
    used to head this block is gone) --- */
 .hero__intro {
   position: absolute;
-  top: 23px;
+  /* 96, was 23: the fixed top-left registration launcher (PlayFab, viewport
+     px) sits above this slot on desktop — 96 design px clears its ~62px
+     screen box even at the 1024 minimum zoom (96 x 0.711 = 68 > 62), with a
+     comfortable gap at 1440+ (owner 2026-07-17 mock) */
+  top: 96px;
   left: 19px;
   /* Figma frame is 672px; +8px so Chrome's text metrics reproduce Figma's
      line-1 wrap ("...senior marketers" needs 674px in-browser). Governs the

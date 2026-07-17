@@ -1,11 +1,13 @@
-/* Floating registration launcher, bottom-right — mirrors SoundToggle
-   (bottom-left). Black terminal box (black fill, white hairline, mono
-   ">>> registration <<<") that inverts on hover — the site's quiet "secondary"
-   registration look. Only the big central hero CTA is gold. */
+/* Floating registration launcher. DESKTOP: sticky at the TOP-LEFT (owner
+   2026-07-17 mock — the hero lede drops below it, see Hero.css), freeing the
+   bottom-right corner. TOUCH/NARROW: bottom-right dock as before — the owner
+   keeps it under the right thumb there (media block below). Black terminal
+   box (black fill, white hairline, mono ">>> registration <<<") that inverts
+   on hover — the site's quiet "secondary" registration look. */
 .playfab {
   position: fixed;
-  right: var(--k-dock-inset);
-  bottom: var(--k-dock-inset);
+  left: var(--k-dock-inset);
+  top: var(--k-dock-inset);
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
@@ -38,14 +40,16 @@
   outline-offset: 5px;
 }
 
-/* phones: shrink a touch + sit just ABOVE the bottom-center ModeSwitcher pill
-   (bottom-right), mirroring SoundToggle at bottom-left. */
-@media (max-width: 1023px) {
+/* phones AND touch tablets (the coarse arm matches the ScaleCanvas fluid
+   split): shrink a touch + sit just ABOVE the bottom-center ModeSwitcher
+   pill (bottom-right) — right-thumb reach, per the owner. */
+@media (max-width: 1023px), (pointer: coarse) {
   .playfab {
     /* stacked above the bottom-center ModeSwitcher for the whole fluid
        range — at 640-1023 the old bottom corner still collided with it */
-    right: var(--k-dock-inset-sm);
+    left: auto;
     top: auto;
+    right: var(--k-dock-inset-sm);
     bottom: var(--k-dock-lift);
     /* same 12px optical bottom as the desktop rule above */
     padding: var(--k-space-8) var(--k-space-12) var(--k-space-12);
