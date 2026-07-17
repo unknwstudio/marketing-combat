@@ -1,4 +1,6 @@
 import { typeset } from '@/lib/typeset'
+import SoundToggle from '@/components/SoundToggle/SoundToggle'
+import MotionToggle from '@/components/MotionToggle/MotionToggle'
 import './Hero.css'
 
 /**
@@ -53,6 +55,13 @@ export default function Hero() {
           <span className="hero__meter-pct">15%</span>
         </div>
         <p className="hero__survive">will you survive?</p>
+        {/* touch/narrow only (owner frame 77): SOUND + MOTION leave the fixed
+            dock and live here, stacked under the meter — the page-level fixed
+            pills hide themselves on the same media arm. Desktop: hidden. */}
+        <div className="hero__toggles">
+          <SoundToggle inline />
+          <MotionToggle inline />
+        </div>
       </div>
 
       {/* bottom: tag pills */}

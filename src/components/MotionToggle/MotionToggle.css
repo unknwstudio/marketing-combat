@@ -76,12 +76,22 @@
 
 /* (AI skin only — /classic's pause control is the hero ClassicMotionChip) */
 
-@media (max-width: 1023px) {
-  .motiontoggle {
-    /* stacked above SoundToggle, which itself sits above the bottom-center
-       ModeSwitcher pill for the whole fluid range (same dock as the others) */
-    left: var(--k-dock-inset-sm);
-    bottom: calc(var(--k-dock-lift) + var(--k-space-40));
+/* The hero-inline instance — SoundToggle's sibling in the frame-77 hero
+   column; hidden until the touch/narrow arm activates it. */
+.motiontoggle--inline {
+  display: none;
+  position: static;
+}
+
+/* touch/narrow: the fixed pill leaves the chrome — motion pause lives IN the
+   hero under SOUND (owner frame 77; same media arm as SoundToggle/PlayFab). */
+@media (max-width: 1023px), (pointer: coarse) {
+  .motiontoggle:not(.motiontoggle--inline) {
+    display: none;
+  }
+
+  .motiontoggle--inline {
+    display: inline-flex;
     padding: var(--k-space-4) var(--k-space-8);
     font-size: var(--k-text-hud-xs);
     min-width: var(--k-dock-pill-min-sm);

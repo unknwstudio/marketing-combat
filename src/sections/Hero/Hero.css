@@ -114,6 +114,22 @@
   z-index: 3;
 }
 
+/* SOUND/MOTION hero column (owner frame 77): exists only on the touch/narrow
+   arm, where the fixed dock pills hide — see SoundToggle/MotionToggle css.
+   Desktop: display none so the empty slot adds no flex gap to the meter. */
+.hero__toggles {
+  display: none;
+}
+
+@media (max-width: 1023px), (pointer: coarse) {
+  .hero__toggles {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--k-space-8);
+  }
+}
+
 .hero__meter {
   display: flex;
   align-items: center;

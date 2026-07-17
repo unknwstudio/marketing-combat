@@ -14,7 +14,9 @@ import './MotionToggle.css'
  * (WCAG 2.2.2): marquees/tickers on both skins, the footer credit shimmer,
  * and the classic hero video. Docked with SoundToggle, styled as its sibling.
  */
-export default function MotionToggle() {
+// `inline` renders the in-flow hero instance (touch/narrow — owner frame 77);
+// see SoundToggle for the dual-mount contract.
+export default function MotionToggle({ inline = false }) {
   const [paused, setPaused] = useState(false)
 
   useEffect(() => {
@@ -25,7 +27,9 @@ export default function MotionToggle() {
 
   return (
     <button
-      className={'motiontoggle' + (paused ? ' motiontoggle--off' : '')}
+      className={
+        'motiontoggle' + (inline ? ' motiontoggle--inline' : '') + (paused ? ' motiontoggle--off' : '')
+      }
       type="button"
       /* No aria-label / aria-pressed: the visible swapping "MOTION ON/OFF"
          label is the accessible name AND the state — the SoundToggle pattern

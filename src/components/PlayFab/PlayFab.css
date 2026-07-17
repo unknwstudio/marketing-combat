@@ -48,18 +48,23 @@
 }
 
 /* phones AND touch tablets (the coarse arm matches the ScaleCanvas fluid
-   split): shrink a touch + sit just ABOVE the bottom-center ModeSwitcher
-   pill (bottom-right) — right-thumb reach, per the owner. */
+   split): frame 77 (owner 2026-07-17) — the launcher is the loud CENTERED
+   terminal box directly above the bottom-center ModeSwitcher; sound/motion
+   left this dock for the hero, so the pair reads as one centered stack.
+   env() keeps the gap on notched iPhones where the switcher rises with the
+   home-indicator inset. */
 @media (max-width: 1023px), (pointer: coarse) {
   .playfab {
-    /* stacked above the bottom-center ModeSwitcher for the whole fluid
-       range — at 640-1023 the old bottom corner still collided with it */
-    left: auto;
+    left: 50%;
     top: auto;
-    right: var(--k-dock-inset-sm);
-    bottom: var(--k-dock-lift);
-    /* same 12px optical bottom as the desktop rule above */
-    padding: var(--k-space-8) var(--k-space-12) var(--k-space-12);
-    font-size: var(--k-text-xs);
+    right: auto;
+    bottom: calc(var(--k-dock-lift) + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    /* same asymmetric optical bottom as the desktop rule above, wider sides
+       for the bigger frame-77 box */
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact 10px bottom (frame 77) — between the 8/12 ladder steps by design */
+    padding: var(--k-space-8) var(--k-space-16) 10px;
+    font-size: var(--k-text-hud-lg); /* frame 77 ~16px — fixed HUD step, not fluid */
+    border-width: 2px;
   }
 }
