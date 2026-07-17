@@ -126,7 +126,8 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--k-space-20);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 20px (the token) rendered the list 312.4px against the cards' 310 grid, dropping the last BASELINE 2.4px below the green strip's bottom edge (owner 2026-07-17 "чуть-чуть неровно"); 0.6px per gap trues the composed bottoms. Measured, not designed — retune if the item font/leading ever changes. */
+  gap: 19.4px;
 }
 
 /* The ► arrow is the ACTIVE-item marker: NOTHING is selected at rest
@@ -242,6 +243,7 @@
   .cfw__list {
     position: static;
     margin-top: var(--k-space-40);
+    gap: var(--k-space-20); /* the desktop 19.4 strip-truing correction doesn't apply — no strip to align to in the stack */
   }
 
   .cfw__item {
