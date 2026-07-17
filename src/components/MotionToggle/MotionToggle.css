@@ -68,7 +68,9 @@
 }
 
 /* touch/narrow: the fixed pill leaves the chrome — motion pause lives IN the
-   hero under SOUND (owner frame 77; same media arm as SoundToggle/PlayFab). */
+   hero under SOUND (owner frame 77; same media arm as SoundToggle/PlayFab).
+   ICON-ONLY here (owner 2026-07-17): a compact square holding just the wave
+   glyph; the label stays visually-hidden for the accessible name. */
 @media (max-width: 1023px), (pointer: coarse) {
   .motiontoggle:not(.motiontoggle--inline) {
     display: none;
@@ -76,8 +78,21 @@
 
   .motiontoggle--inline {
     display: inline-flex;
-    padding: var(--k-space-4) var(--k-space-8);
-    font-size: var(--k-text-hud-xs);
-    min-width: var(--k-dock-pill-min-sm);
+    gap: 0;
+    min-width: 32px;
+    min-height: 32px;
+    padding: var(--k-space-4);
+  }
+
+  /* visually-hidden but kept for the accessible name (see SoundToggle) */
+  .motiontoggle--inline .motiontoggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 }

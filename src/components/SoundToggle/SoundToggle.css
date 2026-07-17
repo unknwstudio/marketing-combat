@@ -64,7 +64,9 @@
 /* touch/narrow (same arm as PlayFab and the ScaleCanvas fluid split): the
    fixed pill leaves the viewport chrome entirely — sound lives IN the hero,
    scrolling away with it; only the frame-77 registration launcher and the
-   ModeSwitcher stay sticky. */
+   ModeSwitcher stay sticky. Here the pill is ICON-ONLY (owner 2026-07-17): a
+   compact square holding just the speaker glyph; the label stays in the DOM,
+   visually hidden, so the button keeps its accessible name (WCAG 4.1.2). */
 @media (max-width: 1023px), (pointer: coarse) {
   .sndtoggle:not(.sndtoggle--inline) {
     display: none;
@@ -72,8 +74,22 @@
 
   .sndtoggle--inline {
     display: inline-flex;
-    padding: var(--k-space-4) var(--k-space-8);
-    font-size: var(--k-text-hud-xs);
-    min-width: var(--k-dock-pill-min-sm);
+    gap: 0;
+    min-width: 32px;
+    min-height: 32px;
+    padding: var(--k-space-4);
+  }
+
+  /* visually-hidden but kept for the accessible name (absolute → the 1px box
+     is out of flow, so no negative-margin reset needed) */
+  .sndtoggle--inline .sndtoggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 }

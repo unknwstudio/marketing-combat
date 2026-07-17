@@ -1,7 +1,7 @@
 import { typeset } from '@/lib/typeset'
 import SoundToggle from '@/components/SoundToggle/SoundToggle'
 import MotionToggle from '@/components/MotionToggle/MotionToggle'
-import PixelIcon from '@/components/PixelIcon/PixelIcon'
+import HeroBattery from '@/components/HeroBattery/HeroBattery'
 import './Hero.css'
 
 /**
@@ -44,38 +44,15 @@ export default function Hero() {
         </p>
       </div>
 
-      {/* top-right: energy meter */}
+      {/* top-right: energy meter. On touch/narrow the battery itself is the
+          game entry (HeroBattery renders it as a /play link with a discharge
+          hover); SOUND + MOTION sit under it as icon-only pills. Desktop keeps
+          the meter decorative and hides the pill column. */}
       <div className="hero__meter-wrap">
-        <div className="hero__meter">
-          <div className="hero__bars" aria-hidden="true">
-            <span className="hero__bar" />
-            <span className="hero__bar" />
-            <span className="hero__bar" />
-            <span className="hero__bar" />
-          </div>
-          <span className="hero__meter-pct">15%</span>
-        </div>
-        <p className="hero__survive">will you survive?</p>
-        {/* touch/narrow only (owner frame 77): SOUND + MOTION leave the fixed
-            dock and live here, stacked under the meter — the page-level fixed
-            pills hide themselves on the same media arm. Desktop: hidden. */}
+        <HeroBattery />
         <div className="hero__toggles">
           <SoundToggle inline />
           <MotionToggle inline />
-          {/* the game entry on touch/narrow (owner 2026-07-17): the hero's
-              bottom PLAY is hidden there and PlayFab became the registration
-              launcher, so this pill is the only mobile way into /play.
-              VsSplash's delegated a[href="/play"] listener catches the click. */}
-          <a
-            className="hero__play-pill"
-            href="/play"
-            data-sfx="confirm"
-            data-burst
-            aria-label="Play AI Marketing Kombat"
-          >
-            <PixelIcon name="play" size="0.9em" />
-            play
-          </a>
         </div>
       </div>
 
