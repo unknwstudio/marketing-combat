@@ -25,18 +25,14 @@
 
 /* --- marquee ribbon --------------------------------------------------- */
 
+/* Reverted to the ORIGINAL ribbon (owner 2026-07-17, "верну ленту какая
+   раньше была"): symmetric 16px, NO background of its own — it sits directly
+   on the now-yellow band, so the white-strip saga can't recur by construction. */
 .c-cta__ribbon {
   margin-bottom: var(--k-space-80);
   overflow: hidden;
   border-block: 1px solid var(--k-black);
-  /* a TIGHT, SYMMETRIC tape: 8px of true ink-to-rule air on BOTH sides (the
-     span-level text-box trim below makes the padding the real gap — no
-     descent-zone slack). The zero-bottom iteration glued the letters to the
-     yellow and read as clipped text (owner); the original 16px + descent
-     read as a stray white shelf. 8/8 is the balanced ticker between them. */
-  padding-block: var(--k-space-8);
-  background: var(--k-white);
-  background-clip: padding-box;
+  padding-block: var(--k-space-16);
 }
 
 .c-cta__ribbon-track {
@@ -46,15 +42,6 @@
   animation: c-cta-marquee 32s linear infinite;
   font-size: var(--k-text-lg);
   text-transform: uppercase;
-}
-
-/* crop the line box to cap-height/baseline (the .cap-trim idiom) so no
-   descent-zone white survives under the caps. On the SPAN children, not the
-   flex track — text-box only trims the element that owns the text run (the
-   flex container placement made it a no-op, measured). Unsupported engines
-   keep a few px of line-box air — a graceful fallback. */
-.c-cta__ribbon-track > span {
-  text-box: trim-both cap alphabetic;
 }
 
 /* No padding here on purpose: RIBBON already ends with a "· " separator, so
