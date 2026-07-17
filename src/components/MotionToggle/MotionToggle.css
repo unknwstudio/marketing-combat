@@ -26,7 +26,9 @@
   letter-spacing: var(--k-ls-tight);
   text-transform: uppercase;
   cursor: pointer;
-  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
+  /* `top` eases so the adaptive dock (below) glides in step with the HP strip */
+  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast),
+    top var(--k-t-slow) ease;
 }
 
 @media (hover: hover) {
@@ -76,6 +78,11 @@
     min-width: 32px;
     min-height: 32px;
     padding: var(--k-space-4);
+  }
+
+  /* docked under SOUND, right below the P1-CPU strip on scroll (see SoundToggle) */
+  html.hp-shown .motiontoggle {
+    top: calc(var(--hp-h, 24px) + var(--k-space-8) + var(--k-space-40));
   }
 
   /* visually-hidden but kept for the accessible name (see SoundToggle) */

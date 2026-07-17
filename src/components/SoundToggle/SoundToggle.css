@@ -24,7 +24,9 @@
   letter-spacing: var(--k-ls-tight);
   text-transform: uppercase;
   cursor: pointer;
-  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
+  /* `top` eases so the adaptive dock (below) glides in step with the HP strip */
+  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast),
+    top var(--k-t-slow) ease;
 }
 
 @media (hover: hover) {
@@ -71,6 +73,14 @@
     min-width: 32px;
     min-height: 32px;
     padding: var(--k-space-4);
+  }
+
+  /* once scrolled past the hero the battery is gone and the P1-CPU strip fades
+     in at the top — dock the square RIGHT UNDER the bar (owner 2026-07-17)
+     instead of leaving the rest-position gap. --hp-h / hp-shown are published
+     by ScrollHealth. */
+  html.hp-shown .sndtoggle {
+    top: calc(var(--hp-h, 24px) + var(--k-space-8));
   }
 
   /* visually-hidden but kept for the accessible name (absolute → the 1px box

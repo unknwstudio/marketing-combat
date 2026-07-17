@@ -221,6 +221,25 @@
   opacity: 1;
 }
 
+/* group the charge gauge + "▶ PLAY" together with bigger bars (owner
+   2026-07-17): the decorative desktop meter is space-between with a small "15%"
+   on the right, which left a big dead gap between the bars and the PLAY label on
+   the adaptive play battery. Center them, widen the bars, and let the box size
+   to the content so the "battery + PLAY" reads as one tight unit. */
+.hero__battery--play .hero__meter {
+  width: auto;
+  justify-content: center;
+  gap: var(--k-space-12);
+}
+
+.hero__battery--play .hero__bars {
+  gap: var(--k-space-4);
+}
+
+.hero__battery--play .hero__bar {
+  width: 10px;
+}
+
 .hero__survive {
   color: var(--k-orange);
   font-size: var(--k-text-lg); /* Figma 33:3911 */
