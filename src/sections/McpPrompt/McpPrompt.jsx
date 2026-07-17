@@ -114,7 +114,7 @@ export default function McpPrompt() {
       <div className="mcp__center">
         <h1 className="sr-only">AI Marketing Kombat — copy this prompt for your AI agent</h1>
         <p className="mcp__caption">
-          Don&rsquo;t really wanna read? copy this prompt and ask your ai agent any questions
+          don&rsquo;t really wanna read? copy this prompt and ask your ai agent any questions
         </p>
         <div className="mcp__card">
           <div className="mcp__card-border">
@@ -127,7 +127,7 @@ export default function McpPrompt() {
                 {PROMPT.split('\n').slice(2).join('\n')}
               </div>
               <button className="mcp__copy" type="button" onClick={copy} aria-live="polite">
-                {copied ? 'Copied ✓' : 'Copy prompt'}
+                {copied ? 'copied ✓' : 'copy prompt'}
               </button>
             </div>
           </div>
