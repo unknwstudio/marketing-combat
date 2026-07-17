@@ -53,27 +53,20 @@
   flex: 0 0 auto;
 }
 
-/* The hero-inline instance (owner frame 77): an in-flow pill under the energy
-   meter, mounted by Hero alongside the fixed one. Hidden until the touch/
-   narrow arm below activates it — desktop keeps the fixed dock only. */
-.sndtoggle--inline {
-  display: none;
-  position: static;
-}
-
-/* touch/narrow (same arm as PlayFab and the ScaleCanvas fluid split): the
-   fixed pill leaves the viewport chrome entirely — sound lives IN the hero,
-   scrolling away with it; only the frame-77 registration launcher and the
-   ModeSwitcher stay sticky. Here the pill is ICON-ONLY (owner 2026-07-17): a
-   compact square holding just the speaker glyph; the label stays in the DOM,
-   visually hidden, so the button keeps its accessible name (WCAG 4.1.2). */
+/* touch/narrow (same arm as PlayFab / the ScaleCanvas fluid split): the fixed
+   pill STAYS sticky (owner 2026-07-17) but moves to the top-right corner as an
+   ICON-ONLY square, sitting just under the hero battery at rest and clear of the
+   ScrollHealth strip (top:0, ~42px) on scroll — top:72 clears both. The label
+   stays in the DOM, visually hidden, so the button keeps its accessible name
+   (WCAG 4.1.2). MOTION docks 40px below it (see MotionToggle.css). */
 @media (max-width: 1023px), (pointer: coarse) {
-  .sndtoggle:not(.sndtoggle--inline) {
-    display: none;
-  }
-
-  .sndtoggle--inline {
-    display: inline-flex;
+  .sndtoggle {
+    top: var(--k-space-72);
+    /* 14px = the hero meter-wrap's corner inset, so at rest the square's right
+       edge lines up with the battery directly above it (off-ladder hero value) */
+    right: 14px;
+    bottom: auto;
+    left: auto;
     gap: 0;
     min-width: 32px;
     min-height: 32px;
@@ -82,7 +75,7 @@
 
   /* visually-hidden but kept for the accessible name (absolute → the 1px box
      is out of flow, so no negative-margin reset needed) */
-  .sndtoggle--inline .sndtoggle__label {
+  .sndtoggle .sndtoggle__label {
     position: absolute;
     width: 1px;
     height: 1px;

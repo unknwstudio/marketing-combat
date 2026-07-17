@@ -16,11 +16,7 @@ import './SoundToggle.css'
  * SoundToggle — mute control + the audio-unlock installer. Mounting it arms the
  * "first gesture unlocks sound" behaviour and restores the saved mute state.
  */
-// `inline` renders the same control as an in-flow pill (hero placement on
-// touch/narrow — owner frame 77) instead of the fixed dock instance. Both may
-// mount at once; the audio module is a singleton so they stay in sync, and the
-// CSS media arms show exactly one of them.
-export default function SoundToggle({ inline = false }) {
+export default function SoundToggle() {
   const [muted, setMuted] = useState(false)
 
   useEffect(() => {
@@ -36,9 +32,7 @@ export default function SoundToggle({ inline = false }) {
 
   return (
     <button
-      className={
-        'sndtoggle' + (inline ? ' sndtoggle--inline' : '') + (muted ? ' sndtoggle--off' : '')
-      }
+      className={'sndtoggle' + (muted ? ' sndtoggle--off' : '')}
       type="button"
       /* No aria-label: the visible "SOUND ON/OFF" span is the accessible name
          (WCAG 2.5.3 Label in Name). No aria-pressed either — a state-swapping

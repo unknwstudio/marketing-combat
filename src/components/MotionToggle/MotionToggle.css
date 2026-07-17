@@ -63,24 +63,15 @@
 
 /* (AI skin only — /classic's pause control is the hero ClassicMotionChip) */
 
-/* The hero-inline instance — SoundToggle's sibling in the frame-77 hero
-   column; hidden until the touch/narrow arm activates it. */
-.motiontoggle--inline {
-  display: none;
-  position: static;
-}
-
-/* touch/narrow: the fixed pill leaves the chrome — motion pause lives IN the
-   hero under SOUND (owner frame 77; same media arm as SoundToggle/PlayFab).
-   ICON-ONLY here (owner 2026-07-17): a compact square holding just the wave
-   glyph; the label stays visually-hidden for the accessible name. */
+/* touch/narrow: sticky icon-only square, docked 40px (32 square + 8 gap) under
+   the sticky SOUND square at the top-right (owner 2026-07-17; same media arm as
+   SoundToggle/PlayFab). The label stays visually-hidden for the accessible name. */
 @media (max-width: 1023px), (pointer: coarse) {
-  .motiontoggle:not(.motiontoggle--inline) {
-    display: none;
-  }
-
-  .motiontoggle--inline {
-    display: inline-flex;
+  .motiontoggle {
+    top: calc(var(--k-space-72) + var(--k-space-40));
+    right: 14px; /* aligns with the SOUND square / hero battery (see SoundToggle) */
+    bottom: auto;
+    left: auto;
     gap: 0;
     min-width: 32px;
     min-height: 32px;
@@ -88,7 +79,7 @@
   }
 
   /* visually-hidden but kept for the accessible name (see SoundToggle) */
-  .motiontoggle--inline .motiontoggle__label {
+  .motiontoggle .motiontoggle__label {
     position: absolute;
     width: 1px;
     height: 1px;

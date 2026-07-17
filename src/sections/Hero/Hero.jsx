@@ -1,6 +1,4 @@
 import { typeset } from '@/lib/typeset'
-import SoundToggle from '@/components/SoundToggle/SoundToggle'
-import MotionToggle from '@/components/MotionToggle/MotionToggle'
 import HeroBattery from '@/components/HeroBattery/HeroBattery'
 import './Hero.css'
 
@@ -46,14 +44,11 @@ export default function Hero() {
 
       {/* top-right: energy meter. On touch/narrow the battery itself is the
           game entry (HeroBattery renders it as a /play link with a discharge
-          hover); SOUND + MOTION sit under it as icon-only pills. Desktop keeps
-          the meter decorative and hides the pill column. */}
+          hover). SOUND + MOTION are the page-level fixed pills (sticky), which
+          reposition to sit just under here on the adaptive arm — see
+          SoundToggle/MotionToggle css. Desktop keeps the meter decorative. */}
       <div className="hero__meter-wrap">
         <HeroBattery />
-        <div className="hero__toggles">
-          <SoundToggle inline />
-          <MotionToggle inline />
-        </div>
       </div>
 
       {/* bottom: tag pills */}

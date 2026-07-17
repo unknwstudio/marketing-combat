@@ -126,22 +126,8 @@
   text-decoration: none;
 }
 
-/* SOUND/MOTION hero column (owner frame 77): exists only on the touch/narrow
-   arm, where the fixed dock pills hide — see SoundToggle/MotionToggle css.
-   Desktop: display none so the empty slot adds no flex gap to the meter. */
-.hero__toggles {
-  display: none;
-}
-
 @media (max-width: 1023px), (pointer: coarse) {
-  .hero__toggles {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--k-space-8);
-  }
-
-  /* the battery is the game entry here — right-aligned to match the column */
+  /* the battery is the game entry here — right-aligned under the meter */
   .hero__battery {
     align-items: flex-end;
   }
