@@ -190,36 +190,27 @@
     width: 100%;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: var(--k-space-8);
+    /* 4px columns: at 390px the five pills total 343px against 351 available —
+       the 8px gap was the 8px that pushed the pause chip onto a second row */
+    gap: var(--k-space-8) var(--k-space-4);
     padding: var(--k-space-12);
   }
 
-  /* compact so the FOUR fact pills hold one row on a 390px phone (owner
-     request 2026-07-17; measured: five don't fit one row at any legible size,
-     so the pause chip docks on the video instead — rule below) */
+  /* compact so ALL FIVE pills (4 facts + pause) hold one row from 390px up
+     (owner request 2026-07-17; measured: 11px is the largest size that fits) */
   .c-hero__chip {
     height: 32px;
     padding: 0 var(--k-space-8);
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: fixed mobile chip size; fluid --k-text-xs would shrink it to 11px (beyond the ±2px type allowance) */
-    font-size: 12px;
-  }
-
-  /* the pause control leaves the fact row and docks at the media's lower
-     right — a pause button reads naturally as a video-player affordance */
-  .c-hero__chip--motion {
-    position: absolute;
-    right: var(--k-space-12);
-    bottom: var(--k-space-64);
-    width: 32px;
-    height: 32px;
-    padding: 0;
-  }
-}
-
-/* phones (<=639px): one step tighter so the fact row survives 360px widths */
-@media (max-width: 639px) {
-  .c-hero__chip {
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: same fixed-chip rationale as above, one step down for 360px phones */
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: fixed mobile chip size; the fluid --k-text-xs floor happens to match but its vw midband does not */
     font-size: 11px;
+  }
+
+  /* the pause chip stays IN the row, pushed to the right rail (2026-07-17:
+     an absolutely-docked version read as floating mid-video). On very narrow
+     phones (<~370px) it wraps alone and the auto margin keeps it right-aligned. */
+  .c-hero__chip--motion {
+    width: 32px;
+    padding: 0;
+    margin-left: auto;
   }
 }
