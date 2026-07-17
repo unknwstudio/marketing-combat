@@ -129,9 +129,9 @@
   gap: var(--k-space-20);
 }
 
-/* The ► arrow is the ACTIVE-item marker (Figma Frame 55): at rest it sits
-   on "Future legends"; on hover it slides onto the hovered item and the
-   text indents into the 85px arrow slot (69px Figma slot + 16 gap). */
+/* The ► arrow is the ACTIVE-item marker: NOTHING is selected at rest
+   (owner 2026-07-17 — the Figma Frame 55 resting marker on "Future legends"
+   was dropped); the arrow + blue + slide appear only on the hovered item. */
 
 .cfw__item {
   /* 24 is the CEILING, not a taste choice: the active text must still slide
@@ -184,36 +184,6 @@
 
 .cfw__item:hover .cfw__text {
   transform: translateX(var(--arrow-indent));
-}
-
-/* "Future legends" is the marked item at rest (Figma Frame 55 / the reference):
-   blue, arrow shown, text indented into the arrow slot. */
-.cfw__item--legend {
-  color: var(--c-blue);
-}
-
-.cfw__item--legend .cfw__arrow {
-  opacity: 1;
-  transform: translate(0, -50%);
-}
-
-.cfw__item--legend .cfw__text {
-  transform: translateX(var(--arrow-indent));
-}
-
-/* when another item is hovered, the legend yields the marker (one active at a
-   time) so the arrow feels like it moves onto the hovered row */
-.cfw__list:hover .cfw__item--legend:not(:hover) {
-  color: var(--k-black);
-}
-
-.cfw__list:hover .cfw__item--legend:not(:hover) .cfw__arrow {
-  opacity: 0;
-  transform: translate(-10px, -50%);
-}
-
-.cfw__list:hover .cfw__item--legend:not(:hover) .cfw__text {
-  transform: none;
 }
 
 /* all items rest identical (black, flush left) — blue + arrow + indent
