@@ -7,9 +7,16 @@
      yellow band is the "page" that lifts off it */
   position: relative;
   z-index: 1;
-  background: var(--c-yellow);
   color: var(--k-black);
   overflow: hidden;
+}
+
+/* .c-sec.c-cta (0,2,0): the section-system's `.c-sec { background: white }`
+   in classic.css loads LAST (ClassicApp import order) and silently overrode
+   the equal-specificity yellow — the band shipped white until the owner
+   caught it (2026-07-17). Doubling the class makes the yellow ordering-proof. */
+.c-sec.c-cta {
+  background: var(--c-yellow); /* fill-only use — text on it stays black */
 }
 
 /* --- marquee ribbon --------------------------------------------------- */
@@ -19,6 +26,9 @@
   overflow: hidden;
   border-block: 1px solid var(--k-black);
   padding-block: var(--k-space-16);
+  /* the ribbon stays a WHITE strip on the yellow band (owner: "бегущую
+     строку делать жёлтой не надо") */
+  background: var(--k-white);
 }
 
 .c-cta__ribbon-track {
