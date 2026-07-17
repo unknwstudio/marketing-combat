@@ -197,7 +197,10 @@
   transition: opacity var(--k-t-fast) ease;
 }
 
-/* the reveal shown mid-discharge — hidden until the battery is hovered */
+/* the "▶ play" readout. Default = overlay (desktop keeps "15%"); on the
+   adaptive game entry it becomes the DEFAULT readout instead (see below), so
+   the battery reads as a PLAY button at rest — the drain is only the hover
+   feedback, not the reveal. */
 .hero__meter-go {
   position: absolute;
   inset: 0;
@@ -212,7 +215,24 @@
   text-transform: uppercase;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity var(--k-t-fast) ease;
+  transition: opacity var(--k-t-fast) ease, text-shadow var(--k-t-fast) ease;
+}
+
+/* INVERT (owner 2026-07-17): on the adaptive battery-as-play, "▶ PLAY" is
+   shown at REST (clear affordance) and "15%" is the hidden overlay. Swap which
+   span is in flow so the readout reserves the wider "▶ PLAY" width. */
+.hero__battery--play .hero__meter-pct {
+  position: absolute;
+  inset: 0;
+  justify-content: flex-end;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0;
+}
+
+.hero__battery--play .hero__meter-go {
+  position: static;
+  opacity: 1;
 }
 
 .hero__survive {
@@ -224,37 +244,30 @@
 }
 
 /* --- battery discharge hover (adaptive game entry) -----------------------
-   hover-capable devices only (our hover-guard requires the @media): the bars
-   drain right-to-left, turn red, "15%" flips to "▶ PLAY", the frame + caption
-   go red — a little "will you survive?" tension gag before the fight. */
+   hover-capable devices only (our hover-guard requires the @media). PLAY is
+   already shown; hovering drains the charge bars right-to-left IN THE
+   BACKGROUND, greens the frame, and glows the PLAY — "power down to fight". */
 @media (hover: hover) {
   .hero__battery--play:hover .hero__meter {
-    border-color: var(--k-red);
+    border-color: var(--k-accent-green);
   }
 
   .hero__battery--play:hover .hero__bar {
     transform: scaleY(0.08);
     opacity: 0;
-    background: var(--k-red);
   }
   .hero__battery--play:hover .hero__bar:nth-child(1) { transition-delay: 0.24s; }
   .hero__battery--play:hover .hero__bar:nth-child(2) { transition-delay: 0.16s; }
   .hero__battery--play:hover .hero__bar:nth-child(3) { transition-delay: 0.08s; }
   .hero__battery--play:hover .hero__bar:nth-child(4) { transition-delay: 0s; }
 
-  .hero__battery--play:hover .hero__meter-pct {
-    opacity: 0;
-  }
   .hero__battery--play:hover .hero__meter-go {
-    opacity: 1;
-  }
-  .hero__battery--play:hover .hero__survive {
-    color: var(--k-red);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--k-accent-green) 65%, transparent);
   }
 }
 
-/* reduced motion: keep the meaning (PLAY reveal + red frame) but drop the
-   draining transform/opacity churn. */
+/* reduced motion: PLAY is already shown at rest (no reveal needed); just drop
+   the draining transform/opacity churn on hover. */
 @media (prefers-reduced-motion: reduce) {
   .hero__bar {
     transition: background var(--k-t-fast) ease;

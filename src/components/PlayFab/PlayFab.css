@@ -7,12 +7,9 @@
 .playfab {
   position: fixed;
   left: var(--k-dock-inset);
-  /* dropped below the ScrollHealth P1 strip (owner 2026-07-17): once you scroll
-     past the hero, that fixed HP bar fades in at top:0 (~42px tall) right where
-     this top-left launcher sat, covering the "P1" tag + the bar's left end.
-     +20px clears it; still well above the hero lede (starts ~91px) so the "over
-     the hero it's fine" position is preserved. */
-  top: calc(var(--k-dock-inset) + var(--k-space-20));
+  /* rests high over the hero (clears the lede); scroll lowers it to clear the
+     ScrollHealth P1 strip — see .playfab--lowered and the JS in PlayFab.jsx */
+  top: var(--k-dock-inset);
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
@@ -31,8 +28,17 @@
   border: 1px solid var(--k-white);
   text-decoration: none;
   cursor: pointer;
-  transition: background var(--k-t-fast) ease, color var(--k-t-fast) ease;
+  transition: background var(--k-t-fast) ease, color var(--k-t-fast) ease, top var(--k-t-base) ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* desktop top-left only (fine pointer, >=1024): once scrolled past the hero the
+   ScrollHealth P1 strip fades in at top:0 — drop the launcher below it. The
+   adaptive bottom-center dock (coarse / <1024) ignores this (top:auto there). */
+@media (min-width: 1024px) and (pointer: fine) {
+  .playfab--lowered {
+    top: calc(var(--k-dock-inset) + var(--k-space-32));
+  }
 }
 
 .playfab:focus-visible {

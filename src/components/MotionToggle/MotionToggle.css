@@ -51,11 +51,14 @@
 
 /* the pixel wave glyph (motionOn / motionOff). currentColor flips it green ->
    muted with the label via the --off rule above. The wave grid is wide (12x5),
-   so give the icon a touch more width than its em box for legibility. */
+   so widen the icon for legibility — but pin the BOX height to 1.3em (matching
+   SoundToggle's square speaker icon) so both pills come out the same height.
+   height:auto would go square here (PixelIcon sets equal w/h attributes, so the
+   intrinsic ratio is 1:1, not the viewBox's), which made the MOTION pill taller. */
 .motiontoggle__icon {
   flex: 0 0 auto;
   width: 1.6em;
-  height: auto;
+  height: 1.3em;
 }
 
 /* (AI skin only — /classic's pause control is the hero ClassicMotionChip) */
