@@ -1,6 +1,7 @@
 import { typeset } from '@/lib/typeset'
 import SoundToggle from '@/components/SoundToggle/SoundToggle'
 import MotionToggle from '@/components/MotionToggle/MotionToggle'
+import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import './Hero.css'
 
 /**
@@ -61,6 +62,20 @@ export default function Hero() {
         <div className="hero__toggles">
           <SoundToggle inline />
           <MotionToggle inline />
+          {/* the game entry on touch/narrow (owner 2026-07-17): the hero's
+              bottom PLAY is hidden there and PlayFab became the registration
+              launcher, so this pill is the only mobile way into /play.
+              VsSplash's delegated a[href="/play"] listener catches the click. */}
+          <a
+            className="hero__play-pill"
+            href="/play"
+            data-sfx="confirm"
+            data-burst
+            aria-label="Play AI Marketing Kombat"
+          >
+            <PixelIcon name="play" size="0.9em" />
+            play
+          </a>
         </div>
       </div>
 

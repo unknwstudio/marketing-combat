@@ -130,6 +130,37 @@
   }
 }
 
+/* the touch/narrow game entry — third pill in the hero column, styled as the
+   SOUND/MOTION pills' sibling (only visible inside .hero__toggles, which the
+   media arm above gates). Green like its siblings; the pixel triangle inherits
+   currentColor. */
+.hero__play-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--k-space-8);
+  min-height: 32px;
+  min-width: var(--k-dock-pill-min-sm);
+  padding: var(--k-space-4) var(--k-space-8);
+  background: color-mix(in srgb, var(--k-black) 70%, transparent);
+  border: 1px solid var(--k-white);
+  color: var(--k-accent-green);
+  font-family: var(--k-font-mono);
+  font-size: var(--k-text-hud-xs);
+  letter-spacing: var(--k-ls-tight);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
+}
+
+@media (hover: hover) {
+  .hero__play-pill:hover {
+    background: var(--k-accent-green);
+    color: var(--k-black);
+    border-color: var(--k-accent-green);
+  }
+}
+
 .hero__meter {
   display: flex;
   align-items: center;
