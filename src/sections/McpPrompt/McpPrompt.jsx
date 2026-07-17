@@ -12,20 +12,22 @@ import './McpPrompt.css'
  * puts the full text on the clipboard.
  */
 
-// The whole site content as one prompt (the Figma node 90:30 text, with
-// line structure restored). This exact string is what gets copied.
+// The whole site content as one prompt — mirrors the LIVE section copy
+// (classic + arcade skins), not the Figma source: when section copy changes,
+// this string must change with it. This exact string is what gets copied.
 const PROMPT = `AI Marketing Kombat
-How it works · Judges · FAQ · Registration
+How it works · Tracks · Case tracks · FAQ · Apply
 First international hackathon · AI era
 
 The best marketer on the planet, decided.
 The first international hackathon for senior marketers of the AI era. Real client cases. Use AI — compare your skills.
+Two days. Real cases. Use AI or get finished.
 ◆ July 2026 ◆ Final in Barcelona · Harbour.Space University ◆ Online qualifying · offline final
 Registration → 5 min to apply · 3 questions · AI review · 48 hr response
 AI MARKETING KOMBAT · JULY 2026 · BARCELONA · APPLY ↗
 
 The battle
-Who can use AI without limits? The time has come to settle the legendary battle and find out who the best marketer in the world is. Who solves ultra-complex challenges in a constantly changing world? Who builds multi-layered, working strategies that drive real business growth? AI Marketing Kombat is the marketers' battle that ranks the best specialists on planet Earth.
+Who can use AI without limits? The time has come to settle the legendary battle and find out who the best marketer in the world is. AI Marketing Kombat is the marketers' battle that ranks the best specialists on planet Earth.
 1st International hackathon · 300+ Participants · $100M+ Budget under management · 30 Finalists in Barcelona
 
 How it works
@@ -33,6 +35,12 @@ Registration. Qualifying round. Final. A real task — a brief, a data room, Goo
 STEP 01 — Qualifying round: 45 minutes online. A real case to solve under pressure, with the AI stack of your choice.
 STEP 02 — Evaluation: A panel of judges + AI assesses every solution. The client gets the final word.
 STEP 03 — The final: 2 hours in Barcelona at Harbour.Space University — in person. A closed networking event and a private closing party follow.
+
+Hackathon stages
+After qualification, participants are ranked according to their level of expertise.
+Round 1 — Solo · open qualification: Self-applied participants only. Individual solutions for standardized cases. Those who fail receive an observer subscription with full hackathon access.
+Round 2 — Invite · live main tour: Invited participants start here. Anonymized real-life case studies from startups and enterprise clients. Use of AI is mandatory, not recommended.
+Final round — Offline · Barcelona: Individual case solutions and jury presentation. The jury evaluates — but the final word belongs to the client.
 
 Hackathon tracks
 Choose your fighting style. Two directions to compete in — pick the one that plays to your strengths.
@@ -47,7 +55,7 @@ Case track 03 — E-commerce: High volume. Thin margins. ROAS pressure. Mission:
 Case track 04 — Enterprise: Six-figure deals. Long procurement. Mission: run AI-powered ABM that lands target accounts.
 
 Who it's for
-Built for senior operators. CMOs, Heads of Growth, Performance lead generators, AI creators …and those who want to become one of them.
+For senior marketers of the AI era. CMOs, Heads of growth, Performance lead gens, AI creators …& future legends.
 
 Why join
 Find out your real level of mastering AI tools for marketing alongside your peers.
@@ -63,10 +71,7 @@ What the champion gets: $30K+ in AI tool subscriptions · Intros to A16Z & YC gr
 Join the battle. Put yourself on the map. Registration →
 
 Mission
-Bring together the people reshaping marketing. Change happens simultaneously in many places at once. We create a point of contact for sharing experience — connecting the strongest marketing practitioners with open-minded companies that have real marketing challenges. At the intersection of practice and discussion, knowledge is gained.
-
-The jury
-Judges evaluate the case solutions — but the final word is up to the client. Full roster revealed before the main tour. A secret judge is revealed soon.
+Bring together the people reshaping marketing. Change happens in many places at once. We create a point of contact — connecting the strongest practitioners with open-minded companies that have real marketing challenges. At the intersection of practice and discussion, knowledge is gained.
 
 FAQ
 What do I actually win? The title that doesn't expire — #1 AI Marketer of 2026. Annual subscriptions to top AI tools. Direct hiring offers from sponsoring companies. Your case study featured on GitHub. Cash purses announced sprint-by-sprint by partners.

@@ -60,6 +60,11 @@
     right: auto;
     bottom: calc(var(--k-dock-lift) + env(safe-area-inset-bottom, 0px));
     transform: translateX(-50%);
+    /* frame 77: exactly as wide as the ModeSwitcher menu below it — the live
+       width the switcher publishes via --dock-menu-w (ResizeObserver on
+       <html>); pre-hydration fallback = natural content width */
+    width: var(--dock-menu-w, auto);
+    justify-content: center;
     /* same asymmetric optical bottom as the desktop rule above, wider sides
        for the bigger frame-77 box */
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact 10px bottom (frame 77) — between the 8/12 ladder steps by design */

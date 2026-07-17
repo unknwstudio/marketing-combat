@@ -1,6 +1,7 @@
 // @ts-check
 'use client'
 
+import { useEffect, useRef } from 'react'
 import './ModeSwitcher.css'
 
 /**
@@ -20,8 +21,28 @@ import './ModeSwitcher.css'
  * @param {{ active?: 'ai' | 'classic' | 'mcp' }} props  which mode is current (styles its pill active)
  */
 export default function ModeSwitcher({ active }) {
+  const ref = useRef(/** @type {HTMLElement | null} */ (null))
+
+  // Publish the pill's live width as --dock-menu-w on <html>: the frame-77
+  // mobile registration launcher (PlayFab) sizes itself to exactly this width
+  // ("по длине как меню", owner 2026-07-17). A CSS var + ResizeObserver keeps
+  // the pair locked through font swaps and the <480px viewport cap without
+  // hardcoding the menu's content-driven width anywhere.
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => {
+      document.documentElement.style.setProperty('--dock-menu-w', `${el.offsetWidth}px`)
+    })
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      document.documentElement.style.removeProperty('--dock-menu-w')
+    }
+  }, [])
+
   return (
-    <nav className="mode-switch" aria-label="Site mode">
+    <nav className="mode-switch" aria-label="Site mode" ref={ref}>
       <a
         href="/"
         className={
