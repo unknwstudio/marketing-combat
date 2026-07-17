@@ -357,27 +357,38 @@
     text-align: center;
   }
 
-  /* 5-across flex row -> 3-column grid */
+  /* 5-across row -> wrapping 3-up rows, the INCOMPLETE last row centered
+     (owner 2026-07-17: 5 cards in a 3-col grid left a dead hole bottom-right
+     on tablets). Flex, not grid, so leftover cards center themselves. */
   .fighters__row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: var(--k-space-16);
   }
 
   .fighters__card {
     min-width: 0;
+    /* exact thirds incl. the two 16px gaps — sums to 100%, no premature wrap.
+       flex shorthand, not width: the desktop base is flex: 1 0 0, whose
+       0-basis + grow would otherwise pack all five onto one line. */
+    flex: 0 0 calc((100% - 2 * var(--k-space-16)) / 3);
   }
 
-  /* portrait scales fluidly within the grid cell, keeping 266:321 ratio */
+  /* portrait scales fluidly within the cell, keeping 266:321 ratio */
   .fighters__portrait {
     width: 100%;
     height: auto;
     aspect-ratio: 266 / 321;
   }
 
-  /* long labels wrap instead of overflowing the cell */
+  /* long labels wrap instead of overflowing the cell; flex:1 makes every
+     caption strip fill its card's leftover height, so within a row the
+     hairline boxes share the SAME top and bottom lines whether the label
+     wraps to one line or two (the ragged strips were the owner's "ломается") */
   .fighters__label {
     overflow-wrap: anywhere;
+    flex: 1;
   }
 
   /* the bolts' shared-origin geometry (fanning out of the registration-CTA
@@ -388,15 +399,18 @@
   }
 }
 
-/* --- phone (<=639px): 2-col grid, tighter type --- */
+/* --- phone (<=639px): 2-up rows (2+2+1, the odd card centered) --- */
 @media (max-width: 639px) {
   .fighters {
     padding: var(--k-space-32) var(--k-space-16);
   }
 
   .fighters__row {
-    grid-template-columns: repeat(2, 1fr);
     gap: var(--k-space-8);
+  }
+
+  .fighters__card {
+    flex-basis: calc((100% - var(--k-space-8)) / 2);
   }
 
   /* the 24px desktop caption is oversized on a phone; shrink it (it already
