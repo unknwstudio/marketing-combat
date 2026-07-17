@@ -12,7 +12,9 @@
   align-items: center;
   /* >=24px min target (WCAG 2.5.8) — same floor as SoundToggle */
   min-height: 32px;
-  min-width: var(--k-dock-pill-min); /* matches the SOUND pill below it */
+  min-width: var(--k-dock-pill-min); /* matches the SOUND pill beside it */
+  /* centred within the shared min-width — see SoundToggle.css */
+  justify-content: center;
   gap: var(--k-space-8);
   padding: var(--k-space-8) var(--k-space-12);
   background: color-mix(in srgb, var(--k-black) 70%, transparent);
