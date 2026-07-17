@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { REGISTER_OPEN, openRegister, FIELDS, CONSENTS, COPY, saveRegistrationDemo } from '@/lib/register'
+import { typeset } from '@/lib/typeset'
 import './RegisterModal.css'
 
 const emptyValues = () => Object.fromEntries(FIELDS.map((f) => [f.id, '']))
@@ -158,7 +159,7 @@ export default function RegisterModal({ variant = 'ai' }) {
         {done ? (
           <div className="reg__success" role="status" aria-live="polite" ref={successRef} tabIndex={-1}>
             <h2 className="reg__title" id={titleId}>
-              {values.name.trim() ? `${values.name.trim()} — ready` : COPY.successTitle}
+              {values.name.trim() ? typeset(`${values.name.trim()} — ready`) : COPY.successTitle}
             </h2>
             <p className="reg__sub">{COPY.successBody}</p>
             <p className="reg__demo">{COPY.demoNotice}</p>

@@ -1,3 +1,5 @@
+import { typeset } from './typeset'
+
 // Single source of truth for the demo EVENT-registration modal: field spec,
 // consent spec, user-facing copy, the open-event bus, and the demo persistence
 // helper. This registers a marketer for the tournament — it is NOT an account
@@ -58,7 +60,10 @@ export const CONSENTS = [
 
 // Theme-neutral copy. Casing (lowercase on AI, sentence-case on classic) is a
 // CSS concern (text-transform), so the same strings serve both skins.
-export const COPY = {
+// Every string runs through typeset() once at module load: short function words
+// ("in", "the", …) glue to the next word and an em dash can't start a line, so
+// the modal can't render a hanging preposition at any wrap width.
+const RAW_COPY = {
   title: 'Register for the battle',
   sub: 'One marketer. One leaderboard. Claim your spot in the arena.',
   submit: 'Register',
@@ -68,6 +73,10 @@ export const COPY = {
   successBody: "You're on the roster. We'll email you what happens next (demo).",
   termsError: 'Please accept the Terms & Privacy Policy',
 }
+
+export const COPY = Object.fromEntries(
+  Object.entries(RAW_COPY).map(([key, text]) => [key, typeset(text)])
+)
 
 export const STORAGE_KEY = 'amk:registration-demo'
 

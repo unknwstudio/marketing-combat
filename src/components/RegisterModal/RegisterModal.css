@@ -206,11 +206,17 @@
   color: var(--k-white);
   text-transform: lowercase;
   transition: background var(--k-t-fast), color var(--k-t-fast);
+  /* optical centering (owner 2026-07-17): GT Pressura Mono sits low in its em
+     box, so the label reads below center at equal paddings — give the bottom
+     one step more. AI skin only; the classic pill centers its sans fine. */
+  padding-block: var(--k-space-12) var(--k-space-16);
 }
 
-.reg--ai .reg__submit:hover {
-  background: var(--k-white);
-  color: var(--k-black);
+@media (hover: hover) {
+  .reg--ai .reg__submit:hover {
+    background: var(--k-white);
+    color: var(--k-black);
+  }
 }
 
 .reg--ai .reg__check a {
@@ -262,8 +268,10 @@
   transition: opacity var(--k-t-fast);
 }
 
-.reg--classic .reg__submit:hover {
-  opacity: 0.85;
+@media (hover: hover) {
+  .reg--classic .reg__submit:hover {
+    opacity: 0.85;
+  }
 }
 
 .reg--classic .reg__check a {
