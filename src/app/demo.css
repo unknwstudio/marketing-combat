@@ -98,8 +98,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 10px bottom is an OPTICAL correction — GT Pressura Mono ink sits high in its em-box at line-height 1, so equal paddings read as text pushed low (owner 2026-07-17; restores the value the 8-grid snap erased) */
-  padding: var(--k-space-8) var(--k-space-8) 10px;
+  /* 12px bottom is an OPTICAL correction — GT Pressura Mono ink sits low in
+     its em-box at line-height 1, equal paddings read as text pushed down
+     (owner 2026-07-17, tuned twice: 8 -> 10 -> 12) */
+  padding: var(--k-space-8) var(--k-space-8) var(--k-space-12);
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);
