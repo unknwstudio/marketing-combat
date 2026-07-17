@@ -60,14 +60,17 @@
     right: auto;
     bottom: calc(var(--k-dock-lift) + env(safe-area-inset-bottom, 0px));
     transform: translateX(-50%);
-    /* frame 77 + owner trim (2026-07-17): the ModeSwitcher menu's live width
-       (--dock-menu-w, ResizeObserver on <html>) MINUS 4px per side. When the
-       var is missing (pre-hydration), the invalid calc degrades to width:auto
-       (IACVT -> initial), i.e. natural content width — same as before. */
+    /* frame 77 + optical compensation (owner 2026-07-17): the box tracks the
+       ModeSwitcher menu's live width (--dock-menu-w, ResizeObserver on <html>)
+       MINUS 4px per side — the sharp white 2px rectangle optically outweighs
+       the rounded pill below, so at equal edges it reads WIDER; the trim makes
+       the pair read equal. The MENU's own width is never touched. Missing var
+       (pre-hydration): the invalid calc degrades to width:auto (IACVT ->
+       initial), i.e. natural content width. */
     width: calc(var(--dock-menu-w) - 8px);
     justify-content: center;
     /* same asymmetric optical bottom as the desktop rule above; sides trimmed
-       16 -> 12 with the box (owner: "-4px left/right") */
+       16 -> 12 with the box */
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact 10px bottom (frame 77) — between the 8/12 ladder steps by design */
     padding: var(--k-space-8) var(--k-space-12) 10px;
     font-size: var(--k-text-hud-lg); /* frame 77 ~16px — fixed HUD step, not fluid */
