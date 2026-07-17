@@ -7,9 +7,10 @@ import './ClassicChampionFor.css'
 /**
  * CHAMPION GETS / WHO IT'S FOR — the scroll-pinned block.
  *
- * Figma sources: section states 38:4330 ("Champion gets" right, left gap)
- * and 38:4361 ("who it's for" left, right gap); the composed end state is
- * Frame 54 (node 38:4415) — both columns side by side in one 556px block.
+ * Figma sources: section states 38:4330 and 38:4361; the composed end state
+ * is Frame 54 (node 38:4415) — both columns side by side in one 556px block.
+ * Sides SWAPPED vs the Figma source on owner request (2026-07-17): champion
+ * pins LEFT, the who-list rides up on the RIGHT.
  *
  * The pin is NATIVE position:sticky — no per-frame JS, so it can never
  * jiggle (a rAF fake-sticky corrects position one frame after the browser
@@ -91,7 +92,7 @@ export default function ClassicChampionFor() {
       ref={outerRef}
       aria-label="Champion gets and who it's for"
     >
-      {/* right lane — Champion gets pins (native sticky) until it lands at y=589 */}
+      {/* left lane — Champion gets pins (native sticky) until it lands at y=589 */}
       <div className="cfw__champ-lane">
         <div className="cfw__col cfw__champ">
           <h2 className="cfw__h2 cap-trim">Champion gets</h2>
@@ -121,7 +122,7 @@ export default function ClassicChampionFor() {
         </div>
       </div>
 
-      {/* left column — who it's for, static at its Figma slot; the page
+      {/* right column — who it's for, static at its Figma slot; the page
           scroll itself carries it up into the gap beside the pinned cards.
           The ► arrow marks the ACTIVE item: nothing is selected at rest,
           the arrow appears next to whichever item is hovered. */}
