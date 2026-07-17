@@ -134,11 +134,12 @@
    text indents into the 85px arrow slot (69px Figma slot + 16 gap). */
 
 .cfw__item {
-  /* indent kept small + the arrow shrunk so the LONGEST item ("Performance
-     lead gens", ~663px wide) can't slide past the CANVAS EDGE on hover — the
-     who-column now sits at x=750 (right side), so 750 + 663 + indent must
-     stay ≤ 1440 (ScaleCanvas clips) — 24px leaves a 3px margin */
-  --arrow-indent: var(--k-space-24);
+  /* 0 on desktop: the marker sits in the inter-column GUTTER (the arrow rule
+     below pulls it to left:-36px), so the text never indents — which also
+     means the longest item can never slide past the 1440 canvas edge. The
+     indent mechanism stays for mobile, where the arrow is back INSIDE the
+     column and the text must make room (the media block overrides both). */
+  --arrow-indent: 0px;
   position: relative;
   font-size: var(--k-text-2xl);
   /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma cap-box ratio (46/64) so the five items pitch at 66px and the list is exactly 310px tall — the SAME height as the champion cards block, so "Future legends" aligns with the green strip (Frame 71). Relying on cap-trim (text-box-trim) here is not robust; this line-height reproduces it everywhere. */
@@ -153,7 +154,11 @@
 
 .cfw__arrow {
   position: absolute;
-  left: 0;
+  /* in the gutter between the columns: the who-column starts at x=750 and the
+     champion cards end at x=690, so -36 puts the 28px arrow at 714-742 — clear
+     of the cards, with a steady 8px air to the text (2026-07-17: after the
+     side swap a text indent smaller than the arrow made them collide) */
+  left: -36px;
   top: 50%;
   width: 28px;
   height: 15px;
