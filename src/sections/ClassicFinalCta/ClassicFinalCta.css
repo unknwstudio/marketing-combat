@@ -26,15 +26,17 @@
 /* --- marquee ribbon --------------------------------------------------- */
 
 /* The WHITE ticker tape on the yellow band (owner rule: the running strip is
-   NOT yellow), symmetric 16px as the original. The rules are 2px on purpose:
-   at fractional canvas zooms a 1px design rule can drop below one device
-   pixel and vanish — the tape's white then reads as an UNCLOSED stray strip
-   bleeding into the yellow, which is what the owner kept flagging. 2px
-   survives every zoom, so the tape always closes crisply. */
+   NOT yellow), symmetric 16px as the original. The rules are 1px to match
+   every other hairline on /classic (owner 2026-07-17, reverting #83's 2px):
+   the KNOWN tradeoff is that at some fractional canvas zooms a 1px rule can
+   round below one device pixel and visually vanish, leaving the tape's white
+   "unclosed" against the yellow. If that white-strip report comes back,
+   check the browser zoom / window width BEFORE changing code — the owner
+   accepted this in exchange for consistent 1px rules. */
 .c-cta__ribbon {
   margin-bottom: var(--k-space-80);
   overflow: hidden;
-  border-block: 2px solid var(--k-black);
+  border-block: 1px solid var(--k-black);
   padding-block: var(--k-space-16);
   background: var(--k-white);
 }
