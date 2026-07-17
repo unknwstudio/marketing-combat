@@ -29,12 +29,15 @@
   margin-bottom: var(--k-space-80);
   overflow: hidden;
   border-block: 1px solid var(--k-black);
-  /* near-zero BOTTOM padding: the owner wants no white shelf visible between
-     the running text and the yellow ("чтобы этой белой полоски видно не
-     было") — the bottom rule hugs the caps and the yellow starts right there;
-     the strip itself stays white (not yellow) per the earlier decision */
-  padding-block: var(--k-space-16) var(--k-space-2);
+  /* ZERO bottom padding + the text-box trim below: the owner wants no white
+     visible between the running text and the yellow at any zoom. The line
+     box's descent zone alone left ~6px of white under the caps (measured at
+     scale 0.87), so the trim crops the box to cap/baseline and the letters
+     sit right ON the bottom rule. padding-box clip keeps the white from
+     bleeding a subpixel past the rule on fractional canvas scales. */
+  padding-block: var(--k-space-16) 0;
   background: var(--k-white);
+  background-clip: padding-box;
 }
 
 .c-cta__ribbon-track {
@@ -44,6 +47,15 @@
   animation: c-cta-marquee 32s linear infinite;
   font-size: var(--k-text-lg);
   text-transform: uppercase;
+}
+
+/* crop the line box to cap-height/baseline (the .cap-trim idiom) so no
+   descent-zone white survives under the caps. On the SPAN children, not the
+   flex track — text-box only trims the element that owns the text run (the
+   flex container placement made it a no-op, measured). Unsupported engines
+   keep a few px of line-box air — a graceful fallback. */
+.c-cta__ribbon-track > span {
+  text-box: trim-both cap alphabetic;
 }
 
 /* No padding here on purpose: RIBBON already ends with a "· " separator, so

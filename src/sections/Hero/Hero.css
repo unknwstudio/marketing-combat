@@ -66,22 +66,30 @@
    used to head this block is gone) --- */
 .hero__intro {
   position: absolute;
-  /* 96, was 23: the fixed top-left registration launcher (PlayFab, viewport
-     px) sits above this slot on desktop — 96 design px clears its ~62px
-     screen box even at the 1024 minimum zoom (96 x 0.711 = 68 > 62), with a
-     comfortable gap at 1440+ (owner 2026-07-17 mock) */
-  top: 96px;
+  /* 92, was 23: the fixed top-left registration launcher (PlayFab, viewport
+     px, Figma-sized: 24px text -> ~60px box bottom) sits above this slot on
+     desktop. Figma's frame gap is 24px (node 33:4042) — 92 design px gives
+     ~32px at 1440 and still clears the button at the 1024 minimum zoom
+     (92 x 0.711 = 65 > 60); an exact 24 would collide there. */
+  top: 92px;
   left: 19px;
-  /* Figma frame is 672px; +8px so Chrome's text metrics reproduce Figma's
-     line-1 wrap ("...senior marketers" needs 674px in-browser). Governs the
-     lede wrap; no overflow (ends 699px). */
-  width: 680px;
+  /* Figma frame is 672px; +16px so Chrome's text metrics reproduce Figma's
+     line-1 wrap ("...senior marketers" needs 674px in-browser) INCLUDING the
+     scrollbar-gutter zoom (scale ~0.989 at 1440: 688 x 0.989 = 680 >= 674 —
+     the old 680 dropped to 672.5 and wrapped one word early). Governs the
+     lede wrap; no overflow (ends 707px). */
+  width: 688px;
   z-index: 3;
 }
 
 .hero__lede {
   color: var(--k-accent-green);
   font-size: var(--k-text-lg); /* Figma 33:3903 */
+  /* plain greedy wrap, overriding the global `text-wrap: pretty` — pretty
+     pulled "marketers" onto line 2 to fatten the last line, breaking the
+     Figma comp's "…for senior marketers / of the ai era." line break
+     (measured: the Figma line fits with 14px to spare) */
+  text-wrap: wrap;
   line-height: var(--k-lh-snug); /* Figma normal leading (1.25) snapped to the snug step */
   letter-spacing: var(--k-ls-display);
   /* lift the green terminal copy off the busy CRT scene behind it (2026-07-14
