@@ -11,20 +11,26 @@
   border-top: 2px solid var(--k-line);
 }
 
+/* 1fr auto 1fr + areas: the brand column is TRULY centred in the viewport
+   (equal flexible rails on both sides), legal links take the left rail,
+   the studio credit the right (owner 2026-07-17). DOM order stays
+   brand-first for the mobile stack / reading order; areas do the placing. */
 .footer__inner {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: 'links brand credit';
+  align-items: start;
   gap: var(--k-space-40);
 }
 
-/* left — brand line + copyright */
+/* centre — brand line + copyright */
 .footer__brand {
+  grid-area: brand;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--k-space-8);
-  text-align: left;
+  text-align: center;
 }
 
 .footer__title {
@@ -42,15 +48,15 @@
   color: var(--k-ink-dim-2);
 }
 
-/* centre column — legal links in ONE row (2026-07-17 owner request: the old
-   stacked column read as a broken list in the centred fluid layout). Wraps
-   gracefully if a viewport is too narrow for all three. */
+/* left rail — legal links, stacked (desktop); the fluid layout below turns
+   them into one centred row */
 .footer__links {
+  grid-area: links;
+  justify-self: start;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--k-space-8) var(--k-space-24);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--k-space-8);
   font-family: var(--k-font-mono);
   font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-tight);
@@ -69,8 +75,9 @@
   text-decoration: underline;
 }
 
-/* right — studio credit */
+/* right rail — studio credit */
 .footer__credit {
+  grid-area: credit;
   display: flex;
   justify-content: flex-end;
 }
@@ -107,14 +114,20 @@
   }
 
   .footer__inner {
+    display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--k-space-24);
   }
 
-  .footer__brand {
+  /* one centred row in the stack (2026-07-17: the stacked-left column read
+     as a broken list in the centred fluid layout) */
+  .footer__links {
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    text-align: center;
+    justify-content: center;
+    gap: var(--k-space-8) var(--k-space-24);
   }
 
   .footer__title {
