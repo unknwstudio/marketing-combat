@@ -73,8 +73,10 @@
   line-height: var(--k-lh-flat);
 }
 
-.mode-switch__opt:hover {
-  background: color-mix(in srgb, var(--k-white) 12%, transparent);
+@media (hover: hover) {
+  .mode-switch__opt:hover {
+    background: color-mix(in srgb, var(--k-white) 12%, transparent);
+  }
 }
 
 .mode-switch__opt:focus-visible {

@@ -137,9 +137,14 @@
   animation: madeby-shimmer 2.6s ease-in-out infinite;
 }
 
-.c-foot__base .madeby:hover,
 .c-foot__base .madeby:focus-visible {
   animation-play-state: paused;
+}
+
+@media (hover: hover) {
+  .c-foot__base .madeby:hover {
+    animation-play-state: paused;
+  }
 }
 
 /* WCAG 2.2.2 — the universal MotionToggle pause (keyboard/touch-reachable) */

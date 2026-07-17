@@ -114,11 +114,15 @@
 }
 
 /* WCAG 2.2.2 — a mechanism to pause the auto-scroll (matches Marquee). */
-.finalcta__finish:hover .finalcta__finish-track,
-.finalcta__finish:focus-within .finalcta__finish-track,
-.finalcta__finish:hover::before,
-.finalcta__finish:hover::after {
+.finalcta__finish:focus-within .finalcta__finish-track {
   animation-play-state: paused;
+}
+@media (hover: hover) {
+  .finalcta__finish:hover .finalcta__finish-track,
+  .finalcta__finish:hover::before,
+  .finalcta__finish:hover::after {
+    animation-play-state: paused;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

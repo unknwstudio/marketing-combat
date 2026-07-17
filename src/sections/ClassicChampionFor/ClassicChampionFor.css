@@ -151,8 +151,10 @@
   transition: color var(--k-t-fast) ease;
 }
 
-.cfw__item:hover {
-  color: var(--c-blue);
+@media (hover: hover) {
+  .cfw__item:hover {
+    color: var(--c-blue);
+  }
 }
 
 .cfw__arrow {
@@ -178,13 +180,17 @@
 }
 
 /* hovered item becomes the active one: arrow slides in, text indents */
-.cfw__item:hover .cfw__arrow {
-  opacity: 1;
-  transform: translate(0, -50%);
+@media (hover: hover) {
+  .cfw__item:hover .cfw__arrow {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
 }
 
-.cfw__item:hover .cfw__text {
-  transform: translateX(var(--arrow-indent));
+@media (hover: hover) {
+  .cfw__item:hover .cfw__text {
+    transform: translateX(var(--arrow-indent));
+  }
 }
 
 /* all items rest identical (black, flush left) — blue + arrow + indent

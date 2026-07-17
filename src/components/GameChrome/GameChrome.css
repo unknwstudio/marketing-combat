@@ -39,7 +39,12 @@
   cursor: pointer;
   transition: opacity var(--k-t-fast), background var(--k-t-fast), transform var(--k-t-tap);
 }
-.gc-corner:hover { opacity: 1; background: color-mix(in srgb, var(--k-gc-panel) 85%, transparent); }
+@media (hover: hover) {
+  .gc-corner:hover {
+    opacity: 1;
+    background: color-mix(in srgb, var(--k-gc-panel) 85%, transparent);
+  }
+}
 .gc-corner:active { transform: scale(0.92); }
 .gc-corner:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; opacity: 1; }
 /* touch has no :hover, so the always-there escape hatches must be full-opacity and >=44px */
@@ -47,7 +52,12 @@
   .gc-corner { opacity: 1; width: 44px; height: 44px; border-color: color-mix(in srgb, var(--k-white) 50%, transparent); }
 }
 .gc-exit { left: 10px; }
-.gc-exit:hover { border-color: var(--gc-red); color: var(--k-hud-red-tint); }
+@media (hover: hover) {
+  .gc-exit:hover {
+    border-color: var(--gc-red);
+    color: var(--k-hud-red-tint);
+  }
+}
 .gc-topright { position: fixed; top: 10px; right: 10px; display: flex; gap: var(--k-space-8); pointer-events: none; }
 .gc-topright .gc-corner { position: static; }
 
@@ -124,7 +134,12 @@
   cursor: pointer;
   padding: var(--k-space-8) var(--k-space-12);
 }
-.gc-howtolink:hover { color: var(--k-white); text-decoration: underline; }
+@media (hover: hover) {
+  .gc-howtolink:hover {
+    color: var(--k-white);
+    text-decoration: underline;
+  }
+}
 .gc-hint { font-size: var(--k-text-hud-2xs); letter-spacing: var(--k-ls-pixel-sm); color: var(--k-hud-steel); } /* >=4.5:1 on the dark overlay (was var(--k-hud-shadow), ~4.36:1) */
 
 /* ---- menus (pause / how-to / confirm) ---- */
@@ -149,13 +164,30 @@
   cursor: pointer;
   transition: background var(--k-t-fast), border-color var(--k-t-fast), transform var(--k-t-tap);
 }
-.gc-item:hover { background: color-mix(in srgb, var(--k-gold) 14%, transparent); border-color: var(--gc-gold); color: var(--k-white); }
+@media (hover: hover) {
+  .gc-item:hover {
+    background: color-mix(in srgb, var(--k-gold) 14%, transparent);
+    border-color: var(--gc-gold);
+    color: var(--k-white);
+  }
+}
 .gc-item:active { transform: scale(0.98); }
 .gc-item:focus-visible { outline: 2px solid var(--gc-gold); outline-offset: 2px; }
 .gc-danger { border-color: color-mix(in srgb, var(--k-hud-red) 55%, transparent); color: var(--k-hud-red-soft); }
-.gc-danger:hover { background: color-mix(in srgb, var(--k-hud-red) 16%, transparent); border-color: var(--gc-red); color: var(--k-white); }
+@media (hover: hover) {
+  .gc-danger:hover {
+    background: color-mix(in srgb, var(--k-hud-red) 16%, transparent);
+    border-color: var(--gc-red);
+    color: var(--k-white);
+  }
+}
 .gc-toggle { border-color: color-mix(in srgb, var(--k-hud-cyan) 40%, transparent); color: var(--gc-blue); }
-.gc-toggle:hover { background: color-mix(in srgb, var(--k-hud-cyan) 12%, transparent); border-color: var(--gc-blue); }
+@media (hover: hover) {
+  .gc-toggle:hover {
+    background: color-mix(in srgb, var(--k-hud-cyan) 12%, transparent);
+    border-color: var(--gc-blue);
+  }
+}
 
 /* ---- how-to card ---- */
 .gc-howto { gap: var(--k-space-12); }
@@ -238,13 +270,14 @@
     0 0 28px color-mix(in srgb, var(--gc-gold) 65%, transparent);
   animation: gc-register-pulse 1.6s ease-in-out infinite;
 }
-.gc-resultbar .gc-result-cta .gc-register:hover {
-  background: var(--k-white);
-  border-color: var(--k-white);
-  color: var(--k-black);
-  box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--k-white) 55%, transparent),
-    0 0 32px color-mix(in srgb, var(--gc-gold) 80%, transparent);
+@media (hover: hover) {
+  .gc-resultbar .gc-result-cta .gc-register:hover {
+    background: var(--k-white);
+    border-color: var(--k-white);
+    color: var(--k-black);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--k-white) 55%, transparent),
+      0 0 32px color-mix(in srgb, var(--gc-gold) 80%, transparent);
+  }
 }
 
 @keyframes gc-register-pulse {
@@ -290,9 +323,21 @@
   background: color-mix(in srgb, var(--k-stage) 82%, transparent);
 }
 .gc-result-primary { border-color: var(--gc-gold); color: var(--gc-gold); }
-.gc-result-primary:hover { background: color-mix(in srgb, var(--k-gold) 18%, transparent); border-color: var(--gc-gold); color: var(--k-white); }
+@media (hover: hover) {
+  .gc-result-primary:hover {
+    background: color-mix(in srgb, var(--k-gold) 18%, transparent);
+    border-color: var(--gc-gold);
+    color: var(--k-white);
+  }
+}
 .gc-share-btn { border-color: color-mix(in srgb, var(--k-hud-cyan) 50%, transparent); color: var(--gc-blue); }
-.gc-share-btn:hover { background: color-mix(in srgb, var(--k-hud-cyan) 16%, transparent); border-color: var(--gc-blue); color: var(--k-white); }
+@media (hover: hover) {
+  .gc-share-btn:hover {
+    background: color-mix(in srgb, var(--k-hud-cyan) 16%, transparent);
+    border-color: var(--gc-blue);
+    color: var(--k-white);
+  }
+}
 
 /* ---- share / brag card ---- */
 .gc-bragcard {

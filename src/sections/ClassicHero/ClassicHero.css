@@ -76,8 +76,10 @@
   cursor: pointer;
 }
 
-.c-hero__cta:hover {
-  background: var(--k-classic-panel);
+@media (hover: hover) {
+  .c-hero__cta:hover {
+    background: var(--k-classic-panel);
+  }
 }
 
 /* --- right half: photo + chips --------------------------------------- */
@@ -144,8 +146,10 @@
   height: var(--k-space-16);
 }
 
-.c-hero__chip--motion:hover {
-  background: color-mix(in srgb, var(--k-black) 80%, transparent);
+@media (hover: hover) {
+  .c-hero__chip--motion:hover {
+    background: color-mix(in srgb, var(--k-black) 80%, transparent);
+  }
 }
 
 .c-hero__chip--motion:focus-visible {

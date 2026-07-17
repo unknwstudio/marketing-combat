@@ -127,8 +127,14 @@ export default function Marquee() {
       hovering = false
       resume()
     }
-    section?.addEventListener('mouseenter', onEnter)
-    section?.addEventListener('mouseleave', onLeave)
+    // pause-on-hover is a pointer affordance only: on touch (hover: none) iOS
+    // synthesizes mouseenter on tap with no mouseleave, freezing the marquee
+    const canHover =
+      typeof window.matchMedia === 'function' && window.matchMedia('(hover: hover)').matches
+    if (canHover) {
+      section?.addEventListener('mouseenter', onEnter)
+      section?.addEventListener('mouseleave', onLeave)
+    }
     const unsubMotion = subscribeMotionPaused((p) => {
       motionOff = p
       if (p) pause()

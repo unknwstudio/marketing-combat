@@ -29,20 +29,24 @@
   transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
 }
 
-.motiontoggle:hover {
-  background: var(--k-accent-green);
-  color: var(--k-black);
-  border-color: var(--k-accent-green);
+@media (hover: hover) {
+  .motiontoggle:hover {
+    background: var(--k-accent-green);
+    color: var(--k-black);
+    border-color: var(--k-accent-green);
+  }
 }
 
 .motiontoggle--off {
   color: var(--k-muted);
 }
 
-.motiontoggle--off:hover {
-  background: var(--k-muted);
-  color: var(--k-black);
-  border-color: var(--k-muted);
+@media (hover: hover) {
+  .motiontoggle--off:hover {
+    background: var(--k-muted);
+    color: var(--k-black);
+    border-color: var(--k-muted);
+  }
 }
 
 /* three "speed lines" (decorative) */

@@ -43,9 +43,11 @@
   cursor: pointer;
   min-height: 44px;
 }
-.fight-fail__retry:hover {
-  background: var(--k-gold);
-  color: var(--k-panel);
+@media (hover: hover) {
+  .fight-fail__retry:hover {
+    background: var(--k-gold);
+    color: var(--k-panel);
+  }
 }
 .fight-fail__retry:focus-visible {
   outline: 2px solid var(--k-focus-ring);

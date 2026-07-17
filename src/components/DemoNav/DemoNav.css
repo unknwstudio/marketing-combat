@@ -56,9 +56,11 @@
   white-space: nowrap;
 }
 
-.dnav__link:hover {
-  background: color-mix(in srgb, var(--k-accent-green) 16%, transparent);
-  color: var(--k-white);
+@media (hover: hover) {
+  .dnav__link:hover {
+    background: color-mix(in srgb, var(--k-accent-green) 16%, transparent);
+    color: var(--k-white);
+  }
 }
 
 .dnav__link:focus-visible {

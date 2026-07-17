@@ -30,10 +30,16 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.playfab:hover,
 .playfab:focus-visible {
   background: var(--k-white);
   color: var(--k-black);
+}
+
+@media (hover: hover) {
+  .playfab:hover {
+    background: var(--k-white);
+    color: var(--k-black);
+  }
 }
 
 .playfab:focus-visible {

@@ -63,8 +63,10 @@
   pointer-events: none;
 }
 
-.c-floor__item:hover .c-floor__frame img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .c-floor__item:hover .c-floor__frame img {
+    transform: scale(1.04);
+  }
 }
 
 .c-floor__cap {

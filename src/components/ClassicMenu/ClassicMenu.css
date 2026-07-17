@@ -53,8 +53,10 @@
   white-space: nowrap;
 }
 
-.c-menu__link:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  .c-menu__link:hover {
+    text-decoration: underline;
+  }
 }
 
 .c-menu__rule {
@@ -80,8 +82,10 @@
   text-decoration: none;
 }
 
-.c-menu__apply:hover {
-  background: var(--k-classic-panel);
+@media (hover: hover) {
+  .c-menu__apply:hover {
+    background: var(--k-classic-panel);
+  }
 }
 
 /* --- fluid mobile (< 1024px OR any coarse pointer): a DISCLOSURE — the black

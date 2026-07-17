@@ -19,9 +19,11 @@
   animation: play-link-pulse 1.9s ease-in-out infinite;
   transition: transform var(--k-t-fast) ease, box-shadow var(--k-t-fast) ease;
 }
-.play-link:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: var(--k-shadow-hard-lg), 0 0 30px color-mix(in srgb, var(--k-gold) 75%, transparent);
+@media (hover: hover) {
+  .play-link:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: var(--k-shadow-hard-lg), 0 0 30px color-mix(in srgb, var(--k-gold) 75%, transparent);
+  }
 }
 .play-link:active { transform: translate(2px, 2px); box-shadow: var(--k-shadow-hard-sm); }
 .play-link:focus-visible { outline: 3px solid var(--k-hud-red); outline-offset: 3px; }

@@ -121,8 +121,10 @@
   transition: opacity var(--k-t-base) ease;
 }
 
-.c-battle__logos li:hover img {
-  opacity: 1;
+@media (hover: hover) {
+  .c-battle__logos li:hover img {
+    opacity: 1;
+  }
 }
 
 /* --- fluid < 1024: plain stacked layout (no pin / no runway) ------------ */

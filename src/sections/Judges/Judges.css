@@ -57,7 +57,6 @@
     transform: scale(1.06);
     filter: url(#k-rgb-split);
   }
-
   .judges__card:hover .judges__sweep {
     opacity: 1;
     animation: judges-sweep 0.6s ease-out;
@@ -74,9 +73,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .judges__card:hover .judges__sweep {
-    animation: none;
-    opacity: 0;
+  @media (hover: hover) {
+    .judges__card:hover .judges__sweep {
+      animation: none;
+      opacity: 0;
+    }
   }
 }
 

@@ -104,8 +104,10 @@
   cursor: pointer;
 }
 
-.mcp__copy:hover {
-  background: var(--k-classic-panel);
+@media (hover: hover) {
+  .mcp__copy:hover {
+    background: var(--k-classic-panel);
+  }
 }
 
 /* The mode-switch pill is dark chrome on the white /mcp page too — its

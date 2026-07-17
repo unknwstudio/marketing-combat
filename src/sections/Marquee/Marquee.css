@@ -62,9 +62,13 @@
 /* WCAG 2.2.2: a mechanism to pause auto-moving content — hover/focus parks
    the CSS keyframe; the JS-driven crawl pauses via the same events in
    Marquee.jsx (an inline transform can't be stopped by CSS alone). */
-.marquee:hover .marquee__viewport,
 .marquee:focus-within .marquee__viewport {
   animation-play-state: paused;
+}
+@media (hover: hover) {
+  .marquee:hover .marquee__viewport {
+    animation-play-state: paused;
+  }
 }
 
 /* the universal MotionToggle pause (keyboard/touch-reachable, unlike hover);

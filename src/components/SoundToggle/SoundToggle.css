@@ -27,20 +27,24 @@
   transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
 }
 
-.sndtoggle:hover {
-  background: var(--k-accent-green);
-  color: var(--k-black);
-  border-color: var(--k-accent-green);
+@media (hover: hover) {
+  .sndtoggle:hover {
+    background: var(--k-accent-green);
+    color: var(--k-black);
+    border-color: var(--k-accent-green);
+  }
 }
 
 .sndtoggle--off {
   color: var(--k-muted);
 }
 
-.sndtoggle--off:hover {
-  background: var(--k-muted);
-  color: var(--k-black);
-  border-color: var(--k-muted);
+@media (hover: hover) {
+  .sndtoggle--off:hover {
+    background: var(--k-muted);
+    color: var(--k-black);
+    border-color: var(--k-muted);
+  }
 }
 
 /* animated equalizer bars (on) */

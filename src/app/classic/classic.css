@@ -48,9 +48,14 @@
   color: var(--k-white);
 }
 
-.classic .c-foot__link:hover,
 .classic .c-foot__link:focus-visible {
   color: var(--c-green);
+}
+
+@media (hover: hover) {
+  .classic .c-foot__link:hover {
+    color: var(--c-green);
+  }
 }
 
 .classic .mode-switch__opt:not(.mode-switch__opt--active) {

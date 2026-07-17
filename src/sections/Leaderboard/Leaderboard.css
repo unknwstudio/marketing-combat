@@ -106,10 +106,15 @@ th.leaderboard__score {
 }
 
 /* hover parks the blink so the click target holds still */
-.leaderboard__enter:hover,
 .leaderboard__enter:focus-visible {
   color: var(--k-gold);
   animation: none;
+}
+@media (hover: hover) {
+  .leaderboard__enter:hover {
+    color: var(--k-gold);
+    animation: none;
+  }
 }
 
 @keyframes lb-blink {

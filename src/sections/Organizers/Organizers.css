@@ -53,7 +53,6 @@
     transform: scale(1.06);
     filter: url(#k-rgb-split);
   }
-
   .organizers__card:hover .organizers__sweep {
     opacity: 1;
     animation: organizers-sweep 0.6s ease-out;
@@ -70,9 +69,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .organizers__card:hover .organizers__sweep {
-    animation: none;
-    opacity: 0;
+  @media (hover: hover) {
+    .organizers__card:hover .organizers__sweep {
+      animation: none;
+      opacity: 0;
+    }
   }
 }
 

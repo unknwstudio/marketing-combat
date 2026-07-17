@@ -59,9 +59,13 @@
 /* blue, not the section's green accent: bright green (--c-green #00da95) is
    1.83:1 on white — fails WCAG as text — so the hover/open state uses the
    text-safe classic blue (6.5:1) per the accent policy in classic.css */
-.c-faq__item.is-open .c-faq__q,
-.c-faq__q:hover {
+.c-faq__item.is-open .c-faq__q {
   color: var(--c-blue);
+}
+@media (hover: hover) {
+  .c-faq__q:hover {
+    color: var(--c-blue);
+  }
 }
 
 /* +/− toggle — two equal-weight SVG bars, perfectly centered; the vertical

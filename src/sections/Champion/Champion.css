@@ -184,9 +184,11 @@
   cursor: pointer;
 }
 
-.champion__cta:hover {
-  background: var(--k-white);
-  color: var(--k-black);
+@media (hover: hover) {
+  .champion__cta:hover {
+    background: var(--k-white);
+    color: var(--k-black);
+  }
 }
 
 .champion__cta:focus-visible {

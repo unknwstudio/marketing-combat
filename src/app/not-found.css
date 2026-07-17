@@ -57,10 +57,16 @@
   padding: var(--k-space-12) var(--k-space-24);
 }
 
-.notfound__link:hover,
 .notfound__link:focus-visible {
   background: var(--k-gold);
   color: var(--k-bg-deep);
+}
+
+@media (hover: hover) {
+  .notfound__link:hover {
+    background: var(--k-gold);
+    color: var(--k-bg-deep);
+  }
 }
 
 .notfound__link:focus-visible {

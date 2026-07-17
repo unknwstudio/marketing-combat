@@ -237,10 +237,16 @@
   shape-rendering: crispEdges;
 }
 
-.hero__playsmall:hover,
 .hero__playsmall:focus-visible {
   background: var(--k-white);
   color: var(--k-black);
+}
+
+@media (hover: hover) {
+  .hero__playsmall:hover {
+    background: var(--k-white);
+    color: var(--k-black);
+  }
 }
 
 .hero__playsmall:focus-visible {

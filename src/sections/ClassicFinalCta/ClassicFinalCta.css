@@ -139,8 +139,10 @@
     background var(--k-t-base) ease;
 }
 
-.c-cta__pill:hover {
-  background: var(--k-classic-panel);
+@media (hover: hover) {
+  .c-cta__pill:hover {
+    background: var(--k-classic-panel);
+  }
 }
 
 .c-cta__fine {

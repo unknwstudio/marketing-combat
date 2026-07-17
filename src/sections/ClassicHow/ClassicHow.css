@@ -89,8 +89,10 @@
   transition: color var(--k-t-fast) ease;
 }
 
-.c-step:hover .c-step__item {
-  color: var(--c-blue);
+@media (hover: hover) {
+  .c-step:hover .c-step__item {
+    color: var(--c-blue);
+  }
 }
 
 .c-step__arrow {
@@ -111,13 +113,17 @@
   transition: transform var(--k-t-slow) ease;
 }
 
-.c-step:hover .c-step__arrow {
-  opacity: 1;
-  transform: translate(0, -50%);
+@media (hover: hover) {
+  .c-step:hover .c-step__arrow {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
 }
 
-.c-step:hover .c-step__title {
-  transform: translateX(var(--arrow-indent));
+@media (hover: hover) {
+  .c-step:hover .c-step__title {
+    transform: translateX(var(--arrow-indent));
+  }
 }
 
 /* --- phase cards: 1px frame + coded accent strip ------------------------- */
