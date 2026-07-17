@@ -3,6 +3,7 @@
   "//": "Design-system gate (2026-07-13 audit, hardened 2026-07-14 2nd pass). The token ledger lives in src/styles/index.css \u2014 the ONE file allowed to hold raw values (it defines them). Everywhere else: colors must be tokens or color-mix of tokens (color-no-hex = error); spacing (margin/padding/gap), font-size, line-height, letter-spacing and border-radius must come from the --k-* / --c-* scales (error). Sanctioned exceptions carry an inline 'stylelint-disable-next-line \u2026 -- deliberate: <reason>' comment at the call site \u2014 every disable must state its reason.",
   "rules": {
     "color-no-hex": true,
+    "function-disallowed-list": ["rgb", "rgba", "hsl", "hsla"],
     "declaration-property-value-disallowed-list": [
       {
         "/^(margin|padding|gap|row-gap|column-gap)/": [
@@ -36,6 +37,7 @@
       ],
       "rules": {
         "color-no-hex": null,
+        "function-disallowed-list": null,
         "declaration-property-value-disallowed-list": null
       }
     }

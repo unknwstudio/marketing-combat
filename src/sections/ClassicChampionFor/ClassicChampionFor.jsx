@@ -18,9 +18,11 @@ import './ClassicChampionFor.css'
  * hidden would make it a scroll container and kill sticky).
  *
  * Geometry (1440-design px, section-local):
- *   - champion column: natural y=60 (Figma 38:4330), sticky top:60; its
- *     lane ends at y=1025 so the pin releases exactly when the column
- *     reaches y=589 — beside "who it's for".
+ *   - champion column: natural y=60 (Figma 38:4330); the CSS pins it at
+ *     top:270 (raised from the Figma 60 on purpose — clears the fixed
+ *     top-right menu, see ClassicChampionFor.css). The release point does
+ *     not depend on the sticky offset: the lane ends at y=1025 so the pin
+ *     releases exactly when the column reaches y=589 — beside "who it's for".
  *   - who column: static at y=589 (its Figma stacked position); it scrolls
  *     up 1:1 with the page into the left gap — no transforms needed.
  *   - runway height = 529 (pin travel) + one viewport, set on resize only,

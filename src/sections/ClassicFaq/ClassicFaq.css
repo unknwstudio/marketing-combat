@@ -18,11 +18,9 @@
 }
 
 /* the aside column is narrower than the full content width, so cap the heading
-   at a size whose longest word ("Frequently") fits without the mask clipping it */
-.c-faq__aside .c-mask-head {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke cap so "Frequently" fits the 420px aside without mask clipping; no scale step within tolerance (2xl min is 40px) */
-  font-size: clamp(32px, 4vw, 52px);
-}
+   at the shared .c-h2 size — measured: "FREQUENTLY" at the token's 64px cap is
+   407px, inside the 420px aside, so the old bespoke 52px cap (which made this
+   the one off-size heading on the page) was never needed (2026-07-17). */
 
 .c-faq__note {
   margin-top: var(--k-space-8);
@@ -87,15 +85,26 @@
   transform: scaleY(0);
 }
 
-/* answer: 0fr -> 1fr height animation, no measuring */
+/* answer: 0fr -> 1fr height animation, no measuring.
+   visibility:hidden removes the collapsed text from the accessibility tree —
+   without it screen readers read every "closed" answer while aria-expanded
+   says false (1.3.1/4.1.2, 2026-07-16 audit). The visibility flip is delayed
+   by the row transition on close so the collapse animation still plays. */
 .c-faq__answer {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows var(--k-t-slow) ease;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--k-t-slow) ease,
+    visibility 0s var(--k-t-slow);
 }
 
 .c-faq__item.is-open .c-faq__answer {
   grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--k-t-slow) ease,
+    visibility 0s;
 }
 
 .c-faq__answer-inner {

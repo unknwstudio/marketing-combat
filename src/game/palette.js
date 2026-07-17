@@ -32,3 +32,13 @@ export const K_HUD_RED = '#ff4d6d'; // --k-hud-red
 export const K_HUD_RED_HEX = 0xff4d6d;
 export const K_HUD_GREEN = '#8bffa0'; // --k-hud-green
 export const K_HUD_GREEN_HEX = 0x8bffa0;
+
+/* --- Cabinet3D scene set --- decorative WebGL-scene colors that exist ONLY in
+ * the 3D cabinet — no CSS-ledger counterpart, hence no `// --k-*` annotation
+ * (scripts/check-css-vars.js asserts only the annotated mirrors above).
+ * Centralized here so no component carries bare hex literals (2026-07-16 audit). */
+export const CAB_TROPHY_HIGHLIGHT = '#ffe98a'; // trophy rim-light
+export const CAB_SCREEN_GREEN_TOP = '#123322'; // attract-screen gradient: top
+export const CAB_SCREEN_GREEN_MID = '#0b2015'; // attract-screen gradient: mid
+export const CAB_SCREEN_GREEN_BOTTOM = '#08160d'; // attract-screen gradient: bottom
+export const CAB_BODY = '#17121f'; // near-black cabinet shell

@@ -82,6 +82,11 @@
   to { transform: translateX(-50%); }
 }
 
+/* WCAG 2.2.2 — the universal MotionToggle pause (keyboard/touch-reachable) */
+.motion-paused .champion__track {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .champion__track {
     animation: none;

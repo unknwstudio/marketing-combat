@@ -9,7 +9,7 @@
   /* Figma "Helvetica: Regular" — system stack, no webfont needed */
   --c-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --c-yellow: var(--k-classic-yellow); /* fills/backgrounds only — unreadable as text on white */
-  --c-orange: var(--k-amber);
+  --c-orange: var(--k-amber); /* fills/backgrounds only (menu card) — 1.9:1 as text on white; yellow-family TEXT uses --k-orange */
   --c-blue: var(--k-classic-blue);
   --c-green: var(--k-classic-green); /* fills/backgrounds only — 1.83:1 as text on white; text uses --c-blue */
   --c-ink: var(--k-classic-ink);

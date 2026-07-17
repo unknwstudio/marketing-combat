@@ -1,0 +1,82 @@
+/* Motion-pause pill (WCAG 2.2.2) — SoundToggle's sibling, docked directly
+   above it bottom-left. Same terminal look; the glyph is three "speed lines"
+   that shorten to stubs when motion is paused. */
+.motiontoggle {
+  position: fixed;
+  left: var(--k-dock-inset);
+  /* one pill row (32px + 8px air) above the sound pill's slot */
+  bottom: calc(var(--k-dock-inset) + var(--k-space-40));
+  z-index: var(--z-mode);
+  display: inline-flex;
+  align-items: center;
+  /* >=24px min target (WCAG 2.5.8) — same floor as SoundToggle */
+  min-height: 32px;
+  min-width: var(--k-dock-pill-min); /* matches the SOUND pill below it */
+  gap: var(--k-space-8);
+  padding: var(--k-space-8) var(--k-space-12);
+  background: color-mix(in srgb, var(--k-black) 70%, transparent);
+  border: 1px solid var(--k-white);
+  color: var(--k-accent-green);
+  font-family: var(--k-font-mono);
+  /* fixed pill chrome — integer HUD step, matching SoundToggle */
+  font-size: var(--k-text-hud-sm);
+  letter-spacing: var(--k-ls-tight);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--k-t-fast), color var(--k-t-fast), border-color var(--k-t-fast);
+}
+
+.motiontoggle:hover {
+  background: var(--k-accent-green);
+  color: var(--k-black);
+  border-color: var(--k-accent-green);
+}
+
+.motiontoggle--off {
+  color: var(--k-muted);
+}
+
+.motiontoggle--off:hover {
+  background: var(--k-muted);
+  color: var(--k-black);
+  border-color: var(--k-muted);
+}
+
+/* three "speed lines" (decorative) */
+.motiontoggle__glyph {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--k-space-2);
+}
+
+.motiontoggle__glyph i {
+  width: 12px;
+  height: 2px;
+  background: currentColor;
+}
+
+.motiontoggle__glyph i:nth-child(2) {
+  width: 9px;
+}
+.motiontoggle__glyph i:nth-child(3) {
+  width: 6px;
+}
+
+.motiontoggle--off .motiontoggle__glyph i {
+  width: 4px;
+}
+
+/* (AI skin only — /classic's pause control is the hero ClassicMotionChip) */
+
+@media (max-width: 1023px) {
+  .motiontoggle {
+    /* stacked above SoundToggle, which itself sits above the bottom-center
+       ModeSwitcher pill for the whole fluid range (same dock as the others) */
+    left: var(--k-dock-inset-sm);
+    bottom: calc(var(--k-dock-lift) + var(--k-space-40));
+    padding: var(--k-space-4) var(--k-space-8);
+    font-size: var(--k-text-hud-xs);
+    min-width: var(--k-dock-pill-min-sm);
+  }
+}

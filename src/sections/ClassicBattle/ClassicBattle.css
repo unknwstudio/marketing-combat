@@ -39,7 +39,7 @@
 
 .c-battle__stats-col {
   position: sticky;
-  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
+  top: 200px; /* single source for the pin offset — clears the ~187px fixed menu */
 }
 
 .c-battle__stats {
@@ -73,10 +73,8 @@
 /* the label — matches the champion card subtitle (.cfw__card-s): 16px,
    sentence-case, full white, no tracking */
 .c-stat__label {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact card subtitle size, matching .cfw__card-s */
-  font-size: 16px;
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: Figma-exact leading, matching .cfw__card-s */
-  line-height: 1.2;
+  font-size: var(--k-classic-text-card);
+  line-height: var(--k-classic-lh-card);
   max-width: 280px;
 }
 

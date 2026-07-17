@@ -26,7 +26,7 @@
    height (--how-col-h) so the composed pair shares one bottom line. */
 .c-how__cards-col {
   position: sticky;
-  top: 200px; /* == STICKY_TOP in the component; clears the fixed menu */
+  top: 200px; /* single source for the pin offset — clears the ~187px fixed menu */
   display: flex;
   flex-direction: column;
   gap: var(--k-space-64); /* heading → cards */

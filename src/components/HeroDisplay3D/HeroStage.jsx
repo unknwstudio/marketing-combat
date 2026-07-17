@@ -11,7 +11,7 @@ export default function HeroStage() {
   return (
     <div className="herostage">
       <div className="herostage__flat">
-        <Hero centerPlay />
+        <Hero />
       </div>
     </div>
   )

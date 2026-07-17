@@ -3,6 +3,11 @@
 import { useEffect, useRef } from 'react'
 import PixelIcon from '@/components/PixelIcon/PixelIcon'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import {
+  initMotionPause,
+  isMotionPaused,
+  subscribeMotionPaused,
+} from '@/effects/motion/motionPause'
 import './Marquee.css'
 
 /**
@@ -80,13 +85,16 @@ export default function Marquee() {
     }
 
     // the strip used to crawl at 60fps for the whole session even deep
-    // into the page — pause the rAF loop off-screen (perf) and on hover
-    // (WCAG 2.2.2 — a mechanism to pause auto-moving content), resyncing
-    // `last` on resume so the paused time doesn't count as a jump in `dist`
+    // into the page — pause the rAF loop off-screen (perf), on hover, and
+    // while the universal MotionToggle is paused (WCAG 2.2.2 — hover alone
+    // is unreachable by keyboard/touch), resyncing `last` on resume so the
+    // paused time doesn't count as a jump in `dist`
+    initMotionPause()
     let intersecting = true
     let hovering = false
+    let motionOff = isMotionPaused()
     const resume = () => {
-      if (raf || !intersecting || hovering) return
+      if (raf || !intersecting || hovering || motionOff) return
       last = performance.now()
       raf = requestAnimationFrame(tick)
     }
@@ -109,7 +117,7 @@ export default function Marquee() {
       )
       io.observe(track)
     } else {
-      raf = requestAnimationFrame(tick)
+      resume() // same gates (hover/motion-pause) apply without IO support
     }
     const onEnter = () => {
       hovering = true
@@ -121,11 +129,17 @@ export default function Marquee() {
     }
     section?.addEventListener('mouseenter', onEnter)
     section?.addEventListener('mouseleave', onLeave)
+    const unsubMotion = subscribeMotionPaused((p) => {
+      motionOff = p
+      if (p) pause()
+      else resume()
+    })
 
     return () => {
       window.removeEventListener('scroll', onScroll)
       section?.removeEventListener('mouseenter', onEnter)
       section?.removeEventListener('mouseleave', onLeave)
+      unsubMotion()
       if (io) io.disconnect()
       cancelAnimationFrame(raf)
     }

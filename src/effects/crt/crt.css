@@ -62,6 +62,7 @@
 
 /* --- faint RGB aperture grille (phosphor triad; primaries, no token) --- */
 .crt__grille {
+  /* stylelint-disable function-disallowed-list -- deliberate: the phosphor triad IS the pure R/G/B channel primaries — a physical-CRT fact no palette token can express (2026-07-16 audit) */
   background: repeating-linear-gradient(
     to right,
     rgba(255, 0, 0, 0.5) 0,
@@ -69,6 +70,7 @@
     rgba(0, 0, 255, 0.5) 2px,
     color-mix(in srgb, var(--k-black) 0%, transparent) 3px
   );
+  /* stylelint-enable function-disallowed-list */
   opacity: calc(var(--crt-intensity) * 0.4);
 }
 

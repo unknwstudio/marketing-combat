@@ -25,7 +25,8 @@ import './ClassicHow.css'
  * negative marginBottom pulls the next section up under the composed block.
  */
 
-const STICKY_TOP = 200 // pin position — clears the fixed top-right menu (~187)
+// Pin position (top: 200px, clears the ~187px fixed top-right menu) lives in
+// ClassicHow.css — the CSS is the single source; there is no JS constant.
 const TOP = 60 // both columns' natural top in the section
 const GAP = 80 // stacked gap between the pinned column's bottom and the riser's top
 

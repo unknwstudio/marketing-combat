@@ -7,7 +7,20 @@ import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
 import { GAME_COPY } from '@/lib/game'
-import { K_WHITE, K_BLACK, K_RED, K_CYAN, K_ORANGE, K_TITLE_YELLOW, K_ACCENT_GREEN } from '@/game/palette'
+import {
+  K_WHITE,
+  K_BLACK,
+  K_RED,
+  K_CYAN,
+  K_ORANGE,
+  K_TITLE_YELLOW,
+  K_ACCENT_GREEN,
+  CAB_TROPHY_HIGHLIGHT,
+  CAB_SCREEN_GREEN_TOP,
+  CAB_SCREEN_GREEN_MID,
+  CAB_SCREEN_GREEN_BOTTOM,
+  CAB_BODY,
+} from '@/game/palette'
 import './Cabinet3D.css'
 
 const MODEL_URL = '/assets/demo/arcade-machine.glb'
@@ -42,7 +55,7 @@ const TROPHY_ART = [
   '..HGGGGGS...',
   '.HGGGGGGGS..',
 ]
-const TROPHY_PAL = { H: '#ffe98a', G: K_TITLE_YELLOW, S: K_ORANGE }
+const TROPHY_PAL = { H: CAB_TROPHY_HIGHLIGHT, G: K_TITLE_YELLOW, S: K_ORANGE }
 
 // Draw the trophy centred on `cx`, top edge at `top`, `p` px per pixel-cell.
 function drawTrophy(ctx, cx, top, p) {
@@ -63,9 +76,9 @@ function makeAttractTexture(variant = 'play') {
   c.height = 384
   const x = c.getContext('2d')
   const g = x.createLinearGradient(0, 0, 0, 384)
-  g.addColorStop(0, '#123322')
-  g.addColorStop(0.5, '#0b2015')
-  g.addColorStop(1, '#08160d')
+  g.addColorStop(0, CAB_SCREEN_GREEN_TOP)
+  g.addColorStop(0.5, CAB_SCREEN_GREEN_MID)
+  g.addColorStop(1, CAB_SCREEN_GREEN_BOTTOM)
   x.fillStyle = g
   x.fillRect(0, 0, 512, 384)
   const rg = x.createRadialGradient(256, 180, 0, 256, 180, 300)
@@ -147,7 +160,7 @@ void main() {
 
 /* ---------- the cabinet (downloaded model, restyled to our palette) ---------- */
 
-const BODY_COLOR = new THREE.Color('#17121f') // near-black cabinet
+const BODY_COLOR = new THREE.Color(CAB_BODY) // near-black cabinet
 const NEON_COLOR = new THREE.Color(K_RED) // our --k-red neon
 
 const _pressScale = new THREE.Vector3() // scratch for button world-scale reads

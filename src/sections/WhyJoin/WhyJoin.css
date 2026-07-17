@@ -8,19 +8,13 @@
   list-style: none;
 }
 
+/* No hover state on purpose (2026-07-17): the cards are inert content tiles —
+   a lift+cyan border promised interactivity they don't have. */
 .whyjoin__card {
   display: flex;
   flex-direction: column;
   gap: var(--k-space-16);
   min-height: 260px;
-  transition: border-color var(--k-t-fast), transform var(--k-t-fast);
-}
-
-@media (hover: hover) {
-  .whyjoin__card:hover {
-    border-color: var(--k-cyan);
-    transform: translateY(-4px);
-  }
 }
 
 .whyjoin__top {

@@ -87,7 +87,9 @@ export default function Fighters() {
               >
                 <path
                   d={f.bolt}
-                  fill="#eaffff"
+                  /* was a bare #eaffff — a near-dupe of the HUD ink token
+                     (imperceptible 1-step diff on a 2px bolt, 2026-07-16 audit) */
+                  fill="var(--k-hud-ink)"
                   stroke="var(--k-cyan)"
                   strokeWidth="2"
                   strokeLinejoin="miter"

@@ -58,9 +58,12 @@ export default function ScaleCanvas({
     // and would otherwise get a zoom-fitted DESKTOP layout with shrunk targets
     // and no hover equivalents. Opt any coarse-pointer device into the fluid
     // mobile reflow regardless of width (the /play game already reads coarse).
-    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
-
+    // Read INSIDE measure — 2-in-1s flip pointer capability live
+    // (tablet<->laptop mode), so a once-at-mount read goes stale (2026-07-16
+    // audit); the matchMedia change listener below re-measures on the flip.
     const measure = () => {
+      const coarse =
+        typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
       if (window.innerWidth < breakpoint || coarse) {
         setFluid(true)
         setScale(1)
@@ -81,9 +84,15 @@ export default function ScaleCanvas({
     ro.observe(outer)
     ro.observe(inner)
     window.addEventListener('resize', measure)
+    // pointer capability can flip without a resize — re-measure on the change
+    // (the Cabinet3DGate pattern)
+    const mq =
+      typeof window.matchMedia === 'function' ? window.matchMedia('(pointer: coarse)') : null
+    mq?.addEventListener?.('change', measure)
     return () => {
       ro.disconnect()
       window.removeEventListener('resize', measure)
+      mq?.removeEventListener?.('change', measure)
     }
   }, [width, breakpoint, mode])
 

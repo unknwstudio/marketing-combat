@@ -33,9 +33,10 @@ export default function SoundToggle() {
     <button
       className={'sndtoggle' + (muted ? ' sndtoggle--off' : '')}
       type="button"
-      aria-pressed={muted}
       /* No aria-label: the visible "SOUND ON/OFF" span is the accessible name
-         (WCAG 2.5.3 Label in Name); aria-pressed carries the toggle state. */
+         (WCAG 2.5.3 Label in Name). No aria-pressed either — a state-swapping
+         label PLUS a pressed state reads as "SOUND OFF, pressed", which is
+         ambiguous (4.1.2, 2026-07-16 audit): the label alone carries state. */
       onClick={() => {
         toggleMuted()
         if (!isMuted()) playSfx('confirm', 0.5)

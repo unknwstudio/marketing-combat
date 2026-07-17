@@ -18,6 +18,9 @@ const TICKER = Array.from({ length: 20 });
 export default function Champion() {
   return (
     <section id="prizes" className="champion" aria-label="Champion prizes">
+      {/* the visible "CHAMPION GETS" ticker is aria-hidden decoration — this
+          keeps the prize block in the headings outline like every other section */}
+      <h2 className="sr-only">Champion gets</h2>
       <img
         className="champion__panel pixelated"
         src={`/assets/champion/panel.webp`}

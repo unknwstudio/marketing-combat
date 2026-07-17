@@ -73,10 +73,12 @@ export const STORAGE_KEY = 'amk:registration-demo'
 
 // Persist a demo record. Password is intentionally NOT included. `ts` is passed
 // in by the caller so this module performs no Date.now() at import (SSR-safe).
+// sessionStorage, not localStorage: the record is never read back, and name+email
+// must not outlive the tab on a shared/kiosk machine (2026-07-16 security audit).
 export function saveRegistrationDemo({ name, email, marketing, ts }) {
   if (typeof window === 'undefined') return
   try {
-    window.localStorage.setItem(
+    window.sessionStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ name, email, marketing: !!marketing, ts })
     )

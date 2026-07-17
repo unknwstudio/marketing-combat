@@ -6,7 +6,7 @@ import './Hero.css'
  * Fixed 1440x804 stage. Graphics are exported PNGs (public/assets/hero),
  * all text/layout is live code using the global pixel font + tokens.
  */
-export default function Hero({ centerPlay = false }) {
+export default function Hero() {
   return (
     <section className="hero" aria-label="AI Marketing Kombat">
       {/* the real, styled title is the logo image below — this is the page's
@@ -26,8 +26,9 @@ export default function Hero({ centerPlay = false }) {
       <div className="hero__grid hero__grid--left" aria-hidden="true" />
       <div className="hero__grid hero__grid--right" aria-hidden="true" />
 
-      {/* glowing wordmark + underline */}
-      <img className="hero__logo" src={`/assets/hero/logo.webp`} alt="AI Marketing Kombat" />
+      {/* glowing wordmark + underline. alt="" — the sr-only h1 above already
+          announces the brand; a second identical announcement is noise (1.1.1) */}
+      <img className="hero__logo" src={`/assets/hero/logo.webp`} alt="" />
 
       {/* top-left: intro lede. The registration badge that used to sit above it
           was removed — registration lives in the floating launcher and the CTAs
@@ -62,26 +63,23 @@ export default function Hero({ centerPlay = false }) {
         <span className="hero__pill">FINAL · BARCELONA</span>
       </div>
 
-      {centerPlay && (
-        <>
-          {/* A small PLAY launcher at the bottom of the hero. VsSplash's
-              delegated a[href="/play"] listener catches the click for the
-              first-visit VS flash; data-burst + data-sfx match the site's
-              other play affordances. */}
-          <a
-            className="hero__playsmall"
-            href="/play"
-            data-sfx="confirm"
-            data-burst
-            aria-label="Play AI Marketing Kombat"
-          >
-            <svg className="hero__playsmall-tri" viewBox="0 0 6 10" aria-hidden="true">
-              <path d="M0 0h1v10H0zM1 1h1v8H1zM2 2h1v6H2zM3 3h1v4H3zM4 4h1v2H4z" />
-            </svg>
-            play
-          </a>
-        </>
-      )}
+      {/* A small PLAY launcher at the bottom of the hero. VsSplash's
+          delegated a[href="/play"] listener catches the click for the
+          first-visit VS flash; data-burst + data-sfx match the site's
+          other play affordances. (Was gated by a `centerPlay` prop whose
+          only caller always passed true — prop removed, 2026-07-16 audit.) */}
+      <a
+        className="hero__playsmall"
+        href="/play"
+        data-sfx="confirm"
+        data-burst
+        aria-label="Play AI Marketing Kombat"
+      >
+        <svg className="hero__playsmall-tri" viewBox="0 0 6 10" aria-hidden="true">
+          <path d="M0 0h1v10H0zM1 1h1v8H1zM2 2h1v6H2zM3 3h1v4H3zM4 4h1v2H4z" />
+        </svg>
+        play
+      </a>
     </section>
   )
 }

@@ -57,6 +57,9 @@ export default function ClassicApp() {
       <RegisterModal variant="classic" />
       <ClassicReveal />
       <ClassicMenu />
+      {/* the WCAG 2.2.2 pause control lives in the hero chips row
+          (ClassicMotionChip) — the floating pill read as arcade chrome on this
+          skin and collided with the footer base row */}
       <ModeSwitcher active="classic" />
     </div>
   )
