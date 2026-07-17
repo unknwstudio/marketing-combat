@@ -124,13 +124,18 @@
 
 /* the pause chip (ClassicMotionChip) is a real <button> among inert spans —
    same pill look plus interactive affordances (WCAG 2.2.2 control).
-   Icon-only: a 48px circle-pill, glyph block-aligned dead center. */
+   Icon-only: a 48px circle-pill, glyph block-aligned dead center.
+   order:-1 + auto margin: the pause docks at the media's LEFT edge (the
+   container's 20px padding = the owner's "20px от левого края видео",
+   2026-07-17) while the fact chips keep the right rail. */
 .c-hero__chip--motion {
   border: 0;
   width: 48px;
   padding: 0;
   font-family: inherit;
   cursor: pointer;
+  order: -1;
+  margin-right: auto;
 }
 
 .c-hero__chip-glyph {
@@ -205,12 +210,10 @@
     font-size: 11px;
   }
 
-  /* the pause chip stays IN the row, pushed to the right rail (2026-07-17:
-     an absolutely-docked version read as floating mid-video). On very narrow
-     phones (<~370px) it wraps alone and the auto margin keeps it right-aligned. */
+  /* the pause chip stays IN the row — first, at the left edge like desktop
+     (base order/margin rules apply); the fact chips take the right rail */
   .c-hero__chip--motion {
     width: 32px;
     padding: 0;
-    margin-left: auto;
   }
 }
