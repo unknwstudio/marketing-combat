@@ -29,9 +29,11 @@
   margin-bottom: var(--k-space-80);
   overflow: hidden;
   border-block: 1px solid var(--k-black);
-  padding-block: var(--k-space-16);
-  /* the ribbon stays a WHITE strip on the yellow band (owner: "бегущую
-     строку делать жёлтой не надо") */
+  /* near-zero BOTTOM padding: the owner wants no white shelf visible between
+     the running text and the yellow ("чтобы этой белой полоски видно не
+     было") — the bottom rule hugs the caps and the yellow starts right there;
+     the strip itself stays white (not yellow) per the earlier decision */
+  padding-block: var(--k-space-16) var(--k-space-2);
   background: var(--k-white);
 }
 
