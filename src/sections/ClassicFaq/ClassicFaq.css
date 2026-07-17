@@ -18,11 +18,9 @@
 }
 
 /* the aside column is narrower than the full content width, so cap the heading
-   at a size whose longest word ("Frequently") fits without the mask clipping it */
-.c-faq__aside .c-mask-head {
-  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: bespoke cap so "Frequently" fits the 420px aside without mask clipping; no scale step within tolerance (2xl min is 40px) */
-  font-size: clamp(32px, 4vw, 52px);
-}
+   at the shared .c-h2 size — measured: "FREQUENTLY" at the token's 64px cap is
+   407px, inside the 420px aside, so the old bespoke 52px cap (which made this
+   the one off-size heading on the page) was never needed (2026-07-17). */
 
 .c-faq__note {
   margin-top: var(--k-space-8);

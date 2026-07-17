@@ -10,7 +10,12 @@
   right: 0;
   z-index: var(--z-dock);
   transform-origin: top right;
-  pointer-events: none; /* only the card itself is interactive */
+  pointer-events: none; /* only the card / trigger are interactive */
+}
+
+/* mobile disclosure trigger — desktop shows the full card instead */
+.c-menu__trigger {
+  display: none;
 }
 
 .c-menu__card {
@@ -79,33 +84,66 @@
   background: var(--k-classic-panel);
 }
 
-/* --- fluid mobile (< 1024px OR any coarse pointer): collapse to the Apply
-   pill only — the (pointer: coarse) arm matches ScaleCanvas.css so touch
+/* --- fluid mobile (< 1024px OR any coarse pointer): a DISCLOSURE — the black
+   "Menu" pill expands into the same orange card (anchors + Apply). Replaces
+   the lone Apply pill (2026-07-17: an ~8000px page had no in-page navigation
+   on phones). The (pointer: coarse) arm matches ScaleCanvas.css so touch
    tablets that get the fluid page body also get the mobile menu, not a
-   shrunk desktop card (2026-07-16 audit). The pill stands ALONE — no orange
-   card chrome around it (the wrapped version read as a clumsy double-pill
-   blob over the hero). */
+   shrunk desktop card (2026-07-16 audit). */
 
 @media (max-width: 1023px), (pointer: coarse) {
-  .c-menu__card {
+  /* while the hero (with its own Registration CTA) is on screen, the fixed
+     pill only collides with the H1 — fade it out until the visitor scrolls
+     past (class set by an IntersectionObserver in ClassicMenu.jsx).
+     visibility keeps the hidden controls out of the tab order; its flip is
+     delayed on hide so the fade plays, instant on show. */
+  .c-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    transition: opacity var(--k-t-base) ease, visibility 0s;
+  }
+
+  .c-menu.c-menu--over-hero {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--k-t-base) ease, visibility 0s var(--k-t-base);
+  }
+
+  /* trigger — the black pill look the lone Apply used to have */
+  .c-menu__trigger {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: var(--k-space-12) var(--k-space-12) 0 0;
-    width: auto;
-    padding: 0;
-    gap: 0;
-    background: none;
-    border-radius: 0;
-  }
-
-  .c-menu__links {
-    display: none;
-  }
-
-  .c-menu__apply {
-    width: auto;
     min-width: 92px;
     height: 40px;
     padding: 0 var(--k-space-20);
-    /* thin light keyline so the black pill reads on the dark hero photo too */
+    background: var(--k-black);
+    color: var(--k-white);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: var(--k-text-sm);
+    line-height: var(--k-lh-flat);
     border: 1px solid color-mix(in srgb, var(--k-white) 35%, transparent);
+    border-radius: var(--k-radius-pill);
+    cursor: pointer;
+  }
+
+  /* closed: no card; open: the DESKTOP orange card, docked under the trigger
+     (its own base styles — fill, width, links, black Apply bar — all apply) */
+  .c-menu__card {
+    display: none;
+    margin: var(--k-space-8) var(--k-space-12) 0 0;
+  }
+
+  .c-menu--open .c-menu__card {
+    display: flex;
+  }
+
+  /* comfier tap pitch than the Figma-exact 6px desktop gap (WCAG 2.5.8) */
+  .c-menu--open .c-menu__link {
+    padding-block: var(--k-space-4);
   }
 }

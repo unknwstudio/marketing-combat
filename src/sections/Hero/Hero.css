@@ -81,8 +81,13 @@
   line-height: var(--k-lh-snug); /* Figma normal leading (1.25) snapped to the snug step */
   letter-spacing: var(--k-ls-display);
   /* lift the green terminal copy off the busy CRT scene behind it (2026-07-14
-     UX audit M3) — a soft dark halo + hard pixel offset, no layout change */
-  text-shadow: 0 0 8px var(--k-shadow), 1px 2px 0 var(--k-shadow);
+     UX audit M3) — a DOUBLE dark halo + hard pixel offset, no layout change.
+     The second, wider halo carries the pair when the fluid reflow drops the
+     copy onto the scene's bright red bands (2026-07-17). */
+  text-shadow:
+    0 0 8px var(--k-shadow),
+    0 0 18px var(--k-shadow),
+    1px 2px 0 var(--k-shadow);
 }
 
 /* --- top-right: energy meter --- */
@@ -278,17 +283,19 @@
     display: none;
   }
 
-  /* meter top-right, then the lede FULL-WIDTH below it — so the lede never
-     collides with the "will you survive?" line. */
+  /* the lede holds the DESKTOP position — top-left corner, inside the
+     scrim's dark zone — and simply wraps in the column left of the meter
+     (2026-07-17: the old top:80px full-width slot dropped it below the
+     scrim onto the bright red bands, where the green lost its contrast). */
   .hero__intro {
     display: contents;
   }
 
   .hero__lede {
     position: absolute;
-    top: 80px; /* below the top-right meter header row */
+    top: 14px; /* same corner as desktop (top:23 left:19 at 1440) */
     left: 14px;
-    right: 14px;
+    right: 180px; /* clear of the 150px meter + its inset + air */
     z-index: 3;
     max-width: 100%;
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: legibility floor — reading copy that must NOT shrink below 12px on mobile (fluid --k-text-xs bottoms out at 11px) */
@@ -373,10 +380,10 @@
   }
 
   .hero__lede {
-    top: 74px;
+    right: 156px; /* clear of the phone meter (128px + inset + air) */
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: legibility floor — reading copy that must NOT shrink below 12px on phones (fluid --k-text-xs bottoms out at 11px) */
     font-size: 12px; /* keep reading copy legible on phones */
-    line-height: var(--k-lh-loose);
+    line-height: var(--k-lh-normal); /* loose leading overflowed the scrim zone in the narrow column */
   }
 
   .hero__meter {

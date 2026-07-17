@@ -122,6 +122,32 @@
   white-space: nowrap;
 }
 
+/* the pause chip (ClassicMotionChip) is a real <button> among inert spans —
+   same pill look plus interactive affordances (WCAG 2.2.2 control).
+   Icon-only: a 48px circle-pill, glyph block-aligned dead center. */
+.c-hero__chip--motion {
+  border: 0;
+  width: 48px;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.c-hero__chip-glyph {
+  display: block; /* kills the inline-baseline gap — true optical centering */
+  width: var(--k-space-16);
+  height: var(--k-space-16);
+}
+
+.c-hero__chip--motion:hover {
+  background: color-mix(in srgb, var(--k-black) 80%, transparent);
+}
+
+.c-hero__chip--motion:focus-visible {
+  outline: 2px solid var(--k-white);
+  outline-offset: 2px;
+}
+
 /* --- fluid mobile (< 1024px): single readable column ------------------ */
 
 @media (max-width: 1023px) {
@@ -149,6 +175,8 @@
     height: auto;
     aspect-ratio: 720 / 804;
     border-radius: 0;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: -1px tuck kills the fractional seam where the section's yellow peeked below the media at some DPR/width combos (2026-07-17) */
+    margin-bottom: -1px;
   }
 
   .c-hero__chips {
@@ -163,13 +191,35 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: var(--k-space-8);
-    padding: var(--k-space-16);
+    padding: var(--k-space-12);
   }
 
+  /* compact so the FOUR fact pills hold one row on a 390px phone (owner
+     request 2026-07-17; measured: five don't fit one row at any legible size,
+     so the pause chip docks on the video instead — rule below) */
   .c-hero__chip {
-    height: 40px;
-    padding: 0 var(--k-space-16);
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: fixed mobile chip size; fluid --k-text-xs would shrink it to 11px on phones (beyond the ±2px type allowance) */
-    font-size: 14px;
+    height: 32px;
+    padding: 0 var(--k-space-8);
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: fixed mobile chip size; fluid --k-text-xs would shrink it to 11px (beyond the ±2px type allowance) */
+    font-size: 12px;
+  }
+
+  /* the pause control leaves the fact row and docks at the media's lower
+     right — a pause button reads naturally as a video-player affordance */
+  .c-hero__chip--motion {
+    position: absolute;
+    right: var(--k-space-12);
+    bottom: var(--k-space-64);
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+}
+
+/* phones (<=639px): one step tighter so the fact row survives 360px widths */
+@media (max-width: 639px) {
+  .c-hero__chip {
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: same fixed-chip rationale as above, one step down for 360px phones */
+    font-size: 11px;
   }
 }

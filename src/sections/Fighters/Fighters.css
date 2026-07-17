@@ -373,6 +373,13 @@
   .fighters__label {
     overflow-wrap: anywhere;
   }
+
+  /* the bolts' shared-origin geometry (fanning out of the registration-CTA
+     seam) only exists in the desktop 5-across composition — in this stacked
+     grid a hover bolt fires "from nowhere" across the heading (2026-07-17) */
+  .fighters__bolt {
+    display: none;
+  }
 }
 
 /* --- phone (<=639px): 2-col grid, tighter type --- */

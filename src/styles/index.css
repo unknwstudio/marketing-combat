@@ -295,6 +295,11 @@
   --k-dock-inset: 16px; /* desktop corner inset */
   --k-dock-inset-sm: 10px; /* mobile corner inset */
   --k-dock-lift: 72px; /* mobile bottom lift over the centered ModeSwitcher */
+  /* the stacked SOUND/MOTION pills share one width — their labels differ
+     ("SOUND ON" vs "MOTION OFF"), so without a common floor the stack looks
+     ragged and each toggle jitters its own pill width (2026-07-17) */
+  --k-dock-pill-min: 112px; /* desktop — snug over the widest state (MOTION OFF) */
+  --k-dock-pill-min-sm: 88px; /* mobile (10px HUD font) — measured 82-87px natural */
 
   /* --- breakpoint ledger (@media can't read custom properties — this comment IS
      the source of truth; stylelint can't gate it, reviews do). Canonical set:

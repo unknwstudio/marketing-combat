@@ -42,12 +42,15 @@
   color: var(--k-ink-dim-2);
 }
 
-/* centre column — legal links, stacked and left-aligned */
+/* centre column — legal links in ONE row (2026-07-17 owner request: the old
+   stacked column read as a broken list in the centred fluid layout). Wraps
+   gracefully if a viewport is too narrow for all three. */
 .footer__links {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--k-space-8);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--k-space-8) var(--k-space-24);
   font-family: var(--k-font-mono);
   font-size: var(--k-text-xs);
   letter-spacing: var(--k-ls-tight);
@@ -82,6 +85,12 @@
 
 .footer__madeby:hover,
 .footer__madeby:focus-visible {
+  animation-play-state: paused;
+}
+
+/* WCAG 2.2.2 — the universal MotionToggle pause (the classic footer's twin
+   rule lives in ClassicFooter.css; this one was missed in the first pass) */
+.motion-paused .footer__madeby {
   animation-play-state: paused;
 }
 

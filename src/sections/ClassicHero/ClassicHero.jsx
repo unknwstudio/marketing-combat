@@ -1,4 +1,5 @@
 import ClassicHeroMedia from './ClassicHeroMedia'
+import ClassicMotionChip from './ClassicMotionChip'
 import { typeset } from '@/lib/typeset'
 import './ClassicHero.css'
 
@@ -35,6 +36,8 @@ export default function ClassicHero() {
         <span className="c-hero__chip">july 2026</span>
         <span className="c-hero__chip">300+ fighters</span>
         <span className="c-hero__chip">final · Barcelona</span>
+        {/* the skin's WCAG 2.2.2 pause control, dressed as a fact chip */}
+        <ClassicMotionChip />
       </div>
     </section>
   )

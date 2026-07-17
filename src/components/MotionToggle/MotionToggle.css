@@ -11,6 +11,7 @@
   align-items: center;
   /* >=24px min target (WCAG 2.5.8) — same floor as SoundToggle */
   min-height: 32px;
+  min-width: var(--k-dock-pill-min); /* matches the SOUND pill below it */
   gap: var(--k-space-8);
   padding: var(--k-space-8) var(--k-space-12);
   background: color-mix(in srgb, var(--k-black) 70%, transparent);
@@ -66,10 +67,7 @@
   width: 4px;
 }
 
-/* /classic mounts no SoundToggle — the motion pill takes the base dock slot */
-.classic .motiontoggle {
-  bottom: var(--k-dock-inset);
-}
+/* (AI skin only — /classic's pause control is the hero ClassicMotionChip) */
 
 @media (max-width: 1023px) {
   .motiontoggle {
@@ -79,9 +77,6 @@
     bottom: calc(var(--k-dock-lift) + var(--k-space-40));
     padding: var(--k-space-4) var(--k-space-8);
     font-size: var(--k-text-hud-xs);
-  }
-
-  .classic .motiontoggle {
-    bottom: var(--k-dock-lift);
+    min-width: var(--k-dock-pill-min-sm);
   }
 }

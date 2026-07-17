@@ -180,6 +180,19 @@
     grid-column: 1 / -1;
   }
 
+  /* the base row stacks and centres on mobile — the desktop right-rail
+     justify-self pulled "designed by" to the edge under the centred © line
+     (2026-07-17 owner fix) */
+  .c-foot__base {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .c-foot__base .madeby {
+    justify-self: center;
+  }
+
   .c-foot__base {
     /* single centered stack: © above, credit under it */
     grid-template-columns: 1fr;

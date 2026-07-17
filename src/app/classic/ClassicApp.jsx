@@ -3,7 +3,6 @@
 import ScaleCanvas from '@/components/ScaleCanvas/ScaleCanvas'
 import ClassicMenu from '@/components/ClassicMenu/ClassicMenu'
 import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
-import MotionToggle from '@/components/MotionToggle/MotionToggle'
 import ClassicReveal from '@/components/classic-motion/ClassicReveal'
 import RegisterModal from '@/components/RegisterModal/RegisterModal'
 import ClassicHero from '@/sections/ClassicHero/ClassicHero'
@@ -58,9 +57,9 @@ export default function ClassicApp() {
       <RegisterModal variant="classic" />
       <ClassicReveal />
       <ClassicMenu />
-      {/* universal auto-motion pause (WCAG 2.2.2) — CTA ribbon, credit shimmer,
-          hero video; takes the empty sound-pill dock slot (no sound on classic) */}
-      <MotionToggle />
+      {/* the WCAG 2.2.2 pause control lives in the hero chips row
+          (ClassicMotionChip) — the floating pill read as arcade chrome on this
+          skin and collided with the footer base row */}
       <ModeSwitcher active="classic" />
     </div>
   )

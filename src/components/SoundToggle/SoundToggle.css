@@ -9,6 +9,7 @@
   /* >=24px min target (WCAG 2.5.8) — the mobile rule below trims padding to
      ~23px, so pin a floor here that both breakpoints inherit */
   min-height: 32px;
+  min-width: var(--k-dock-pill-min); /* matches the MOTION pill above it */
   gap: var(--k-space-8);
   padding: var(--k-space-8) var(--k-space-12);
   background: color-mix(in srgb, var(--k-black) 70%, transparent);
@@ -90,6 +91,7 @@
     bottom: var(--k-dock-lift);
     padding: var(--k-space-4) var(--k-space-8);
     font-size: var(--k-text-hud-xs);
+    min-width: var(--k-dock-pill-min-sm);
   }
   .sndtoggle__bars {
     height: 11px;
