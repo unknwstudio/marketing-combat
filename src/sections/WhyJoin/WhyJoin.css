@@ -30,6 +30,14 @@
   display: block;
 }
 
+/* card 01 (CHALLENGE): the crossed-swords art fills its canvas denser than
+   the other glyphs and read oversized next to them — optical downsize
+   (owner 2026-07-17) */
+.whyjoin__card:first-child .whyjoin__icon {
+  width: 60px;
+  height: 60px;
+}
+
 .whyjoin__title {
   margin: 0;
   font-family: var(--k-font-mono);
@@ -64,6 +72,11 @@
   .whyjoin__icon {
     width: 48px;
     height: 48px;
+  }
+
+  .whyjoin__card:first-child .whyjoin__icon {
+    width: 40px; /* same optical downsize ratio as desktop */
+    height: 40px;
   }
 
   .whyjoin__title {

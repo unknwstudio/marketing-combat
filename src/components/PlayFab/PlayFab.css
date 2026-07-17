@@ -9,7 +9,8 @@
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
-  padding: var(--k-space-8) var(--k-space-16);
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 10px bottom is an OPTICAL correction — GT Pressura Mono ink sits high in its em-box at line-height 1 (owner 2026-07-17, matches .d-btn) */
+  padding: var(--k-space-8) var(--k-space-16) 10px;
   font-family: var(--k-font-mono);
   font-size: var(--k-text-base);
   letter-spacing: var(--k-ls-display);
@@ -45,7 +46,8 @@
     right: var(--k-dock-inset-sm);
     top: auto;
     bottom: var(--k-dock-lift);
-    padding: var(--k-space-8) var(--k-space-12);
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: same 10px optical bottom as the desktop rule above */
+    padding: var(--k-space-8) var(--k-space-12) 10px;
     font-size: var(--k-text-xs);
   }
 }

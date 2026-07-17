@@ -168,7 +168,8 @@
   width: max-content;
   margin-inline: auto;
   z-index: 5;
-  padding: var(--k-space-8) var(--k-space-8) var(--k-space-8); /* bottom was 10px — snapped to the 8 grid */
+  /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: 10px bottom is an OPTICAL correction — GT Pressura Mono ink sits high in its em-box at line-height 1 (owner 2026-07-17; the 8-grid snap had erased exactly this) */
+  padding: var(--k-space-8) var(--k-space-8) 10px;
   background: var(--k-black);
   border: 1px solid var(--k-white);
   color: var(--k-white);
