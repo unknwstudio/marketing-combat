@@ -25,14 +25,18 @@
 
 /* --- marquee ribbon --------------------------------------------------- */
 
-/* Reverted to the ORIGINAL ribbon (owner 2026-07-17, "верну ленту какая
-   раньше была"): symmetric 16px, NO background of its own — it sits directly
-   on the now-yellow band, so the white-strip saga can't recur by construction. */
+/* The WHITE ticker tape on the yellow band (owner rule: the running strip is
+   NOT yellow), symmetric 16px as the original. The rules are 2px on purpose:
+   at fractional canvas zooms a 1px design rule can drop below one device
+   pixel and vanish — the tape's white then reads as an UNCLOSED stray strip
+   bleeding into the yellow, which is what the owner kept flagging. 2px
+   survives every zoom, so the tape always closes crisply. */
 .c-cta__ribbon {
   margin-bottom: var(--k-space-80);
   overflow: hidden;
-  border-block: 1px solid var(--k-black);
+  border-block: 2px solid var(--k-black);
   padding-block: var(--k-space-16);
+  background: var(--k-white);
 }
 
 .c-cta__ribbon-track {
