@@ -5,6 +5,7 @@ import ClassicMenu from '@/components/ClassicMenu/ClassicMenu'
 import ModeSwitcher from '@/components/ModeSwitcher/ModeSwitcher'
 import ClassicReveal from '@/components/classic-motion/ClassicReveal'
 import RegisterModal from '@/components/RegisterModal/RegisterModal'
+import EventJsonLd from '@/components/EventJsonLd/EventJsonLd'
 import ClassicHero from '@/sections/ClassicHero/ClassicHero'
 import ClassicBattle from '@/sections/ClassicBattle/ClassicBattle'
 import ClassicHow from '@/sections/ClassicHow/ClassicHow'
@@ -61,6 +62,9 @@ export default function ClassicApp() {
           (ClassicMotionChip) — the floating pill read as arcade chrome on this
           skin and collided with the footer base row */}
       <ModeSwitcher active="classic" />
+      {/* /classic is an indexable event page too — emit the same Event graph
+          the home page does (2026-07-18 audit: it was shipping none) */}
+      <EventJsonLd />
     </div>
   )
 }

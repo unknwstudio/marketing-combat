@@ -221,6 +221,14 @@
   opacity: 1;
 }
 
+/* keyboard focus ring — the battery is the game-entry <a> on the adaptive arm,
+   so it needs the same visible focus treatment as every other play/registration
+   affordance (.hero__playsmall / .playfab) (2026-07-18 audit) */
+.hero__battery--play:focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 4px;
+}
+
 /* group the charge gauge + "▶ PLAY" together with bigger bars (owner
    2026-07-17): the decorative desktop meter is space-between with a small "15%"
    on the right, which left a big dead gap between the bars and the PLAY label on
@@ -399,8 +407,14 @@
    (top-right), the wordmark low-centre, tag pills along the
    bottom. A scrim darkens the top & bottom for text legibility.
    The scoped CRT overlay stays absolute inset over everything.
+
+   The `(pointer: coarse)` arm matches ScaleCanvas (which drops to the fluid
+   reflow on any coarse device) and the battery/toggles/PlayFab satellites — so
+   a coarse 1024–1439px tablet gets the mobile hero BODY too, instead of a
+   desktop-fixed 1440px hero overflowing its fluid container with a duplicate
+   PLAY (the bottom launcher + the battery-as-PLAY both showing) (2026-07-18 audit).
    ============================================================ */
-@media (max-width: 1023px) {
+@media (max-width: 1023px), (pointer: coarse) {
   .hero {
     position: relative;
     width: 100%;

@@ -8,11 +8,12 @@ import './VsSplash.css'
 /**
  * VsSplash — the fighting-game VS screen between the landing and the game.
  * ONE delegated click listener on document intercepts activations of any
- * a[href="/play"] (PlayLink, the cabinet's "insert coin — press start"
- * enter link…), flashes a 500ms full-screen "YOU vs THE ALGORITHM" card —
+ * a[href="/play"] (the hero battery-as-PLAY, the finale cabinet's enter
+ * link…), flashes a 500ms full-screen "YOU vs THE ALGORITHM" card —
  * the two names slam in from opposite sides on steps() motion — then either
- * opens the game in-place as an overlay (on /demo where takeover is available)
- * or hard navigates to /play (on / where no overlay is mounted).
+ * opens the game in-place as an overlay (on the home landing, where takeover
+ * is mounted) or hard navigates to /play (on routes with no overlay, e.g.
+ * /classic).
  *
  * WHY delegated (not per-link): same reasoning as ClickBurst — one listener
  * covers every /play link on the page, including ones that mount late, with

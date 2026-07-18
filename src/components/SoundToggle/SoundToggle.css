@@ -37,6 +37,14 @@
   }
 }
 
+/* keyboard focus ring — matches PlayFab/hero play links; the toggle shipped
+   with only the bare UA outline while every sibling control defines one
+   (2026-07-18 audit) */
+.sndtoggle:focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 3px;
+}
+
 .sndtoggle--off {
   color: var(--k-muted);
 }

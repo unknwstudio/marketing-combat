@@ -21,9 +21,10 @@ export const GAME_COPY = {
   rotateSub: 'the arena needs landscape',
 }
 
-// The overlay sets this true while mounted (only on /demo). VsSplash reads it to
-// decide: open the in-page overlay (/demo) vs hard-navigate to /play (/, no
-// overlay mounted). A window flag — not React context — because the reader is a
+// The overlay sets this true while mounted (on the home landing "/", where
+// GameTakeover is rendered). VsSplash reads it to decide: open the in-page
+// overlay (home) vs hard-navigate to /play (routes with no overlay mounted,
+// e.g. /classic). A window flag — not React context — because the reader is a
 // document-level delegated listener outside the React tree.
 export function takeoverAvailable() {
   return typeof window !== 'undefined' && window.__AMK_TAKEOVER__ === true

@@ -1,10 +1,28 @@
 import McpPrompt from '@/sections/McpPrompt/McpPrompt'
+import { OG_IMAGE } from '@/lib/site'
+
+const DESCRIPTION =
+  'The whole AI Marketing Kombat site as one copyable prompt — paste it into your AI agent and ask it anything.'
 
 export const metadata = {
   title: 'MCP',
-  description:
-    'The whole AI Marketing Kombat site as one copyable prompt — paste it into your AI agent and ask it anything.',
+  description: DESCRIPTION,
   alternates: { canonical: '/mcp' },
+  // per-route OpenGraph/Twitter (2026-07-18 audit — was inheriting home's)
+  openGraph: {
+    type: 'website',
+    url: '/mcp',
+    siteName: 'AI Marketing Kombat',
+    title: 'AI Marketing Kombat — MCP prompt',
+    description: DESCRIPTION,
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Marketing Kombat — MCP prompt',
+    description: DESCRIPTION,
+    images: [{ url: OG_IMAGE.url, alt: OG_IMAGE.alt }],
+  },
 }
 
 // this page is white — override the root's dark browser-chrome color

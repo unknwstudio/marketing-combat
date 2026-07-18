@@ -152,3 +152,17 @@
     display: none;
   }
 }
+
+/* The in-page MOTION OFF toggle (WCAG 2.2.2) is advertised as the UNIVERSAL
+   auto-motion pause (page.jsx), so it must silence the CRT flicker + rolling
+   band + power-on exactly as the OS reduced-motion setting does — for the
+   keyboard/touch users who have no OS preference set. Static scanlines,
+   vignette and grille stay, so the CRT look survives without any motion
+   (2026-07-18 audit). `.motion-paused` is set on <html> by motionPause.js. */
+.motion-paused .crt--flicker .crt__scanlines {
+  animation: none;
+}
+.motion-paused .crt__roll,
+.motion-paused .crt__power {
+  display: none;
+}

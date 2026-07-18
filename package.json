@@ -14,7 +14,6 @@
     "lint:css": "stylelint \"src/**/*.css\"",
     "lint:vars": "node scripts/check-css-vars.js",
     "lint:ds": "npm run lint:css && npm run lint:vars && npm run lint:hover",
-    "typecheck": "tsc --noEmit",
     "lint:hover": "node scripts/check-hover-guard.js"
   },
   "dependencies": {

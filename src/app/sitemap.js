@@ -3,7 +3,7 @@ import { SITE_URL } from '@/lib/site'
 // Static export can't read a build timestamp from the request, and there is
 // no per-page "last edited" data to draw from — an honest fixed date beats a
 // fabricated one that silently drifts from reality.
-const LAST_MODIFIED = '2026-07-12'
+const LAST_MODIFIED = '2026-07-18'
 
 export default function sitemap() {
   return [

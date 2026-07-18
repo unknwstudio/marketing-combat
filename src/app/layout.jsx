@@ -1,6 +1,6 @@
 import '@/styles/index.css'
 import '@/styles/App.css'
-import { SITE_URL, EVENT_DESCRIPTION } from '@/lib/site'
+import { SITE_URL, EVENT_DESCRIPTION, OG_IMAGE } from '@/lib/site'
 
 // Press Start 2P is self-hosted (index.css @font-face, preloaded below) — the
 // old next/font/google import shipped a SECOND copy of the same face plus a
@@ -34,20 +34,13 @@ export const metadata = {
     siteName: 'AI Marketing Kombat',
     title: 'AI Marketing Kombat — use AI or get finished',
     description: DESCRIPTION,
-    images: [
-      {
-        url: '/assets/hero/hero-bg.jpg',
-        width: 1440,
-        height: 804,
-        alt: 'Two pixel-art fighters facing off — AI Marketing Kombat',
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI Marketing Kombat — use AI or get finished',
     description: DESCRIPTION,
-    images: ['/assets/hero/hero-bg.jpg'],
+    images: [{ url: OG_IMAGE.url, alt: OG_IMAGE.alt }],
   },
   // index+follow is the default; declaring it here would also emit a positive
   // robots tag that competes with not-found.jsx's `noindex` on the 404 route.

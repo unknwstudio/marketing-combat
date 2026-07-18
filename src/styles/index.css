@@ -159,7 +159,6 @@
 
   /* scoped stragglers (each was a lone raw hex) */
   --k-stage: #05010c; /* /play fixed stage backdrop */
-  --k-play-ink: #1a1206; /* PlayLink dark text/border */
   --k-ink-dim: #8f8f9a; /* footer muted text */
   --k-ink-dim-2: #84808f; /* footer muted text (2nd tint) */
   --k-ink-cool: #7a7aa8; /* sponsors muted text — WCAG-tuned for the striped bg */

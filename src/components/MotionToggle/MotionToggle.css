@@ -39,6 +39,14 @@
   }
 }
 
+/* keyboard focus ring — matches SoundToggle/PlayFab; the toggle shipped with
+   only the bare UA outline while every sibling control defines one
+   (2026-07-18 audit) */
+.motiontoggle:focus-visible {
+  outline: 3px solid var(--k-focus-ring);
+  outline-offset: 3px;
+}
+
 .motiontoggle--off {
   color: var(--k-muted);
 }

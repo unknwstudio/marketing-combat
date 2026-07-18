@@ -2,7 +2,7 @@ import { SITE_URL, EVENT_DESCRIPTION } from '@/lib/site'
 
 /**
  * JSON-LD Event schema, rendered ONLY on the pages that represent the event
- * (/, /demo, /classic) — NOT on /play (the game), /mcp (the prompt tool) or the
+ * (/ and /classic) — NOT on /play (the game), /mcp (the prompt tool) or the
  * 404, where an Event graph is semantically wrong. Previously lived in the root
  * layout and leaked onto every route.
  *

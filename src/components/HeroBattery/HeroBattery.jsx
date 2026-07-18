@@ -9,8 +9,9 @@ import PixelIcon from '@/components/PixelIcon/PixelIcon'
  * HeroBattery — the hero's "energy meter" (four bars + "15%" + "will you
  * survive?"). On touch/narrow (owner 2026-07-17) the whole battery IS the game
  * entry: it renders as an <a href="/play"> so VsSplash's delegated listener
- * runs the VS flash / takeover, and a hover "discharge" animation (bars drain
- * right-to-left, the % flips to ▶ PLAY) invites the click. On desktop it stays
+ * runs the VS flash / takeover. "▶ PLAY" shows at REST (the clear affordance);
+ * a hover "discharge" animation drains the charge bars right-to-left behind it
+ * ("power down to fight"). On desktop it stays
  * a plain decorative <div> — the desktop hero keeps its own bottom PLAY link.
  *
  * The link is JS-gated (matchMedia) rather than a CSS toggle because an <a>

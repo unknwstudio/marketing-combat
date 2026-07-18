@@ -1,10 +1,29 @@
 import ClassicApp from './ClassicApp'
+import { OG_IMAGE } from '@/lib/site'
+
+const DESCRIPTION =
+  'The first international hackathon for senior marketers of the AI era. Real client cases. Use AI — compare your skills. Round 01 · July 2026 · Final in Barcelona.'
 
 export const metadata = {
-  title: 'Classic',
-  description:
-    'The first international hackathon for senior marketers of the AI era. Real client cases. Use AI — compare your skills. Round 01 · July 2026 · Final in Barcelona.',
+  title: 'Classic view',
+  description: DESCRIPTION,
   alternates: { canonical: '/classic' },
+  // per-route OpenGraph/Twitter — without these the root layout's home-page
+  // og:url/title/description leak onto /classic (2026-07-18 audit)
+  openGraph: {
+    type: 'website',
+    url: '/classic',
+    siteName: 'AI Marketing Kombat',
+    title: 'AI Marketing Kombat — classic view',
+    description: DESCRIPTION,
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Marketing Kombat — classic view',
+    description: DESCRIPTION,
+    images: [{ url: OG_IMAGE.url, alt: OG_IMAGE.alt }],
+  },
 }
 
 /**

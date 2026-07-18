@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { prefersReducedMotion } from '@/effects/motion/usePrefersReducedMotion'
+import { isMotionPaused, subscribeMotionPaused } from '@/effects/motion/motionPause'
 import './AttractMode.css'
 
 /**
@@ -27,6 +28,9 @@ import './AttractMode.css'
  * Reduced-motion: skipped ENTIRELY (no timer, never shown) — a blinking
  * full-screen flasher is exactly the attention-grabbing motion that
  * preference asks us to drop, and a static version of it is pure obstruction.
+ * The in-page MOTION OFF toggle (WCAG 2.2.2) silences it the same way, and it
+ * fires at most ONCE per tab session so it can't keep eating a visitor's next
+ * click on a real control (2026-07-18 audit).
  *
  * Fixed overlay → mounted OUTSIDE JuiceProvider (its will-change wrapper
  * would pin position:fixed to the page instead of the viewport).
@@ -52,6 +56,27 @@ export default function AttractMode() {
   useEffect(() => {
     if (prefersReducedMotion()) return
 
+    // Once per tab session: the idle flourish charms the first time, but
+    // re-firing every idle window kept consuming the visitor's NEXT click on a
+    // real control (registration / mode switcher). Show it at most once
+    // (2026-07-18 audit). sessionStorage, so a fresh tab gets it again.
+    const SEEN_KEY = 'amk:attract-seen'
+    const seen = () => {
+      try {
+        return window.sessionStorage.getItem(SEEN_KEY) === '1'
+      } catch {
+        return false
+      }
+    }
+    const markSeen = () => {
+      try {
+        window.sessionStorage.setItem(SEEN_KEY, '1')
+      } catch {
+        /* storage unavailable — session-only anyway, it just won't persist */
+      }
+    }
+    if (seen()) return
+
     let timer = 0
     // Mirror of `live` for the handlers — avoids re-subscribing the six
     // window listeners on every show/hide just to read fresh state.
@@ -59,29 +84,48 @@ export default function AttractMode() {
 
     const arm = () => {
       window.clearTimeout(timer)
+      // never arm once shown this session or while MOTION is paused
+      if (seen() || isMotionPaused()) return
       timer = window.setTimeout(show, ATTRACT_IDLE_MS)
     }
 
     const show = () => {
+      if (seen() || isMotionPaused()) return
       // Fire only near the top and while the tab is actually visible —
       // AttractTitle already covers the hidden-tab case, and stacking both
       // would flash the title bar AND the page on return. Otherwise re-arm
       // and check again next cycle.
       if (window.scrollY < window.innerHeight * NEAR_TOP_VH && !document.hidden) {
         liveNow = true
+        markSeen() // burn the one-shot the moment it appears
         setLive(true)
       } else {
         arm()
       }
     }
 
-    const onInput = () => {
+    const dismiss = () => {
       if (liveNow) {
         liveNow = false
         setLive(false)
       }
-      arm()
     }
+
+    const onInput = () => {
+      dismiss()
+      arm() // no-op after the one-shot (arm bails on seen())
+    }
+
+    // MOTION OFF (WCAG 2.2.2 toggle) mid-idle: tear the overlay down and stop
+    // arming; MOTION ON re-arms (unless already shown this session).
+    const unsubMotion = subscribeMotionPaused((paused) => {
+      if (paused) {
+        window.clearTimeout(timer)
+        dismiss()
+      } else {
+        arm()
+      }
+    })
 
     // passive: we never preventDefault — dismissal must not eat the key/press
     // that woke the machine (pointer presses are the exception: the overlay's
@@ -93,6 +137,7 @@ export default function AttractMode() {
     return () => {
       window.clearTimeout(timer)
       INPUT_EVENTS.forEach((t) => window.removeEventListener(t, onInput))
+      unsubMotion()
       dismissRef.current = null
     }
   }, [])

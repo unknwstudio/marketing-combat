@@ -10,11 +10,17 @@
   gap: var(--k-space-16);
   padding: var(--k-space-8) var(--k-space-16);
   pointer-events: none;
+  /* the strip stays semi-opaque its full height (was fading to fully
+     transparent at the bottom), and a backdrop blur occludes whatever scrolls
+     behind it — otherwise section text collided with the P1/CPU readout as it
+     passed under the pinned bar (2026-07-18 audit). */
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--k-shadow) 92%, transparent) 0%,
-    color-mix(in srgb, var(--k-shadow) 0%, transparent) 100%
+    color-mix(in srgb, var(--k-shadow) 40%, transparent) 100%
   );
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   /* hidden until you scroll past the hero */
   transform: translateY(-100%);
   opacity: 0;
