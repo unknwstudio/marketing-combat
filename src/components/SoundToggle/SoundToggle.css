@@ -1,7 +1,9 @@
 /* Arcade mute pill, bottom-left on desktop. */
 .sndtoggle {
   position: fixed;
-  left: var(--k-dock-inset);
+  /* left aligns with the registration launcher's 21px frame inset (owner
+     2026-07-19); bottom stays on the shared dock inset */
+  left: 21px;
   bottom: var(--k-dock-inset);
   z-index: var(--z-mode);
   display: inline-flex;

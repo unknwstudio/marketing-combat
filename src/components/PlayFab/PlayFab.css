@@ -6,10 +6,12 @@
    on hover — the site's quiet "secondary" registration look. */
 .playfab {
   position: fixed;
-  left: var(--k-dock-inset);
+  /* Figma-exact desktop rest inset (node 33:3912): 21px left / 23px top to the
+     frame edge — restored from the shared 16px --k-dock-inset (owner 2026-07-19) */
+  left: 21px;
   /* rests high over the hero (clears the lede); scroll lowers it to clear the
      ScrollHealth P1 strip — see .playfab--lowered and the JS in PlayFab.jsx */
-  top: var(--k-dock-inset);
+  top: 23px;
   z-index: var(--z-mode);
   display: inline-flex;
   align-items: center;
@@ -41,7 +43,7 @@
    (coarse / <1024) ignores this (top:auto there). */
 @media (min-width: 1024px) and (pointer: fine) {
   .playfab--lowered {
-    top: calc(var(--k-dock-inset) + var(--k-space-24));
+    top: calc(23px + var(--k-space-24));
   }
 }
 
