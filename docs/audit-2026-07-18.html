@@ -1,0 +1,316 @@
+<title>AI Marketing Kombat — Аудит 18.07.2026</title>
+<style>
+  :root{
+    /* arcade CRT diagnostic — dark is the native world; light kept legible */
+    --bg:#0a0320; --bg2:#0f0629; --surf:#160b33; --surf2:#1d1140; --line:#2c1c56;
+    --ink:#ece7fb; --mut:#a79bce; --dim:#7a6dab;
+    --accent:#ff5a1f;               /* KO orange — brand pop */
+    --accent-ink:#ffb894;
+    --good:#39d98a; --steady:#49b7ff; --warn:#ffb020; --bad:#ff2e4d; --nit:#8579ac;
+    --seg-notch:rgba(10,3,32,.85);
+    --shadow:0 1px 0 rgba(255,255,255,.04), 0 18px 40px -22px rgba(0,0,0,.8);
+    --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --maxw:1080px;
+  }
+  @media (prefers-color-scheme:light){
+    :root{
+      --bg:#efeaf7; --bg2:#e7e0f3; --surf:#ffffff; --surf2:#f6f2fd; --line:#dcd3ef;
+      --ink:#1c1038; --mut:#5b4e7d; --dim:#8378a6;
+      --accent:#e0430c; --accent-ink:#a8330a;
+      --good:#12a866; --steady:#1f7fd6; --warn:#c07800; --bad:#d81638; --nit:#7a6ea0;
+      --seg-notch:rgba(255,255,255,.9);
+      --shadow:0 1px 0 rgba(255,255,255,.6), 0 14px 34px -22px rgba(40,20,80,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a0320; --bg2:#0f0629; --surf:#160b33; --surf2:#1d1140; --line:#2c1c56;
+    --ink:#ece7fb; --mut:#a79bce; --dim:#7a6dab;
+    --accent:#ff5a1f; --accent-ink:#ffb894;
+    --good:#39d98a; --steady:#49b7ff; --warn:#ffb020; --bad:#ff2e4d; --nit:#8579ac;
+    --seg-notch:rgba(10,3,32,.85);
+    --shadow:0 1px 0 rgba(255,255,255,.04), 0 18px 40px -22px rgba(0,0,0,.8);
+  }
+  :root[data-theme="light"]{
+    --bg:#efeaf7; --bg2:#e7e0f3; --surf:#ffffff; --surf2:#f6f2fd; --line:#dcd3ef;
+    --ink:#1c1038; --mut:#5b4e7d; --dim:#8378a6;
+    --accent:#e0430c; --accent-ink:#a8330a;
+    --good:#12a866; --steady:#1f7fd6; --warn:#c07800; --bad:#d81638; --nit:#7a6ea0;
+    --seg-notch:rgba(255,255,255,.9);
+    --shadow:0 1px 0 rgba(255,255,255,.6), 0 14px 34px -22px rgba(40,20,80,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb,var(--accent) 9%, transparent), transparent 55%),
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,.04) 3px 4px);
+    background-attachment:fixed;}
+  @media (prefers-color-scheme:light){ body{background-image:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb,var(--accent) 10%, transparent), transparent 55%),
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(90,60,140,.03) 3px 4px);} }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:clamp(20px,4vw,56px) clamp(16px,4vw,40px) 72px}
+
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .eyebrow .tick{width:8px;height:8px;background:var(--accent);display:inline-block;
+    box-shadow:3px 0 var(--accent),-3px 0 var(--accent)}
+
+  /* ---- HUD hero ---- */
+  .hud{margin-top:22px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surf2),var(--surf));
+    box-shadow:var(--shadow);padding:clamp(18px,3vw,30px)}
+  h1{font-size:clamp(26px,5vw,44px);line-height:1.02;margin:.35em 0 .1em;letter-spacing:-.02em;
+    text-wrap:balance;font-weight:800}
+  .lede{color:var(--mut);max-width:60ch;font-size:15px;margin:.4em 0 0}
+  .hudgrid{display:grid;grid-template-columns:1fr auto;gap:clamp(16px,3vw,34px);align-items:end;margin-top:22px}
+  @media(max-width:620px){.hudgrid{grid-template-columns:1fr}}
+  .p1label{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);
+    display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .p1label b{color:var(--ink);font-weight:700}
+  .meter{height:22px;border:1px solid var(--line);background:var(--bg2);position:relative;overflow:hidden}
+  .meter>i{display:block;height:100%;position:relative;
+    background:linear-gradient(90deg, var(--steady), color-mix(in srgb,var(--steady) 55%, var(--good)));}
+  .meter>i::after{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,transparent 0 13px,var(--seg-notch) 13px 16px)}
+  .kobadge{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:132px}
+  .kobadge .grade{font-family:var(--mono);font-weight:700;font-size:clamp(40px,8vw,60px);line-height:.9;
+    color:var(--ink);letter-spacing:-.02em;padding:10px 22px;border:2px solid var(--accent);
+    background:color-mix(in srgb,var(--accent) 12%, var(--surf));box-shadow:0 0 0 4px var(--bg2), var(--shadow)}
+  .kobadge .cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--mut)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .chip{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--mut);
+    border:1px solid var(--line);background:var(--bg2);padding:5px 10px;display:inline-flex;gap:7px;align-items:center}
+  .chip b{color:var(--ink);font-weight:700}
+  .chip .d{width:7px;height:7px;border-radius:50%}
+
+  /* severity tally */
+  .tally{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:22px}
+  @media(max-width:620px){.tally{grid-template-columns:repeat(2,1fr)}}
+  .sev{border:1px solid var(--line);background:var(--bg2);padding:12px 12px 11px;position:relative;overflow:hidden}
+  .sev::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+  .sev .n{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;line-height:1;color:var(--ink)}
+  .sev .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-top:6px}
+
+  /* section */
+  section{margin-top:clamp(38px,6vw,60px)}
+  h2{font-size:13px;font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    margin:0 0 4px;font-weight:600;display:flex;align-items:center;gap:12px}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sub{color:var(--mut);font-size:14px;margin:0 0 18px}
+
+  /* roster / grades */
+  .roster{border:1px solid var(--line);background:var(--surf);box-shadow:var(--shadow)}
+  .row{display:grid;grid-template-columns:180px 64px 1fr;gap:14px;align-items:center;
+    padding:12px 16px;border-top:1px solid var(--line)}
+  .row:first-child{border-top:none}
+  @media(max-width:640px){.row{grid-template-columns:1fr 52px;grid-template-areas:"name grade" "bar bar";row-gap:8px}
+    .row .rname{grid-area:name}.row .rgrade{grid-area:grade}.row .rbar{grid-area:bar}}
+  .rname{font-weight:600;font-size:14.5px}
+  .rname small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-top:2px}
+  .rgrade{font-family:var(--mono);font-weight:700;font-size:19px;text-align:center;color:var(--gc);
+    border:1px solid color-mix(in srgb,var(--gc) 45%, var(--line));background:color-mix(in srgb,var(--gc) 10%, transparent);padding:3px 0}
+  .rbarwrap{display:flex;align-items:center;gap:12px}
+  .rbar{height:12px;flex:1;border:1px solid var(--line);background:var(--bg2);overflow:hidden;position:relative}
+  .rbar>i{display:block;height:100%;background:var(--gc)}
+  .rbar>i::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 8px,var(--seg-notch) 8px 10px)}
+  .rnote{font-size:13px;color:var(--mut)}
+
+  /* priorities */
+  .prio{display:flex;flex-direction:column;gap:12px}
+  .card{border:1px solid var(--line);background:var(--surf);box-shadow:var(--shadow);padding:16px 18px;position:relative}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+  .card .top{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+  .pid{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--c);letter-spacing:.05em}
+  .ptitle{font-weight:700;font-size:16px;flex:1;min-width:200px;letter-spacing:-.01em}
+  .badge{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    padding:3px 8px;border:1px solid var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 10%, transparent);white-space:nowrap}
+  .badge.eff{border-color:var(--line);color:var(--mut)}
+  .card p{margin:10px 0 0;font-size:14px;color:var(--mut)}
+  .card p b{color:var(--ink);font-weight:600}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--bg2);border:1px solid var(--line);
+    padding:1px 5px;color:var(--accent-ink);white-space:nowrap}
+  .fix{margin-top:10px;font-size:13.5px;color:var(--ink);border-top:1px dashed var(--line);padding-top:10px}
+  .fix b{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--good);margin-right:8px}
+
+  /* two-col lists */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.cols{grid-template-columns:1fr}}
+  .panel{border:1px solid var(--line);background:var(--surf);box-shadow:var(--shadow);padding:16px 18px}
+  .panel h3{margin:0 0 10px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px}
+  .panel h3 .m{font-family:var(--mono);font-size:15px}
+  .panel.good h3 .m{color:var(--good)} .panel.theme h3 .m{color:var(--accent)}
+  ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  li{font-size:13.5px;color:var(--mut);padding-left:16px;position:relative}
+  li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;background:var(--mk,var(--accent))}
+  .panel.good li::before{background:var(--good)}
+  li b{color:var(--ink);font-weight:600}
+
+  footer{margin-top:52px;border-top:1px solid var(--line);padding-top:18px;
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--dim);
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  a{color:var(--accent-ink)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:no-preference){
+    .hud,.sev,.roster,.card,.panel{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+    .sev{animation-delay:calc(var(--i,0)*40ms)}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="eyebrow"><span class="tick"></span> Диагностика · Round 04 · 18.07.2026 · marketing-combat.vercel.app</div>
+
+  <div class="hud">
+    <h1>AI Marketing Kombat — аудит сайта</h1>
+    <p class="lede">Многоагентная проверка: 10 верифицируемых направлений + сборочный гейт, инвентаризация и живой прогон прода. Каждый статический дефект пропущен через агента-опровергателя — в отчёте только выжившее.</p>
+
+    <div class="hudgrid">
+      <div>
+        <div class="p1label"><span>P1 · СОСТОЯНИЕ САЙТА</span><b>B+ · 86%</b></div>
+        <div class="meter"><i style="width:86%"></i></div>
+        <div class="chips">
+          <span class="chip"><b>56</b> агентов</span>
+          <span class="chip"><b>55</b> находок · <span style="color:var(--good)">3 опровергнуто</span></span>
+          <span class="chip">~2.66M токенов</span>
+          <span class="chip">3 ключевых — перепроверены вручную</span>
+        </div>
+      </div>
+      <div class="kobadge">
+        <div class="grade">B+</div>
+        <div class="cap">Общая оценка</div>
+      </div>
+    </div>
+
+    <div class="tally">
+      <div class="sev" style="--c:var(--nit);--i:0"><div class="n">0</div><div class="l">Critical</div></div>
+      <div class="sev" style="--c:var(--bad);--i:1"><div class="n">1</div><div class="l">High</div></div>
+      <div class="sev" style="--c:var(--warn);--i:2"><div class="n">14</div><div class="l">Medium</div></div>
+      <div class="sev" style="--c:var(--steady);--i:3"><div class="n">26</div><div class="l">Low</div></div>
+      <div class="sev" style="--c:var(--nit);--i:4"><div class="n">14</div><div class="l">Nit</div></div>
+    </div>
+  </div>
+
+  <!-- verdict -->
+  <section>
+    <h2>Вердикт</h2>
+    <p class="sub" style="max-width:74ch">Инженерия — реально сильная: тяжёлая переработка hero «батарейка = PLAY» (PR #93–99) выехала <b style="color:var(--ink)">без структурных регрессий, утечек слушателей и нового скролл-оверхеда</b>. Потолок B+ держат две те же гири, что и 16.07 — контент и «ложная безопасность» гейтов.</p>
+    <div class="cols">
+      <div class="panel theme"><h3><span class="m">▲</span> Что тянет вверх</h3>
+        <ul>
+          <li><b>Безопасность A−.</b> Замкнутый same-origin CSP, HSTS+preload, ноль сетевых вызовов, PII только в sessionStorage. Ни один инъекционный вектор не выжил.</li>
+          <li><b>Перфоманс A−.</b> Phaser, three/R3F и GSAP подтверждённо вне first-load; home = 116 kB JS для 3D+GSAP-страницы.</li>
+          <li><b>Игра A−.</b> <code>/play</code> бутится с нулём ошибок консоли; поток батарейка→VS→takeover чист; reduced-motion уважается.</li>
+          <li><b>Реестр дизайн-системы</b> — один аудируемый token-файл на оба скина, зеркалится в palette.js для Phaser.</li>
+        </ul>
+      </div>
+      <div class="panel"><h3><span class="m" style="color:var(--bad)">▼</span> Что тянет вниз</h3>
+        <ul>
+          <li style="--mk:var(--bad)"><b>UX/контент C+.</b> Нет точной даты, цены и контакта; два скина противоречат друг другу по формату ивента.</li>
+          <li style="--mk:var(--warn)"><b>Сборочный гейт B.</b> DS-lint и typecheck считаются включёнными, но инертны в проде.</li>
+          <li style="--mk:var(--warn)"><b>«Enforced» ≠ enforced.</b> Гейт обойдён на Vercel, typecheck no-op, «универсальный» motion-тумблер не глушит CRT.</li>
+          <li style="--mk:var(--nit)"><b>Швы переработки.</b> Осиротевший компонент, coarse-pointer breakpoint, два тумблера без focus/ARIA.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- roster -->
+  <section>
+    <h2>Оценки по направлениям</h2>
+    <p class="sub">Полоса = грейд. Зелёная A-лига, синяя B-лига, янтарь — требует внимания.</p>
+    <div class="roster">
+      <div class="row"><div class="rname rgrade-wrap"><span>Безопасность</span><small>security</small></div><div class="rgrade" style="--gc:var(--good)">A−</div><div class="rbarwrap rbar-a"><div class="rbar" style="--gc:var(--good)"><i style="width:92%"></i></div><span class="rnote">Замкнутый CSP · 0 сетевых вызовов · PII в sessionStorage</span></div></div>
+      <div class="row"><div class="rname"><span>Производительность</span><small>performance</small></div><div class="rgrade" style="--gc:var(--good)">A−</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--good)"><i style="width:92%"></i></div><span class="rnote">Phaser/three/GSAP вне first-load; +0 scroll-слушателей от рерайта</span></div></div>
+      <div class="row"><div class="rname"><span>Игра /play</span><small>game-play</small></div><div class="rgrade" style="--gc:var(--good)">A−</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--good)"><i style="width:92%"></i></div><span class="rnote">0 ошибок консоли · чистый teardown · нет per-asset fallback</span></div></div>
+      <div class="row"><div class="rname"><span>Инвентаризация</span><small>dead-weight</small></div><div class="rgrade" style="--gc:var(--good)">A−</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--good)"><i style="width:92%"></i></div><span class="rnote">Худое дерево · «15MB скриншотов» — устаревшая тревога (в .gitignore)</span></div></div>
+      <div class="row"><div class="rname"><span>Доступность</span><small>accessibility · WCAG 2.2 AA</small></div><div class="rgrade" style="--gc:var(--steady)">B+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--steady)"><i style="width:86%"></i></div><span class="rnote">Skip-link, focus-trap; motion-тумблер не глушит CRT/AttractMode</span></div></div>
+      <div class="row"><div class="rname"><span>Дизайн-система</span><small>design-system</small></div><div class="rgrade" style="--gc:var(--steady)">B+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--steady)"><i style="width:86%"></i></div><span class="rnote">Образцовый реестр; долг там, где lint слеп (~30 сырых цветов в Phaser)</span></div></div>
+      <div class="row"><div class="rname"><span>Качество кода</span><small>code-quality</small></div><div class="rgrade" style="--gc:var(--steady)">B+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--steady)"><i style="width:86%"></i></div><span class="rnote">Дефекты в пайплайне: обойдённый гейт + no-op typecheck</span></div></div>
+      <div class="row"><div class="rname"><span>SEO / метаданные</span><small>seo-metadata</small></div><div class="rgrade" style="--gc:var(--steady)">B+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--steady)"><i style="width:86%"></i></div><span class="rnote">Подстраницы отдают home OG; /classic без JSON-LD; schema тонкая</span></div></div>
+      <div class="row"><div class="rname"><span>Адаптив / мобайл</span><small>responsive</small></div><div class="rgrade" style="--gc:var(--steady)">B+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--steady)"><i style="width:86%"></i></div><span class="rnote">Fluid ScaleCanvas, dvh; 32px тумблеры и ~38px пилюля &lt; 44px</span></div></div>
+      <div class="row"><div class="rname"><span>Hero-переработка</span><small>PR #93–99</small></div><div class="rgrade" style="--gc:var(--steady)">B+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--steady)"><i style="width:86%"></i></div><span class="rnote">Батарейка = настоящий &lt;a&gt;; регрессии edge-case (1024px, focus-ring)</span></div></div>
+      <div class="row"><div class="rname"><span>Живой прогон</span><small>live-browser</small></div><div class="rgrade" style="--gc:var(--steady)">B+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--steady)"><i style="width:86%"></i></div><span class="rnote">0 ошибок консоли на всех роутах; attract-mode крадёт 1-й клик</span></div></div>
+      <div class="row"><div class="rname"><span>Сборочный гейт / CI</span><small>build-gate</small></div><div class="rgrade" style="--gc:var(--warn)">B</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--warn)"><i style="width:80%"></i></div><span class="rnote">next build чист; но prebuild-гейт обойдён, typecheck сломан, CI нет</span></div></div>
+      <div class="row"><div class="rname"><span>UX / контент</span><small>ux-content</small></div><div class="rgrade" style="--gc:var(--warn)">C+</div><div class="rbarwrap"><div class="rbar" style="--gc:var(--warn)"><i style="width:70%"></i></div><span class="rnote">Главный тормоз: нет WHEN/HOW-MUCH, формат самопротиворечив, нет имён</span></div></div>
+    </div>
+  </section>
+
+  <!-- priorities -->
+  <section>
+    <h2>Топ-приоритеты</h2>
+    <p class="sub">Дедуплицировано по направлениям, отсортировано по важности. Стрип слева = severity, чип справа = объём.</p>
+    <div class="prio">
+
+      <div class="card" style="--c:var(--bad)">
+        <div class="top"><span class="pid">P1</span><span class="ptitle">Формат ивента противоречит сам себе между скинами</span><span class="badge">High</span><span class="badge eff">Средне</span></div>
+        <p>Единственная high-находка, всплывает в <b>4 направлениях</b>. AI-скин продаёт 3-фазную воронку с инвайт-онли «ROUND 2», classic — «45 мин онлайн → 2 ч в Барселоне» <b>без Round 2</b>; <code>Hero.jsx:41</code> «Two days» vs classic 45мин+2ч. Внутри classic FAQ и Jury ссылаются на несуществующий «main tour». Код это признаёт: <code>EventJsonLd.jsx:13</code>.</p>
+        <div class="fix"><b>Фикс</b> Один канон структуры → в <code>site.js</code> (как уже сделано с EVENT_DESCRIPTION) → рендерить оба скина + FAQ + Jury + schema из него. Открыто с 16.07.</div>
+      </div>
+
+      <div class="card" style="--c:var(--warn)">
+        <div class="top"><span class="pid">P2</span><span class="ptitle">Сборочные гейты обходятся в реальном деплое</span><span class="badge">Medium</span><span class="badge eff">1 строка</span></div>
+        <p><code>vercel.json:4</code> задаёт <code>buildCommand:"next build"</code> → обходит npm-хук <code>prebuild:lint:ds</code>: stylelint/check-css-vars/hover-guard <b>не запускаются ни на одном деплое Vercel</b>, и CI нет. Отдельно: <code>tsconfig.json</code> отсутствует → <code>tsc --noEmit</code> ничего не проверяет <span style="color:var(--good)">(перепроверено вручную)</span>.</p>
+        <div class="fix"><b>Фикс</b> buildCommand → <code>npm run build</code>; добавить минимальный <code>tsconfig.json</code> или убрать мёртвый скрипт. Это не отменённое «добавьте гейт» — гейт есть, но не бежит где важно.</div>
+      </div>
+
+      <div class="card" style="--c:var(--warn)">
+        <div class="top"><span class="pid">P3</span><span class="ptitle">Нет ключевых фактов ивента</span><span class="badge">Medium</span><span class="badge eff">Мелко · контент</span></div>
+        <p>Единственная дата — «JULY 2026» без числа (<code>Hero.jsx:58</code>, <code>startDate:'2026-07'</code>); цена/«free» нигде; <b>нет ни одного контакта</b> (в <code>legal.js</code> до сих пор литеральные <code>[EMAIL]</code>). Модалка бесфактовая в момент коммита.</p>
+        <div class="fix"><b>Фикс</b> Дешёвое выехать сейчас: строка «Free to apply», реальный email, заполнить <code>[EMAIL]</code>. Точная дата — за контентом. Открыто с 16.07.</div>
+      </div>
+
+      <div class="card" style="--c:var(--warn)">
+        <div class="top"><span class="pid">P4</span><span class="ptitle">«Универсальный» тумблер motion не универсален (WCAG 2.2.2)</span><span class="badge">Medium</span><span class="badge eff">Мелко</span></div>
+        <p><code>page.jsx:122</code> зовёт MotionToggle механизмом 2.2.2, но CRT-flicker/8-сек roll (<code>crt.css:47,88</code>) и AttractMode слушают <b>только</b> ОС-prefers-reduced-motion, а не класс <code>.motion-paused</code>. Тач-юзер жмёт OFF — и всё равно получает ~6 вспышек/сек.</p>
+        <div class="fix"><b>Фикс</b> Добавить <code>.motion-paused</code>-правила в crt.css + early-return <code>isMotionPaused()</code> в AttractMode/AttractTitle.</div>
+      </div>
+
+      <div class="card" style="--c:var(--warn)">
+        <div class="top"><span class="pid">P5</span><span class="ptitle">Idle attract-mode крадёт первый клик + прозрачный HUD-бар</span><span class="badge">Medium</span><span class="badge eff">Мелко</span></div>
+        <p>Проверено вживую: после ~15с простоя <code>aria-hidden</code>, но перехватывающий указатель оверлей <code>.attract</code> (z-index 2600) <b>съедает первый клик</b> по регистрации/свитчеру; закреплённый P1/CPU-HUD (<code>rgba(0,0,0,0)</code>) даёт тексту секций сталкиваться с показаниями на скролле.</p>
+        <div class="fix"><b>Фикс</b> Attract — раз в сессию (или пропускать клик сквозь); HUD — непрозрачная/blur-подложка.</div>
+      </div>
+
+      <div class="card" style="--c:var(--warn)">
+        <div class="top"><span class="pid">P6</span><span class="ptitle">Слом hero на coarse-pointer 1024–1439px</span><span class="badge">Medium</span><span class="badge eff">Мелко</span></div>
+        <p>Регрессия рерайта: батарейка/тумблеры/PlayFab уходят в мобильный режим по <code>(pointer:coarse)</code>, а тело hero гейтит только по ширине (<code>Hero.css:403</code>). iPad Pro landscape (1366px): hero переполняется, <code>.hero__playsmall</code> висит рядом с уже-/play батарейкой (<b>дубль PLAY</b>).</p>
+        <div class="fix"><b>Фикс</b> Свести все четыре на одну ветку <code>(max-width:1023px),(pointer:coarse)</code>.</div>
+      </div>
+
+      <div class="card" style="--c:var(--warn)">
+        <div class="top"><span class="pid">P7</span><span class="ptitle">Пороутовые метаданные + структурные данные</span><span class="badge">Medium</span><span class="badge eff">Мелко</span></div>
+        <p><code>layout.jsx:31–45</code> хардкодит OG → <code>/classic</code> и <code>/mcp</code> отдают <b>домашний</b> URL/тайтл (проверено: <code>og:url = site root</code>). И <code>/classic</code> — индексируемая event-страница — <b>не отдаёт JSON-LD</b> (проверено: home=1, classic=0), хотя JSDoc утверждает обратное.</p>
+        <div class="fix"><b>Фикс</b> Пороутовый openGraph-override + смонтировать <code>&lt;EventJsonLd/&gt;</code> в ClassicApp.</div>
+      </div>
+
+      <div class="card" style="--c:var(--warn)">
+        <div class="top"><span class="pid">P8</span><span class="ptitle">Ни одного названного организатора/жюри на живом сайте</span><span class="badge">Medium</span><span class="badge eff">Мелко</span></div>
+        <p>Реальный ростер существует <b>мёртвыми данными</b> (<code>ClassicOrganizers.jsx:11–16</code>: Fedoseev / Kumar Vyas / Sholina), но оба скина его закомментили. Сеньор-маркетолог видит ноль имён перед тем, как отдать email.</p>
+        <div class="fix"><b>Фикс</b> Показать компактную credits-полосу хотя бы на «/». Не про unmount — про то, что живая копия отвечает на «кто это проводит?» молчанием.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- themes -->
+  <section>
+    <h2>Сквозные темы</h2>
+    <div class="cols">
+      <div class="panel"><h3><span class="m">1</span> «Enforced» ≠ enforced</h3><p style="margin:0;font-size:13.5px;color:var(--mut)">DS-гейт, typecheck и «универсальный» motion — все <b style="color:var(--ink)">присутствуют и считаются активными</b>, но инертны там, где важно. Ложный сигнал безопасности.</p></div>
+      <div class="panel"><h3><span class="m">2</span> Контент отстаёт от инженерии</h3><p style="margin:0;font-size:13.5px;color:var(--mut)">Каждая high-находка — проблема <b style="color:var(--ink)">факта/копирайта</b>, не кода. Машина собрана хорошо; сообщение не устаканено — с 16.07 без изменений.</p></div>
+      <div class="panel"><h3><span class="m">3</span> Гейт слеп вне CSS</h3><p style="margin:0;font-size:13.5px;color:var(--mut)">Дрейф там, где stylelint не видит: ~30 сырых цветов в Phaser, копипаст-стили тумблеров, off-ladder px в пилюлях.</p></div>
+      <div class="panel"><h3><span class="m">4</span> Швы, а не поломки</h3><p style="margin:0;font-size:13.5px;color:var(--mut)">PR #93–99 структурно здоровы, но насыпали edge-мусор: осиротевший компонент, устаревшие комментарии, breakpoint-mismatch, 2 тумблера без focus/ARIA.</p></div>
+      <div class="panel" style="grid-column:1/-1"><h3><span class="m">5</span> Два скина, одна дрейфующая правда</h3><p style="margin:0;font-size:13.5px;color:var(--mut)">Формат, нейминг («battle arenas» vs «case tracks»), OG-теги и JSON-LD расходятся между <code>/</code> и <code>/classic</code>, потому что нет единого источника. <b style="color:var(--ink)">Централизация в site.js закрывает P1, P7 и nit-нейминг разом.</b></p></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>56 агентов · ~2.66M токенов · 670 tool-calls · ~31 мин · адверсариальная верификация</span>
+    <span>marketing-combat · main @ 763750b · docs/audit-2026-07-18.md</span>
+  </footer>
+
+</div>
