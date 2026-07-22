@@ -39,25 +39,22 @@
   opacity: 0.8;
 }
 
-/* the sheen: sweeps in ~2.5s, rests, repeats — staggered per tile */
+/* RGB-glitch flicker (owner 2026-07-23: the sheen sweep is out — match the
+   section titles instead). Same recipe GlitchText/GlitchTitles wires onto
+   .dsec__title: cyan + magenta ghost copies, offset and sliced by animated
+   clip-path bands — here the "copy" is the logo's own SVG as a mask. A
+   permanent glitch on 8 marks would be noise (see GlitchTitles.jsx), so a
+   gate keyframe opens each ghost for ~0.6s once per 7.3s cycle, staggered
+   per tile.
+
+   DEPENDS on the k-glitch-cyan / k-glitch-magenta keyframes from
+   components/GlitchText/GlitchText.css — always loaded on this page via
+   GlitchTitles' import. */
+.sponsors__mark::before,
 .sponsors__mark::after {
   content: '';
   position: absolute;
   inset: 0;
-  /* saturated pass (owner 2026-07-22: stronger color): no pure-white core —
-     it washed the sweep out — tinted lights meet in the middle instead, and
-     the outer stops are the full-chroma HUD cyan/red */
-  background: linear-gradient(
-    115deg,
-    transparent 30%,
-    var(--k-hud-cyan) 42%,
-    color-mix(in srgb, var(--k-hud-cyan) 45%, var(--k-white)) 49%,
-    color-mix(in srgb, var(--k-hud-red) 45%, var(--k-white)) 51%,
-    var(--k-hud-red) 58%,
-    transparent 70%
-  );
-  background-size: 300% 100%;
-  background-position: 200% 0;
   -webkit-mask-image: var(--logo-src);
   mask-image: var(--logo-src);
   -webkit-mask-size: contain;
@@ -66,31 +63,53 @@
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
-  animation: sponsors-sheen 7s linear infinite;
-  animation-delay: calc(var(--i, 0) * 0.9s);
+  opacity: 0;
+  pointer-events: none;
 }
 
-@keyframes sponsors-sheen {
-  0% {
-    background-position: 200% 0;
+.sponsors__mark::before {
+  background: var(--k-cyan);
+  animation:
+    k-glitch-cyan 2.4s steps(2) infinite,
+    sponsors-glitch-gate 7.3s infinite;
+  animation-delay: calc(var(--i, 0) * 0.9s), calc(var(--i, 0) * 0.9s);
+}
+
+.sponsors__mark::after {
+  background: var(--k-magenta);
+  animation:
+    k-glitch-magenta 3.1s steps(2) infinite,
+    sponsors-glitch-gate 7.3s infinite;
+  /* magenta trails the cyan a beat, like the title burst */
+  animation-delay: calc(var(--i, 0) * 0.9s + 0.12s), calc(var(--i, 0) * 0.9s + 0.12s);
+}
+
+/* the ghosts exist only in a ~0.6s window of each cycle */
+@keyframes sponsors-glitch-gate {
+  0%,
+  90% {
+    opacity: 0;
   }
-  35% {
-    background-position: -100% 0;
+  90.5%,
+  98% {
+    opacity: 0.9;
   }
   100% {
-    background-position: -100% 0;
+    opacity: 0;
   }
 }
 
 /* WCAG 2.2.2 — the universal MotionToggle pause */
+.motion-paused .sponsors__mark::before,
 .motion-paused .sponsors__mark::after {
   animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .sponsors__mark::before,
   .sponsors__mark::after {
     animation: none;
-    background: none;
+    opacity: 0;
   }
 }
 
