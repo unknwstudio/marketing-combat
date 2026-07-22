@@ -4,9 +4,10 @@ import './Sponsors.css'
 /**
  * SPONSORS — OUR PARTNERS. Placeholder logo wall: the roster lives in
  * src/config/partners.js (interim — logos get added / replaced as deals
- * close). The brand SVGs are light-background variants, so each tile is a
- * white card inside the dark skin; a partner without an SVG yet renders as a
- * plain wordmark.
+ * close). Dark-skin treatment per the top-site pattern (Framer/Linear/
+ * Resend): white monochrome marks straight on the bg — the CSS filter
+ * flattens any brand colors, so the light-bg SVG set needs no dark variants.
+ * A partner without an SVG yet renders as a plain wordmark.
  */
 export default function Sponsors() {
   return (
@@ -18,7 +19,7 @@ export default function Sponsors() {
 
       <ul className="sponsors__grid">
         {PARTNERS.map((p) => (
-          <li key={p.name} className="dcard sponsors__tile">
+          <li key={p.name} className="sponsors__tile">
             {p.src ? (
               <img className="sponsors__logo" src={p.src} alt={p.name} loading="lazy" />
             ) : (

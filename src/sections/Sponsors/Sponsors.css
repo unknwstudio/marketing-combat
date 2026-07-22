@@ -1,11 +1,15 @@
-/* Partner logo tiles — white cards on the dark skin (the brand SVGs are the
-   light-background variants). */
+/* Partner logos, dark-skin pattern (Framer / Linear / Resend / Dovetail on
+   Mobbin): white monochrome marks straight on the dark bg — no cards — dimmed
+   at rest, full-strength on hover. brightness(0) invert(1) flattens any brand
+   colors to a white silhouette, so one rule covers every SVG. */
 .sponsors__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--k-space-20);
+  row-gap: var(--k-space-64);
+  column-gap: var(--k-space-32);
+  align-items: center;
   margin: 0;
-  padding: 0;
+  padding: var(--k-space-24) 0;
   list-style: none;
 }
 
@@ -13,15 +17,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 132px;
-  background: var(--k-white);
 }
 
 .sponsors__logo {
   max-width: 100%;
-  height: 36px;
+  height: 32px;
   width: auto;
   object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.75;
+  transition: opacity var(--k-t-base) ease;
+}
+
+@media (hover: hover) {
+  .sponsors__tile:hover .sponsors__logo {
+    opacity: 1;
+  }
 }
 
 /* no SVG sourced yet — the name set as a wordmark */
@@ -29,22 +40,21 @@
   font-family: var(--k-font-mono);
   font-size: var(--k-text-md);
   letter-spacing: var(--k-ls-pixel);
-  color: var(--k-black);
+  color: var(--k-white);
+  opacity: 0.75;
   text-transform: uppercase;
 }
 
 @media (max-width: 1023px) {
   .sponsors__grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--k-space-12);
-  }
-
-  .sponsors__tile {
-    min-height: 84px;
+    row-gap: var(--k-space-40);
+    column-gap: var(--k-space-16);
+    padding: var(--k-space-8) 0;
   }
 
   .sponsors__logo {
-    height: 24px;
+    height: 22px;
   }
 
   .sponsors__word {

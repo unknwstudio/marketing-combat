@@ -1,31 +1,30 @@
 /* ============================================================
-   PARTNERS & SPONSORS — placeholder logo wall.
+   PARTNERS & SPONSORS — airy borderless logo wall (owner ref
+   2026-07-22 + the light-bg pattern on top sites: Oura / Square /
+   Intercom on Mobbin — no boxes, no rules, generous whitespace,
+   logos start-aligned per column).
    ============================================================ */
 
 .c-partners__head {
-  margin-bottom: var(--k-space-64);
+  margin-bottom: var(--k-space-72);
 }
 
-/* hairline-ruled tiles: each cell draws its right + bottom rule, the list
-   draws the outer top/left frame — no doubled borders anywhere */
 .c-partners__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  row-gap: var(--k-space-72);
+  column-gap: var(--k-space-40);
+  align-items: center;
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--k-black);
-  border-left: 1px solid var(--k-black);
 }
 
+/* left edge of each column, vertically centered in the row — like the ref */
 .c-partners__cell {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 140px;
-  padding: var(--k-space-32);
-  border-right: 1px solid var(--k-black);
-  border-bottom: 1px solid var(--k-black);
+  justify-content: flex-start;
 }
 
 .c-partners__logo {
@@ -33,6 +32,7 @@
   height: 40px;
   width: auto;
   object-fit: contain;
+  object-position: left center;
 }
 
 /* no SVG sourced yet — the name set as a wordmark */
@@ -42,7 +42,6 @@
   text-transform: uppercase;
   letter-spacing: var(--k-ls-wide-sm);
   color: var(--k-black);
-  text-align: center;
 }
 
 @media (max-width: 1023px) {
@@ -52,11 +51,8 @@
 
   .c-partners__grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .c-partners__cell {
-    min-height: 96px;
-    padding: var(--k-space-16);
+    row-gap: var(--k-space-40);
+    column-gap: var(--k-space-24);
   }
 
   .c-partners__logo {
