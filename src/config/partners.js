@@ -5,10 +5,10 @@
  *
  * All SVGs in public/assets/logos/ picked here are the light-background
  * variants (both skins put logos on white). `src: null` → the tile renders
- * the name as a plain wordmark until an SVG is sourced (Allformance).
+ * the name as a plain wordmark until an SVG is sourced.
  */
 export const PARTNERS = [
-  { name: 'Allformance', src: null },
+  { name: 'Allformance', src: '/assets/logos/allformance.svg' },
   { name: 'Alibaba Cloud', src: '/assets/logos/alibaba-cloud.svg' },
   { name: 'TikTok', src: '/assets/logos/tiktok.svg' },
   { name: 'ByteDance', src: '/assets/logos/bytedance.svg' },

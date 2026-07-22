@@ -21,8 +21,9 @@
   padding: var(--k-space-24) var(--k-space-32);
 }
 
+/* same divider token the Stats cells use */
 .regc__block + .regc__block {
-  border-left: 2px solid color-mix(in srgb, var(--k-white) 12%, transparent);
+  border-left: 2px solid var(--k-line);
 }
 
 .regc__label {
@@ -157,6 +158,6 @@
 
   .regc__block + .regc__block {
     border-left: 0;
-    border-top: 2px solid color-mix(in srgb, var(--k-white) 12%, transparent);
+    border-top: 2px solid var(--k-line);
   }
 }
