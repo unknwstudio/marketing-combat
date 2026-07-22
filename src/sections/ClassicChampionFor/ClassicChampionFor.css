@@ -137,8 +137,9 @@
 .cfw__item {
   /* 24 is the CEILING, not a taste choice: the active text must still slide
      (the ClassicHow task list sets the idiom — owner 2026-07-17), and with
-     the column at x=750 the longest item ("Performance lead gens", ~662px)
-     tops out at 750 + 662 + 24 = 1436 ≤ the 1440 canvas clip (~3px margin).
+     the column at x=750 the longest item ("Performance marketer", ~639px —
+     singular on purpose: the plural is 671px and wraps the 663px column)
+     tops out at 750 + 639 + 24 = 1413 ≤ the 1440 canvas clip (~27px margin).
      The marker itself sits in the inter-column gutter (arrow rule below), so
      text and arrow can never collide at any indent. Mobile overrides both
      (arrow back inside the column, 48px indent). */
@@ -256,7 +257,7 @@
     --arrow-indent: var(--k-space-48);
     font-size: var(--c-text-display-mobile);
     /* the desktop 0.72 cap-box makes WRAPPED lines overlap on narrow columns
-       ("Performance lead gens") — mobile items wrap, so they get real leading */
+       ("Performance marketer") — mobile items wrap, so they get real leading */
     line-height: var(--k-lh-flat);
   }
 

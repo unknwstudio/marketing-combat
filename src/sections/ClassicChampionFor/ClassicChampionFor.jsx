@@ -130,7 +130,7 @@ export default function ClassicChampionFor() {
       <div className="cfw__col cfw__who">
         <h2 className="cfw__h2 cap-trim">who it&rsquo;s for</h2>
         <ul className="cfw__list">
-          {['CMOs', 'Heads of growth', 'Performance lead gens', 'AI creator', 'Future legends'].map(
+          {['CMOs', 'Heads of growth', 'Performance marketer', 'AI creator', 'Future legends'].map(
             (label) => (
               <li className="cfw__item" key={label}>
                 <svg className="cfw__arrow" viewBox="0 0 52 27" aria-hidden="true">

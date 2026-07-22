@@ -296,7 +296,7 @@
   color: var(--k-muted);
 }
 
-/* highlighted / "selected" fighter (Performance Lead Gen) */
+/* highlighted / "selected" fighter (Performance Marketer) */
 .fighters__card--selected .fighters__label {
   color: var(--k-white);
 }
@@ -419,7 +419,7 @@
     font-size: var(--k-text-xs);
   }
 
-  /* shrink long labels (e.g. "PERFORMANCE LEAD GEN") so 2 cols fit at 360px */
+  /* shrink long labels (e.g. "PERFORMANCE MARKETER") so 2 cols fit at 360px */
   .fighters__label {
     /* stylelint-disable-next-line declaration-property-value-disallowed-list -- deliberate: phone label floor so 2 columns fit at 360px; fluid --k-text-xs bottoms out at 11px (+3px) and the fixed HUD ramp is reserved for pixel-font/fixed chrome */
     font-size: 8px;

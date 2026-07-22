@@ -55,7 +55,7 @@ Case track 03 — E-commerce: High volume. Thin margins. ROAS pressure. Mission:
 Case track 04 — Enterprise: Six-figure deals. Long procurement. Mission: run AI-powered ABM that lands target accounts.
 
 Who it's for
-For senior marketers of the AI era. CMOs, Heads of growth, Performance lead gens, AI creators …& future legends.
+For senior marketers of the AI era. CMOs, Heads of growth, Performance marketers, AI creators …& future legends.
 
 Why join
 Find out your real level of mastering AI tools for marketing alongside your peers.

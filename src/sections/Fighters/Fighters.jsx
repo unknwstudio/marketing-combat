@@ -24,7 +24,7 @@ const FIGHTERS = [
   },
   {
     img: 'fighter3.webp',
-    label: 'PERFORMANCE LEAD GEN',
+    label: 'PERFORMANCE MARKETER',
     // near-vertical: this card sits almost directly under the real
     // trunk, so its own strike barely has to lean at all
     bolt: 'M53,0 L51,33 L49,67 L67,100 L47,133 L37,167 L53,200 L66,233 L38,267 L40,300 L52,333 L50,367 L44,400 L56,400 L56,367 L64,333 L47,300 L50,267 L72,233 L65,200 L44,167 L59,133 L74,100 L61,67 L58,33 L65,0 Z M55,67 L21,93 L7,103 L40,86 Z M53,133 L25,155 L14,164 L41,150 Z M59,200 L41,216 L34,223 L52,212 Z M44,267 L30,281 L24,287 L38,277 Z M58,333 L49,343 L45,347 L54,340 Z',

@@ -60,7 +60,7 @@ const HURT = { dx: 22, top: 130, bottom: 6 };
 export const ROSTER = [
   { key: 'fighter1', name: 'CMOs',                 color: K_CYAN_HEX, style: 'ZONER',     hp: 95,  speed: 100, dmg: 0.95, reach: 1.15, atkSpeed: 1.00 },
   { key: 'fighter2', name: 'HEADS OF GROWTH',      color: K_HUD_RED_HEX, style: 'RUSHDOWN',  hp: 98,  speed: 114, dmg: 1.00, reach: 0.98, atkSpeed: 1.10 },
-  { key: 'fighter3', name: 'PERFORMANCE LEAD GEN', color: K_HUD_GREEN_HEX, style: 'ALL-ROUND', hp: 110, speed: 96,  dmg: 1.05, reach: 1.02, atkSpeed: 1.00 },
+  { key: 'fighter3', name: 'PERFORMANCE MARKETER', color: K_HUD_GREEN_HEX, style: 'ALL-ROUND', hp: 110, speed: 96,  dmg: 1.05, reach: 1.02, atkSpeed: 1.00 },
   { key: 'fighter4', name: 'AI CREATORS',          color: 0xffcf3f, style: 'HEAVY',     hp: 124, speed: 80,  dmg: 1.32, reach: 1.08, atkSpeed: 0.80 },
   { key: 'fighter5', name: 'FUTURE LEGENDS',       color: 0xb08bff, style: 'ASSASSIN',  hp: 84,  speed: 126, dmg: 0.85, reach: 0.98, atkSpeed: 1.22 },
 ];
