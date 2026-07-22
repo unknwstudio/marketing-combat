@@ -60,6 +60,12 @@
 
 .c-hero__cta {
   width: 100%;
+  /* cap so the pill stops short of the fixed AI-MODE switcher: both rest on
+     the same bottom line at page top, and full column width (right edge 697)
+     ran 107px under the switcher (left edge 590 at the 1440 design width).
+     16 inset + 550 = 566 → a 24px gap. The <1024 arm lifts the cap — there
+     the CTA is in flow after the lede, not pinned to the viewport bottom. */
+  max-width: 550px;
   height: 48px;
   display: flex;
   align-items: center;
@@ -174,6 +180,10 @@
 
   .c-hero__title {
     font-size: var(--c-text-display-mobile);
+  }
+
+  .c-hero__cta {
+    max-width: none;
   }
 
 
