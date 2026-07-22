@@ -1,0 +1,69 @@
+/* ============================================================
+   PARTNERS & SPONSORS — placeholder logo wall.
+   ============================================================ */
+
+.c-partners__head {
+  margin-bottom: var(--k-space-64);
+}
+
+/* hairline-ruled tiles: each cell draws its right + bottom rule, the list
+   draws the outer top/left frame — no doubled borders anywhere */
+.c-partners__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--k-black);
+  border-left: 1px solid var(--k-black);
+}
+
+.c-partners__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  padding: var(--k-space-32);
+  border-right: 1px solid var(--k-black);
+  border-bottom: 1px solid var(--k-black);
+}
+
+.c-partners__logo {
+  max-width: 100%;
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* no SVG sourced yet — the name set as a wordmark */
+.c-partners__word {
+  font-size: var(--k-text-md);
+  line-height: var(--k-lh-flat);
+  text-transform: uppercase;
+  letter-spacing: var(--k-ls-wide-sm);
+  color: var(--k-black);
+  text-align: center;
+}
+
+@media (max-width: 1023px) {
+  .c-partners__head {
+    margin-bottom: var(--k-space-40);
+  }
+
+  .c-partners__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .c-partners__cell {
+    min-height: 96px;
+    padding: var(--k-space-16);
+  }
+
+  .c-partners__logo {
+    height: 28px;
+  }
+
+  .c-partners__word {
+    font-size: var(--k-text-sm);
+  }
+}

@@ -24,9 +24,10 @@ import WhyJoin from '@/sections/WhyJoin/WhyJoin'
 import Tracks from '@/sections/Tracks/Tracks'
 import Arenas from '@/sections/Arenas/Arenas'
 import Stages from '@/sections/Stages/Stages'
-// Judges, Organizers, Leaderboard, Sponsors: hidden for now (not ready yet) —
+// Judges, Organizers, Leaderboard: hidden for now (not ready yet) —
 // components untouched, just unmounted from the page. Re-add the imports +
 // JSX below to bring them back.
+import Sponsors from '@/sections/Sponsors/Sponsors'
 import Faq from '@/sections/Faq/Faq'
 import FinalCta from '@/sections/FinalCta/FinalCta'
 import Footer from '@/sections/Footer/Footer'
@@ -107,6 +108,7 @@ export default function Page() {
                 <Tracks />
                 <Arenas />
                 <Stages />
+                <Sponsors />
                 <Faq />
                 <FinalCta />
               </main>

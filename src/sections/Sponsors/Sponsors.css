@@ -1,34 +1,35 @@
-/* Placeholder partner tiles. */
+/* Partner logo tiles — white cards on the dark skin (the brand SVGs are the
+   light-background variants). */
 .sponsors__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--k-space-20);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.sponsors__slot {
+.sponsors__tile {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 132px;
-  background: repeating-linear-gradient(
-    45deg,
-    var(--k-scrim) 0,
-    var(--k-scrim) 10px,
-    var(--k-shadow) 10px,
-    var(--k-shadow) 20px
-  );
+  background: var(--k-white);
 }
 
-.sponsors__mark {
+.sponsors__logo {
+  max-width: 100%;
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* no SVG sourced yet — the name set as a wordmark */
+.sponsors__word {
   font-family: var(--k-font-mono);
   font-size: var(--k-text-md);
   letter-spacing: var(--k-ls-pixel);
-  /* var(--k-ink-cool) on this striped near-black bg: ~5:1, clears WCAG AA
-     (was #3a3358 at ~1.76:1 — unreadable) */
-  color: var(--k-ink-cool);
+  color: var(--k-black);
   text-transform: uppercase;
 }
 
@@ -38,11 +39,15 @@
     gap: var(--k-space-12);
   }
 
-  .sponsors__slot {
+  .sponsors__tile {
     min-height: 84px;
   }
 
-  .sponsors__mark {
+  .sponsors__logo {
+    height: 24px;
+  }
+
+  .sponsors__word {
     font-size: var(--k-text-xs);
   }
 }

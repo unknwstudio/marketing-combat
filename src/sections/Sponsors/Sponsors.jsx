@@ -1,11 +1,13 @@
+import { PARTNERS } from '@/config/partners'
 import './Sponsors.css'
 
 /**
- * SPONSORS — OUR PARTNERS. No sponsor names to show yet; the slots stay
- * honest about being open rather than reading as an unfinished section.
+ * SPONSORS — OUR PARTNERS. Placeholder logo wall: the roster lives in
+ * src/config/partners.js (interim — logos get added / replaced as deals
+ * close). The brand SVGs are light-background variants, so each tile is a
+ * white card inside the dark skin; a partner without an SVG yet renders as a
+ * plain wordmark.
  */
-const SLOTS = Array.from({ length: 6 })
-
 export default function Sponsors() {
   return (
     <section className="dsec sponsors" aria-label="Our partners">
@@ -15,9 +17,13 @@ export default function Sponsors() {
       </div>
 
       <ul className="sponsors__grid">
-        {SLOTS.map((_, i) => (
-          <li key={i} className="dcard sponsors__slot" aria-hidden="true">
-            <span className="sponsors__mark">SLOT OPEN</span>
+        {PARTNERS.map((p) => (
+          <li key={p.name} className="dcard sponsors__tile">
+            {p.src ? (
+              <img className="sponsors__logo" src={p.src} alt={p.name} loading="lazy" />
+            ) : (
+              <span className="sponsors__word">{p.name}</span>
+            )}
           </li>
         ))}
       </ul>
