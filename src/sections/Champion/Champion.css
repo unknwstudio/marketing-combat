@@ -26,15 +26,16 @@
 }
 
 /* Flaming "BECOME NUMBER 1 MARKETER IN THE WORLD" title art (2026-07-22).
-   The export is trimmed to the artwork's alpha bbox (no transparent margins),
-   so it centers in the band between the topbox (ends y=252) and the panel
-   bottom (y=901): 900x620 at the art's own ratio, left (1440-900)/2. */
+   Figma master (Frame 78, node 5958:432): the full 2752x1536 canvas sits at
+   1186x662 @ (127, 235) section-relative. Our export is trimmed to the
+   artwork's alpha bbox (crop 2082x1435 @ 349,62), so at the same 0.431 scale
+   the content box lands at (277, 262), 897x618. */
 .champion__banner {
   position: absolute;
-  left: 270px;
-  top: 266px;
-  width: 900px;
-  height: 620px;
+  left: 277px;
+  top: 262px;
+  width: 897px;
+  height: 618px;
 }
 
 /* --- top box: ticker + stats (live text over the panel) ------------- */
