@@ -8,7 +8,9 @@
  * the name as a plain wordmark until an SVG is sourced.
  */
 export const PARTNERS = [
-  { name: 'Allformance', src: '/assets/logos/allformance.svg' },
+  // -2: viewBox trimmed to the artwork (the source had 10.5 units of dead
+  // space at the bottom, floating the logo ~5px above the tile centre)
+  { name: 'Allformance', src: '/assets/logos/allformance-2.svg' },
   { name: 'Alibaba Cloud', src: '/assets/logos/alibaba-cloud.svg' },
   { name: 'TikTok', src: '/assets/logos/tiktok.svg' },
   { name: 'ByteDance', src: '/assets/logos/bytedance.svg' },
