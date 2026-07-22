@@ -1,0 +1,162 @@
+/* MK round-timer + fighters tally — the HUD strip between the hero and CHAMPION. */
+.regc {
+  padding: var(--k-space-48) var(--k-space-64) var(--k-space-24);
+}
+
+/* bordered arcade panel, same shell language as the health bars */
+.regc__inner {
+  display: flex;
+  align-items: stretch;
+  background: var(--k-panel);
+  border: 2px solid var(--k-black);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--k-white) 8%, transparent);
+}
+
+.regc__block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--k-space-16);
+  padding: var(--k-space-24) var(--k-space-32);
+}
+
+.regc__block + .regc__block {
+  border-left: 2px solid color-mix(in srgb, var(--k-white) 12%, transparent);
+}
+
+.regc__label {
+  font-family: var(--k-font);
+  font-size: var(--k-text-sm);
+  /* the label wraps to two lines on the fluid arm — real leading + centering */
+  line-height: var(--k-lh-snug);
+  text-align: center;
+  color: var(--k-muted);
+}
+
+/* --- round timer --- */
+.regc__timer {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.regc__group {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.regc__cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--k-space-8);
+}
+
+.regc__digits {
+  font-family: var(--k-font);
+  font-size: var(--k-text-xl);
+  line-height: var(--k-lh-flat);
+  color: var(--k-title-yellow);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--k-title-yellow) 60%, transparent);
+  /* the days group drops a digit at 10→9 days left — reserve two glyph slots
+     so the whole row doesn't shift on that day */
+  min-width: 2ch;
+  text-align: center;
+}
+
+.regc__colon {
+  font-family: var(--k-font);
+  font-size: var(--k-text-xl);
+  line-height: var(--k-lh-flat);
+  color: color-mix(in srgb, var(--k-title-yellow) 55%, transparent);
+  padding: 0 var(--k-space-8);
+}
+
+.regc__unit {
+  font-family: var(--k-font);
+  font-size: var(--k-text-xs);
+  line-height: var(--k-lh-flat);
+  color: var(--k-muted);
+}
+
+.regc__date {
+  font-family: var(--k-font);
+  font-size: var(--k-text-xs);
+  line-height: var(--k-lh-flat);
+  color: var(--k-hud-steel);
+}
+
+.regc__date--over {
+  color: var(--k-red);
+}
+
+/* --- fighters tally --- */
+.regc__count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--k-space-12);
+  font-family: var(--k-font);
+  line-height: var(--k-lh-flat);
+}
+
+.regc__count-n {
+  font-size: var(--k-text-xl);
+  color: var(--k-health-full);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--k-health-full) 50%, transparent);
+}
+
+.regc__count-of {
+  font-size: var(--k-text-sm);
+  color: var(--k-muted);
+}
+
+/* health-bar shell + segmented fill, same look as the scroll HUD */
+.regc__bar {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 16px;
+  background: var(--k-health-track);
+  border: 2px solid var(--k-black);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--k-white) 8%, transparent);
+  overflow: hidden;
+}
+
+.regc__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: width var(--k-t-slow) ease-out;
+  background-image:
+    linear-gradient(180deg, var(--k-health-full) 0%, var(--k-health-full-deep) 100%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 10px,
+      color-mix(in srgb, var(--k-black) 35%, transparent) 10px,
+      color-mix(in srgb, var(--k-black) 35%, transparent) 12px
+    );
+}
+
+/* fluid arm (ScaleCanvas reflows below 1024) */
+@media (max-width: 1023px) {
+  .regc {
+    padding: var(--k-space-32) var(--k-space-24) var(--k-space-16);
+  }
+
+  .regc__block {
+    padding: var(--k-space-24) var(--k-space-16);
+  }
+}
+
+@media (max-width: 639px) {
+  .regc__inner {
+    flex-direction: column;
+  }
+
+  .regc__block + .regc__block {
+    border-left: 0;
+    border-top: 2px solid color-mix(in srgb, var(--k-white) 12%, transparent);
+  }
+}

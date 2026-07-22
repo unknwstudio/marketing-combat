@@ -14,6 +14,7 @@ import EventJsonLd from '@/components/EventJsonLd/EventJsonLd'
 
 // landing sections (Hero → Footer)
 import HeroStage from '@/components/HeroDisplay3D/HeroStage'
+import RegCountdown from '@/sections/RegCountdown/RegCountdown'
 import Champion from '@/sections/Champion/Champion'
 import Fighters from '@/sections/Fighters/Fighters'
 
@@ -94,6 +95,9 @@ export default function Page() {
             <ScaleCanvas width={1440} mode="zoom">
               <main id="main">
                 <HeroStage />
+                {/* AI-mode only: countdown to the end of open registration +
+                    the fighters tally (fake curve — src/config/registration.js) */}
+                <RegCountdown />
                 <Champion />
                 <Fighters />
 
