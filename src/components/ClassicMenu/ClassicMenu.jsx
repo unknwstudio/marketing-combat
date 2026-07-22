@@ -131,6 +131,10 @@ export default function ClassicMenu() {
           </a>
           <span className="c-menu__rule" aria-hidden="true" />
           */}
+          <a className="c-menu__link" href="#c-partners">
+            Partners
+          </a>
+          <span className="c-menu__rule" aria-hidden="true" />
           <a className="c-menu__link" href="#c-faq">
             FAQ
           </a>

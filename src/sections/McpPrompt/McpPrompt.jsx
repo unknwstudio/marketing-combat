@@ -23,7 +23,7 @@ The best marketer on the planet, decided.
 The first international hackathon for senior marketers of the AI era. Real client cases. Use AI — compare your skills.
 Two days. Real cases. Use AI or get finished.
 ◆ July 2026 ◆ Final in Barcelona · Harbour.Space University ◆ Online qualifying · offline final
-Registration → 5 min to apply · 3 questions · AI review · 48 hr response
+Registration → 5 min to apply · 3 questions · AI review · 48 hr response · Open registration closes September 20
 AI MARKETING KOMBAT · JULY 2026 · BARCELONA · APPLY ↗
 
 The battle
@@ -67,11 +67,15 @@ Find out your real level of mastering AI tools for marketing alongside your peer
 06 Prize vault — Annual subscriptions to AI services and individual sessions with experts.
 
 The prize
+Become number 1 marketer in the world.
 What the champion gets: $30K+ in AI tool subscriptions · Intros to A16Z & YC growth partners · Offers from sponsoring companies · The title of #1 AI marketer of 2026.
 Join the battle. Put yourself on the map. Registration →
 
 Mission
 Bring together the people reshaping marketing. Change happens in many places at once. We create a point of contact — connecting the strongest practitioners with open-minded companies that have real marketing challenges. At the intersection of practice and discussion, knowledge is gained.
+
+Partners & sponsors
+This fight is brought to you by our partners: Allformance · Alibaba Cloud · TikTok · ByteDance · Google · Google Cloud · AppsFlyer · Web2wavy.
 
 FAQ
 What do I actually win? The title that doesn't expire — #1 AI Marketer of 2026. Annual subscriptions to top AI tools. Direct hiring offers from sponsoring companies. Your case study featured on GitHub. Cash purses announced sprint-by-sprint by partners.

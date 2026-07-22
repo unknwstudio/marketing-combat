@@ -18,12 +18,14 @@
 export const PARTNERS = [
   // -2: viewBox trimmed to the artwork (the source had 10.5 units of dead
   // space at the bottom, floating the logo ~5px above the tile centre)
-  { name: 'Allformance', src: '/assets/logos/allformance-2.svg', h: 38 },
-  { name: 'Alibaba Cloud', src: '/assets/logos/alibaba-cloud.svg', h: 29 },
+  // owner-tuned 2026-07-22 (2nd pass): Allformance/Alibaba a touch down,
+  // AppsFlyer/web2wave a touch up vs the computed baseline
+  { name: 'Allformance', src: '/assets/logos/allformance-2.svg', h: 36 },
+  { name: 'Alibaba Cloud', src: '/assets/logos/alibaba-cloud.svg', h: 27 },
   { name: 'TikTok', src: '/assets/logos/tiktok.svg', h: 42 },
   { name: 'ByteDance', src: '/assets/logos/bytedance.svg', h: 38 },
   { name: 'Google', src: '/assets/logos/google.svg', h: 42 },
   { name: 'Google Cloud', src: '/assets/logos/google-cloud.svg', h: 36 },
-  { name: 'AppsFlyer', src: '/assets/logos/appsflyer.svg', h: 45 },
-  { name: 'Web2wavy', src: '/assets/logos/web2wavy-black.svg', h: 41 },
+  { name: 'AppsFlyer', src: '/assets/logos/appsflyer.svg', h: 47 },
+  { name: 'Web2wavy', src: '/assets/logos/web2wavy-black.svg', h: 43 },
 ]
