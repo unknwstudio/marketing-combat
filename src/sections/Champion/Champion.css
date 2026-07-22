@@ -25,14 +25,16 @@
   height: 889px;
 }
 
-/* Flaming "USE AI OR GET FINISHED" banner. The export is already cropped
-   to the frame width, so it sits at the section edges, centered on the panel. */
+/* Flaming "BECOME NUMBER 1 MARKETER IN THE WORLD" title art (2026-07-22).
+   The export is trimmed to the artwork's alpha bbox (no transparent margins),
+   so it centers in the band between the topbox (ends y=252) and the panel
+   bottom (y=901): 900x620 at the art's own ratio, left (1440-900)/2. */
 .champion__banner {
   position: absolute;
-  left: 0;
-  top: 320px; /* keep the artwork centre where it sat (updated Figma export is 1440x594, was ...x559) */
-  width: 1440px;
-  height: 594px;
+  left: 270px;
+  top: 266px;
+  width: 900px;
+  height: 620px;
 }
 
 /* --- top box: ticker + stats (live text over the panel) ------------- */

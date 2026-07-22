@@ -139,20 +139,20 @@
     );
 }
 
-/* fluid arm (ScaleCanvas reflows below 1024) */
+/* fluid arm (ScaleCanvas reflows below 1024): stack the two blocks — the
+   pixel-font timer row can't shrink below ~490px, so side-by-side overflows
+   anywhere under the fixed canvas */
 @media (max-width: 1023px) {
   .regc {
     padding: var(--k-space-32) var(--k-space-24) var(--k-space-16);
   }
 
-  .regc__block {
-    padding: var(--k-space-24) var(--k-space-16);
-  }
-}
-
-@media (max-width: 639px) {
   .regc__inner {
     flex-direction: column;
+  }
+
+  .regc__block {
+    padding: var(--k-space-24) var(--k-space-16);
   }
 
   .regc__block + .regc__block {

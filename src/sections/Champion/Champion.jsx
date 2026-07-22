@@ -30,8 +30,8 @@ export default function Champion() {
       />
       <img
         className="champion__banner pixelated"
-        src={`/assets/champion/banner.webp`}
-        alt="Use AI or get finished"
+        src={`/assets/champion/banner-2.webp`}
+        alt="Become number 1 marketer in the world"
         loading="lazy"
         decoding="async"
       />
