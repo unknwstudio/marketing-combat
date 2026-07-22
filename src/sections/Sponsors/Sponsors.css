@@ -44,13 +44,17 @@
   content: '';
   position: absolute;
   inset: 0;
+  /* saturated pass (owner 2026-07-22: stronger color): no pure-white core —
+     it washed the sweep out — tinted lights meet in the middle instead, and
+     the outer stops are the full-chroma HUD cyan/red */
   background: linear-gradient(
     115deg,
-    transparent 35%,
-    var(--k-hud-cyan) 46%,
-    var(--k-white) 50%,
-    var(--k-hud-red-soft) 54%,
-    transparent 65%
+    transparent 30%,
+    var(--k-hud-cyan) 42%,
+    color-mix(in srgb, var(--k-hud-cyan) 45%, var(--k-white)) 49%,
+    color-mix(in srgb, var(--k-hud-red) 45%, var(--k-white)) 51%,
+    var(--k-hud-red) 58%,
+    transparent 70%
   );
   background-size: 300% 100%;
   background-position: 200% 0;
