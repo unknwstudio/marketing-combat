@@ -51,8 +51,8 @@ export default function ClassicHeroMedia() {
     return (
       <img
         className="c-hero__photo"
-        src="/assets/classic/hero-photo.jpg"
-        alt="Winners holding trophies at the award ceremony"
+        src="/assets/classic/hero-photo-2.jpg"
+        alt="Marketers listening to a talk at the event"
       />
     )
   }
@@ -61,13 +61,13 @@ export default function ClassicHeroMedia() {
     <video
       ref={videoRef}
       className="c-hero__photo"
-      src="/assets/classic/hero-video.mp4"
-      poster="/assets/classic/hero-photo.jpg"
+      src="/assets/classic/hero-video-2.mp4"
+      poster="/assets/classic/hero-photo-2.jpg"
       autoPlay
       muted
       loop
       playsInline
-      aria-label="Winners holding trophies at the award ceremony"
+      aria-label="Marketers listening to a talk at the event"
     />
   )
 }
