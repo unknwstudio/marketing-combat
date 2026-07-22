@@ -1,7 +1,12 @@
 /* Partner logos, dark-skin pattern (Framer / Linear / Resend / Dovetail on
-   Mobbin): white monochrome marks straight on the dark bg — no cards — dimmed
-   at rest, full-strength on hover. brightness(0) invert(1) flattens any brand
-   colors to a white silhouette, so one rule covers every SVG. */
+   Mobbin): white monochrome marks straight on the dark bg — no cards.
+   brightness(0) invert(1) flattens any brand colors to a white silhouette,
+   so one rule covers every SVG. Sizes are per-logo (--logo-h from
+   partners.js, ink-mass normalized) at 0.8× the classic base.
+
+   No hover (owner 2026-07-22) — instead a periodic holographic sheen sweeps
+   through each mark: the ::after paints a cyan→white→pink gradient masked by
+   the SAME logo SVG, so only the glyphs catch the light. */
 .sponsors__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -19,19 +24,69 @@
   justify-content: center;
 }
 
+.sponsors__mark {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+}
+
 .sponsors__logo {
   max-width: 100%;
-  height: 32px;
+  height: calc(var(--logo-h, 40px) * 0.8);
   width: auto;
   object-fit: contain;
   filter: brightness(0) invert(1);
-  opacity: 0.75;
-  transition: opacity var(--k-t-base) ease;
+  opacity: 0.8;
 }
 
-@media (hover: hover) {
-  .sponsors__tile:hover .sponsors__logo {
-    opacity: 1;
+/* the sheen: sweeps in ~2.5s, rests, repeats — staggered per tile */
+.sponsors__mark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    var(--k-hud-cyan) 46%,
+    var(--k-white) 50%,
+    var(--k-hud-red-soft) 54%,
+    transparent 65%
+  );
+  background-size: 300% 100%;
+  background-position: 200% 0;
+  -webkit-mask-image: var(--logo-src);
+  mask-image: var(--logo-src);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  animation: sponsors-sheen 7s linear infinite;
+  animation-delay: calc(var(--i, 0) * 0.9s);
+}
+
+@keyframes sponsors-sheen {
+  0% {
+    background-position: 200% 0;
+  }
+  35% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* WCAG 2.2.2 — the universal MotionToggle pause */
+.motion-paused .sponsors__mark::after {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sponsors__mark::after {
+    animation: none;
+    background: none;
   }
 }
 
@@ -41,7 +96,7 @@
   font-size: var(--k-text-md);
   letter-spacing: var(--k-ls-pixel);
   color: var(--k-white);
-  opacity: 0.75;
+  opacity: 0.8;
   text-transform: uppercase;
 }
 
@@ -54,7 +109,7 @@
   }
 
   .sponsors__logo {
-    height: 22px;
+    height: calc(var(--logo-h, 40px) * 0.55);
   }
 
   .sponsors__word {

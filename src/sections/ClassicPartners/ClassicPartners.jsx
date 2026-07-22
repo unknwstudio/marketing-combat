@@ -18,7 +18,11 @@ export default function ClassicPartners() {
 
         <ul className="c-partners__grid">
           {PARTNERS.map((p, i) => (
-            <li className="c-partners__cell c-reveal" key={p.name} style={{ '--i': i }}>
+            <li
+              className="c-partners__cell c-reveal"
+              key={p.name}
+              style={{ '--i': i, '--logo-h': p.h + 'px' }}
+            >
               {p.src ? (
                 <img className="c-partners__logo" src={p.src} alt={p.name} loading="lazy" />
               ) : (

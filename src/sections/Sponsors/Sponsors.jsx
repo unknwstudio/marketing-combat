@@ -18,10 +18,18 @@ export default function Sponsors() {
       </div>
 
       <ul className="sponsors__grid">
-        {PARTNERS.map((p) => (
-          <li key={p.name} className="sponsors__tile">
+        {PARTNERS.map((p, i) => (
+          <li
+            key={p.name}
+            className="sponsors__tile"
+            style={{ '--i': i, '--logo-h': p.h + 'px', '--logo-src': `url(${p.src})` }}
+          >
             {p.src ? (
-              <img className="sponsors__logo" src={p.src} alt={p.name} loading="lazy" />
+              /* the wrapper hugs the img so its ::after (the holo sheen,
+                 masked by the same SVG) covers exactly the logo box */
+              <span className="sponsors__mark">
+                <img className="sponsors__logo" src={p.src} alt={p.name} loading="lazy" />
+              </span>
             ) : (
               <span className="sponsors__word">{p.name}</span>
             )}
